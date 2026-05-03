@@ -12,6 +12,11 @@ interface PerformanceMetrics {
   loadTime?: number; // Total page load time
 }
 
+interface LargestContentfulPaintEntry extends PerformanceEntry {
+  renderTime: number;
+  loadTime: number;
+}
+
 /**
  * Initialize performance monitoring
  * Tracks Core Web Vitals and reports them
@@ -40,7 +45,7 @@ export const initPerformanceMonitoring = (): void => {
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1];
-        metrics.lcp = Math.round((lastEntry as any).renderTime || (lastEntry as any).loadTime);
+        metrics.lcp = Math.round((lastEntry as LargestContentfulPaintEntry).renderTime || (lastEntry as LargestContentfulPaintEntry).loadTime);
         
         // Log when LCP is ready
         if (metrics.lcp) {
