@@ -235,7 +235,7 @@ export function serializeInsight(i: Post): any {
         id: i.id, title: i.title, titleKm: i.titleKm,
         excerpt: i.excerpt, date: i.date, category: i.category,
         image: i.image, link: i.link || '#',
-        authorId: i.authorId, content: i.content,
+        authorId: i.authorId, content: i.content, contentKm: i.contentKm,
         slug: i.slug || slugify(i.title || ''),
     };
 }
@@ -247,6 +247,7 @@ export function serializeJob(j: Job): any {
         _iconString: j._iconString || 'Code',
         icon: j._iconString || 'Code',
         link: j.link, description: j.description,
+        slug: j.slug || slugify(j.title || ''),
     };
 }
 

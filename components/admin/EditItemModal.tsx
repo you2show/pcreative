@@ -212,7 +212,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                     </div>
                 );
             }
-            if (key === 'content' || key === 'description' || key === 'bio') {
+            if (key === 'content' || key === 'contentKm' || key === 'description' || key === 'bio') {
                 return <RichTextEditor key={key} label={label} value={value || ''} onChange={(newValue) => setEditingItem({ ...editingItem, [key]: newValue })} />;
             }
             if (Array.isArray(value)) {

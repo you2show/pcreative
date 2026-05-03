@@ -79,6 +79,7 @@ export interface Job {
   _iconString?: string; // For Admin input
   link?: string;
   description?: string;
+  slug?: string;
 }
 
 export interface Comment {

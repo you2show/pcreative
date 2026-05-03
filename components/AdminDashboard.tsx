@@ -125,7 +125,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
     const templates: any = {
       team: { name: '', role: '', roleKm: '', image: '', bio: '', bioKm: '', skills: [], experience: [], socials: {}, pinCode: '1111' },
       projects: { title: '', category: 'graphicdesign', image: '', client: '', description: '', link: '', gallery: [], challenge: '', challengeKm: '', solution: '', solutionKm: '', result: '', resultKm: '' },
-      insights: { title: '', titleKm: '', excerpt: '', content: '', date: new Date().toISOString().split('T')[0], category: 'Design', image: '', authorId: currentUser.role === 'member' ? currentUser.id : 't1' },
+      insights: { title: '', titleKm: '', excerpt: '', content: '', contentKm: '', date: new Date().toISOString().split('T')[0], category: 'Design', image: '', authorId: currentUser.role === 'member' ? currentUser.id : 't1' },
       services: { title: '', titleKm: '', subtitle: '', subtitleKm: '', description: '', descriptionKm: '', features: [], featuresKm: [], icon: 'Box', color: 'bg-indigo-500', image: '' },
       careers: { title: '', type: 'Full-time', location: 'Phnom Penh', department: 'Engineering', icon: 'Code', link: '', description: '' },
       partners: { name: '', icon: 'Building2', image: '' }
