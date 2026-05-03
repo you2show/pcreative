@@ -215,7 +215,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           item.slug = generatedSlug;
 
           if (isAdding || !item.id) {
-              item.id = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `id-${Date.now()}`;
+              item.id = (typeof crypto !== 'undefined' && crypto.randomUUID)
+                  ? crypto.randomUUID()
+                  : `id-${Date.now()}-${Math.random().toString(36).slice(2)}`;
           }
           if (activeTab === 'projects' && isAdding) {
               item.createdBy = currentUser.id;
@@ -286,20 +288,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                    <form onSubmit={handleGitHubConfigSave} className="space-y-4">
                        <div className="grid grid-cols-2 gap-4">
                            <div>
-                               <label className="block text-xs font-bold text-gray-500 mb-1">GitHub Username</label>
+                               <label htmlFor="ghUser" className="block text-xs font-bold text-gray-500 mb-1">GitHub Username</label>
                                <input id="ghUser" type="text" className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="you2show" required />
                            </div>
                            <div>
-                               <label className="block text-xs font-bold text-gray-500 mb-1">Repository Name</label>
+                               <label htmlFor="ghRepo" className="block text-xs font-bold text-gray-500 mb-1">Repository Name</label>
                                <input id="ghRepo" type="text" className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="pcreative" required />
                            </div>
                        </div>
                        <div>
-                           <label className="block text-xs font-bold text-gray-500 mb-1">Branch</label>
+                           <label htmlFor="ghBranch" className="block text-xs font-bold text-gray-500 mb-1">Branch</label>
                            <input id="ghBranch" type="text" defaultValue="main" className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" />
                        </div>
                        <div>
-                           <label className="block text-xs font-bold text-gray-500 mb-1">Personal Access Token (PAT)</label>
+                           <label htmlFor="ghToken" className="block text-xs font-bold text-gray-500 mb-1">Personal Access Token (PAT)</label>
                            <input id="ghToken" type="password" className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="ghp_..." required />
                            <p className="text-gray-500 text-xs mt-1">Needs <code>repo</code> scope. Get one at github.com/settings/tokens</p>
                        </div>
@@ -400,11 +402,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                                  </div>
                              </div>
                              <div>
-                                 <label className="block text-xs font-bold text-gray-500 mb-1">Branch</label>
+                                 <label htmlFor="ghBranch" className="block text-xs font-bold text-gray-500 mb-1">Branch</label>
                                  <input id="ghBranch" type="text" defaultValue={ghConfig?.branch || 'main'} className="w-full bg-gray-800 border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
                              </div>
                              <div>
-                                 <label className="block text-xs font-bold text-gray-500 mb-1">Personal Access Token</label>
+                                 <label htmlFor="ghToken" className="block text-xs font-bold text-gray-500 mb-1">Personal Access Token</label>
                                  <input id="ghToken" type="password" defaultValue={ghConfig?.token} className="w-full bg-gray-800 border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ghp_..." required />
                              </div>
                              <div className="flex gap-3">

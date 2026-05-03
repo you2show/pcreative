@@ -53,7 +53,7 @@ export async function saveSiteData(config: GitHubConfig, data: SiteData): Promis
     let sha: string | undefined;
     const getRes = await fetch(apiUrl, {
         headers: {
-            Authorization: `token ${token}`,
+            Authorization: `Bearer ${token}`,
             Accept: 'application/vnd.github.v3+json',
         },
     });
@@ -62,8 +62,12 @@ export async function saveSiteData(config: GitHubConfig, data: SiteData): Promis
         sha = getData.sha;
     }
 
-    // Encode content as base64
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    // Encode content as base64 using TextEncoder for full Unicode support
+    const jsonStr = JSON.stringify(data, null, 2);
+    const bytes = new TextEncoder().encode(jsonStr);
+    let binary = '';
+    bytes.forEach(b => { binary += String.fromCharCode(b); });
+    const content = btoa(binary);
 
     const body: Record<string, unknown> = {
         message: 'Update site data via Admin Dashboard',
@@ -75,7 +79,7 @@ export async function saveSiteData(config: GitHubConfig, data: SiteData): Promis
     const putRes = await fetch(apiUrl, {
         method: 'PUT',
         headers: {
-            Authorization: `token ${token}`,
+            Authorization: `Bearer ${token}`,
             Accept: 'application/vnd.github.v3+json',
             'Content-Type': 'application/json',
         },
