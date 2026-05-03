@@ -112,7 +112,7 @@ const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose, usePa
           </div>
        </div>
 
-       {isLivePreviewOpen && project.liveUrl && <LivePreviewModal url={project.liveUrl} onClose={() => setIsLivePreviewOpen(false)} />}
+       {isLivePreviewOpen && project.liveUrl && <LivePreviewModal url={project.liveUrl} title={project.title} onClose={() => setIsLivePreviewOpen(false)} />}
     </div>, document.body
   );
 };

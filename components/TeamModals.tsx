@@ -25,7 +25,7 @@ interface MemberDetailModalProps {
 }
 
 export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, onClose, onShowArticles }) => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const { insights = [] } = useData(); 
     
     if (!member) return null;
@@ -348,20 +348,20 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
         <div className={`flex gap-3 ${isReply ? 'ml-8 mt-4' : 'mt-6'}`}>
             <div className="shrink-0">
                 <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs font-bold">
-                    {comment.user_name.charAt(0)}
+                    {comment.user.charAt(0)}
                 </div>
             </div>
             <div className="flex-1">
                 <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
                     <div className="flex justify-between items-center mb-1">
-                        <span className="text-white font-bold text-sm">{comment.user_name}</span>
-                        <span className="text-gray-500 text-[10px]">{new Date(comment.created_at).toLocaleDateString()}</span>
+                        <span className="text-white font-bold text-sm">{comment.user}</span>
+                        <span className="text-gray-500 text-[10px]">{new Date(comment.date).toLocaleDateString()}</span>
                     </div>
                     <p className="text-gray-300 text-sm font-khmer">{comment.content}</p>
                 </div>
                 <div className="flex gap-4 mt-2 ml-2">
                     <button 
-                        onClick={() => setReplyTo({id: comment.id, name: comment.user_name})}
+                        onClick={() => setReplyTo({id: comment.id, name: comment.user})}
                         className="text-[10px] font-bold text-gray-500 hover:text-indigo-400 transition-colors uppercase tracking-wider"
                     >
                         {t('Reply', 'ឆ្លើយតប')}
@@ -390,7 +390,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                 </button>
 
                 <div className="flex-1 overflow-y-auto scrollbar-hide relative" ref={scrollRef}>
-                    <LocalScrollButton scrollContainerRef={scrollRef} />
+                    <LocalScrollButton containerRef={scrollRef} />
                     
                     {/* Hero Image */}
                     <div className="relative h-[40vh] md:h-[50vh] shrink-0">

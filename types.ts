@@ -35,6 +35,8 @@ export interface Project {
   slug?: string;
   description?: string; // New field
   link?: string;        // New field
+  liveUrl?: string;     // New field: Live preview URL
+  features?: string[];  // New field: List of features
   createdBy?: string;   // New field: Stores ID of the creator
   
   // Case Study Fields
@@ -99,6 +101,7 @@ export interface Post {
   link: string;
   authorId: string;
   content?: string;
+  contentKm?: string;
   comments?: Comment[];
   slug?: string;
 }

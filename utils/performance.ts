@@ -40,7 +40,7 @@ export const initPerformanceMonitoring = (): void => {
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1];
-        metrics.lcp = Math.round(lastEntry.renderTime || lastEntry.loadTime);
+        metrics.lcp = Math.round((lastEntry as any).renderTime || (lastEntry as any).loadTime);
         
         // Log when LCP is ready
         if (metrics.lcp) {
