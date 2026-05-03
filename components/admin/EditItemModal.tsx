@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { X, Save, Loader2, Upload, Image as ImageIcon, ExternalLink, Lock, Facebook, Send, Link as LinkIcon, Tag, FileText, Target, Zap, TrendingUp, Images, Plus as PlusIcon } from 'lucide-react';
-import { getSupabaseClient } from '../../lib/supabase';
+import { uploadImage } from '../../lib/imageUpload';
 import { useData } from '../../contexts/DataContext';
 import RichTextEditor from './editor/RichTextEditor';
 
@@ -34,22 +34,10 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
 
   if (!isOpen || !editingItem) return null;
 
-  const uploadImage = async (file: File): Promise<string | null> => {
-      const supabase = getSupabaseClient();
-      if (!supabase) {
-          alert("Database not connected");
-          return null;
-      }
-
+  const uploadImageFile = async (file: File): Promise<string | null> => {
       setIsUploading(true);
       try {
-          const fileExt = file.name.split('.').pop();
-          const fileName = `${Math.random()}.${fileExt}`;
-          const filePath = `${fileName}`;
-          const { error: uploadError } = await supabase.storage.from('uploads').upload(filePath, file);
-          if (uploadError) throw uploadError;
-          const { data: { publicUrl } } = supabase.storage.from('uploads').getPublicUrl(filePath);
-          return publicUrl;
+          return await uploadImage(file);
       } catch (error: any) {
           console.error("Upload failed:", error);
           alert("Upload failed: " + error.message);
@@ -62,7 +50,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
   const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) {
-          const url = await uploadImage(file);
+          const url = await uploadImageFile(file);
           if (url) setEditingItem({ ...editingItem, image: url });
       }
   };
@@ -72,7 +60,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
       const file = e.target.files?.[0];
       if (file) {
           setIsGalleryUploading(true);
-          const url = await uploadImage(file);
+          const url = await uploadImageFile(file);
           if (url) {
               const currentGallery = editingItem.gallery || [];
               setEditingItem({ ...editingItem, gallery: [...currentGallery, url] });
@@ -86,7 +74,6 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
       const file = e.target.files?.[0];
       if (!file) return;
 
-      // Validation
       const maxSize = 5 * 1024 * 1024; // 5MB
       const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
       
@@ -102,7 +89,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
 
       setIsCoverImageUploading(true);
       try {
-          const url = await uploadImage(file);
+          const url = await uploadImageFile(file);
           if (url) {
               setEditingItem({ ...editingItem, coverImage: url });
           }

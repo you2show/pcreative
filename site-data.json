@@ -6,16 +6,7 @@
       "titleKm": "ការរចនាក្រាហ្វិក",
       "subtitle": "Branding & Visual Identity",
       "subtitleKm": "អត្តសញ្ញាណម៉ាកយីហោ",
-      "icon": {
-        "type": {
-          "displayName": "Palette"
-        },
-        "key": null,
-        "ref": null,
-        "props": {
-          "size": 32
-        }
-      },
+      "icon": "Palette",
       "color": "bg-purple-500",
       "link": "#",
       "description": "We bring your brand to life with stunning visuals. From logos to marketing materials, our designs are crafted to captivate and communicate your message effectively.",
@@ -31,7 +22,8 @@
         "ក្រាហ្វិកបណ្តាញសង្គម",
         "សម្ភារៈទីផ្សារ (ប័ណ្ណផ្សព្វផ្សាយ)",
         "ការរចនាការវេចខ្ចប់"
-      ]
+      ],
+      "_iconString": "Palette"
     },
     {
       "id": "architecture",
@@ -39,16 +31,7 @@
       "titleKm": "ស្ថាបត្យកម្ម",
       "subtitle": "Sustainable & Modern Spaces",
       "subtitleKm": "លំហទំនើប និងនិរន្តរភាព",
-      "icon": {
-        "type": {
-          "displayName": "House"
-        },
-        "key": null,
-        "ref": null,
-        "props": {
-          "size": 32
-        }
-      },
+      "icon": "House",
       "color": "bg-indigo-500",
       "link": "#",
       "description": "Blending functionality with aesthetics, we design spaces that inspire. Our architectural services cover everything from concept sketches to detailed blueprints.",
@@ -64,7 +47,8 @@
         "ការបង្កើតម៉ូដែល 3D",
         "ការរចនាផ្ទៃខាងក្នុង",
         "ការរៀបចំសួនច្បារ"
-      ]
+      ],
+      "_iconString": "House"
     },
     {
       "id": "calligraphy",
@@ -72,16 +56,7 @@
       "titleKm": "អក្សរផ្ចង់អារ៉ាប់",
       "subtitle": "Traditional Art & Digital Assets",
       "subtitleKm": "សិល្បៈប្រពៃណី និងឌីជីថល",
-      "icon": {
-        "type": {
-          "displayName": "PenTool"
-        },
-        "key": null,
-        "ref": null,
-        "props": {
-          "size": 32
-        }
-      },
+      "icon": "PenTool",
       "color": "bg-pink-500",
       "link": "#",
       "description": "Masterful Arabic calligraphy for art pieces, logos, and digital media. We combine traditional rules with modern flair.",
@@ -97,7 +72,8 @@
         "ឡូហ្គោអក្សរផ្ចង់",
         "សិល្បៈជញ្ជាំង និងការតុបតែង",
         "ធនធានអក្សរផ្ចង់ឌីជីថល"
-      ]
+      ],
+      "_iconString": "PenTool"
     },
     {
       "id": "translation",
@@ -105,16 +81,7 @@
       "titleKm": "សេវាកម្មបកប្រែ",
       "subtitle": "Professional & Accurate",
       "subtitleKm": "វិជ្ជាជីវៈ និងត្រឹមត្រូវ",
-      "icon": {
-        "type": {
-          "displayName": "Languages"
-        },
-        "key": null,
-        "ref": null,
-        "props": {
-          "size": 32
-        }
-      },
+      "icon": "Languages",
       "color": "bg-orange-500",
       "link": "#",
       "description": "Accurate and culturally nuanced translation services. We bridge the gap between languages to help you reach a global audience.",
@@ -130,7 +97,8 @@
         "ការបកប្រែផ្ទាល់មាត់",
         "ការធ្វើឱ្យវេបសាយមានលក្ខណៈតំបន់",
         "ការបកប្រែច្បាប់ និងបច្ចេកទេស"
-      ]
+      ],
+      "_iconString": "Languages"
     },
     {
       "id": "media",
@@ -138,16 +106,7 @@
       "titleKm": "ផលិតវីដេអូ និងថតរូប",
       "subtitle": "Capturing Moments",
       "subtitleKm": "ផ្តិតយកពេលវេលា",
-      "icon": {
-        "type": {
-          "displayName": "Camera"
-        },
-        "key": null,
-        "ref": null,
-        "props": {
-          "size": 32
-        }
-      },
+      "icon": "Camera",
       "color": "bg-blue-500",
       "link": "#",
       "description": "High-quality photography and videography services to capture moments and tell your story through a cinematic lens.",
@@ -163,7 +122,8 @@
         "ផលិតវីដេអូពាណិជ្ជកម្ម",
         "ការកាត់តវីដេអូ",
         "ការថតរូបផលិតផល"
-      ]
+      ],
+      "_iconString": "Camera"
     },
     {
       "id": "courses",
@@ -171,16 +131,7 @@
       "titleKm": "វគ្គសិក្សាអនឡាញ",
       "subtitle": "Learn from Experts",
       "subtitleKm": "រៀនពីអ្នកជំនាញ",
-      "icon": {
-        "type": {
-          "displayName": "BookOpen"
-        },
-        "key": null,
-        "ref": null,
-        "props": {
-          "size": 32
-        }
-      },
+      "icon": "BookOpen",
       "color": "bg-emerald-500",
       "link": "#",
       "description": "Learn new skills from industry experts. Our online courses are designed to be practical, engaging, and accessible anywhere.",
@@ -196,7 +147,8 @@
         "វគ្គបណ្តុះបណ្តាលវេបសាយ",
         "ការរៀនភាសា",
         "មូលដ្ឋានគ្រឹះស្ថាបត្យកម្ម"
-      ]
+      ],
+      "_iconString": "BookOpen"
     },
     {
       "id": "webdev",
@@ -204,16 +156,7 @@
       "titleKm": "អភិវឌ្ឍគេហទំព័រ",
       "subtitle": "Scalable Digital Solutions",
       "subtitleKm": "ដំណោះស្រាយឌីជីថល",
-      "icon": {
-        "type": {
-          "displayName": "Monitor"
-        },
-        "key": null,
-        "ref": null,
-        "props": {
-          "size": 32
-        }
-      },
+      "icon": "Monitor",
       "color": "bg-yellow-500",
       "link": "#",
       "description": "We build robust, scalable, and beautiful websites and mobile applications tailored to your business needs.",
@@ -229,7 +172,8 @@
         "ការអភិវឌ្ឍកម្មវិធីទូរស័ព្ទ",
         "ដំណោះស្រាយពាណិជ្ជកម្មអេឡិចត្រូនិក",
         "ការរចនា UI/UX"
-      ]
+      ],
+      "_iconString": "Monitor"
     },
     {
       "id": "mvac",
@@ -237,16 +181,7 @@
       "titleKm": "ប្រព័ន្ធម៉ាស៊ីនត្រជាក់",
       "subtitle": "Climate Control Systems",
       "subtitleKm": "ប្រព័ន្ធគ្រប់គ្រងអាកាសធាតុ",
-      "icon": {
-        "type": {
-          "displayName": "Wind"
-        },
-        "key": null,
-        "ref": null,
-        "props": {
-          "size": 32
-        }
-      },
+      "icon": "Wind",
       "color": "bg-cyan-500",
       "link": "#",
       "description": "Expert design and consulting for Mechanical, Ventilation, and Air Conditioning systems to ensure optimal comfort and efficiency.",
@@ -262,7 +197,8 @@
         "ការប្រឹក្សាអំពីប្រសិទ្ធភាពថាមពល",
         "ការរៀបចំផែនការដំឡើង",
         "កាលវិភាគថែទាំ"
-      ]
+      ],
+      "_iconString": "Wind"
     }
   ],
   "projects": [
@@ -505,5 +441,7 @@
       "authorId": "t1",
       "content": "ggg"
     }
-  ]
+  ],
+  "jobs": [],
+  "partners": []
 }

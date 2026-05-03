@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Settings, Database, ExternalLink, LogOut, Users, FileText, Briefcase, LayoutGrid, Menu, Star, Handshake } from 'lucide-react';
-import { getSupabaseClient, DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_KEY } from '../lib/supabase';
-import { useData } from '../contexts/DataContext';
+import { Plus, Settings, Cloud, LogOut, Users, FileText, Briefcase, LayoutGrid, Star, Handshake, Key } from 'lucide-react';
+import { getGitHubConfig, saveGitHubConfigLocal, clearGitHubConfig, isGitHubConfigured, fetchSiteData, saveSiteData } from '../lib/github';
+import { getImgBBKey, saveImgBBKey } from '../lib/imageUpload';
+import { useData, serializeTeamMember, serializeProject, serializeService, serializeInsight, serializeJob, serializePartner } from '../contexts/DataContext';
 import AdminHeader from './admin/AdminHeader';
 import AdminSidebar from './admin/AdminSidebar';
 import ContentGrid from './admin/ContentGrid';
 import EditItemModal from './admin/EditItemModal';
-import { TeamMember, Project, Post, Service, CurrentUser, Job, Partner } from '../types';
+import { TeamMember, Project, Post, Service, CurrentUser, Job, Partner, GitHubConfig } from '../types';
 import { slugify } from '../utils/format';
 
 interface AdminDashboardProps {
@@ -19,8 +20,9 @@ type TabType = 'team' | 'projects' | 'insights' | 'services' | 'careers' | 'sett
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, onViewSite }) => {
   const { isUsingSupabase, team = [], projects = [], insights = [], services: localServices = [], jobs = [], partners = [], updateTeamOrder, refreshData } = useData();
-  const [activeTab, setActiveTab] = useState<TabType>('team'); // Default to Team for members
-  const [dbConfig, setDbConfig] = useState<{url: string, key: string} | null>(null);
+  const [activeTab, setActiveTab] = useState<TabType>('team');
+  const [ghConfig, setGhConfig] = useState<GitHubConfig | null>(getGitHubConfig());
+  const [imgbbKey, setImgbbKey] = useState<string>(getImgBBKey() || '');
   
   // Data States (Local to Admin for immediate updates)
   const [adminTeam, setAdminTeam] = useState<TeamMember[]>(team);
@@ -48,14 +50,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 
   // Initialize: Load Config and Data
   useEffect(() => {
-      // Use LocalStorage if available, otherwise fallback to defaults from lib/supabase.ts
-      const url = localStorage.getItem('supabase_url') || DEFAULT_SUPABASE_URL;
-      const key = localStorage.getItem('supabase_key') || DEFAULT_SUPABASE_KEY;
-      
-      if (url && key) {
-          setDbConfig({ url, key });
-      }
-
+      setGhConfig(getGitHubConfig());
       setAdminTeam(team || []);
       setAdminProjects(projects || []);
       setAdminInsights(insights || []);
@@ -64,23 +59,29 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
       setAdminPartners(partners || []);
   }, [team, projects, insights, localServices, jobs, partners]);
 
-  const handleConfigSave = (e: React.FormEvent) => {
+  const handleGitHubConfigSave = (e: React.FormEvent) => {
       e.preventDefault();
-      const urlInput = (document.getElementById('dbUrl') as HTMLInputElement).value;
-      const keyInput = (document.getElementById('dbKey') as HTMLInputElement).value;
-      
-      if (urlInput && keyInput) {
-          localStorage.setItem('supabase_url', urlInput);
-          localStorage.setItem('supabase_key', keyInput);
-          setDbConfig({ url: urlInput, key: keyInput });
-          window.location.reload(); // Reload to initialize client
-      }
+      const form = e.target as HTMLFormElement;
+      const cfg: GitHubConfig = {
+          username: (form.querySelector('#ghUser') as HTMLInputElement).value.trim(),
+          repo: (form.querySelector('#ghRepo') as HTMLInputElement).value.trim(),
+          branch: (form.querySelector('#ghBranch') as HTMLInputElement).value.trim() || 'main',
+          token: (form.querySelector('#ghToken') as HTMLInputElement).value.trim(),
+      };
+      saveGitHubConfigLocal(cfg);
+      setGhConfig(cfg);
+      window.location.reload();
+  };
+
+  const handleImgbbKeySave = (e: React.FormEvent) => {
+      e.preventDefault();
+      saveImgBBKey(imgbbKey);
+      alert('Image upload key saved!');
   };
 
   const clearConfig = () => {
-      if(window.confirm("Disconnect Database?")) {
-          localStorage.removeItem('supabase_url');
-          localStorage.removeItem('supabase_key');
+      if (window.confirm('Disconnect GitHub configuration?')) {
+          clearGitHubConfig();
           window.location.reload();
       }
   };
@@ -134,10 +135,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   };
 
   const handleDelete = async (type: string, id: string) => {
-      // Logic for Deletion Rights
       const isSuperAdmin = currentUser.role === 'admin';
       
-      // 1. Projects: Only Admin OR Creator can delete
       if (type === 'project' && !isSuperAdmin) {
           const project = adminProjects.find(p => p.id === id);
           if (!project || project.createdBy !== currentUser.id) {
@@ -145,8 +144,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
               return;
           }
       }
-
-      // 2. Insights: Only Admin OR Author can delete
       if (type === 'insight' && !isSuperAdmin) {
           const post = adminInsights.find(p => p.id === id);
           if (!post || post.authorId !== currentUser.id) {
@@ -154,70 +151,45 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
               return;
           }
       }
-
-      // 3. Other items: Only Admin can delete
       if ((type !== 'project' && type !== 'insight') && !isSuperAdmin) {
           alert("Only Admins can delete this item.");
           return;
       }
 
       if (!window.confirm("Are you sure you want to delete this item?")) return;
-      
-      // Check if it's a UUID (Database Item)
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-      const isStatic = !uuidRegex.test(id);
 
-      // CASE 1: STATIC ITEM (ALLOW HIDING)
-      if (isStatic) {
-          // Simply remove from local state to "hide" it from view
-          const updater = (prev: any[]) => prev.filter(i => i.id !== id);
-          
-          if (type === 'team') setAdminTeam(updater);
-          if (type === 'project') setAdminProjects(updater);
-          if (type === 'insight') setAdminInsights(updater);
-          if (type === 'service') setAdminServices(updater);
-          if (type === 'job') setAdminJobs(updater);
-          if (type === 'partner') setAdminPartners(updater);
-          
-          alert("Item hidden from view.\n\nNote: Since this is a static item (hardcoded), it will reappear if you refresh the page unless you create a database version with the exact same Title/Slug to override it.");
-          return;
-      }
-
-      // CASE 2: DATABASE ITEM
-      const supabase = getSupabaseClient();
-      if (!supabase) return;
+      const cfg = getGitHubConfig();
+      if (!cfg) { alert("GitHub not configured."); return; }
 
       setIsSyncing(true);
       try {
-          let table = '';
-          if (type === 'team') table = 'team';
-          if (type === 'project') table = 'projects';
-          if (type === 'insight') table = 'insights';
-          if (type === 'service') table = 'services';
-          if (type === 'job') table = 'jobs';
-          if (type === 'partner') table = 'partners';
+          const data = await fetchSiteData(cfg);
+          if (!data) throw new Error("Could not load site data");
 
-          const { error } = await supabase.from(table).delete().eq('id', id);
+          const tableMap: Record<string, keyof typeof data> = {
+              team: 'team', project: 'projects', insight: 'insights',
+              service: 'services', job: 'jobs', partner: 'partners',
+          };
+          const key = tableMap[type];
+          if (key) {
+              (data[key] as any[]) = (data[key] as any[]).filter((item: any) => item.id !== id);
+          }
 
-          if (error) throw error;
-          
-          // Optimistic Update
+          await saveSiteData(cfg, data);
+
           const updater = (prev: any[]) => prev.filter(i => i.id !== id);
-
           if (type === 'team') setAdminTeam(updater);
           if (type === 'project') setAdminProjects(updater);
           if (type === 'insight') setAdminInsights(updater);
           if (type === 'service') setAdminServices(updater);
           if (type === 'job') setAdminJobs(updater);
           if (type === 'partner') setAdminPartners(updater);
-          
-          // CRITICAL: Refresh Global DataContext so public site is updated
-          await refreshData(); 
 
-          alert("Item deleted permanently!");
-      } catch (err) {
+          await refreshData();
+          alert("Item deleted successfully!");
+      } catch (err: any) {
           console.error(err);
-          alert("Failed to delete. Check console.");
+          alert("Failed to delete: " + err.message);
       } finally {
           setIsSyncing(false);
       }
@@ -225,20 +197,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 
   const handleSave = async (e: React.FormEvent) => {
       e.preventDefault();
-      const supabase = getSupabaseClient();
-      if (!supabase) return;
+      const cfg = getGitHubConfig();
+      if (!cfg) { alert("GitHub not configured. Please set up in Settings."); return; }
 
-      // Keep reference to the ORIGINAL ID (e.g. 'graphic', 'j1', or 'uuid')
-      const originalId = editingItem.id;
-
-      // Logic: If ID is not a UUID (e.g. 't1', 'graphic', 'j1'), we assume it's static
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-      const isStaticID = !uuidRegex.test(originalId || '');
-      
-      // Determine if we are technically "adding" to the DB (even if editing a static item)
-      let performInsert = isAdding || isStaticID;
-
-      // Strict Role Check for NEW items, but allow projects for members
       if (isAdding && (currentUser.role as string) !== 'admin' && activeTab !== 'projects' && activeTab !== 'insights') {
           alert("Security Alert: Only Admins can create new records in this section.");
           return;
@@ -246,171 +207,52 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 
       setIsSaving(true);
       try {
+          const data = await fetchSiteData(cfg);
+          if (!data) throw new Error("Could not load current site data from GitHub");
+
           const item = { ...editingItem };
-          
-          // Prepare payload based on table structure
-          let table = '';
-          let payload: any = {};
-
-          // Generate Slug consistently
           const generatedSlug = item.slug || slugify(item.title || item.name || '');
+          item.slug = generatedSlug;
 
-          if (activeTab === 'projects') {
-              table = 'projects';
-              payload = { 
-                  title: item.title, 
-                  category: item.category, 
-                  image: item.image, 
-                  client: item.client,
-                  slug: generatedSlug,
-                  description: item.description, 
-                  link: item.link,
-                  gallery: item.gallery, // New Gallery Field
-                  // New Case Study Fields
-                  challenge: item.challenge,
-                  challenge_km: item.challengeKm,
-                  solution: item.solution,
-                  solution_km: item.solutionKm,
-                  result: item.result,
-                  result_km: item.resultKm
-              };
-              if (performInsert) payload.created_by = currentUser.id;
-          } else if (activeTab === 'services') {
-              table = 'services';
-              payload = { 
-                  title: item.title, 
-                  title_km: item.titleKm, 
-                  subtitle: item.subtitle,
-                  subtitle_km: item.subtitleKm,
-                  description: item.description,
-                  description_km: item.descriptionKm,
-                  features: item.features,
-                  features_km: item.featuresKm,
-                  icon: (typeof item.icon === 'string' && item.icon.trim()) ? item.icon : 'Box', 
-                  color: item.color,
-                  link: item.link,
-                  slug: generatedSlug,
-                  image: item.image 
-              };
-          } else if (activeTab === 'team') {
-              table = 'team';
-              payload = { 
-                  name: item.name, 
-                  role: item.role, 
-                  role_km: item.roleKm, 
-                  image: item.image, 
-                  bio: item.bio, 
-                  bio_km: item.bioKm, 
-                  skills: item.skills, 
-                  experience: item.experience, 
-	                  socials: item.socials,
-	                  slug: generatedSlug,
-	                  pin_code: item.pinCode,
-	                  coverImage: item.coverImage // Include coverImage in payload
-	              };
-          } else if (activeTab === 'insights') {
-              table = 'insights';
-              payload = { 
-                  title: item.title, 
-                  title_km: item.titleKm, 
-                  excerpt: item.excerpt, 
-                  content: item.content, 
-                  date: item.date, 
-                  category: item.category, 
-                  image: item.image, 
-                  author_id: item.authorId,
-                  slug: generatedSlug
-              };
-          } else if (activeTab === 'careers') {
-              table = 'jobs';
-              payload = {
-                  title: item.title,
-                  type: item.type,
-                  location: item.location,
-                  department: item.department,
-                  icon: (typeof item.icon === 'string' && item.icon.trim()) ? item.icon : 'Code',
-                  link: item.link,
-                  description: item.description,
-                  slug: generatedSlug
-              }
-          } else if (activeTab === 'partners') {
-              table = 'partners';
-              payload = {
-                  name: item.name,
-                  icon: (typeof item.icon === 'string' && item.icon.trim()) ? item.icon : 'Building2',
-                  image: item.image
-              }
+          if (isAdding || !item.id) {
+              item.id = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `id-${Date.now()}`;
+          }
+          if (activeTab === 'projects' && isAdding) {
+              item.createdBy = currentUser.id;
           }
 
-          // SMART CHECK: If we are about to INSERT because ID is static, check if SLUG exists in DB first (except Partners/Jobs which might rely on ID)
-          if (performInsert && !isAdding && table !== 'partners') {
-              const { data: existingRecord } = await supabase
-                  .from(table)
-                  .select('id')
-                  .eq('slug', generatedSlug)
-                  .single();
-              
-              if (existingRecord) {
-                  console.log("Found existing record for static item, updating instead of inserting:", existingRecord.id);
-                  performInsert = false;
-                  item.id = existingRecord.id; // Switch ID to the DB ID
-              }
+          let serialized: any;
+          let arrayKey: keyof typeof data;
+          if (activeTab === 'projects')  { serialized = serializeProject({ ...item });  arrayKey = 'projects'; }
+          else if (activeTab === 'services') { serialized = serializeService({ ...item }); arrayKey = 'services'; }
+          else if (activeTab === 'team')    { serialized = serializeTeamMember({ ...item, orderIndex: isAdding ? (data.team || []).length : item.orderIndex }); arrayKey = 'team'; }
+          else if (activeTab === 'insights') { serialized = serializeInsight({ ...item }); arrayKey = 'insights'; }
+          else if (activeTab === 'careers') { serialized = serializeJob({ ...item }); arrayKey = 'jobs'; }
+          else if (activeTab === 'partners') { serialized = serializePartner({ ...item }); arrayKey = 'partners'; }
+          else throw new Error('Unknown tab');
+
+          const arr: any[] = data[arrayKey] || [];
+          const existingIdx = arr.findIndex((x: any) => x.id === item.id);
+          if (existingIdx !== -1) {
+              arr[existingIdx] = serialized;
+          } else {
+              arr.unshift(serialized);
           }
+          data[arrayKey] = arr;
 
-          let res;
-          
-          const executeQuery = async (currentPayload: any) => {
-              if (performInsert) {
-                  const p = { ...currentPayload };
-                  if (isStaticID) delete p.id; // Remove static ID (e.g. 'j1') so DB generates UUID
-                  if (activeTab === 'team') p.order_index = adminTeam.length; 
-                  return await supabase.from(table).insert([p]).select();
-              } else {
-                  return await supabase.from(table).update(currentPayload).eq('id', item.id).select();
-              }
-          };
+          await saveSiteData(cfg, data);
 
-          // Try to save full payload first
-          res = await executeQuery(payload);
-
-          // RETRY STRATEGY (Missing columns fallback logic...)
-          if (res.error && activeTab === 'services' && res.error.message.includes("Could not find the 'image' column")) {
-              const { image, ...fallbackPayload } = payload;
-              res = await executeQuery(fallbackPayload);
-          }
-          if (res.error && activeTab === 'partners' && res.error.message.includes("Could not find the 'image' column")) {
-              const { image, ...fallbackPayload } = payload;
-              res = await executeQuery(fallbackPayload);
-          }
-          // Fallback for Projects gallery if database not migrated yet
-          if (res.error && activeTab === 'projects' && res.error.message.includes("gallery")) {
-               const { gallery, ...fallbackPayload } = payload;
-               res = await executeQuery(fallbackPayload);
-          }
-          
-          if (res.error && activeTab === 'careers' && res.error.message.includes("slug")) {
-               const { slug, ...fallbackPayload } = payload;
-               res = await executeQuery(fallbackPayload);
-          }
-
-          if (res.error) throw res.error;
-
-          const newItem = { ...item, ...res.data[0] }; 
-          
-          if (activeTab === 'projects') newItem.createdBy = res.data[0].created_by;
-          if (activeTab === 'team') newItem.pinCode = res.data[0].pin_code;
-
-          // --- CRITICAL FIX: SMART UPDATE OF LOCAL STATE ---
+          const newItem = { ...item, ...serialized };
           const updater = (list: any[]) => {
-              const existingIndex = list.findIndex(i => i.id === originalId);
-              if (existingIndex !== -1) {
-                  const newList = [...list];
-                  newList[existingIndex] = newItem;
-                  return newList;
+              const idx = list.findIndex(i => i.id === item.id);
+              if (idx !== -1) {
+                  const copy = [...list];
+                  copy[idx] = newItem;
+                  return copy;
               }
               return [newItem, ...list];
           };
-          
+
           if (activeTab === 'team') setAdminTeam(updater(adminTeam));
           if (activeTab === 'projects') setAdminProjects(updater(adminProjects));
           if (activeTab === 'insights') setAdminInsights(updater(adminInsights));
@@ -418,16 +260,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (activeTab === 'careers') setAdminJobs(updater(adminJobs));
           if (activeTab === 'partners') setAdminPartners(updater(adminPartners));
 
-          // CRITICAL: Refresh Global DataContext
           await refreshData();
-
           setIsModalOpen(false);
-          
-          if (isStaticID && !isAdding && performInsert) {
-              alert("Data Saved! The static item has been migrated to the database.");
-          } else {
-              alert("Saved successfully!");
-          }
+          alert("Saved successfully!");
       } catch (err: any) {
           console.error(err);
           alert("Failed to save: " + err.message);
@@ -436,24 +271,39 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
       }
   };
 
-  // Setup Screen
-  if (!dbConfig) {
-      // ... (Rest of setup screen code is identical)
+  // Setup Screen: shown if GitHub is not yet configured
+  if (!ghConfig) {
       return (
           <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center p-6 relative">
-               {/* ... */}
                <div className="relative z-10 max-w-md w-full bg-gray-900 border border-white/10 rounded-3xl p-8 shadow-2xl">
-                   {/* ... */}
-                   <form onSubmit={handleConfigSave} className="space-y-4">
+                   <div className="flex items-center gap-3 mb-6">
+                       <Cloud className="text-indigo-400" size={28} />
                        <div>
-                           <label className="block text-xs font-bold text-gray-500 mb-1">Project URL</label>
-                           <input id="dbUrl" type="text" className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="https://xyz.supabase.co" required />
+                           <h2 className="text-xl font-bold">Connect to GitHub</h2>
+                           <p className="text-gray-400 text-sm">Data is stored in your repository's site-data.json</p>
+                       </div>
+                   </div>
+                   <form onSubmit={handleGitHubConfigSave} className="space-y-4">
+                       <div className="grid grid-cols-2 gap-4">
+                           <div>
+                               <label className="block text-xs font-bold text-gray-500 mb-1">GitHub Username</label>
+                               <input id="ghUser" type="text" className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="you2show" required />
+                           </div>
+                           <div>
+                               <label className="block text-xs font-bold text-gray-500 mb-1">Repository Name</label>
+                               <input id="ghRepo" type="text" className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="pcreative" required />
+                           </div>
                        </div>
                        <div>
-                           <label className="block text-xs font-bold text-gray-500 mb-1">Anon / Public Key</label>
-                           <input id="dbKey" type="password" className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="eyJh..." required />
+                           <label className="block text-xs font-bold text-gray-500 mb-1">Branch</label>
+                           <input id="ghBranch" type="text" defaultValue="main" className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" />
                        </div>
-                       <button type="submit" className="w-full py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl transition-all font-khmer">
+                       <div>
+                           <label className="block text-xs font-bold text-gray-500 mb-1">Personal Access Token (PAT)</label>
+                           <input id="ghToken" type="password" className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="ghp_..." required />
+                           <p className="text-gray-500 text-xs mt-1">Needs <code>repo</code> scope. Get one at github.com/settings/tokens</p>
+                       </div>
+                       <button type="submit" className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-all font-khmer">
                            Connect
                        </button>
                    </form>
@@ -533,12 +383,51 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
              </div>
 
              {activeTab === 'settings' ? (
-                 <div className="bg-gray-900 border border-white/10 rounded-2xl p-6 max-w-xl">
-                     <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><Database size={20} className="text-green-400"/> Database Config</h3>
-                     <p className="text-gray-400 text-sm mb-4">Connected to: <span className="text-green-400">{dbConfig.url}</span></p>
-                     <button onClick={clearConfig} className="px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg hover:bg-red-500/20 text-sm font-bold">
-                        {localStorage.getItem('supabase_url') ? "Reset to Defaults" : "Reload Connection"}
-                     </button>
+                 <div className="space-y-6 max-w-xl">
+                     {/* GitHub Config */}
+                     <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
+                         <h3 className="text-xl font-bold mb-1 flex items-center gap-2"><Cloud size={20} className="text-indigo-400"/> GitHub Connection</h3>
+                         <p className="text-gray-400 text-sm mb-4">Connected: <span className="text-green-400">{ghConfig?.username}/{ghConfig?.repo} @ {ghConfig?.branch}</span></p>
+                         <form onSubmit={handleGitHubConfigSave} className="space-y-3">
+                             <div className="grid grid-cols-2 gap-3">
+                                 <div>
+                                     <label className="block text-xs font-bold text-gray-500 mb-1">Username</label>
+                                     <input id="ghUser" type="text" defaultValue={ghConfig?.username} className="w-full bg-gray-800 border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500" required />
+                                 </div>
+                                 <div>
+                                     <label className="block text-xs font-bold text-gray-500 mb-1">Repository</label>
+                                     <input id="ghRepo" type="text" defaultValue={ghConfig?.repo} className="w-full bg-gray-800 border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500" required />
+                                 </div>
+                             </div>
+                             <div>
+                                 <label className="block text-xs font-bold text-gray-500 mb-1">Branch</label>
+                                 <input id="ghBranch" type="text" defaultValue={ghConfig?.branch || 'main'} className="w-full bg-gray-800 border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+                             </div>
+                             <div>
+                                 <label className="block text-xs font-bold text-gray-500 mb-1">Personal Access Token</label>
+                                 <input id="ghToken" type="password" defaultValue={ghConfig?.token} className="w-full bg-gray-800 border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ghp_..." required />
+                             </div>
+                             <div className="flex gap-3">
+                                 <button type="submit" className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-bold">Update Config</button>
+                                 <button type="button" onClick={clearConfig} className="px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg hover:bg-red-500/20 text-sm font-bold">Disconnect</button>
+                             </div>
+                         </form>
+                     </div>
+                     {/* Image Upload Config */}
+                     <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
+                         <h3 className="text-xl font-bold mb-1 flex items-center gap-2"><Key size={20} className="text-yellow-400"/> Image Upload (imgbb)</h3>
+                         <p className="text-gray-400 text-sm mb-4">Images are uploaded to <a href="https://imgbb.com/signup" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">imgbb.com</a> (free). Paste your API key below.</p>
+                         <form onSubmit={handleImgbbKeySave} className="space-y-3">
+                             <input
+                                 type="text"
+                                 value={imgbbKey}
+                                 onChange={e => setImgbbKey(e.target.value)}
+                                 className="w-full bg-gray-800 border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:ring-2 focus:ring-yellow-500"
+                                 placeholder="Paste imgbb API key here..."
+                             />
+                             <button type="submit" className="px-4 py-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded-lg text-sm font-bold">Save Key</button>
+                         </form>
+                     </div>
                  </div>
              ) : (
                  <ContentGrid 
@@ -564,7 +453,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           onSave={handleSave}
           onCancel={() => setIsModalOpen(false)}
           isSaving={isSaving}
-          apiToken={dbConfig.key} 
+          apiToken={null} 
        />
     </div>
   );

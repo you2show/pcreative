@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Bold, Italic, Heading, List, ListOrdered, Code, Link as LinkIcon, Quote, CheckSquare, Image as ImageIcon, Type, Download, Monitor, Upload, Loader2 } from 'lucide-react';
 import { simpleHtmlToMd, simpleMdToHtml } from './converters';
 import ContentRenderer from '../../ContentRenderer';
-import { getSupabaseClient } from '../../../lib/supabase';
+import { uploadImage } from '../../../lib/imageUpload';
 
 interface RichTextEditorProps {
     value: string;
@@ -44,18 +44,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, label 
         }
     }, [editorMode]);
 
-    // --- UTILS ---
-    const uploadImage = async (file: File): Promise<string | null> => {
-        const supabase = getSupabaseClient();
-        if (!supabase) { alert("Database not connected"); return null; }
+    const uploadImageFile = async (file: File): Promise<string | null> => {
         setIsUploading(true);
         try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Math.random()}.${fileExt}`;
-            const { error } = await supabase.storage.from('uploads').upload(fileName, file);
-            if (error) throw error;
-            const { data } = supabase.storage.from('uploads').getPublicUrl(fileName);
-            return data.publicUrl;
+            return await uploadImage(file);
         } catch (error: any) {
             alert("Upload failed: " + error.message);
             return null;
@@ -98,7 +90,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, label 
         const file = e.target.files?.[0];
         if (file) {
             saveSelection();
-            const url = await uploadImage(file);
+            const url = await uploadImageFile(file);
             if (url) {
                 restoreSelection();
                 document.execCommand('insertHTML', false, `<img src="${url}" alt="image" style="max-width: 100%; border-radius: 8px; margin: 10px 0;" /><br>`);
