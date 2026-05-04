@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Bold, Italic, Heading, List, ListOrdered, Code, Link as LinkIcon, Quote, CheckSquare, Image as ImageIcon, Type, Download, Monitor, Upload, Loader2 } from 'lucide-react';
 import { simpleHtmlToMd, simpleMdToHtml } from './converters';
 import ContentRenderer from '../../ContentRenderer';
-import { getSupabaseClient } from '../../../lib/supabase';
+import { uploadImageToImgBB } from '../../../lib/imageUpload';
 
 interface RichTextEditorProps {
     value: string;
@@ -46,16 +46,9 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, label 
 
     // --- UTILS ---
     const uploadImage = async (file: File): Promise<string | null> => {
-        const supabase = getSupabaseClient();
-        if (!supabase) { alert("Database not connected"); return null; }
         setIsUploading(true);
         try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Math.random()}.${fileExt}`;
-            const { error } = await supabase.storage.from('uploads').upload(fileName, file);
-            if (error) throw error;
-            const { data } = supabase.storage.from('uploads').getPublicUrl(fileName);
-            return data.publicUrl;
+            return await uploadImageToImgBB(file);
         } catch (error: any) {
             alert("Upload failed: " + error.message);
             return null;
