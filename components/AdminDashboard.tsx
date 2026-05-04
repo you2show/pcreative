@@ -543,7 +543,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                      </div>
                      <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
                          <h3 className="text-xl font-bold mb-2 flex items-center gap-2"><Settings size={20} className="text-indigo-400"/> ImgBB Image Upload</h3>
-                         <p className="text-gray-400 text-sm mb-4">ImgBB API Key ត្រូវការដើម្បី upload រូបភាព។ យក key ពី <a href="https://imgbb.com/account/api" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">imgbb.com/account/api</a></p>
+                         <p className="text-gray-400 text-sm mb-1">ImgBB API Key ត្រូវការដើម្បី upload រូបភាព។ យក key ពី <a href="https://imgbb.com/account/api" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">imgbb.com/account/api</a></p>
+                         <p className="text-gray-500 text-xs mb-4">💡 Vercel environment variable name: <code className="bg-gray-800 px-1 rounded text-indigo-300">NEXT_PUBLIC_IMGBB_API_KEY</code> (ប្រសិនបើកំណត់ env var នោះ field ខាងក្រោមមិនចាំបាច់)</p>
                          <form onSubmit={(e) => {
                              e.preventDefault();
                              const key = (document.getElementById('imgbbKey') as HTMLInputElement).value.trim();
