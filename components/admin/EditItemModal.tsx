@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { X, Save, Loader2, Upload, Image as ImageIcon, ExternalLink, Lock, Facebook, Send, Link as LinkIcon, Tag, FileText, Target, Zap, TrendingUp, Images, Plus as PlusIcon } from 'lucide-react';
-import { getSupabaseClient } from '../../lib/supabase';
+import { uploadImageToImgBB } from '../../lib/imageUpload';
 import { useData } from '../../contexts/DataContext';
 import RichTextEditor from './editor/RichTextEditor';
 
@@ -35,21 +35,9 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
   if (!isOpen || !editingItem) return null;
 
   const uploadImage = async (file: File): Promise<string | null> => {
-      const supabase = getSupabaseClient();
-      if (!supabase) {
-          alert("Database not connected");
-          return null;
-      }
-
       setIsUploading(true);
       try {
-          const fileExt = file.name.split('.').pop();
-          const fileName = `${Math.random()}.${fileExt}`;
-          const filePath = `${fileName}`;
-          const { error: uploadError } = await supabase.storage.from('uploads').upload(filePath, file);
-          if (uploadError) throw uploadError;
-          const { data: { publicUrl } } = supabase.storage.from('uploads').getPublicUrl(filePath);
-          return publicUrl;
+          return await uploadImageToImgBB(file);
       } catch (error: any) {
           console.error("Upload failed:", error);
           alert("Upload failed: " + error.message);

@@ -533,12 +533,40 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
              </div>
 
              {activeTab === 'settings' ? (
-                 <div className="bg-gray-900 border border-white/10 rounded-2xl p-6 max-w-xl">
-                     <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><Database size={20} className="text-green-400"/> Database Config</h3>
-                     <p className="text-gray-400 text-sm mb-4">Connected to: <span className="text-green-400">{dbConfig.url}</span></p>
-                     <button onClick={clearConfig} className="px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg hover:bg-red-500/20 text-sm font-bold">
-                        {localStorage.getItem('supabase_url') ? "Reset to Defaults" : "Reload Connection"}
-                     </button>
+                 <div className="space-y-6 max-w-xl">
+                     <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
+                         <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><Database size={20} className="text-green-400"/> Database Config</h3>
+                         <p className="text-gray-400 text-sm mb-4">Connected to: <span className="text-green-400">{dbConfig.url}</span></p>
+                         <button onClick={clearConfig} className="px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg hover:bg-red-500/20 text-sm font-bold">
+                            {localStorage.getItem('supabase_url') ? "Reset to Defaults" : "Reload Connection"}
+                         </button>
+                     </div>
+                     <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
+                         <h3 className="text-xl font-bold mb-2 flex items-center gap-2"><Settings size={20} className="text-indigo-400"/> ImgBB Image Upload</h3>
+                         <p className="text-gray-400 text-sm mb-4">ImgBB API Key ត្រូវការដើម្បី upload រូបភាព។ យក key ពី <a href="https://imgbb.com/account/api" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">imgbb.com/account/api</a></p>
+                         <form onSubmit={(e) => {
+                             e.preventDefault();
+                             const key = (document.getElementById('imgbbKey') as HTMLInputElement).value.trim();
+                             if (key) {
+                                 localStorage.setItem('imgbb_api_key', key);
+                                 alert('ImgBB API Key បានរក្សាទុក!');
+                             }
+                         }} className="flex gap-2">
+                             <input
+                                 id="imgbbKey"
+                                 type="password"
+                                 defaultValue={localStorage.getItem('imgbb_api_key') || ''}
+                                 placeholder="ImgBB API Key..."
+                                 className="flex-1 bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                             />
+                             <button type="submit" className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm transition-all">Save</button>
+                         </form>
+                         {localStorage.getItem('imgbb_api_key') && (
+                             <button onClick={() => { if(window.confirm('លុប ImgBB API Key?')) { localStorage.removeItem('imgbb_api_key'); window.location.reload(); } }} className="mt-3 text-xs text-red-400 hover:text-red-300">
+                                 លុប API Key
+                             </button>
+                         )}
+                     </div>
                  </div>
              ) : (
                  <ContentGrid 
