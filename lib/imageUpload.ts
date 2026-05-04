@@ -1,12 +1,12 @@
 /**
  * Upload an image file to ImgBB.
- * Reads the API key from env var NEXT_PUBLIC_IMGBB_API_KEY first,
+ * Reads the API key from env var VITE_IMGBB_API_KEY first,
  * then falls back to localStorage key 'imgbb_api_key'.
  * Returns the public URL of the uploaded image, or null on failure.
  */
 export const uploadImageToImgBB = async (file: File): Promise<string | null> => {
     const apiKey =
-        process.env.NEXT_PUBLIC_IMGBB_API_KEY ||
+        import.meta.env.VITE_IMGBB_API_KEY ||
         (typeof window !== 'undefined' ? localStorage.getItem('imgbb_api_key') : null);
     if (!apiKey) {
         alert('ImgBB API Key មិនទាន់កំណត់! សូមចូល Settings ហើយបញ្ចូល ImgBB API Key');
