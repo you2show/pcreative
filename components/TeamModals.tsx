@@ -38,12 +38,12 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
     const socials = member.socials || {};
 
     return createPortal(
-        <div className="fixed inset-0 z-[10002] flex items-center justify-center p-4 overflow-hidden">
+        <div className="fixed inset-0 z-[10002] flex items-center justify-center px-4 py-8 md:p-4 overflow-hidden">
             <div 
                 className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
                 onClick={onClose}
             />
-            <div className="relative w-full max-w-lg bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col max-h-[90vh]">
+            <div className="relative w-full max-w-lg bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col max-h-full">
                 {/* Header / Cover */}
                 <div className="h-32 bg-gray-800 relative shrink-0 overflow-hidden">
                     {member.coverImage ? (
@@ -65,27 +65,31 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
 
                 {/* Profile Identity (non-scrollable) */}
                 <div className="px-8 pt-0 pb-4 shrink-0 -mt-12 relative z-10">
-                    <img 
-                        src={member.image} 
-                        alt={member.name} 
-                        className="w-24 h-24 rounded-2xl border-4 border-gray-900 object-cover shadow-xl"
-                    />
-                    <div className="mt-3">
-                        <h3 className="text-2xl font-bold text-white">{member.name}</h3>
-                        <p className="text-indigo-400 font-medium font-khmer">{t(member.role, member.roleKm)}</p>
-                    </div>
-                    {/* Social Links */}
-                    <div className="flex gap-3 mt-4">
-                        {socials.facebook && (
-                            <a href={socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5">
-                                <Facebook size={18} />
-                            </a>
-                        )}
-                        {socials.telegram && (
-                            <a href={socials.telegram} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5">
-                                <Send size={18} />
-                            </a>
-                        )}
+                    {/* Desktop: photo | name+role | socials — Mobile: stacked */}
+                    <div className="flex flex-col md:flex-row md:items-end md:gap-4">
+                        <img 
+                            src={member.image} 
+                            alt={member.name} 
+                            className="w-24 h-24 rounded-2xl border-4 border-gray-900 object-cover shadow-xl shrink-0"
+                        />
+                        {/* Name + Role */}
+                        <div className="mt-3 md:mt-0 md:mb-1 flex-1 min-w-0">
+                            <h3 className="text-2xl font-bold text-white">{member.name}</h3>
+                            <p className="text-indigo-400 font-medium font-khmer">{t(member.role, member.roleKm)}</p>
+                        </div>
+                        {/* Social Links — far right on desktop */}
+                        <div className="flex gap-3 mt-4 md:mt-0 md:mb-1 md:shrink-0">
+                            {socials.facebook && (
+                                <a href={socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5">
+                                    <Facebook size={18} />
+                                </a>
+                            )}
+                            {socials.telegram && (
+                                <a href={socials.telegram} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5">
+                                    <Send size={18} />
+                                </a>
+                            )}
+                        </div>
                     </div>
                 </div>
 
