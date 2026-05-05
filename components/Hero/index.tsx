@@ -69,7 +69,7 @@ const Hero: React.FC = () => {
             
             {/* Main Headline */}
             <div className="space-y-4">
-                <h1 className="text-5xl md:text-7xl font-black leading-[1.1] tracking-tight text-white font-khmer">
+                <h1 className="text-4xl md:text-5xl font-black leading-[1.1] tracking-tight text-white font-khmer">
                     {t('We Craft', 'យើងបង្កើត')} <br />
                     
                     {/* Simplified: No more complex JS animation, just pure text for stability */}
