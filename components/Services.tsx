@@ -77,6 +77,7 @@ const SortableServiceItem: React.FC<SortableServiceItemProps> = ({ service, inde
       style={style}
       {...attributes}
       {...listeners}
+      onClick={() => onSelect(service)}
       className={`group relative p-[1px] rounded-3xl overflow-hidden ${gridClass} cursor-grab active:cursor-grabbing`}
     >
       {/* Rotating Gradient Border Background */}
@@ -224,8 +225,7 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
               <div className="max-w-3xl">
                   <span className="text-indigo-400 font-bold tracking-wider uppercase text-sm mb-4 block font-khmer">{t('Our Expertise', 'ជំនាញរបស់យើង')}</span>
                   <h2 className="text-4xl md:text-5xl font-bold text-white font-khmer leading-tight">
-                      {t('Comprehensive solutions for', 'ដំណោះស្រាយពេញលេញសម្រាប់')}   
-
+                      {t('Comprehensive solutions for', 'ដំណោះស្រាយពេញលេញសម្រាប់')}{' '}
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">{t('Digital Dominance.', 'ភាពលេចធ្លោលើឌីជីថល')}</span>
                   </h2>
               </div>
