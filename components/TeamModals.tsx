@@ -62,22 +62,19 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                     </button>
                 </div>
 
-                {/* Profile Info */}
-                <div className="px-8 pb-8 flex-1 overflow-y-auto scrollbar-hide">
-                    <div className="relative -mt-12 mb-6">
-                        <img 
-                            src={member.image} 
-                            alt={member.name} 
-                            className="w-24 h-24 rounded-2xl border-4 border-gray-900 object-cover shadow-xl"
-                        />
-                        <div className="mt-4">
-                            <h3 className="text-2xl font-bold text-white">{member.name}</h3>
-                            <p className="text-indigo-400 font-medium font-khmer">{t(member.role, member.roleKm)}</p>
-                        </div>
+                {/* Profile Identity (non-scrollable) */}
+                <div className="px-8 pt-0 pb-4 shrink-0 -mt-12 relative z-10">
+                    <img 
+                        src={member.image} 
+                        alt={member.name} 
+                        className="w-24 h-24 rounded-2xl border-4 border-gray-900 object-cover shadow-xl"
+                    />
+                    <div className="mt-3">
+                        <h3 className="text-2xl font-bold text-white">{member.name}</h3>
+                        <p className="text-indigo-400 font-medium font-khmer">{t(member.role, member.roleKm)}</p>
                     </div>
-
                     {/* Social Links */}
-                    <div className="flex gap-3 mb-8">
+                    <div className="flex gap-3 mt-4">
                         {socials.facebook && (
                             <a href={socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5">
                                 <Facebook size={18} />
@@ -89,7 +86,10 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                             </a>
                         )}
                     </div>
+                </div>
 
+                {/* Scrollable Content */}
+                <div className="px-8 pb-8 flex-1 overflow-y-auto scrollbar-hide min-h-0">
                     {/* Stats */}
                     <div className="grid grid-cols-2 gap-4 mb-8">
                         <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
