@@ -139,7 +139,6 @@ export function useSEO(options: SEOOptions) {
       removeLink('canonical');
       removeJsonLd();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     options.title,
     options.description,
@@ -147,5 +146,8 @@ export function useSEO(options: SEOOptions) {
     options.url,
     options.type,
     options.jsonLd,
+    options.article?.publishedTime,
+    options.article?.author,
+    options.article?.section,
   ]);
 }

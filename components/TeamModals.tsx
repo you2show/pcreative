@@ -237,7 +237,15 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
     const articleSlug = post.slug || post.id;
     const articleUrl = `https://ponloe.org/insights/${articleSlug}`;
     const articleTitle = `${language === 'km' && post.titleKm ? post.titleKm : post.title} | Ponloe Creative`;
-    const articleDesc = post.excerpt || (language === 'km' && post.contentKm ? post.contentKm : post.content || '').replace(/<[^>]+>/g, '').slice(0, 160);
+    const rawContent = language === 'km' && post.contentKm ? post.contentKm : post.content || '';
+    const strippedContent = (() => {
+        try {
+            return new DOMParser().parseFromString(rawContent, 'text/html').body.textContent || '';
+        } catch {
+            return rawContent.replace(/<[^>]*>/g, '');
+        }
+    })();
+    const articleDesc = post.excerpt || strippedContent.slice(0, 160);
     useSEO({
         title: articleTitle,
         description: articleDesc,
