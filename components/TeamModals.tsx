@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { getSupabaseClient } from '../lib/supabase';
 import ContentRenderer from './ContentRenderer';
 import LocalScrollButton from './LocalScrollButton';
+import { useSEO } from '../hooks/useSEO';
 
 // Helper to count comments recursively
 const getTotalCommentCount = (comments: Comment[]): number => {
@@ -231,6 +232,44 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
     
     const scrollRef = useRef<HTMLDivElement>(null);
     const author = team.find(m => m.id === post.authorId);
+
+    // SEO: update <head> meta tags while article is open so Google can index each article URL
+    const articleSlug = post.slug || post.id;
+    const articleUrl = `https://ponloe.org/insights/${articleSlug}`;
+    const articleTitle = `${language === 'km' && post.titleKm ? post.titleKm : post.title} | Ponloe Creative`;
+    const articleDesc = post.excerpt || (language === 'km' && post.contentKm ? post.contentKm : post.content || '').replace(/<[^>]+>/g, '').slice(0, 160);
+    useSEO({
+        title: articleTitle,
+        description: articleDesc,
+        image: post.image,
+        url: articleUrl,
+        type: 'article',
+        article: {
+            publishedTime: post.date,
+            author: author?.name,
+            section: post.category,
+        },
+        jsonLd: {
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: language === 'km' && post.titleKm ? post.titleKm : post.title,
+            description: articleDesc,
+            image: post.image,
+            url: articleUrl,
+            datePublished: post.date,
+            author: author
+                ? { '@type': 'Person', name: author.name, url: `https://ponloe.org/team/${author.slug || author.id}` }
+                : { '@type': 'Organization', name: 'Ponloe Creative', url: 'https://ponloe.org' },
+            publisher: {
+                '@type': 'Organization',
+                name: 'Ponloe Creative',
+                logo: { '@type': 'ImageObject', url: 'https://ponloe.org/ponloe-logo.svg' },
+            },
+            mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
+            articleSection: post.category,
+            inLanguage: ['km', 'en'],
+        },
+    });
 
     // Fetch comments from Supabase
     useEffect(() => {
