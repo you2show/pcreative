@@ -27,7 +27,8 @@ function setMeta(selector: string, attr: string, value: string) {
   let el = document.head.querySelector<HTMLMetaElement>(selector);
   if (!el) {
     el = document.createElement('meta');
-    const parts = selector.match(/\[(\w+[\w:]*?)=['"](.+?)['"]\]/);
+    // Extract attribute name and value from a selector like [name="foo"] or [property="og:bar"]
+    const parts = selector.match(/\[(\w[\w:-]{0,40})=['"]([^'"]{1,200})['"]\]/);
     if (parts) el.setAttribute(parts[1], parts[2]);
     document.head.appendChild(el);
   }
