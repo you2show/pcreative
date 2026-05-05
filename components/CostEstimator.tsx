@@ -52,6 +52,10 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
         { id: 'ecommerce', label: 'E-commerce', labelKm: 'ប្រព័ន្ធលក់ទំនិញ', price: 500 },
         { id: 'seo', label: 'Advanced SEO', labelKm: 'SEO កម្រិតខ្ពស់', price: 150 },
         { id: 'multi-lang', label: 'Multi-language', labelKm: 'ពហុភាសា', price: 100 },
+        { id: 'payment-gw', label: 'Payment Gateway (ABA/Wing)', labelKm: 'ប្រព័ន្ធទូទាត់ (ABA/Wing)', price: 120 },
+        { id: 'live-chat', label: 'Live Chat Integration', labelKm: 'ការជជែកផ្ទាល់ (Live Chat)', price: 80 },
+        { id: 'maintenance', label: 'Monthly Maintenance', labelKm: 'ថែទាំគេហទំព័រប្រចាំខែ', price: 50 },
+        { id: 'hosting-setup', label: 'Domain & Hosting Setup', labelKm: 'ដំឡើង Domain និង Hosting', price: 60 },
       ]
     },
     {
@@ -65,6 +69,10 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
         { id: 'auth', label: 'User Login/Auth', labelKm: 'ប្រព័ន្ធចុះឈ្មោះអ្នកប្រើ', price: 200 },
         { id: 'api', label: 'Custom API Integration', labelKm: 'ការតភ្ជាប់ API', price: 300 },
         { id: 'notifications', label: 'Push Notifications', labelKm: 'ការជូនដំណឹង (Noti)', price: 150 },
+        { id: 'app-payment', label: 'In-App Payment (ABA/Wing)', labelKm: 'ការទូទាត់ក្នុងApp (ABA/Wing)', price: 200 },
+        { id: 'social-login', label: 'Social Login (FB/Google)', labelKm: 'ចូលដោយ Facebook/Google', price: 100 },
+        { id: 'analytics', label: 'Analytics Dashboard', labelKm: 'ផ្ទាំងវិភាគការប្រើប្រាស់', price: 150 },
+        { id: 'offline', label: 'Offline Mode Support', labelKm: 'ប្រើបានដោយគ្មានអ៊ីនធឺណិត', price: 200 },
       ]
     },
     {
@@ -78,6 +86,10 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
         { id: 'branding', label: 'Full Branding Kit', labelKm: 'កញ្ចប់ម៉ាកយីហោពេញលេញ', price: 250 },
         { id: 'social', label: 'Social Media Pack (5 Posts)', labelKm: 'រូបភាពផុស Facebook (៥ រូប)', price: 80 },
         { id: 'print', label: 'Print Materials', labelKm: 'សម្ភារៈបោះពុម្ព', price: 120 },
+        { id: 'business-card', label: 'Business Card Design', labelKm: 'រចនាកាតអាជីវកម្ម', price: 30 },
+        { id: 'banner', label: 'Banner / Billboard Design', labelKm: 'រចនា Banner / Billboard', price: 60 },
+        { id: 'packaging', label: 'Product Packaging Design', labelKm: 'រចនាកញ្ចប់ផលិតផល', price: 80 },
+        { id: 'photo-edit', label: 'Photo Editing (10 Photos)', labelKm: 'កែរូបភាព (១០ រូប)', price: 50 },
       ]
     },
     {
@@ -91,6 +103,10 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
         { id: '3d-int', label: '3D Interior Design', labelKm: 'រចនា 3D ផ្នែកខាងក្នុង', price: 400 },
         { id: 'blueprint', label: 'Construction Blueprint', labelKm: 'ប្លង់សាងសង់លម្អិត', price: 500 },
         { id: 'video', label: 'Walkthrough Video', labelKm: 'វីដេអូបង្ហាញគម្រោង', price: 250 },
+        { id: 'site-plan', label: 'Site / Land Plan', labelKm: 'ប្លង់ដី / ទីតាំង', price: 200 },
+        { id: 'structural', label: 'Structural Calculation', labelKm: 'គណនារចនាសម្ព័ន្ធ', price: 300 },
+        { id: 'furniture-layout', label: 'Furniture Layout Plan', labelKm: 'ប្លង់គ្រឿងសង្ហារឹម', price: 150 },
+        { id: 'permit-docs', label: 'Building Permit Documents', labelKm: 'ឯកសារសុំការអនុញ្ញាតសាងសង់', price: 250 },
       ]
     }
   ];
