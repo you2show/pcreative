@@ -29,8 +29,8 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
           <Cloud className="text-indigo-400" /> GitHub Configuration
         </h3>
         <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-           Connect your Admin Panel to GitHub to publish live.<br/>
-           Token is stored locally in your browser.
+           ភ្ជាប់ GitHub repo ដើម្បីរក្សាទុក Telegram Config នៅក្នុង <code className="bg-gray-800 px-1 rounded text-indigo-300">site-data.json</code>។<br/>
+           PAT Token ត្រូវការ scope: <code className="bg-gray-800 px-1 rounded text-indigo-300">repo</code> (contents write)。Token ត្រូវបានរក្សាតែក្នុង browser localStorage ប៉ុណ្ណោះ។
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -63,10 +63,10 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
         </form>
       </div>
 
-      <div className="mt-8">
-        <h4 className="font-bold text-white mb-4">Danger Zone</h4>
+      <div className="mt-6">
+        <h4 className="font-bold text-white mb-4">លុប GitHub Config</h4>
         <button onClick={onReset} className="flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg hover:bg-red-500/20 w-full justify-center">
-          <RotateCcw size={16} /> Reset All Data
+          <RotateCcw size={16} /> លុបការភ្ជាប់ GitHub
         </button>
       </div>
     </div>
