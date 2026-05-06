@@ -16,6 +16,7 @@ import {
   fetchSiteDataFromGitHub,
   writeSiteDataToGitHub,
 } from '../lib/github';
+import { testTelegramConnection } from '../lib/telegram';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -44,6 +45,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   const [editingItem, setEditingItem] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
   const [githubConfig, setGithubConfig] = useState<GitHubConfig | null>(getGitHubConfig);
 
   // Set initial tab based on role
@@ -654,6 +656,35 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                                  លុប Telegram Config
                              </button>
                          )}
+                         {/* Test current Telegram config (token + chat ID) */}
+                         <button
+                             type="button"
+                             disabled={isTesting}
+                             onClick={async () => {
+                                 const token = (document.getElementById('tgBotToken') as HTMLInputElement)?.value.trim()
+                                     || (() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').botToken || ''; } catch { return ''; } })();
+                                 const chatId = (document.getElementById('tgChatId') as HTMLInputElement)?.value.trim()
+                                     || (() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').chatId || ''; } catch { return ''; } })();
+                                 if (!token || !chatId) {
+                                     alert('⚠ សូមបញ្ចឺល Bot Token នឹង Chat ID ជាមុនសិន័');
+                                     return;
+                                 }
+                                 setIsTesting(true);
+                                 try {
+                                     const result = await testTelegramConnection({ botToken: token, chatId });
+                                     if (result.ok) {
+                                         alert(`✅ ភ្ជាបបានជោគជ័យ! Bot: @${result.botName}\nសារសាកល្បងបានផ្ញើសទៅ Chat ID ${chatId} រួចហើយ័`);
+                                     } else {
+                                         alert(`❌ ការភ្ជាបបានបរាជ័យ:\n${result.error}\n\nTips:\n• Chat ID ក្រុម Telegram ត្រូវជា negative number (e.g. -1001234567890)\n• Bot ត្រូវត្រូវបានបន្ថាជាក្នុង Group/Channel\n• ប្រើ @userinfobot ត្រឹមរកចំនួន Chat ID`);
+                                     }
+                                 } finally {
+                                     setIsTesting(false);
+                                 }
+                             }}
+                             className="mt-3 px-4 py-2 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white rounded-xl text-sm font-medium transition-all"
+                         >
+                             {isTesting ? 'Testing...' : '🔍 Test Connection'}
+                         </button>
                      </div>
 
                      {/* GitHub Configuration — for saving config to site-data.json */}
