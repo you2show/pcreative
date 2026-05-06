@@ -3,11 +3,24 @@ import { X, Send, Loader2, MessageSquare, User, Mail } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getTelegramConfig, sendTelegramMessage, getTelegramUpdates, escapeHtml, TelegramUpdate } from '../lib/telegram';
 
+const CHAT_SESSION_KEY = 'livechat_session';
+
 interface ChatMessage {
   id: string;
   sender: 'user' | 'admin';
   text: string;
   time: Date;
+}
+
+interface PersistedSession {
+  name: string;
+  contact: string;
+  selectedTopics: string[];
+  step: 'form' | 'chat';
+  messages: Array<{ id: string; sender: 'user' | 'admin'; text: string; time: string }>;
+  sessionMsgId: number | null;
+  lastUpdateId: number;
+  sentMsgIds: number[];
 }
 
 interface LiveChatProps {
@@ -51,10 +64,61 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
   // Telegram session
   const config = getTelegramConfig();
   const sessionMsgIdRef = useRef<number | null>(null);
+  const sentMsgIdsRef = useRef<Set<number>>(new Set());
   const lastUpdateIdRef = useRef<number>(0);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Restore saved session from localStorage on first mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(CHAT_SESSION_KEY);
+      if (!raw) return;
+      const session: PersistedSession = JSON.parse(raw);
+      if (session.name) setName(session.name);
+      if (session.contact) setContact(session.contact);
+      if (session.selectedTopics?.length) setSelectedTopics(session.selectedTopics);
+      if (session.step === 'chat' && session.messages?.length) {
+        setStep('chat');
+        setMessages(session.messages.map(m => ({ ...m, time: new Date(m.time) })));
+        sessionMsgIdRef.current = session.sessionMsgId ?? null;
+        lastUpdateIdRef.current = session.lastUpdateId ?? 0;
+        sentMsgIdsRef.current = new Set(session.sentMsgIds ?? []);
+      }
+    } catch {
+      // Ignore corrupt storage
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persist session whenever relevant state changes
+  useEffect(() => {
+    try {
+      const session: PersistedSession = {
+        name,
+        contact,
+        selectedTopics,
+        step,
+        messages: messages.map(m => ({ ...m, time: m.time.toISOString() })),
+        sessionMsgId: sessionMsgIdRef.current,
+        lastUpdateId: lastUpdateIdRef.current,
+        sentMsgIds: Array.from(sentMsgIdsRef.current),
+      };
+      localStorage.setItem(CHAT_SESSION_KEY, JSON.stringify(session));
+    } catch {
+      // Ignore storage errors
+    }
+  }, [name, contact, selectedTopics, step, messages]);
+
+  // Patch a single field in the persisted session (used for refs that don't trigger state effects)
+  const patchSession = useCallback((patch: Partial<PersistedSession>) => {
+    try {
+      const raw = localStorage.getItem(CHAT_SESSION_KEY);
+      const session = raw ? JSON.parse(raw) : {};
+      localStorage.setItem(CHAT_SESSION_KEY, JSON.stringify({ ...session, ...patch }));
+    } catch { /* ignore */ }
+  }, []);
 
   // Auto scroll to bottom when new message arrives
   useEffect(() => {
@@ -68,19 +132,9 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
     }
   }, [step]);
 
-  // Reset everything when closed
+  // Stop polling when popup is closed (state is kept for next open)
   useEffect(() => {
     if (!isOpen) {
-      setStep('form');
-      setMessages([]);
-      setName('');
-      setContact('');
-      setFormError('');
-      setInput('');
-      setIsSending(false);
-      setSelectedTopics([]);
-      sessionMsgIdRef.current = null;
-      lastUpdateIdRef.current = 0;
       if (pollingRef.current) {
         clearInterval(pollingRef.current);
         pollingRef.current = null;
@@ -97,11 +151,17 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
         const offset = lastUpdateIdRef.current > 0 ? lastUpdateIdRef.current + 1 : undefined;
         const updates = await getTelegramUpdates(config, offset);
         for (const update of updates) {
-          lastUpdateIdRef.current = Math.max(lastUpdateIdRef.current, update.update_id);
+          const newId = Math.max(lastUpdateIdRef.current, update.update_id);
+          if (newId !== lastUpdateIdRef.current) {
+            lastUpdateIdRef.current = newId;
+            // Persist updated offset so polling resumes correctly after reopen
+            patchSession({ lastUpdateId: newId });
+          }
           const msg = update.message;
           if (!msg || msg.from?.is_bot) continue;
-          // Only show messages that are replies to our session's first message
-          if (msg.reply_to_message?.message_id === sessionMsgIdRef.current) {
+          // Show admin replies to any message sent in this session (not just the first one)
+          const replyId = msg.reply_to_message?.message_id;
+          if (replyId !== undefined && sentMsgIdsRef.current.has(replyId)) {
             const text: string = msg.text || msg.caption || '';
             if (!text) continue;
             setMessages(prev => {
@@ -122,7 +182,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
         // Silently ignore polling errors
       }
     }, 3000);
-  }, [config]);
+  }, [config, patchSession]);
 
   useEffect(() => {
     if (step === 'chat' && isOpen && config) {
@@ -190,10 +250,19 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
         const header = `💬 <b>New Live Chat</b>\n👤 <b>${escapeHtml(name)}</b>\n📩 ${escapeHtml(contact)}${topicsLine}`;
         const fullText = `${header}\n\n${escapeHtml(text)}`;
         const msgId = await sendTelegramMessage(config, fullText);
-        if (msgId) sessionMsgIdRef.current = msgId;
+        if (msgId) {
+          sessionMsgIdRef.current = msgId;
+          sentMsgIdsRef.current.add(msgId);
+          // Persist the session message ID so it survives popup close/reopen
+          patchSession({ sessionMsgId: msgId, sentMsgIds: Array.from(sentMsgIdsRef.current) });
+        }
       } else {
         // Subsequent messages are sent as replies to keep them grouped in Telegram
-        await sendTelegramMessage(config, `<b>${escapeHtml(name)}:</b> ${escapeHtml(text)}`, sessionMsgIdRef.current);
+        const msgId = await sendTelegramMessage(config, `<b>${escapeHtml(name)}:</b> ${escapeHtml(text)}`, sessionMsgIdRef.current);
+        if (msgId) {
+          sentMsgIdsRef.current.add(msgId);
+          patchSession({ sentMsgIds: Array.from(sentMsgIdsRef.current) });
+        }
       }
     } catch (err) {
       console.error('[LiveChat] sendTelegramMessage failed:', err);
@@ -229,7 +298,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="absolute bottom-16 right-0 w-[320px] sm:w-[360px] bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-scale-up origin-bottom-right font-khmer"
-      style={{ maxHeight: 'min(580px, calc(100vh - 120px))' }}
+      style={{ maxHeight: 'min(580px, calc(100vh - 180px))' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 bg-indigo-600 shrink-0">
