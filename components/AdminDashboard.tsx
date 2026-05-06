@@ -6,8 +6,16 @@ import AdminHeader from './admin/AdminHeader';
 import AdminSidebar from './admin/AdminSidebar';
 import ContentGrid from './admin/ContentGrid';
 import EditItemModal from './admin/EditItemModal';
-import { TeamMember, Project, Post, Service, CurrentUser, Job, Partner } from '../types';
+import GitHubConfigForm from './admin/GitHubConfigForm';
+import { TeamMember, Project, Post, Service, CurrentUser, Job, Partner, GitHubConfig } from '../types';
 import { slugify } from '../utils/format';
+import {
+  getGitHubConfig,
+  saveGitHubConfig,
+  clearGitHubConfig,
+  fetchSiteDataFromGitHub,
+  writeSiteDataToGitHub,
+} from '../lib/github';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -36,6 +44,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   const [editingItem, setEditingItem] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [githubConfig, setGithubConfig] = useState<GitHubConfig | null>(getGitHubConfig);
 
   // Set initial tab based on role
   useEffect(() => {
@@ -578,14 +587,46 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                          </p>
                          <p className="text-gray-500 text-xs mb-4">
                              💡 Admin ត្រូវ <b>Reply</b> ទៅសារក្នុង Telegram ដើម្បីឱ្យ user ឃើញការឆ្លើយតប។
+                             {githubConfig ? (
+                                 <span className="ml-2 text-green-400">✓ រក្សាទុកទៅ GitHub site-data.json</span>
+                             ) : (
+                                 <span className="ml-2 text-yellow-500">⚠ បញ្ចូល GitHub Config ខាងលើដើម្បីរក្សាទុកនៅ GitHub</span>
+                             )}
                          </p>
-                         <form onSubmit={(e) => {
+                         <form onSubmit={async (e) => {
                              e.preventDefault();
                              const token = (document.getElementById('tgBotToken') as HTMLInputElement).value.trim();
                              const chatId = (document.getElementById('tgChatId') as HTMLInputElement).value.trim();
-                             if (token && chatId) {
-                                 localStorage.setItem('telegram_chat_config', JSON.stringify({ botToken: token, chatId }));
-                                 alert('Telegram Live Chat បានកំណត់រួច! សូម Refresh ទំព័រ។');
+                             if (!token || !chatId) return;
+
+                             // 1. Save to localStorage immediately
+                             localStorage.setItem('telegram_chat_config', JSON.stringify({ botToken: token, chatId }));
+                             window.dispatchEvent(new Event('telegram_config_updated'));
+
+                             // 2. If GitHub is configured, also save to site-data.json on GitHub
+                             const ghCfg = getGitHubConfig();
+                             if (ghCfg) {
+                                 setIsSyncing(true);
+                                 try {
+                                     const file = await fetchSiteDataFromGitHub(ghCfg);
+                                     if (file) {
+                                         const updated = { ...file.content, telegramConfig: { botToken: token, chatId } };
+                                         const ok = await writeSiteDataToGitHub(ghCfg, updated, file.sha);
+                                         if (ok) {
+                                             alert('✅ Telegram Config បានរក្សាទុក!\n📁 site-data.json នៅ GitHub ត្រូវបានអាប់ដេត។');
+                                         } else {
+                                             alert('✅ Telegram Config បានរក្សាទុកក្នុង browser!\n⚠ មិនអាចអាប់ដេតទៅ GitHub បាន — សូមពិនិត្យ Token/permissions។');
+                                         }
+                                     } else {
+                                         alert('✅ Telegram Config បានរក្សាទុក!\n⚠ មិនអាចអានឯកសារ site-data.json ពី GitHub — សូមពិនិត្យ GitHub Config។');
+                                     }
+                                 } catch {
+                                     alert('✅ Telegram Config បានរក្សាទុក!\n⚠ GitHub sync failed.');
+                                 } finally {
+                                     setIsSyncing(false);
+                                 }
+                             } else {
+                                 alert('✅ Telegram Config បានរក្សាទុកក្នុង browser!\n💡 បញ្ចូល GitHub Config ដើម្បីរក្សាទុកនៅ GitHub ផ្ងារ។');
                              }
                          }} className="space-y-3">
                              <input
@@ -603,7 +644,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                                      placeholder="Chat ID (e.g. -1001234567890)"
                                      className="flex-1 bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                  />
-                                 <button type="submit" className="px-4 py-2 bg-[#229ED9] hover:bg-[#1a8bc7] text-white rounded-xl font-bold text-sm transition-all">Save</button>
+                                 <button type="submit" disabled={isSyncing} className="px-4 py-2 bg-[#229ED9] hover:bg-[#1a8bc7] text-white rounded-xl font-bold text-sm transition-all disabled:opacity-50">
+                                     {isSyncing ? '...' : 'Save'}
+                                 </button>
                              </div>
                          </form>
                          {localStorage.getItem('telegram_chat_config') && (
@@ -612,6 +655,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                              </button>
                          )}
                      </div>
+
+                     {/* GitHub Configuration — for saving config to site-data.json */}
+                     <GitHubConfigForm
+                         initialConfig={githubConfig || { username: '', repo: '', branch: 'main', token: '' }}
+                         onSave={(cfg) => {
+                             saveGitHubConfig(cfg);
+                             setGithubConfig(cfg);
+                             alert('✅ GitHub Config បានរក្សាទុក!\nឥឡូវអ្នកអាចរក្សាទុក Telegram Config ទៅ GitHub បាន។');
+                         }}
+                         onReset={() => {
+                             if (window.confirm('លុប GitHub Config?')) {
+                                 clearGitHubConfig();
+                                 setGithubConfig(null);
+                             }
+                         }}
+                     />
                  </div>
              ) : (
                  <ContentGrid 

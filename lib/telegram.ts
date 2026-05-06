@@ -56,6 +56,28 @@ export const sendTelegramMessage = async (
   return data.result?.message_id as number | undefined;
 };
 
+/**
+ * Try to read TelegramConfig from site-data.json hosted on GitHub (public raw URL).
+ * Used at app startup to sync config across devices without requiring localStorage.
+ */
+export const getTelegramConfigFromGitHub = async (
+  username: string,
+  repo: string,
+  branch: string
+): Promise<TelegramConfig | null> => {
+  try {
+    const url = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/site-data.json?t=${Date.now()}`;
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const cfg = data.telegramConfig;
+    if (cfg?.botToken && cfg?.chatId) return { botToken: cfg.botToken, chatId: cfg.chatId };
+    return null;
+  } catch {
+    return null;
+  }
+};
+
 export const getTelegramUpdates = async (
   config: TelegramConfig,
   offset?: number
