@@ -286,12 +286,17 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
             {/* Left Column: Image with overlay */}
             <div className="relative w-full md:w-2/5 min-h-[260px] md:min-h-0 flex-shrink-0 overflow-hidden rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none">
               {/* Background image */}
-              <div
-                className="absolute inset-0 bg-cover bg-center"
-                style={{
-                  backgroundImage: `url('${selectedService.image || SERVICE_IMAGES_FALLBACK[selectedService.id] || ''}')`,
-                }}
-              />
+              {(() => {
+                const imgSrc = selectedService.image || SERVICE_IMAGES_FALLBACK[selectedService.id];
+                return imgSrc ? (
+                  <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: `url('${encodeURI(imgSrc)}')` }}
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gray-800" />
+                );
+              })()}
               {/* Dark gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-900/60 to-transparent" />
 
