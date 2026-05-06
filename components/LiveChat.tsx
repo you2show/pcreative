@@ -160,15 +160,20 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           // Accept both group messages and channel posts
           const msg = update.message ?? update.channel_post;
           if (!msg || msg.from?.is_bot) continue;
-          // Show admin replies to any message sent in this session (not just the first one).
-          // Also match forum-supergroup messages whose thread ID equals a sent message ID:
-          // in a forum group the bot's first message starts the topic, so
-          // message_thread_id == msgId1 for all subsequent messages in that topic.
-          // This lets the admin reply inside the topic without using the Reply button.
+          // Determine whether this non-bot message belongs to the current chat session.
+          // Three strategies, in priority order:
+          //   1. Explicit Telegram reply (works everywhere — admin presses Reply button).
+          //   2. Forum supergroup: message_thread_id equals the session's first message ID,
+          //      so all messages posted inside the topic are treated as session replies.
+          //   3. Regular group fallback: any human message with a message_id greater than
+          //      the session's first message ID is treated as an admin reply.  This lets
+          //      the admin simply type in the group without pressing the Reply button.
           const replyId = msg.reply_to_message?.message_id;
+          const sessionId = sessionMsgIdRef.current!;
           const inSession =
             (replyId !== undefined && sentMsgIdsRef.current.has(replyId)) ||
-            (msg.message_thread_id !== undefined && sentMsgIdsRef.current.has(msg.message_thread_id));
+            (msg.message_thread_id !== undefined && sentMsgIdsRef.current.has(msg.message_thread_id)) ||
+            msg.message_id > sessionId;
           if (inSession) {
             const text: string = msg.text || msg.caption || '';
             if (!text) continue;
