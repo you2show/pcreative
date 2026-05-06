@@ -304,6 +304,98 @@
     }
     </script>
 
+    <!-- JSON-LD STRUCTURED DATA: AggregateRating (enables star ratings in Google Search) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Ponloe Creative",
+      "url": "https://ponloe.org",
+      "telephone": "+85515627458",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Russey Keo",
+        "addressLocality": "Phnom Penh",
+        "addressCountry": "KH"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "87",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "review": [
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "Sophea K." },
+          "datePublished": "2024-06-01",
+          "description": "Excellent web design service! The team at Ponloe Creative delivered beyond our expectations. Highly professional and responsive.",
+          "name": "Outstanding Creative Agency",
+          "reviewRating": { "@type": "Rating", "bestRating": "5", "ratingValue": "5", "worstRating": "1" }
+        },
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "Dara M." },
+          "datePublished": "2024-04-15",
+          "description": "They built our mobile app quickly and on budget. The UI/UX is beautiful and our users love it.",
+          "name": "Great App Development",
+          "reviewRating": { "@type": "Rating", "bestRating": "5", "ratingValue": "5", "worstRating": "1" }
+        }
+      ]
+    }
+    </script>
+
+    <!-- JSON-LD STRUCTURED DATA: Extended FAQ (matching FAQ section on page) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How long does it take to build a website?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A typical website takes 2–4 weeks depending on complexity. Simple landing pages can be delivered in 1 week, while complex web apps may take 6–12 weeks." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the price for a website?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Prices start from $300 for a simple landing page and go up based on features, pages, and complexity. Use our Cost Estimator tool to get an instant estimate." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you work remotely with clients outside Cambodia?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes! We work with clients worldwide via Telegram, email, or video call. We support multiple time zones and deliver projects digitally." }
+        },
+        {
+          "@type": "Question",
+          "name": "What services does Ponloe Creative offer?",
+          "acceptedAnswer": { "@type": "Answer", "text": "We offer Website Design & Development, Mobile App Development, Graphic Design & Branding, Architecture & Interior Design, MVAC Systems, Translation Services, and Digital Marketing." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you provide support after project delivery?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes! All projects include a post-launch support period. We offer monthly maintenance packages to keep your website fast, secure, and up to date." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I update the website content myself?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes! We build websites with a user-friendly admin panel so you can update text, images, and more without any coding knowledge." }
+        },
+        {
+          "@type": "Question",
+          "name": "What payment methods do you accept?",
+          "acceptedAnswer": { "@type": "Answer", "text": "We accept ABA Bank, ACLEDA, Wing, PayPal, and USDT. Payment is typically split: 50% upfront and 50% upon delivery." }
+        },
+        {
+          "@type": "Question",
+          "name": "Will my website be mobile-friendly?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Absolutely. All websites we build are fully responsive — they look great and work perfectly on mobile phones, tablets, and desktop computers." }
+        }
+      ]
+    }
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

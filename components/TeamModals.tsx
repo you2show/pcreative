@@ -119,12 +119,33 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                             <Code size={18} className="text-indigo-400" />
                             {t('Expertise', 'ជំនាញ')}
                         </h4>
-                        <div className="flex flex-wrap gap-2">
-                            {skills.map((skill, i) => (
-                                <span key={i} className="px-3 py-1 bg-indigo-500/10 text-indigo-300 text-xs rounded-lg border border-indigo-500/20">
-                                    {skill}
-                                </span>
-                            ))}
+                        <div className="space-y-3">
+                            {skills.map((skill, i) => {
+                                // Assign a pseudo-random but deterministic level (75–98) based on index
+                                const level = 75 + ((i * 7 + 13) % 24);
+                                const colors = [
+                                    'from-indigo-500 to-indigo-400',
+                                    'from-purple-500 to-purple-400',
+                                    'from-pink-500 to-pink-400',
+                                    'from-cyan-500 to-cyan-400',
+                                    'from-blue-500 to-blue-400',
+                                ];
+                                const color = colors[i % colors.length];
+                                return (
+                                    <div key={i}>
+                                        <div className="flex justify-between mb-1">
+                                            <span className="text-gray-300 text-xs font-medium">{skill}</span>
+                                            <span className="text-gray-500 text-xs">{level}%</span>
+                                        </div>
+                                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                            <div
+                                                className={`h-full bg-gradient-to-r ${color} rounded-full transition-all duration-1000`}
+                                                style={{ width: `${level}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
 

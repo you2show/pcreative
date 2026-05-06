@@ -1,8 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { ArrowUpRight, Facebook, Send, Instagram, Mail, MapPin, Download } from 'lucide-react';
+import { ArrowUpRight, Facebook, Send, Instagram, Mail, MapPin, Download, ArrowRight, Check, Loader2 } from 'lucide-react';
 import { usePWA } from '../hooks/usePWA';
 import RevealOnScroll from './RevealOnScroll';
+
+const TELEGRAM_BOT_TOKEN = '8263160608:AAFngJ6_jVXnFYlqs0lKZQplu8wh-UxS2Bo';
+const TELEGRAM_CHAT_ID = '1276188382';
+
+const NewsletterForm: React.FC = () => {
+  const { t } = useLanguage();
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setStatus('loading');
+    const text = `📧 *Newsletter Subscription* 📧\n\nEmail: ${email}`;
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'Markdown' }),
+      });
+      const data = await res.json();
+      if (data.ok) { setStatus('success'); setEmail(''); }
+      else throw new Error();
+    } catch {
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 3000);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="flex gap-2">
+      {status === 'success' ? (
+        <div className="flex items-center gap-2 text-green-400 text-sm font-khmer">
+          <Check size={16} /> {t('Subscribed! Thank you.', 'ចុះឈ្មោះបានហើយ! អរគុណ។')}
+        </div>
+      ) : (
+        <>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="flex-1 min-w-0 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500 font-khmer"
+            placeholder={t('Your email', 'អ៊ីមែលរបស់អ្នក')}
+          />
+          <button
+            type="submit"
+            disabled={status === 'loading'}
+            className="shrink-0 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl transition-colors flex items-center gap-1.5 disabled:opacity-60"
+          >
+            {status === 'loading' ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
+          </button>
+        </>
+      )}
+    </form>
+  );
+};
 
 const Footer: React.FC = () => {
   const { t } = useLanguage();
@@ -145,6 +202,13 @@ const Footer: React.FC = () => {
                             <span className="text-sm md:text-base font-medium font-khmer">Russey Keo, Phnom Penh, Cambodia</span>
                         </div>
                      </div>
+                 </div>
+
+                 {/* Newsletter Subscription */}
+                 <div className="mt-6 bg-white/[0.03] rounded-3xl p-6 border border-white/5">
+                     <h4 className="text-white font-bold mb-2 font-khmer text-sm">{t('Stay Updated', 'ទទួលព័ត៌មានថ្មី')}</h4>
+                     <p className="text-gray-500 text-xs font-khmer mb-4">{t('Get insights, tips & project updates.', 'ទទួលដំណឹង គន្លឹះ & ការអាប់ដេតគម្រោង។')}</p>
+                     <NewsletterForm />
                  </div>
             </div>
         </div>
