@@ -15,6 +15,24 @@ interface LiveChatProps {
   onClose: () => void;
 }
 
+interface ServiceTopic {
+  id: string;
+  emoji: string;
+  label: string;
+  labelKm: string;
+}
+
+const SERVICE_TOPICS: ServiceTopic[] = [
+  { id: 'webdev',       emoji: '💻', label: 'Web & App Dev',    labelKm: 'វេបសាយ & App' },
+  { id: 'graphic',      emoji: '🎨', label: 'Graphic Design',   labelKm: 'រចនាក្រាហ្វិក' },
+  { id: 'architecture', emoji: '🏠', label: 'Architecture',     labelKm: 'ស្ថាបត្យកម្ម' },
+  { id: 'media',        emoji: '📹', label: 'Video & Photo',    labelKm: 'វីដេអូ & រូបភាព' },
+  { id: 'translation',  emoji: '🌐', label: 'Translation',      labelKm: 'បកប្រែ' },
+  { id: 'courses',      emoji: '📚', label: 'Online Courses',   labelKm: 'វគ្គសិក្សា' },
+  { id: 'calligraphy',  emoji: '✍️', label: 'Calligraphy',      labelKm: 'អក្សរផ្ចង់' },
+  { id: 'mvac',         emoji: '❄️', label: 'MVAC / AC',        labelKm: 'ម៉ាស៊ីនត្រជាក់' },
+];
+
 const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
   const { t } = useLanguage();
   const [step, setStep] = useState<'form' | 'chat'>('form');
@@ -23,6 +41,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
   const [name, setName] = useState('');
   const [contact, setContact] = useState('');
   const [formError, setFormError] = useState('');
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
 
   // Chat
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -58,6 +77,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
       setContact('');
       setFormError('');
       setInput('');
+      setSelectedTopics([]);
       sessionMsgIdRef.current = null;
       lastUpdateIdRef.current = 0;
       if (pollingRef.current) {
@@ -115,6 +135,12 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
     };
   }, [step, isOpen, config, startPolling]);
 
+  const toggleTopic = (id: string) => {
+    setSelectedTopics(prev =>
+      prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id]
+    );
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
@@ -151,8 +177,16 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
 
     try {
       if (!sessionMsgIdRef.current) {
-        // First message — include user info header so admin can see who it is
-        const header = `💬 <b>New Live Chat</b>\n👤 <b>${name}</b>\n📩 ${contact}`;
+        // First message — include user info + selected topics so admin sees context
+        const topicsLine = selectedTopics.length > 0
+          ? '\n🏷 ' + selectedTopics
+              .map(id => {
+                const topic = SERVICE_TOPICS.find(s => s.id === id);
+                return topic ? `${topic.emoji} ${topic.label}` : id;
+              })
+              .join(', ')
+          : '';
+        const header = `💬 <b>New Live Chat</b>\n👤 <b>${name}</b>\n📩 ${contact}${topicsLine}`;
         const fullText = `${header}\n\n${text}`;
         const msgId = await sendTelegramMessage(config, fullText);
         if (msgId) sessionMsgIdRef.current = msgId;
@@ -193,7 +227,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="absolute bottom-16 right-0 w-[320px] sm:w-[360px] bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-scale-up origin-bottom-right font-khmer"
-      style={{ maxHeight: 'min(520px, calc(100vh - 120px))' }}
+      style={{ maxHeight: 'min(580px, calc(100vh - 120px))' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 bg-indigo-600 shrink-0">
@@ -248,6 +282,33 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
                 placeholder={t('Email or phone number', 'អ៊ីម៉ែល ឬ លេខទូរស័ព្ទ')}
                 className="w-full pl-9 pr-4 py-3 bg-gray-800 border border-white/10 rounded-xl text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
+            </div>
+          </div>
+
+          {/* Service topic chips */}
+          <div>
+            <p className="text-gray-500 text-xs mb-2">
+              {t('Interested in? (optional)', 'ចង់ដឹងអំពី? (មិនចាំបាច់)')}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {SERVICE_TOPICS.map(topic => {
+                const active = selectedTopics.includes(topic.id);
+                return (
+                  <button
+                    key={topic.id}
+                    type="button"
+                    onClick={() => toggleTopic(topic.id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                      active
+                        ? 'bg-indigo-600 border-indigo-500 text-white'
+                        : 'bg-gray-800 border-white/10 text-gray-400 hover:border-indigo-500/50 hover:text-gray-200'
+                    }`}
+                  >
+                    <span aria-hidden="true">{topic.emoji}</span>
+                    {t(topic.label, topic.labelKm)}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
