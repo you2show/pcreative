@@ -19,6 +19,12 @@ import Preloader from './components/Preloader';
 import SplashScreen from './components/SplashScreen';
 import OfflinePage from './components/OfflinePage';
 import InstallPrompt from './components/InstallPrompt';
+import Stats from './components/Stats';
+import FAQ from './components/FAQ';
+import Awards from './components/Awards';
+import StickyCTA, { ConsultationModal } from './components/StickyCTA';
+import ExitIntentPopup from './components/ExitIntentPopup';
+import VideoShowreel from './components/VideoShowreel';
 import { Lock, ArrowRight, X } from 'lucide-react';
 import { useAdminRouter } from './hooks/useRouter';
 
@@ -57,6 +63,7 @@ function AppContent() {
   const [pin, setPin] = useState('');
   const [loginError, setLoginError] = useState(false);
   const { team } = useData();
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -148,6 +155,7 @@ function AppContent() {
       <main className="relative z-10">
         <Hero />
         <Partners />
+        <Stats />
         
         <Services 
             showPopupOnMount={shouldShowServicesPopup}
@@ -162,6 +170,7 @@ function AppContent() {
         </Suspense>
 
         <Process />
+        <VideoShowreel />
         
         <Portfolio 
             showPopupOnMount={shouldShowPortfolioPopup} 
@@ -169,6 +178,7 @@ function AppContent() {
         />
         
         <Testimonials />
+        <Awards />
 
         <Team 
             showPopupOnMount={shouldShowTeamPopup}
@@ -180,12 +190,16 @@ function AppContent() {
             usePathRouting={true}
         />
 
+        <FAQ />
         <Contact />
       </main>
       
       <Footer />
       <FloatingChat />
       <ScrollButton />
+      <StickyCTA onConsultationOpen={() => setIsConsultationOpen(true)} />
+      <ConsultationModal isOpen={isConsultationOpen} onClose={() => setIsConsultationOpen(false)} />
+      <ExitIntentPopup onConsultationOpen={() => setIsConsultationOpen(true)} />
       
       {/* Overlay Pages */}
       {activePage === 'about' && <About onClose={() => window.location.hash = ''} />}

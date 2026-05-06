@@ -5,7 +5,7 @@
   <!-- Home – the single indexable page (SPA with hash-based routing) -->
   <url>
     <loc>https://ponloe.org/</loc>
-    <lastmod>2025-05-01</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://ponloe.org/"/>
@@ -13,10 +13,54 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://ponloe.org/"/>
   </url>
 
+  <!-- Services page -->
+  <url>
+    <loc>https://ponloe.org/services</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ponloe.org/services"/>
+    <xhtml:link rel="alternate" hreflang="km" href="https://ponloe.org/services"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ponloe.org/services"/>
+  </url>
+
+  <!-- Portfolio -->
+  <url>
+    <loc>https://ponloe.org/portfolio</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ponloe.org/portfolio"/>
+    <xhtml:link rel="alternate" hreflang="km" href="https://ponloe.org/portfolio"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ponloe.org/portfolio"/>
+  </url>
+
+  <!-- Team -->
+  <url>
+    <loc>https://ponloe.org/team</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ponloe.org/team"/>
+    <xhtml:link rel="alternate" hreflang="km" href="https://ponloe.org/team"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ponloe.org/team"/>
+  </url>
+
+  <!-- Cost Estimator -->
+  <url>
+    <loc>https://ponloe.org/estimator</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ponloe.org/estimator"/>
+    <xhtml:link rel="alternate" hreflang="km" href="https://ponloe.org/estimator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ponloe.org/estimator"/>
+  </url>
+
   <!-- Insights / Knowledge & Articles listing -->
   <url>
     <loc>https://ponloe.org/insights</loc>
-    <lastmod>2026-05-05</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://ponloe.org/insights"/>
