@@ -5,21 +5,42 @@ import { ArrowRight, ChevronRight, Star } from 'lucide-react';
 // --- Count Up Component ---
 const CountUp: React.FC<{ end: number, duration: number, suffix?: string }> = ({ end, duration, suffix = '' }) => {
   const [count, setCount] = useState(0);
+  const [started, setStarted] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStarted(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!started) return;
     let startTimestamp: number | null = null;
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      setCount(Math.floor(progress * end));
+      // Ease out cubic for smooth deceleration
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(eased * end));
       if (progress < 1) {
         window.requestAnimationFrame(step);
+      } else {
+        setCount(end);
       }
     };
     window.requestAnimationFrame(step);
-  }, [end, duration]);
+  }, [started, end, duration]);
 
-  return <span>{count}{suffix}</span>;
+  return <span ref={ref}>{count}{suffix}</span>;
 };
 
 // --- Magnetic Button Component ---

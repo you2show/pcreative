@@ -154,7 +154,7 @@ function AppContent() {
       <main className="relative z-10">
         <Hero />
         <Partners />
-        <Stats />
+        {/* <Stats /> */}
         
         <Services 
             showPopupOnMount={shouldShowServicesPopup}
