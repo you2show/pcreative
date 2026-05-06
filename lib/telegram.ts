@@ -10,11 +10,16 @@ export interface TelegramMessage {
   text?: string;
   caption?: string;
   reply_to_message?: { message_id: number };
+  /** Present in forum supergroups; identifies the topic thread. */
+  message_thread_id?: number;
 }
 
 export interface TelegramUpdate {
   update_id: number;
+  /** Set for group/supergroup messages. */
   message?: TelegramMessage;
+  /** Set for channel posts. */
+  channel_post?: TelegramMessage;
 }
 
 /** Escape HTML special characters so user input is safe inside HTML-formatted Telegram messages. */
