@@ -13,6 +13,8 @@ export interface TelegramConfig {
 export interface TelegramMessage {
   message_id: number;
   from?: { id: number; is_bot: boolean; first_name?: string };
+  /** The chat this message belongs to. Always present in Telegram API responses. */
+  chat: { id: number; type: string };
   date: number;
   text?: string;
   caption?: string;
@@ -175,7 +177,11 @@ export const getTelegramUpdates = async (
   config: TelegramConfig,
   offset?: number
 ): Promise<TelegramUpdate[]> => {
-  const params = new URLSearchParams({ timeout: '0' });
+  // Only request message and channel_post updates; ignore stickers, polls, callbacks, etc.
+  const params = new URLSearchParams({
+    timeout: '0',
+    allowed_updates: JSON.stringify(['message', 'channel_post']),
+  });
   if (offset !== undefined) params.set('offset', String(offset));
   const res = await fetch(
     `https://api.telegram.org/bot${config.botToken}/getUpdates?${params}`

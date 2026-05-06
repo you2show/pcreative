@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { X, Send, Loader2, MessageSquare, User, Mail } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getTelegramConfig, sendTelegramMessage, getTelegramUpdates, escapeHtml, TelegramUpdate } from '../lib/telegram';
@@ -62,11 +62,16 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
   const [isSending, setIsSending] = useState(false);
 
   // Telegram session
-  const config = getTelegramConfig();
+  // Memoize config so its object reference stays stable across re-renders, preventing
+  // startPolling / the polling effect from being recreated and the interval from being
+  // reset on every state change.
+  const config = useMemo(() => getTelegramConfig(), []);
   const sessionMsgIdRef = useRef<number | null>(null);
   const sentMsgIdsRef = useRef<Set<number>>(new Set());
   const lastUpdateIdRef = useRef<number>(0);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pollFailCountRef = useRef(0);
+  const [isReconnecting, setIsReconnecting] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -150,6 +155,9 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
       try {
         const offset = lastUpdateIdRef.current > 0 ? lastUpdateIdRef.current + 1 : undefined;
         const updates = await getTelegramUpdates(config, offset);
+        // Successful response — clear any reconnecting state
+        pollFailCountRef.current = 0;
+        setIsReconnecting(false);
         for (const update of updates) {
           const newId = Math.max(lastUpdateIdRef.current, update.update_id);
           if (newId !== lastUpdateIdRef.current) {
@@ -159,7 +167,11 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           }
           // Accept both group messages and channel posts
           const msg = update.message ?? update.channel_post;
-          if (!msg || msg.from?.is_bot) continue;
+          if (!msg) continue;
+          // Only process messages that belong to the configured chat, ignoring any
+          // updates from other chats the bot happens to be a member of.
+          if (String(msg.chat.id) !== config.chatId) continue;
+          if (msg.from?.is_bot) continue;
           // Determine whether this non-bot message belongs to the current chat session.
           // Three strategies, in priority order:
           //   1. Explicit Telegram reply (admin pressed Reply button — works everywhere, 100% precise).
@@ -175,8 +187,16 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           const sessionId = sessionMsgIdRef.current!;
           const fromId = msg.from?.id;
           const adminId = config.adminUserId;
-          // Strategy 3 is active only when the sender is confirmed (or adminUserId is unset)
-          const fromIsAdmin = adminId === undefined || fromId === adminId;
+          // For channel posts the `from` field is absent (the sender is the channel itself).
+          // Any post inside the configured channel is by definition from the channel admin,
+          // so we treat those as admin messages when `adminUserId` is not set OR when the
+          // message's chat matches the configured chatId (already guaranteed by the filter above).
+          // Note: some channel configurations expose a `from` field (visible authors); in that
+          // case the normal `fromId === adminId` check applies, so we only use this fallback
+          // when `from` is absent.
+          const isChannelPost = update.channel_post !== undefined && msg.from === undefined;
+          const fromIsAdmin =
+            adminId === undefined || fromId === adminId || isChannelPost;
           const inSession =
             (replyId !== undefined && sentMsgIdsRef.current.has(replyId)) ||
             (msg.message_thread_id !== undefined && sentMsgIdsRef.current.has(msg.message_thread_id)) ||
@@ -199,7 +219,9 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           }
         }
       } catch {
-        // Silently ignore polling errors
+        // Track consecutive failures; surface indicator to the user after several misses
+        pollFailCountRef.current += 1;
+        if (pollFailCountRef.current >= 5) setIsReconnecting(true);
       }
     }, 3000);
   }, [config, patchSession]);
@@ -256,7 +278,8 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
     const localId = `local-${Date.now()}`;
     setMessages(prev => [...prev, { id: localId, sender: 'user', text, time: new Date() }]);
 
-    try {
+    // Core send logic extracted so it can be retried on transient network failure
+    const doSend = async (): Promise<void> => {
       if (!sessionMsgIdRef.current) {
         // First message — include user info + selected topics so admin sees context
         const topicsLine = selectedTopics.length > 0
@@ -291,26 +314,37 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
         }
       } else {
         // Subsequent messages are sent as replies to keep them grouped in Telegram
-        const msgId = await sendTelegramMessage(config, `<b>${escapeHtml(name)}:</b> ${escapeHtml(text)}`, sessionMsgIdRef.current);
+        const msgId = await sendTelegramMessage(config, `<b>${escapeHtml(name)}:</b> ${escapeHtml(text)}`, sessionMsgIdRef.current, true);
         if (msgId) {
           sentMsgIdsRef.current.add(msgId);
           patchSession({ sentMsgIds: Array.from(sentMsgIdsRef.current) });
         }
       }
-    } catch (err) {
-      console.error('[LiveChat] sendTelegramMessage failed:', err);
-      setMessages(prev => [
-        ...prev,
-        {
-          id: `err-${Date.now()}`,
-          sender: 'admin',
-          text: t(
-            '⚠️ Message failed to send. Please try again.',
-            '⚠️ ការផ្ញើបានបរាជ័យ។ សូមព្យាយាមម្ដងទៀត។'
-          ),
-          time: new Date(),
-        },
-      ]);
+    };
+
+    try {
+      await doSend();
+    } catch (firstErr) {
+      // Retry once after a short delay to recover from transient network blips
+      try {
+        console.warn('[LiveChat] sendTelegramMessage failed, retrying…', firstErr);
+        await new Promise(r => setTimeout(r, 1500));
+        await doSend();
+      } catch (err) {
+        console.error('[LiveChat] sendTelegramMessage failed after retry:', err);
+        setMessages(prev => [
+          ...prev,
+          {
+            id: `err-${Date.now()}`,
+            sender: 'admin',
+            text: t(
+              '⚠️ Message failed to send. Please try again.',
+              '⚠️ ការផ្ញើបានបរាជ័យ។ សូមព្យាយាមម្ដងទៀត។'
+            ),
+            time: new Date(),
+          },
+        ]);
+      }
     } finally {
       setIsSending(false);
       setTimeout(() => inputRef.current?.focus(), 50);
@@ -452,6 +486,14 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
             ))}
             <div ref={bottomRef} />
           </div>
+
+          {/* Reconnecting indicator: shown when polling fails repeatedly */}
+          {isReconnecting && (
+            <div className="flex items-center justify-center gap-1.5 py-1 text-[11px] text-yellow-400/80 shrink-0">
+              <Loader2 size={11} className="animate-spin" />
+              {t('Reconnecting…', 'កំពុងភ្ជាប់ឡើងវិញ…')}
+            </div>
+          )}
 
           {/* Input */}
           <div className="flex items-center gap-2 px-4 py-3 border-t border-white/10 bg-gray-900 shrink-0">
