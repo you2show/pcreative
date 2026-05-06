@@ -20,6 +20,7 @@ interface PersistedSession {
   messages: Array<{ id: string; sender: 'user' | 'admin'; text: string; time: string }>;
   sessionMsgId: number | null;
   lastUpdateId: number;
+  sentMsgIds: number[];
 }
 
 interface LiveChatProps {
@@ -63,6 +64,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
   // Telegram session
   const config = getTelegramConfig();
   const sessionMsgIdRef = useRef<number | null>(null);
+  const sentMsgIdsRef = useRef<Set<number>>(new Set());
   const lastUpdateIdRef = useRef<number>(0);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -82,6 +84,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
         setMessages(session.messages.map(m => ({ ...m, time: new Date(m.time) })));
         sessionMsgIdRef.current = session.sessionMsgId ?? null;
         lastUpdateIdRef.current = session.lastUpdateId ?? 0;
+        sentMsgIdsRef.current = new Set(session.sentMsgIds ?? []);
       }
     } catch {
       // Ignore corrupt storage
@@ -100,6 +103,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
         messages: messages.map(m => ({ ...m, time: m.time.toISOString() })),
         sessionMsgId: sessionMsgIdRef.current,
         lastUpdateId: lastUpdateIdRef.current,
+        sentMsgIds: Array.from(sentMsgIdsRef.current),
       };
       localStorage.setItem(CHAT_SESSION_KEY, JSON.stringify(session));
     } catch {
@@ -155,8 +159,9 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           }
           const msg = update.message;
           if (!msg || msg.from?.is_bot) continue;
-          // Only show messages that are replies to our session's first message
-          if (msg.reply_to_message?.message_id === sessionMsgIdRef.current) {
+          // Show admin replies to any message sent in this session (not just the first one)
+          const replyId = msg.reply_to_message?.message_id;
+          if (replyId !== undefined && sentMsgIdsRef.current.has(replyId)) {
             const text: string = msg.text || msg.caption || '';
             if (!text) continue;
             setMessages(prev => {
@@ -247,12 +252,17 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
         const msgId = await sendTelegramMessage(config, fullText);
         if (msgId) {
           sessionMsgIdRef.current = msgId;
+          sentMsgIdsRef.current.add(msgId);
           // Persist the session message ID so it survives popup close/reopen
-          patchSession({ sessionMsgId: msgId });
+          patchSession({ sessionMsgId: msgId, sentMsgIds: Array.from(sentMsgIdsRef.current) });
         }
       } else {
         // Subsequent messages are sent as replies to keep them grouped in Telegram
-        await sendTelegramMessage(config, `<b>${escapeHtml(name)}:</b> ${escapeHtml(text)}`, sessionMsgIdRef.current);
+        const msgId = await sendTelegramMessage(config, `<b>${escapeHtml(name)}:</b> ${escapeHtml(text)}`, sessionMsgIdRef.current);
+        if (msgId) {
+          sentMsgIdsRef.current.add(msgId);
+          patchSession({ sentMsgIds: Array.from(sentMsgIdsRef.current) });
+        }
       }
     } catch (err) {
       console.error('[LiveChat] sendTelegramMessage failed:', err);
