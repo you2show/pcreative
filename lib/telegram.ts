@@ -45,10 +45,11 @@ export const getTelegramConfig = (): TelegramConfig | null => {
   try {
     const cfg = JSON.parse(raw);
     if (cfg.botToken && cfg.chatId) {
+      const rawId = cfg.adminUserId !== undefined ? parseInt(String(cfg.adminUserId), 10) : NaN;
       return {
         botToken: cfg.botToken,
         chatId: cfg.chatId,
-        adminUserId: cfg.adminUserId ? Number(cfg.adminUserId) : undefined,
+        adminUserId: !isNaN(rawId) && rawId > 0 ? rawId : undefined,
       };
     }
     return null;

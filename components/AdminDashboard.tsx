@@ -600,7 +600,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                              const token = (document.getElementById('tgBotToken') as HTMLInputElement).value.trim();
                              const chatId = (document.getElementById('tgChatId') as HTMLInputElement).value.trim();
                              const adminUserIdRaw = (document.getElementById('tgAdminUserId') as HTMLInputElement).value.trim();
-                             const adminUserId = adminUserIdRaw ? Number(adminUserIdRaw) : undefined;
+                             const parsedAdminId = parseInt(adminUserIdRaw, 10);
+                             const adminUserId = adminUserIdRaw && !isNaN(parsedAdminId) && parsedAdminId > 0 ? parsedAdminId : undefined;
                              if (!token || !chatId) return;
 
                              // 1. Save to localStorage immediately
