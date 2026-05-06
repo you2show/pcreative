@@ -169,7 +169,7 @@ function AppContent() {
         </Suspense>
 
         <Process />
-        <VideoShowreel />
+        {/* <VideoShowreel /> */}
         
         <Portfolio 
             showPopupOnMount={shouldShowPortfolioPopup} 
