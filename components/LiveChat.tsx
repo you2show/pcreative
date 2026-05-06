@@ -182,7 +182,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           ? '\n🏷 ' + selectedTopics
               .map(id => {
                 const topic = SERVICE_TOPICS.find(s => s.id === id);
-                return topic ? `${topic.emoji} ${topic.label}` : id;
+                return topic ? `${topic.emoji} ${topic.label}` : 'Unknown';
               })
               .join(', ')
           : '';
