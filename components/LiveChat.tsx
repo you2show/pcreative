@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { X, Send, Loader2, MessageSquare, User, Mail, Phone } from 'lucide-react';
+import { X, Send, Loader2, MessageSquare, User, Mail } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { getTelegramConfig, sendTelegramMessage, getTelegramUpdates } from '../lib/telegram';
+import { getTelegramConfig, sendTelegramMessage, getTelegramUpdates, TelegramUpdate } from '../lib/telegram';
 
 interface ChatMessage {
   id: string;
@@ -229,7 +229,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
 
           <div className="space-y-3">
             <div className="relative">
-              <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+              <User size={14} aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
               <input
                 type="text"
                 value={name}
@@ -240,7 +240,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div className="relative">
-              <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+              <Mail size={14} aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
               <input
                 type="text"
                 value={contact}

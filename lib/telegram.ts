@@ -3,6 +3,20 @@ export interface TelegramConfig {
   chatId: string;
 }
 
+export interface TelegramMessage {
+  message_id: number;
+  from?: { is_bot: boolean; first_name?: string };
+  date: number;
+  text?: string;
+  caption?: string;
+  reply_to_message?: { message_id: number };
+}
+
+export interface TelegramUpdate {
+  update_id: number;
+  message?: TelegramMessage;
+}
+
 export const getTelegramConfig = (): TelegramConfig | null => {
   const raw = localStorage.getItem('telegram_chat_config');
   if (!raw) return null;
@@ -34,7 +48,10 @@ export const sendTelegramMessage = async (
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error('Telegram API error');
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    throw new Error(`Telegram API error ${res.status}: ${body}`);
+  }
   const data = await res.json();
   return data.result?.message_id as number | undefined;
 };
@@ -42,7 +59,7 @@ export const sendTelegramMessage = async (
 export const getTelegramUpdates = async (
   config: TelegramConfig,
   offset?: number
-): Promise<any[]> => {
+): Promise<TelegramUpdate[]> => {
   const params = new URLSearchParams({ timeout: '0' });
   if (offset !== undefined) params.set('offset', String(offset));
   const res = await fetch(
