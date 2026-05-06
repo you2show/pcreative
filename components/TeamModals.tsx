@@ -250,6 +250,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
     const { currentUser } = useAuth();
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState('');
+    const [guestName, setGuestName] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [replyTo, setReplyTo] = useState<{id: string, name: string} | null>(null);
     const [copied, setCopied] = useState(false);
@@ -361,7 +362,8 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
 
     const handleSubmitComment = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!newComment.trim() || !currentUser) return;
+        const authorName = currentUser ? (currentUser.name || 'Guest') : guestName.trim();
+        if (!newComment.trim() || !authorName) return;
 
         setIsSubmitting(true);
         try {
@@ -370,8 +372,8 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
 
             const commentData = {
                 post_id: post.id,
-                user_id: currentUser.id || 'anonymous',
-                user_name: currentUser.name || 'Guest',
+                user_id: currentUser ? (currentUser.id || 'anonymous') : 'guest',
+                user_name: authorName,
                 content: newComment.trim(),
                 parent_id: replyTo?.id || null
             };
@@ -409,6 +411,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
 
             setNewComment('');
             setReplyTo(null);
+            if (!currentUser) setGuestName('');
         } catch (err) {
             console.error('Error posting comment:', err);
         } finally {
@@ -571,15 +574,43 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                                             </div>
                                         </form>
                                     ) : (
-                                        <div className="text-center py-4">
-                                            <p className="text-gray-400 text-sm font-khmer mb-4">{t('Please log in to join the discussion.', 'សូមចូលគណនីដើម្បីចូលរួមការពិភាក្សា។')}</p>
-                                            <button 
-                                                onClick={() => window.location.hash = 'admin'}
-                                                className="px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all text-sm font-bold"
-                                            >
-                                                {t('Login Now', 'ចូលគណនីឥឡូវនេះ')}
-                                            </button>
-                                        </div>
+                                        <form onSubmit={handleSubmitComment}>
+                                            {replyTo && (
+                                                <div className="flex items-center justify-between bg-indigo-500/10 px-4 py-2 rounded-xl mb-4 border border-indigo-500/20">
+                                                    <p className="text-xs text-indigo-300">Replying to <span className="font-bold">{replyTo.name}</span></p>
+                                                    <button type="button" onClick={() => setReplyTo(null)} className="text-gray-500 hover:text-white"><X size={14} /></button>
+                                                </div>
+                                            )}
+                                            <div className="flex items-center gap-2 mb-3">
+                                                <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
+                                                    <User size={14} />
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    value={guestName}
+                                                    onChange={(e) => setGuestName(e.target.value)}
+                                                    placeholder={t('Your name', 'ឈ្មោះរបស់អ្នក')}
+                                                    required
+                                                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm font-khmer placeholder-gray-500 focus:outline-none focus:border-indigo-500/50"
+                                                />
+                                            </div>
+                                            <textarea
+                                                value={newComment}
+                                                onChange={(e) => setNewComment(e.target.value)}
+                                                placeholder={t('Write your comment...', 'សរសេរមតិយោបល់របស់អ្នក...')}
+                                                className="w-full bg-transparent border-none focus:ring-0 text-white font-khmer resize-none min-h-[80px]"
+                                            />
+                                            <div className="flex justify-end mt-3">
+                                                <button
+                                                    type="submit"
+                                                    disabled={isSubmitting || !newComment.trim() || !guestName.trim()}
+                                                    className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-bold rounded-xl transition-all flex items-center gap-2 text-sm"
+                                                >
+                                                    {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
+                                                    {t('Post Comment', 'ផ្ញើមតិ')}
+                                                </button>
+                                            </div>
+                                        </form>
                                     )}
                                 </div>
                             </div>
