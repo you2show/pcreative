@@ -275,6 +275,19 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           sentMsgIdsRef.current.add(msgId);
           // Persist the session message ID so it survives popup close/reopen
           patchSession({ sessionMsgId: msgId, sentMsgIds: Array.from(sentMsgIdsRef.current) });
+          // Auto-acknowledge: let the user know someone will reply shortly
+          setMessages(prev => [
+            ...prev,
+            {
+              id: `auto-ack-${msgId}`,
+              sender: 'admin',
+              text: t(
+                '🙏 Thank you for reaching out! We\'ve received your message and will reply shortly.',
+                '🙏 អរគុណដែលបានផ្ញើសារ! យើងបានទទួលសាររបស់អ្នករួចហើយ ហើយនឹងឆ្លើយតបក្នុងពេលបន្តិចទៀត។'
+              ),
+              time: new Date(),
+            },
+          ]);
         }
       } else {
         // Subsequent messages are sent as replies to keep them grouped in Telegram
