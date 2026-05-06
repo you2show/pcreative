@@ -34,10 +34,18 @@ export const escapeHtml = (s: string): string =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 export const getTelegramConfig = (): TelegramConfig | null => {
-  // 1. Vercel / build-time environment variables (VITE_TELEGRAM_BOT_TOKEN + VITE_TELEGRAM_CHAT_ID)
+  // 1. Vercel / build-time environment variables (VITE_TELEGRAM_BOT_TOKEN + VITE_TELEGRAM_CHAT_ID + VITE_TELEGRAM_ADMIN_USER_ID)
   const envToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN as string | undefined;
   const envChatId = import.meta.env.VITE_TELEGRAM_CHAT_ID as string | undefined;
-  if (envToken && envChatId) return { botToken: envToken, chatId: envChatId };
+  if (envToken && envChatId) {
+    const envAdminId = import.meta.env.VITE_TELEGRAM_ADMIN_USER_ID as string | undefined;
+    const parsedEnvAdminId = envAdminId ? parseInt(envAdminId, 10) : undefined;
+    return {
+      botToken: envToken,
+      chatId: envChatId,
+      adminUserId: parsedEnvAdminId && parsedEnvAdminId > 0 ? parsedEnvAdminId : undefined,
+    };
+  }
 
   // 2. Fallback: admin-configured value saved in localStorage
   const raw = localStorage.getItem('telegram_chat_config');
@@ -149,7 +157,14 @@ export const getTelegramConfigFromGitHub = async (
     if (!res.ok) return null;
     const data = await res.json();
     const cfg = data.telegramConfig;
-    if (cfg?.botToken && cfg?.chatId) return { botToken: cfg.botToken, chatId: cfg.chatId };
+    if (cfg?.botToken && cfg?.chatId) {
+      const parsedAdminId = cfg.adminUserId ? parseInt(String(cfg.adminUserId), 10) : undefined;
+      return {
+        botToken: cfg.botToken,
+        chatId: cfg.chatId,
+        adminUserId: parsedAdminId && parsedAdminId > 0 ? parsedAdminId : undefined,
+      };
+    }
     return null;
   } catch {
     return null;
