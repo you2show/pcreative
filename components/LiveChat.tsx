@@ -77,6 +77,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
       setContact('');
       setFormError('');
       setInput('');
+      setIsSending(false);
       setSelectedTopics([]);
       sessionMsgIdRef.current = null;
       lastUpdateIdRef.current = 0;

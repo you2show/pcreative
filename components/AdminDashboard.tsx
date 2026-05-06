@@ -585,7 +585,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                              const chatId = (document.getElementById('tgChatId') as HTMLInputElement).value.trim();
                              if (token && chatId) {
                                  localStorage.setItem('telegram_chat_config', JSON.stringify({ botToken: token, chatId }));
-                                 alert('Telegram Live Chat បានកំណត់រួច! សូម Refresh ទំព័រ។');
+                                 window.dispatchEvent(new Event('telegram_config_updated'));
+                                 alert('Telegram Live Chat បានកំណត់រួច!');
                              }
                          }} className="space-y-3">
                              <input

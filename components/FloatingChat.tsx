@@ -10,7 +10,14 @@ const FloatingChat: React.FC = () => {
   const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
   const { t } = useLanguage();
   const menuRef = useRef<HTMLDivElement>(null);
-  const telegramConfig = getTelegramConfig();
+  const [telegramConfig, setTelegramConfig] = useState(getTelegramConfig);
+
+  // Re-read config when the admin saves Telegram settings (without requiring a page refresh)
+  useEffect(() => {
+    const onUpdate = () => setTelegramConfig(getTelegramConfig());
+    window.addEventListener('telegram_config_updated', onUpdate);
+    return () => window.removeEventListener('telegram_config_updated', onUpdate);
+  }, []);
 
   // Close menu when clicking outside (but not when live chat is open)
   useEffect(() => {
