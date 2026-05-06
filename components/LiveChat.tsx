@@ -306,7 +306,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
         }
       } else {
         // Subsequent messages are sent as replies to keep them grouped in Telegram
-        const msgId = await sendTelegramMessage(config, `<b>${escapeHtml(name)}:</b> ${escapeHtml(text)}`, sessionMsgIdRef.current);
+        const msgId = await sendTelegramMessage(config, `<b>${escapeHtml(name)}:</b> ${escapeHtml(text)}`, sessionMsgIdRef.current, true);
         if (msgId) {
           sentMsgIdsRef.current.add(msgId);
           patchSession({ sentMsgIds: Array.from(sentMsgIdsRef.current) });
