@@ -45,25 +45,70 @@ export const sendTelegramMessage = async (
   replyToMessageId?: number
 ): Promise<number | undefined> => {
   const url = `https://api.telegram.org/bot${config.botToken}/sendMessage`;
-  const body: Record<string, unknown> = {
-    chat_id: config.chatId,
-    text,
-    parse_mode: 'HTML',
+
+  const sendRequest = (msgText: string, parseMode?: string): Promise<Response> => {
+    const body: Record<string, unknown> = { chat_id: config.chatId, text: msgText };
+    if (parseMode) body.parse_mode = parseMode;
+    if (replyToMessageId) body.reply_to_message_id = replyToMessageId;
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
   };
-  if (replyToMessageId) {
-    body.reply_to_message_id = replyToMessageId;
+
+  // First attempt: HTML parse mode for bold formatting
+  let res = await sendRequest(text, 'HTML');
+
+  // If Telegram rejected the HTML (e.g. parse error), retry as plain text
+  if (!res.ok && res.status === 400) {
+    const plainText = text
+      .replace(/<\/?b>/g, '')   // remove only the <b> bold tags we emit
+      .replace(/&amp;/g, '&');  // restore & so names like "Web & App" display correctly
+    res = await sendRequest(plainText);
   }
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+
   if (!res.ok) {
-    const body = await res.text().catch(() => '');
-    throw new Error(`Telegram API error ${res.status}: ${body}`);
+    const errBody = await res.text().catch(() => '');
+    throw new Error(`Telegram API error ${res.status}: ${errBody}`);
   }
   const data = await res.json();
   return data.result?.message_id as number | undefined;
+};
+
+/**
+ * Validate a TelegramConfig by calling getMe (token check) then sending a test
+ * message (chat ID check). Returns { ok, botName } on success or { ok, error } on failure.
+ */
+export const testTelegramConnection = async (
+  config: TelegramConfig
+): Promise<{ ok: boolean; botName?: string; error?: string }> => {
+  try {
+    // 1. Validate bot token
+    const meRes = await fetch(`https://api.telegram.org/bot${config.botToken}/getMe`);
+    const meData = await meRes.json();
+    if (!meData.ok) {
+      return { ok: false, error: `Invalid bot token: ${meData.description || 'unknown error'}` };
+    }
+    const botName: string = meData.result?.username || meData.result?.first_name || 'Bot';
+
+    // 2. Validate chat ID by sending a test message
+    const msgRes = await fetch(`https://api.telegram.org/bot${config.botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: config.chatId,
+        text: '✅ PCreative Live Chat — Test connection successful!',
+      }),
+    });
+    const msgData = await msgRes.json();
+    if (!msgData.ok) {
+      return { ok: false, error: `Bot @${botName} is valid, but chat error: ${msgData.description || 'unknown'}` };
+    }
+    return { ok: true, botName };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : 'Network error' };
+  }
 };
 
 /**
