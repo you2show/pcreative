@@ -39,11 +39,11 @@ export const getTelegramConfig = (): TelegramConfig | null => {
   const envChatId = import.meta.env.VITE_TELEGRAM_CHAT_ID as string | undefined;
   if (envToken && envChatId) {
     const envAdminId = import.meta.env.VITE_TELEGRAM_ADMIN_USER_ID as string | undefined;
-    const parsedEnvAdminId = envAdminId ? parseInt(envAdminId, 10) : NaN;
+    const parsedEnvAdminId = envAdminId ? parseInt(envAdminId, 10) : undefined;
     return {
       botToken: envToken,
       chatId: envChatId,
-      adminUserId: !isNaN(parsedEnvAdminId) && parsedEnvAdminId > 0 ? parsedEnvAdminId : undefined,
+      adminUserId: parsedEnvAdminId && parsedEnvAdminId > 0 ? parsedEnvAdminId : undefined,
     };
   }
 
