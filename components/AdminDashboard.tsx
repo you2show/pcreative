@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Settings, Database, ExternalLink, LogOut, Users, FileText, Briefcase, LayoutGrid, Menu, Star, Handshake } from 'lucide-react';
+import { Plus, Settings, Database, ExternalLink, LogOut, Users, FileText, Briefcase, LayoutGrid, Menu, Star, Handshake, Send } from 'lucide-react';
 import { getSupabaseClient, DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_KEY } from '../lib/supabase';
 import { useData } from '../contexts/DataContext';
 import AdminHeader from './admin/AdminHeader';
@@ -565,6 +565,50 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                          {localStorage.getItem('imgbb_api_key') && (
                              <button onClick={() => { if(window.confirm('លុប ImgBB API Key?')) { localStorage.removeItem('imgbb_api_key'); window.location.reload(); } }} className="mt-3 text-xs text-red-400 hover:text-red-300">
                                  លុប API Key
+                             </button>
+                         )}
+                     </div>
+
+                     {/* Telegram Live Chat Config */}
+                     <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
+                         <h3 className="text-xl font-bold mb-2 flex items-center gap-2"><Send size={20} className="text-[#229ED9]"/> Telegram Live Chat</h3>
+                         <p className="text-gray-400 text-sm mb-1">
+                             កំណត់ Telegram Bot ដើម្បីបើក Live Chat widget។ <br/>
+                             Bot Token ពី <a href="https://t.me/BotFather" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">@BotFather</a> &nbsp;·&nbsp; Chat ID អាចជា Group ID ឬ Channel ID។
+                         </p>
+                         <p className="text-gray-500 text-xs mb-4">
+                             💡 Admin ត្រូវ <b>Reply</b> ទៅសារក្នុង Telegram ដើម្បីឱ្យ user ឃើញការឆ្លើយតប។
+                         </p>
+                         <form onSubmit={(e) => {
+                             e.preventDefault();
+                             const token = (document.getElementById('tgBotToken') as HTMLInputElement).value.trim();
+                             const chatId = (document.getElementById('tgChatId') as HTMLInputElement).value.trim();
+                             if (token && chatId) {
+                                 localStorage.setItem('telegram_chat_config', JSON.stringify({ botToken: token, chatId }));
+                                 alert('Telegram Live Chat បានកំណត់រួច! សូម Refresh ទំព័រ។');
+                             }
+                         }} className="space-y-3">
+                             <input
+                                 id="tgBotToken"
+                                 type="password"
+                                 defaultValue={(() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').botToken || ''; } catch { return ''; } })()}
+                                 placeholder="Bot Token (e.g. 123456:ABC-DEF...)"
+                                 className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                             />
+                             <div className="flex gap-2">
+                                 <input
+                                     id="tgChatId"
+                                     type="text"
+                                     defaultValue={(() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').chatId || ''; } catch { return ''; } })()}
+                                     placeholder="Chat ID (e.g. -1001234567890)"
+                                     className="flex-1 bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                 />
+                                 <button type="submit" className="px-4 py-2 bg-[#229ED9] hover:bg-[#1a8bc7] text-white rounded-xl font-bold text-sm transition-all">Save</button>
+                             </div>
+                         </form>
+                         {localStorage.getItem('telegram_chat_config') && (
+                             <button onClick={() => { if(window.confirm('លុប Telegram Config?')) { localStorage.removeItem('telegram_chat_config'); window.location.reload(); } }} className="mt-3 text-xs text-red-400 hover:text-red-300">
+                                 លុប Telegram Config
                              </button>
                          )}
                      </div>
