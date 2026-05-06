@@ -36,7 +36,7 @@ const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose, usePa
   return createPortal(
     <div className="fixed inset-0 z-[10002] flex items-center justify-center p-4 overflow-hidden">
        <div className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in" onClick={handleClose} />
-       <button onClick={handleClose} className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all z-50 border border-white/10 active:scale-95">
+       <button onClick={handleClose} className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all z-[10004] border border-white/10 active:scale-95">
           <X size={24} />
        </button>
 
@@ -57,7 +57,7 @@ const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose, usePa
                         </button>
                     )}
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-khmer leading-tight">{project.title}</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-white mb-4 font-khmer leading-tight">{project.title}</h2>
                 <div className="flex items-center gap-3 text-gray-500">
                     <span className="text-sm font-khmer">{t('Client', 'អតិថិជន')}:</span>
                     <span className="text-sm text-gray-300 font-bold">{project.client || 'Creative Agency'}</span>
