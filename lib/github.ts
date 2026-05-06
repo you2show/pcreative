@@ -55,8 +55,9 @@ export const writeSiteDataToGitHub = async (
   sha: string
 ): Promise<boolean> => {
   try {
-    // btoa with UTF-8 support for Khmer characters
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    // Encode as UTF-8 base64 (supports Khmer characters)
+    const bytes = new TextEncoder().encode(JSON.stringify(data, null, 2));
+    const content = btoa(Array.from(bytes, (b) => String.fromCharCode(b)).join(''));
     const res = await fetch(
       `https://api.github.com/repos/${cfg.username}/${cfg.repo}/contents/site-data.json`,
       {
