@@ -168,6 +168,8 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           //   3. Regular group fallback: any human message with a message_id greater than
           //      the session's first message ID is treated as an admin reply.  This lets
           //      the admin simply type in the group without pressing the Reply button.
+          //      Note: with multiple simultaneous user sessions, strategy 3 may show one
+          //      user's admin reply in another user's chat; strategies 1 & 2 avoid this.
           const replyId = msg.reply_to_message?.message_id;
           const sessionId = sessionMsgIdRef.current!;
           const inSession =
