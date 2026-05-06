@@ -162,20 +162,25 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           if (!msg || msg.from?.is_bot) continue;
           // Determine whether this non-bot message belongs to the current chat session.
           // Three strategies, in priority order:
-          //   1. Explicit Telegram reply (works everywhere — admin presses Reply button).
+          //   1. Explicit Telegram reply (admin pressed Reply button — works everywhere, 100% precise).
           //   2. Forum supergroup: message_thread_id equals the session's first message ID,
           //      so all messages posted inside the topic are treated as session replies.
           //   3. Regular group fallback: any human message with a message_id greater than
-          //      the session's first message ID is treated as an admin reply.  This lets
-          //      the admin simply type in the group without pressing the Reply button.
-          //      Note: with multiple simultaneous user sessions, strategy 3 may show one
-          //      user's admin reply in another user's chat; strategies 1 & 2 avoid this.
+          //      the session's first message ID is treated as an admin reply.
+          //      When adminUserId is configured in settings, only messages from that specific
+          //      user are accepted, eliminating false positives from other group members.
+          //      The bot sends each session opener with force_reply=true so that Telegram
+          //      automatically prompts the admin to use the Reply feature (strategy 1).
           const replyId = msg.reply_to_message?.message_id;
           const sessionId = sessionMsgIdRef.current!;
+          const fromId = msg.from?.id;
+          const adminId = config.adminUserId;
+          // Strategy 3 is active only when the sender is confirmed (or adminUserId is unset)
+          const fromIsAdmin = adminId === undefined || fromId === adminId;
           const inSession =
             (replyId !== undefined && sentMsgIdsRef.current.has(replyId)) ||
             (msg.message_thread_id !== undefined && sentMsgIdsRef.current.has(msg.message_thread_id)) ||
-            msg.message_id > sessionId;
+            (fromIsAdmin && msg.message_id > sessionId);
           if (inSession) {
             const text: string = msg.text || msg.caption || '';
             if (!text) continue;
@@ -264,7 +269,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           : '';
         const header = `💬 <b>New Live Chat</b>\n👤 <b>${escapeHtml(name)}</b>\n📩 ${escapeHtml(contact)}${topicsLine}`;
         const fullText = `${header}\n\n${escapeHtml(text)}`;
-        const msgId = await sendTelegramMessage(config, fullText);
+        const msgId = await sendTelegramMessage(config, fullText, undefined, true);
         if (msgId) {
           sessionMsgIdRef.current = msgId;
           sentMsgIdsRef.current.add(msgId);

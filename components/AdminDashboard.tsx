@@ -588,7 +588,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                              Bot Token ពី <a href="https://t.me/BotFather" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">@BotFather</a> &nbsp;·&nbsp; Chat ID អាចជា Group ID ឬ Channel ID។
                          </p>
                          <p className="text-gray-500 text-xs mb-4">
-                             💡 Admin ត្រូវ <b>Reply</b> ទៅសារក្នុង Telegram ដើម្បីឱ្យ user ឃើញការឆ្លើយតប។
+                             💡 Bot នឹងស្នើ Admin <b>Reply</b> ដោយស្វ័យប្រវត្តិ (force reply)។ ការ Reply ក្នុង Telegram Group ផ្ញើ reply ទៅ user ១០០%។
                              {githubConfig ? (
                                  <span className="ml-2 text-green-400">✓ រក្សាទុកទៅ GitHub site-data.json</span>
                              ) : (
@@ -599,10 +599,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                              e.preventDefault();
                              const token = (document.getElementById('tgBotToken') as HTMLInputElement).value.trim();
                              const chatId = (document.getElementById('tgChatId') as HTMLInputElement).value.trim();
+                             const adminUserIdRaw = (document.getElementById('tgAdminUserId') as HTMLInputElement).value.trim();
+                             const adminUserId = adminUserIdRaw ? Number(adminUserIdRaw) : undefined;
                              if (!token || !chatId) return;
 
                              // 1. Save to localStorage immediately
-                             localStorage.setItem('telegram_chat_config', JSON.stringify({ botToken: token, chatId }));
+                             localStorage.setItem('telegram_chat_config', JSON.stringify({ botToken: token, chatId, adminUserId }));
                              window.dispatchEvent(new Event('telegram_config_updated'));
 
                              // 2. If GitHub is configured, also save to site-data.json on GitHub
@@ -612,7 +614,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                                  try {
                                      const file = await fetchSiteDataFromGitHub(ghCfg);
                                      if (file) {
-                                         const updated = { ...file.content, telegramConfig: { botToken: token, chatId } };
+                                         const updated = { ...file.content, telegramConfig: { botToken: token, chatId, adminUserId } };
                                          const ok = await writeSiteDataToGitHub(ghCfg, updated, file.sha);
                                          if (ok) {
                                              alert('✅ Telegram Config បានរក្សាទុក!\n📁 site-data.json នៅ GitHub ត្រូវបានអាប់ដេត។');
@@ -650,6 +652,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                                      {isSyncing ? '...' : 'Save'}
                                  </button>
                              </div>
+                             <input
+                                 id="tgAdminUserId"
+                                 type="number"
+                                 defaultValue={(() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').adminUserId || ''; } catch { return ''; } })()}
+                                 placeholder="Admin User ID (optional — ប្រើ @userinfobot)"
+                                 className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm placeholder-gray-500"
+                             />
+                             <p className="text-gray-500 text-xs">
+                                 💡 <b>Admin User ID</b>: បញ្ចូល Telegram User ID របស់ Admin ដើម្បីឱ្យ live chat ទទួល reply ត្រឹមត្រូវ ១០០%។ ផ្ញើ <code>/start</code> ទៅ <b>@userinfobot</b> ក្នុង Telegram ដើម្បីរកដឹង ID របស់អ្នក (គ្រាន់តែលេខ ដូចជា <code>123456789</code>)។
+                             </p>
                          </form>
                          {localStorage.getItem('telegram_chat_config') && (
                              <button onClick={() => { if(window.confirm('លុប Telegram Config?')) { localStorage.removeItem('telegram_chat_config'); window.location.reload(); } }} className="mt-3 text-xs text-red-400 hover:text-red-300">
