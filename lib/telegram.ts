@@ -13,6 +13,8 @@ export interface TelegramConfig {
 export interface TelegramMessage {
   message_id: number;
   from?: { id: number; is_bot: boolean; first_name?: string };
+  /** The chat this message belongs to. Always present in Telegram API responses. */
+  chat: { id: number; type: string };
   date: number;
   text?: string;
   caption?: string;

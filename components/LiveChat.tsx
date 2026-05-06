@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { X, Send, Loader2, MessageSquare, User, Mail } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getTelegramConfig, sendTelegramMessage, getTelegramUpdates, escapeHtml, TelegramUpdate } from '../lib/telegram';
@@ -62,7 +62,10 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
   const [isSending, setIsSending] = useState(false);
 
   // Telegram session
-  const config = getTelegramConfig();
+  // Memoize config so its object reference stays stable across re-renders, preventing
+  // startPolling / the polling effect from being recreated and the interval from being
+  // reset on every state change.
+  const config = useMemo(() => getTelegramConfig(), []);
   const sessionMsgIdRef = useRef<number | null>(null);
   const sentMsgIdsRef = useRef<Set<number>>(new Set());
   const lastUpdateIdRef = useRef<number>(0);
@@ -159,7 +162,11 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           }
           // Accept both group messages and channel posts
           const msg = update.message ?? update.channel_post;
-          if (!msg || msg.from?.is_bot) continue;
+          if (!msg) continue;
+          // Only process messages that belong to the configured chat, ignoring any
+          // updates from other chats the bot happens to be a member of.
+          if (String(msg.chat.id) !== config.chatId) continue;
+          if (msg.from?.is_bot) continue;
           // Determine whether this non-bot message belongs to the current chat session.
           // Three strategies, in priority order:
           //   1. Explicit Telegram reply (admin pressed Reply button — works everywhere, 100% precise).
@@ -175,8 +182,16 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           const sessionId = sessionMsgIdRef.current!;
           const fromId = msg.from?.id;
           const adminId = config.adminUserId;
-          // Strategy 3 is active only when the sender is confirmed (or adminUserId is unset)
-          const fromIsAdmin = adminId === undefined || fromId === adminId;
+          // For channel posts the `from` field is absent (the sender is the channel itself).
+          // Any post inside the configured channel is by definition from the channel admin,
+          // so we treat those as admin messages when `adminUserId` is not set OR when the
+          // message's chat matches the configured chatId (already guaranteed by the filter above).
+          // Note: some channel configurations expose a `from` field (visible authors); in that
+          // case the normal `fromId === adminId` check applies, so we only use this fallback
+          // when `from` is absent.
+          const isChannelPost = update.channel_post !== undefined && msg.from === undefined;
+          const fromIsAdmin =
+            adminId === undefined || fromId === adminId || isChannelPost;
           const inSession =
             (replyId !== undefined && sentMsgIdsRef.current.has(replyId)) ||
             (msg.message_thread_id !== undefined && sentMsgIdsRef.current.has(msg.message_thread_id)) ||
