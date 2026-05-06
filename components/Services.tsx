@@ -281,36 +281,66 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
             className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
             onClick={closeItem}
           />
-          <div className="relative w-full max-w-2xl bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10003]">
-            <div className="p-8">
-              <div className="flex justify-between items-start mb-8">
-                <div className={`p-4 rounded-2xl bg-white/5 ${selectedService.color.replace('bg-', 'text-')} border border-white/10`}>
+          <div className="relative w-full max-w-4xl bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col md:flex-row max-h-[90vh]">
+
+            {/* Left Column: Image with overlay */}
+            <div className="relative w-full md:w-2/5 min-h-[260px] md:min-h-0 flex-shrink-0 overflow-hidden rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none">
+              {/* Background image */}
+              {(() => {
+                const imgSrc = selectedService.image || SERVICE_IMAGES_FALLBACK[selectedService.id];
+                return imgSrc ? (
+                  <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: `url('${encodeURI(imgSrc)}')` }}
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gray-800" />
+                );
+              })()}
+              {/* Dark gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-900/60 to-transparent" />
+
+              {/* Overlay content: icon, title, subtitle */}
+              <div className="relative z-10 flex flex-col justify-end h-full p-8">
+                <div className={`p-4 rounded-2xl bg-white/10 backdrop-blur-sm ${selectedService.color.replace('bg-', 'text-')} border border-white/10 w-fit mb-4`}>
                   {selectedService.icon}
                 </div>
-                <button 
-                  onClick={closeItem}
-                  className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-full transition-colors border border-white/5"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-              
-              <h3 className="text-3xl font-bold text-white mb-4 font-khmer">{t(selectedService.title, selectedService.titleKm)}</h3>
-              <p className="text-indigo-400 font-medium mb-6 font-khmer">{t(selectedService.subtitle, selectedService.subtitleKm || selectedService.subtitle)}</p>
-              
-              <div className="prose prose-invert max-w-none mb-8">
-                <p className="text-gray-300 leading-relaxed font-khmer">
-                  {t(selectedService.description, selectedService.descriptionKm || selectedService.description)}
+                <h3 className="text-2xl font-bold text-white mb-2 font-khmer leading-tight drop-shadow-lg">
+                  {t(selectedService.title, selectedService.titleKm)}
+                </h3>
+                <p className="text-indigo-300 font-medium text-sm font-khmer drop-shadow">
+                  {t(selectedService.subtitle, selectedService.subtitleKm || selectedService.subtitle)}
                 </p>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(selectedService.features || []).map((feature, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/5">
-                    <CheckCircle2 size={18} className="text-green-400 shrink-0" />
-                    <span className="text-gray-300 text-sm font-khmer">{t(feature, feature)}</span>
-                  </div>
-                ))}
+            </div>
+
+            {/* Right Column: Content */}
+            <div className="flex-1 flex flex-col overflow-y-auto">
+              <div className="p-8">
+                {/* Close button */}
+                <div className="flex justify-end mb-6">
+                  <button 
+                    onClick={closeItem}
+                    className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-full transition-colors border border-white/5"
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+
+                <div className="prose prose-invert max-w-none mb-8">
+                  <p className="text-gray-300 leading-relaxed font-khmer">
+                    {t(selectedService.description, selectedService.descriptionKm || selectedService.description)}
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {(selectedService.features || []).map((feature, idx) => (
+                    <div key={idx} className="flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/5">
+                      <CheckCircle2 size={18} className="text-green-400 shrink-0" />
+                      <span className="text-gray-300 text-sm font-khmer">{t(feature, feature)}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
