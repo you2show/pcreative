@@ -161,7 +161,10 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           const msg = update.message ?? update.channel_post;
           if (!msg || msg.from?.is_bot) continue;
           // Show admin replies to any message sent in this session (not just the first one).
-          // Also match forum-supergroup messages whose thread ID equals a sent message ID.
+          // Also match forum-supergroup messages whose thread ID equals a sent message ID:
+          // in a forum group the bot's first message starts the topic, so
+          // message_thread_id == msgId1 for all subsequent messages in that topic.
+          // This lets the admin reply inside the topic without using the Reply button.
           const replyId = msg.reply_to_message?.message_id;
           const inSession =
             (replyId !== undefined && sentMsgIdsRef.current.has(replyId)) ||
