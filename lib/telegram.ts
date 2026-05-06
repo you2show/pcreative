@@ -157,7 +157,14 @@ export const getTelegramConfigFromGitHub = async (
     if (!res.ok) return null;
     const data = await res.json();
     const cfg = data.telegramConfig;
-    if (cfg?.botToken && cfg?.chatId) return { botToken: cfg.botToken, chatId: cfg.chatId };
+    if (cfg?.botToken && cfg?.chatId) {
+      const parsedAdminId = cfg.adminUserId !== undefined ? parseInt(String(cfg.adminUserId), 10) : NaN;
+      return {
+        botToken: cfg.botToken,
+        chatId: cfg.chatId,
+        adminUserId: !isNaN(parsedAdminId) && parsedAdminId > 0 ? parsedAdminId : undefined,
+      };
+    }
     return null;
   } catch {
     return null;
