@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Send, Loader2, MessageSquare, User, Mail } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { getTelegramConfig, sendTelegramMessage, getTelegramUpdates, TelegramUpdate } from '../lib/telegram';
+import { getTelegramConfig, sendTelegramMessage, getTelegramUpdates, escapeHtml, TelegramUpdate } from '../lib/telegram';
 
 interface ChatMessage {
   id: string;
@@ -183,17 +183,17 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           ? '\n🏷 ' + selectedTopics
               .map(id => {
                 const topic = SERVICE_TOPICS.find(s => s.id === id);
-                return topic ? `${topic.emoji} ${topic.label}` : 'Unknown';
+                return topic ? `${topic.emoji} ${escapeHtml(topic.label)}` : 'Unknown';
               })
               .join(', ')
           : '';
-        const header = `💬 <b>New Live Chat</b>\n👤 <b>${name}</b>\n📩 ${contact}${topicsLine}`;
-        const fullText = `${header}\n\n${text}`;
+        const header = `💬 <b>New Live Chat</b>\n👤 <b>${escapeHtml(name)}</b>\n📩 ${escapeHtml(contact)}${topicsLine}`;
+        const fullText = `${header}\n\n${escapeHtml(text)}`;
         const msgId = await sendTelegramMessage(config, fullText);
         if (msgId) sessionMsgIdRef.current = msgId;
       } else {
         // Subsequent messages are sent as replies to keep them grouped in Telegram
-        await sendTelegramMessage(config, `<b>${name}:</b> ${text}`, sessionMsgIdRef.current);
+        await sendTelegramMessage(config, `<b>${escapeHtml(name)}:</b> ${escapeHtml(text)}`, sessionMsgIdRef.current);
       }
     } catch {
       setMessages(prev => [

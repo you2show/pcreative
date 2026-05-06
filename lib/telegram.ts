@@ -17,6 +17,10 @@ export interface TelegramUpdate {
   message?: TelegramMessage;
 }
 
+/** Escape HTML special characters so user input is safe inside HTML-formatted Telegram messages. */
+export const escapeHtml = (s: string): string =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
 export const getTelegramConfig = (): TelegramConfig | null => {
   // 1. Vercel / build-time environment variables (VITE_TELEGRAM_BOT_TOKEN + VITE_TELEGRAM_CHAT_ID)
   const envToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN as string | undefined;
