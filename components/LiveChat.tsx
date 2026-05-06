@@ -298,7 +298,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="absolute bottom-16 right-0 w-[320px] sm:w-[360px] bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-scale-up origin-bottom-right font-khmer"
-      style={{ maxHeight: 'min(580px, calc(100vh - 120px))' }}
+      style={{ maxHeight: 'min(580px, calc(100vh - 180px))' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 bg-indigo-600 shrink-0">
