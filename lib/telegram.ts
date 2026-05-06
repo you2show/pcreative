@@ -1,20 +1,32 @@
 export interface TelegramConfig {
   botToken: string;
   chatId: string;
+  /**
+   * Optional: the Telegram user_id of the admin.
+   * When set, the polling fallback (strategy 3) only accepts messages
+   * from this specific user, eliminating false-positive matches from
+   * other group members.  Find your user ID via @userinfobot in Telegram.
+   */
+  adminUserId?: number;
 }
 
 export interface TelegramMessage {
   message_id: number;
-  from?: { is_bot: boolean; first_name?: string };
+  from?: { id: number; is_bot: boolean; first_name?: string };
   date: number;
   text?: string;
   caption?: string;
   reply_to_message?: { message_id: number };
+  /** Present in forum supergroups; identifies the topic thread. */
+  message_thread_id?: number;
 }
 
 export interface TelegramUpdate {
   update_id: number;
+  /** Set for group/supergroup messages. */
   message?: TelegramMessage;
+  /** Set for channel posts. */
+  channel_post?: TelegramMessage;
 }
 
 /** Escape HTML special characters so user input is safe inside HTML-formatted Telegram messages. */
@@ -32,7 +44,14 @@ export const getTelegramConfig = (): TelegramConfig | null => {
   if (!raw) return null;
   try {
     const cfg = JSON.parse(raw);
-    if (cfg.botToken && cfg.chatId) return cfg;
+    if (cfg.botToken && cfg.chatId) {
+      const rawId = cfg.adminUserId !== undefined ? parseInt(String(cfg.adminUserId), 10) : NaN;
+      return {
+        botToken: cfg.botToken,
+        chatId: cfg.chatId,
+        adminUserId: !isNaN(rawId) && rawId > 0 ? rawId : undefined,
+      };
+    }
     return null;
   } catch {
     return null;
@@ -42,7 +61,8 @@ export const getTelegramConfig = (): TelegramConfig | null => {
 export const sendTelegramMessage = async (
   config: TelegramConfig,
   text: string,
-  replyToMessageId?: number
+  replyToMessageId?: number,
+  forceReply?: boolean
 ): Promise<number | undefined> => {
   const url = `https://api.telegram.org/bot${config.botToken}/sendMessage`;
 
@@ -50,6 +70,9 @@ export const sendTelegramMessage = async (
     const body: Record<string, unknown> = { chat_id: config.chatId, text: msgText };
     if (parseMode) body.parse_mode = parseMode;
     if (replyToMessageId) body.reply_to_message_id = replyToMessageId;
+    // force_reply prompts the admin to reply using Telegram's Reply feature,
+    // which guarantees reply_to_message is set and strategy-1 matching works.
+    if (forceReply) body.reply_markup = { force_reply: true, input_field_placeholder: 'Reply to user…' };
     return fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

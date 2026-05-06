@@ -157,11 +157,31 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
             // Persist updated offset so polling resumes correctly after reopen
             patchSession({ lastUpdateId: newId });
           }
-          const msg = update.message;
+          // Accept both group messages and channel posts
+          const msg = update.message ?? update.channel_post;
           if (!msg || msg.from?.is_bot) continue;
-          // Show admin replies to any message sent in this session (not just the first one)
+          // Determine whether this non-bot message belongs to the current chat session.
+          // Three strategies, in priority order:
+          //   1. Explicit Telegram reply (admin pressed Reply button — works everywhere, 100% precise).
+          //   2. Forum supergroup: message_thread_id equals the session's first message ID,
+          //      so all messages posted inside the topic are treated as session replies.
+          //   3. Regular group fallback: any human message with a message_id greater than
+          //      the session's first message ID is treated as an admin reply.
+          //      When adminUserId is configured in settings, only messages from that specific
+          //      user are accepted, eliminating false positives from other group members.
+          //      The bot sends each session opener with force_reply=true so that Telegram
+          //      automatically prompts the admin to use the Reply feature (strategy 1).
           const replyId = msg.reply_to_message?.message_id;
-          if (replyId !== undefined && sentMsgIdsRef.current.has(replyId)) {
+          const sessionId = sessionMsgIdRef.current!;
+          const fromId = msg.from?.id;
+          const adminId = config.adminUserId;
+          // Strategy 3 is active only when the sender is confirmed (or adminUserId is unset)
+          const fromIsAdmin = adminId === undefined || fromId === adminId;
+          const inSession =
+            (replyId !== undefined && sentMsgIdsRef.current.has(replyId)) ||
+            (msg.message_thread_id !== undefined && sentMsgIdsRef.current.has(msg.message_thread_id)) ||
+            (fromIsAdmin && msg.message_id > sessionId);
+          if (inSession) {
             const text: string = msg.text || msg.caption || '';
             if (!text) continue;
             setMessages(prev => {
@@ -249,12 +269,25 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           : '';
         const header = `💬 <b>New Live Chat</b>\n👤 <b>${escapeHtml(name)}</b>\n📩 ${escapeHtml(contact)}${topicsLine}`;
         const fullText = `${header}\n\n${escapeHtml(text)}`;
-        const msgId = await sendTelegramMessage(config, fullText);
+        const msgId = await sendTelegramMessage(config, fullText, undefined, true);
         if (msgId) {
           sessionMsgIdRef.current = msgId;
           sentMsgIdsRef.current.add(msgId);
           // Persist the session message ID so it survives popup close/reopen
           patchSession({ sessionMsgId: msgId, sentMsgIds: Array.from(sentMsgIdsRef.current) });
+          // Auto-acknowledge: let the user know someone will reply shortly
+          setMessages(prev => [
+            ...prev,
+            {
+              id: `auto-ack-${msgId}`,
+              sender: 'admin',
+              text: t(
+                '🙏 Thank you for reaching out! We\'ve received your message and will reply shortly.',
+                '🙏 អរគុណដែលបានផ្ញើសារ! យើងបានទទួលសាររបស់អ្នករួចហើយ ហើយនឹងឆ្លើយតបក្នុងពេលបន្តិចទៀត។'
+              ),
+              time: new Date(),
+            },
+          ]);
         }
       } else {
         // Subsequent messages are sent as replies to keep them grouped in Telegram
