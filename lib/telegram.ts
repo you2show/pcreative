@@ -18,6 +18,12 @@ export interface TelegramUpdate {
 }
 
 export const getTelegramConfig = (): TelegramConfig | null => {
+  // 1. Vercel / build-time environment variables (VITE_TELEGRAM_BOT_TOKEN + VITE_TELEGRAM_CHAT_ID)
+  const envToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN as string | undefined;
+  const envChatId = import.meta.env.VITE_TELEGRAM_CHAT_ID as string | undefined;
+  if (envToken && envChatId) return { botToken: envToken, chatId: envChatId };
+
+  // 2. Fallback: admin-configured value saved in localStorage
   const raw = localStorage.getItem('telegram_chat_config');
   if (!raw) return null;
   try {

@@ -21,7 +21,6 @@ import OfflinePage from './components/OfflinePage';
 import InstallPrompt from './components/InstallPrompt';
 import Stats from './components/Stats';
 import FAQ from './components/FAQ';
-import Awards from './components/Awards';
 import StickyCTA, { ConsultationModal } from './components/StickyCTA';
 import ExitIntentPopup from './components/ExitIntentPopup';
 import VideoShowreel from './components/VideoShowreel';
@@ -176,9 +175,7 @@ function AppContent() {
             showPopupOnMount={shouldShowPortfolioPopup} 
             usePathRouting={true} 
         />
-        
         <Testimonials />
-        <Awards />
 
         <Team 
             showPopupOnMount={shouldShowTeamPopup}
