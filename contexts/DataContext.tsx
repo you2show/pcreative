@@ -1,9 +1,19 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { SERVICES, PROJECTS, TEAM, INSIGHTS, JOBS, PARTNERS } from '../constants';
-import { Service, Project, TeamMember, Post, Job, Partner } from '../types';
+import { SERVICES, PROJECTS, TEAM, INSIGHTS, JOBS, PARTNERS, TESTIMONIALS } from '../constants';
+import { Service, Project, TeamMember, Post, Job, Partner, Testimonial } from '../types';
 import { getSupabaseClient } from '../lib/supabase';
 import * as LucideIcons from 'lucide-react';
 import { slugify } from '../utils/format';
+
+// Helper function to generate deterministic color from name
+const getColorFromName = (name: string): string => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const colors = ['3b82f6', '8b5cf6', 'ec4899', 'f97316', '10b981', '06b6d4', 'f59e0b', 'ef4444'];
+  return colors[Math.abs(hash) % colors.length];
+};
 
 interface DataContextType {
   services: Service[];
@@ -12,6 +22,7 @@ interface DataContextType {
   insights: Post[];
   jobs: Job[];
   partners: Partner[];
+  testimonials: Testimonial[];
   isLoading: boolean;
   isUsingSupabase: boolean;
   
@@ -41,6 +52,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [insights, setInsights] = useState<Post[]>(INSIGHTS);
   const [jobs, setJobs] = useState<Job[]>(JOBS);
   const [partners, setPartners] = useState<Partner[]>(PARTNERS);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(TESTIMONIALS);
   
   const [isLoading, setIsLoading] = useState(true);
   const [isUsingSupabase, setIsUsingSupabase] = useState(false);
@@ -206,6 +218,22 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             setPartners(formatted);
         }
 
+        // Fetch Testimonials (Reviews/Client Stories)
+        const { data: dbTestimonials } = await supabase.from('reviews').select('*').order('created_at', { ascending: false });
+        if (dbTestimonials && dbTestimonials.length > 0) {
+            const formatted = dbTestimonials.map((t: any) => ({
+                id: t.id,
+                name: t.name,
+                role: t.role || 'Client',
+                company: t.company || '',
+                content: t.content,
+                contentKm: t.content_km || t.content,
+                avatar: t.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=${getColorFromName(t.name)}`
+            }));
+            // Prepend DB testimonials to static ones
+            setTestimonials([...formatted, ...TESTIMONIALS]);
+        }
+
         setIsUsingSupabase(true);
       } catch (error) {
         console.warn("⚠️ Failed to fetch from Supabase.", error);
@@ -287,13 +315,13 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   
   const resetData = () => {
      if(window.confirm("Reset to default local data?")) {
-         setServices(SERVICES); setProjects(PROJECTS); setTeam(TEAM); setInsights(INSIGHTS); setJobs(JOBS); setPartners(PARTNERS);
+         setServices(SERVICES); setProjects(PROJECTS); setTeam(TEAM); setInsights(INSIGHTS); setJobs(JOBS); setPartners(PARTNERS); setTestimonials(TESTIMONIALS);
      }
   };
 
   return (
     <DataContext.Provider value={{
-      services, projects, team, insights, jobs, partners, isLoading, isUsingSupabase,
+      services, projects, team, insights, jobs, partners, testimonials, isLoading, isUsingSupabase,
       refreshData: fetchData, // Expose fetchData
       updateService, updateProject, updateTeamMember, updateInsight,
       addProject, addTeamMember, addInsight, deleteItem,

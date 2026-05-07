@@ -49,9 +49,17 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
 
   const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
-      if (file) {
-          const url = await uploadImage(file);
-          if (url) setEditingItem({ ...editingItem, image: url });
+      if (!file) return;
+      
+      const url = await uploadImage(file);
+      if (url) {
+          // For stories avatar field
+          if (activeTab === 'stories' && editingItem.avatar !== undefined) {
+              setEditingItem({ ...editingItem, avatar: url });
+          } else {
+              // For other tabs' image field
+              setEditingItem({ ...editingItem, image: url });
+          }
       }
   };
 
@@ -204,6 +212,26 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                              </div>
                              <div className="flex-1 space-y-2">
                                  <input type="text" placeholder="Image URL" className="w-full bg-gray-800 border border-white/10 rounded-lg p-2 text-white text-sm" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, image: e.target.value })} />
+                                 <div className="flex gap-2">
+                                     <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleMainImageUpload} />
+                                     <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-xs text-white flex items-center gap-2">{isUploading ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />} Upload New</button>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
+                );
+            }
+            // Avatar field for stories
+            if (key === 'avatar' && activeTab === 'stories') {
+                return (
+                    <div key={key} className="space-y-2 mb-4">
+                         <label className="block text-xs font-bold text-gray-400">Profile Picture</label>
+                         <div className="flex gap-4">
+                             <div className="w-16 h-16 bg-gray-800 rounded-full overflow-hidden border-2 border-indigo-500/30 flex items-center justify-center shrink-0">
+                                 {value ? <img src={value} className="w-full h-full object-cover" /> : <ImageIcon className="text-gray-600" />}
+                             </div>
+                             <div className="flex-1 space-y-2">
+                                 <input type="text" placeholder="Avatar URL (optional - auto-generated if empty)" className="w-full bg-gray-800 border border-white/10 rounded-lg p-2 text-white text-sm" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, avatar: e.target.value })} />
                                  <div className="flex gap-2">
                                      <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleMainImageUpload} />
                                      <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-xs text-white flex items-center gap-2">{isUploading ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />} Upload New</button>

@@ -7,7 +7,7 @@ import AdminSidebar from './admin/AdminSidebar';
 import ContentGrid from './admin/ContentGrid';
 import EditItemModal from './admin/EditItemModal';
 import GitHubConfigForm from './admin/GitHubConfigForm';
-import { TeamMember, Project, Post, Service, CurrentUser, Job, Partner, GitHubConfig } from '../types';
+import { TeamMember, Project, Post, Service, CurrentUser, Job, Partner, GitHubConfig, Testimonial } from '../types';
 import { slugify } from '../utils/format';
 import {
   getGitHubConfig,
@@ -24,10 +24,20 @@ interface AdminDashboardProps {
   onViewSite: () => void;
 }
 
-type TabType = 'team' | 'projects' | 'insights' | 'services' | 'careers' | 'settings' | 'partners';
+type TabType = 'team' | 'projects' | 'insights' | 'services' | 'careers' | 'settings' | 'partners' | 'stories';
+
+// Helper function to generate deterministic color from name
+const getColorFromName = (name: string): string => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const colors = ['3b82f6', '8b5cf6', 'ec4899', 'f97316', '10b981', '06b6d4', 'f59e0b', 'ef4444'];
+  return colors[Math.abs(hash) % colors.length];
+};
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, onViewSite }) => {
-  const { isUsingSupabase, team = [], projects = [], insights = [], services: localServices = [], jobs = [], partners = [], updateTeamOrder, refreshData } = useData();
+  const { isUsingSupabase, team = [], projects = [], insights = [], services: localServices = [], jobs = [], partners = [], testimonials = [], updateTeamOrder, refreshData } = useData();
   const [activeTab, setActiveTab] = useState<TabType>('team'); // Default to Team for members
   const [dbConfig, setDbConfig] = useState<{url: string, key: string} | null>(null);
   
@@ -38,6 +48,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   const [adminServices, setAdminServices] = useState<Service[]>(localServices);
   const [adminJobs, setAdminJobs] = useState<Job[]>(jobs);
   const [adminPartners, setAdminPartners] = useState<Partner[]>(partners);
+  const [adminStories, setAdminStories] = useState<Testimonial[]>(testimonials);
 
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -73,7 +84,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
       setAdminServices(localServices || []);
       setAdminJobs(jobs || []);
       setAdminPartners(partners || []);
-  }, [team, projects, insights, localServices, jobs, partners]);
+      setAdminStories(testimonials || []);
+  }, [team, projects, insights, localServices, jobs, partners, testimonials]);
 
   const handleConfigSave = (e: React.FormEvent) => {
       e.preventDefault();
@@ -138,7 +150,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
       insights: { title: '', titleKm: '', excerpt: '', content: '', date: new Date().toISOString().split('T')[0], category: 'Design', image: '', authorId: currentUser.role === 'member' ? currentUser.id : 't1' },
       services: { title: '', titleKm: '', subtitle: '', subtitleKm: '', description: '', descriptionKm: '', features: [], featuresKm: [], icon: 'Box', color: 'bg-indigo-500', image: '' },
       careers: { title: '', type: 'Full-time', location: 'Phnom Penh', department: 'Engineering', icon: 'Code', link: '', description: '' },
-      partners: { name: '', icon: 'Building2', image: '' }
+      partners: { name: '', icon: 'Building2', image: '' },
+      stories: { name: '', role: 'Client', company: '', content: '', contentKm: '', avatar: '' }
     };
     setEditingItem(templates[activeTab]);
     setIsModalOpen(true);
@@ -189,6 +202,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (type === 'service') setAdminServices(updater);
           if (type === 'job') setAdminJobs(updater);
           if (type === 'partner') setAdminPartners(updater);
+          if (type === 'story') setAdminStories(updater);
           
           alert("Item hidden from view.\n\nNote: Since this is a static item (hardcoded), it will reappear if you refresh the page unless you create a database version with the exact same Title/Slug to override it.");
           return;
@@ -207,6 +221,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (type === 'service') table = 'services';
           if (type === 'job') table = 'jobs';
           if (type === 'partner') table = 'partners';
+          if (type === 'story') table = 'reviews';
 
           const { error } = await supabase.from(table).delete().eq('id', id);
 
@@ -221,6 +236,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (type === 'service') setAdminServices(updater);
           if (type === 'job') setAdminJobs(updater);
           if (type === 'partner') setAdminPartners(updater);
+          if (type === 'story') setAdminStories(updater);
           
           // CRITICAL: Refresh Global DataContext so public site is updated
           await refreshData(); 
@@ -351,6 +367,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                   icon: (typeof item.icon === 'string' && item.icon.trim()) ? item.icon : 'Building2',
                   image: item.image
               }
+          } else if (activeTab === 'stories') {
+              table = 'reviews';
+              // Generate deterministic avatar if empty
+              const avatarUrl = item.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=${getColorFromName(item.name)}`;
+              payload = {
+                  name: item.name,
+                  role: item.role || 'Client',
+                  company: item.company || '',
+                  content: item.content,
+                  content_km: item.contentKm || item.content,
+                  avatar: avatarUrl
+              }
           }
 
           // SMART CHECK: If we are about to INSERT because ID is static, check if SLUG exists in DB first (except Partners/Jobs which might rely on ID)
@@ -428,6 +456,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (activeTab === 'services') setAdminServices(updater(adminServices));
           if (activeTab === 'careers') setAdminJobs(updater(adminJobs));
           if (activeTab === 'partners') setAdminPartners(updater(adminPartners));
+          if (activeTab === 'stories') setAdminStories(updater(adminStories));
 
           // CRITICAL: Refresh Global DataContext
           await refreshData();
@@ -721,7 +750,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                     activeTab={activeTab}
                     isSuperAdmin={currentUser.role === 'admin'}
                     memberId={currentUser.id}
-                    data={{ team: adminTeam, projects: adminProjects, insights: adminInsights, services: adminServices, jobs: adminJobs, partners: adminPartners }}
+                    data={{ team: adminTeam, projects: adminProjects, insights: adminInsights, services: adminServices, jobs: adminJobs, partners: adminPartners, stories: adminStories }}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onReorderTeam={handleReorderTeam}
