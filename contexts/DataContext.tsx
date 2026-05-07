@@ -3,7 +3,7 @@ import { SERVICES, PROJECTS, TEAM, INSIGHTS, JOBS, PARTNERS, TESTIMONIALS } from
 import { Service, Project, TeamMember, Post, Job, Partner, Testimonial } from '../types';
 import { getSupabaseClient } from '../lib/supabase';
 import { getMergedHiddenStaticStories } from '../lib/github';
-import * as LucideIcons from 'lucide-react';
+import { BookOpen, Box, Briefcase, Building2, Camera, Code, Cpu, Droplet, Feather, Gem, Globe, Home, Languages, Layout, Lightbulb, Monitor, Palette, PenLine, PenTool, Rocket, Search, Video, Wind, Zap, type LucideIcon } from 'lucide-react';
 import { slugify } from '../utils/format';
 
 // Helper function to generate deterministic color from name
@@ -14,6 +14,33 @@ const getColorFromName = (name: string): string => {
   }
   const colors = ['3b82f6', '8b5cf6', 'ec4899', 'f97316', '10b981', '06b6d4', 'f59e0b', 'ef4444'];
   return colors[Math.abs(hash) % colors.length];
+};
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  bookopen: BookOpen,
+  box: Box,
+  briefcase: Briefcase,
+  building2: Building2,
+  camera: Camera,
+  code: Code,
+  cpu: Cpu,
+  droplet: Droplet,
+  feather: Feather,
+  gem: Gem,
+  globe: Globe,
+  home: Home,
+  languages: Languages,
+  layout: Layout,
+  lightbulb: Lightbulb,
+  monitor: Monitor,
+  palette: Palette,
+  penline: PenLine,
+  pentool: PenTool,
+  rocket: Rocket,
+  search: Search,
+  video: Video,
+  wind: Wind,
+  zap: Zap,
 };
 
 interface DataContextType {
@@ -61,8 +88,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Helper to get Lucide Icon from string
   const getIcon = (iconName: string, defaultIcon: React.ReactNode) => {
       if (!iconName) return defaultIcon;
-      const formattedName = iconName.charAt(0).toUpperCase() + iconName.slice(1);
-      const IconComponent = (LucideIcons as any)[formattedName];
+      const IconComponent = ICON_MAP[iconName.toLowerCase()];
       return IconComponent ? <IconComponent size={24} /> : defaultIcon;
   };
 
@@ -175,7 +201,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 titleKm: s.title_km,
                 subtitle: s.subtitle,
                 subtitleKm: s.subtitle_km,
-                icon: getIcon(s.icon, <LucideIcons.Box size={32} />),
+                icon: getIcon(s.icon, <Box size={32} />),
                 _iconString: s.icon, 
                 color: s.color || 'bg-indigo-500',
                 link: s.link || '#',
@@ -201,7 +227,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 department: j.department,
                 description: j.description,
                 link: j.link,
-                icon: getIcon(j.icon, <LucideIcons.Briefcase size={24} />),
+                icon: getIcon(j.icon, <Briefcase size={24} />),
                 _iconString: j.icon,
                 slug: j.slug || slugify(j.title)
             }));
@@ -215,7 +241,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const formatted = dbPartners.map((p: any) => ({
                 id: p.id,
                 name: p.name,
-                icon: getIcon(p.icon, <LucideIcons.Building2 size={32} />),
+                icon: getIcon(p.icon, <Building2 size={32} />),
                 _iconString: p.icon,
                 image: p.image
             }));

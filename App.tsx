@@ -15,8 +15,6 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ScrollButton from './components/ScrollButton';
 import FloatingChat from './components/FloatingChat'; 
-import Preloader from './components/Preloader';
-import SplashScreen from './components/SplashScreen';
 import OfflinePage from './components/OfflinePage';
 import InstallPrompt from './components/InstallPrompt';
 import Stats from './components/Stats';
@@ -46,7 +44,6 @@ const ComponentFallback: React.FC = () => (
 );
 
 function AppContent() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isViewingSite, setIsViewingSite] = useState(false);
   const [activePage, setActivePage] = useState<string | null>(null);
   
@@ -63,14 +60,6 @@ function AppContent() {
   const [loginError, setLoginError] = useState(false);
   const { team } = useData();
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
-
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      setMousePosition({ x: event.clientX, y: event.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   // --- ROUTING LOGIC ---
   useEffect(() => {
@@ -139,15 +128,11 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden selection:bg-indigo-500 selection:text-white relative">
-      <Preloader />
-      <SplashScreen />
       <OfflinePage />
       <InstallPrompt />
       
-      <div 
-        className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-300 opacity-50"
-        style={{ background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.1), transparent 40%)` }}
-      />
+      <div className="pointer-events-none fixed inset-0 z-30 opacity-40 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.16),transparent_45%)]" />
+      <div className="pointer-events-none fixed inset-x-0 top-1/3 z-30 h-80 bg-[radial-gradient(circle,rgba(168,85,247,0.08),transparent_55%)]" />
       
       <Header />
       

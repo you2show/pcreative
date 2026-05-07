@@ -78,7 +78,7 @@ const TeamStack: React.FC<TeamStackProps> = ({ onMemberSelect }) => {
                         className="relative w-12 h-12 rounded-full border-2 border-gray-900 overflow-hidden cursor-pointer hover:scale-110 hover:z-20 hover:border-indigo-500 transition-all duration-300 bg-gray-800"
                         title={member.name}
                     >
-                        <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                        <img src={member.image} alt={member.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                     </div>
                 ))}
                 
@@ -107,7 +107,7 @@ const TeamStack: React.FC<TeamStackProps> = ({ onMemberSelect }) => {
                                 onClick={() => handleMemberClick(member.id)}
                                 className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-indigo-50 transition-colors group text-left"
                             >
-                                <img src={member.image} alt={member.name} className="w-8 h-8 rounded-full object-cover border border-gray-200" />
+                                <img src={member.image} alt={member.name} className="w-8 h-8 rounded-full object-cover border border-gray-200" loading="lazy" decoding="async" />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-bold text-gray-800 truncate group-hover:text-indigo-700">{member.name}</p>
                                     <p className="text-[10px] text-gray-500 truncate">{member.role}</p>
@@ -287,6 +287,8 @@ const About: React.FC<AboutProps> = ({ onClose }) => {
                             src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=2000" 
                             alt="Team Culture" 
                             className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"
+                            loading="lazy"
+                            decoding="async"
                         />
                         <div className="absolute inset-0 bg-indigo-900/60 mix-blend-multiply"></div>
                         <div className="absolute inset-0 flex items-center justify-center">

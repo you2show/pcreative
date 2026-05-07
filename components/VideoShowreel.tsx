@@ -91,6 +91,8 @@ const VideoShowreel: React.FC = () => {
               alt="Showreel thumbnail"
               className="w-full object-cover transition-transform duration-700 group-hover:scale-105"
               style={{ aspectRatio: '16/9' }}
+              loading="lazy"
+              decoding="async"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).src =
                   'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200';
