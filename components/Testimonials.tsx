@@ -6,6 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import ScrollBackgroundText from './ScrollBackgroundText';
 import RevealOnScroll from './RevealOnScroll';
 import { getSupabaseClient } from '../lib/supabase';
+import { getMergedHiddenStaticStories } from '../lib/github';
 import { Testimonial } from '../types';
 
 const Testimonials: React.FC = () => {
@@ -24,14 +25,18 @@ const Testimonials: React.FC = () => {
 
   // Fetch Reviews from DB
   useEffect(() => {
+    let mounted = true;
     const fetchReviews = async () => {
+        const hiddenStatic = await getMergedHiddenStaticStories();
+        const visibleStaticReviews = TESTIMONIALS.filter(t => !hiddenStatic.includes(t.id));
         const supabase = getSupabaseClient();
-        if(!supabase) return;
+        if(!supabase) {
+            if (mounted) setReviews(visibleStaticReviews);
+            return;
+        }
 
         const { data } = await supabase.from('reviews').select('*').order('created_at', { ascending: false });
         if(data && data.length > 0) {
-            // Merge DB reviews with static ones, or just replace.
-            // Let's prepend DB reviews to static ones so they appear first in marquee
             const dbReviews: Testimonial[] = data.map((r:any) => ({
                 id: r.id,
                 name: r.name,
@@ -41,12 +46,19 @@ const Testimonials: React.FC = () => {
                 contentKm: r.content, // Fallback
                 avatar: r.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(r.name)}&background=random`
             }));
-            
-            // Combine: New DB reviews first + original static reviews
-            setReviews([...dbReviews, ...TESTIMONIALS]);
+            if (mounted) setReviews([...dbReviews, ...visibleStaticReviews]);
+            return;
         }
+        if (mounted) setReviews(visibleStaticReviews);
     };
     fetchReviews();
+
+    const onHiddenStaticUpdated = () => { fetchReviews(); };
+    window.addEventListener('hidden_static_stories_updated', onHiddenStaticUpdated);
+    return () => {
+      mounted = false;
+      window.removeEventListener('hidden_static_stories_updated', onHiddenStaticUpdated);
+    };
   }, []);
 
   // Lock body scroll when modal is open

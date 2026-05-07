@@ -15,6 +15,9 @@ import {
   clearGitHubConfig,
   fetchSiteDataFromGitHub,
   writeSiteDataToGitHub,
+  getLocalHiddenStaticStories,
+  saveLocalHiddenStaticStories,
+  syncHiddenStaticStoriesToGitHub,
 } from '../lib/github';
 import { testTelegramConnection } from '../lib/telegram';
 
@@ -49,6 +52,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   const [adminJobs, setAdminJobs] = useState<Job[]>(jobs);
   const [adminPartners, setAdminPartners] = useState<Partner[]>(partners);
   const [adminStories, setAdminStories] = useState<Testimonial[]>(testimonials);
+  const [hiddenStaticIds, setHiddenStaticIds] = useState<string[]>(getLocalHiddenStaticStories);
 
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -187,15 +191,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 
       if (!window.confirm("Are you sure you want to delete this item?")) return;
       
-      // Check if it's a UUID (Database Item)
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-      const isStatic = !uuidRegex.test(id);
-
-      // CASE 1: STATIC ITEM (ALLOW HIDING)
-      if (isStatic) {
-          // Simply remove from local state to "hide" it from view
+      const hideItem = () => {
           const updater = (prev: any[]) => prev.filter(i => i.id !== id);
-          
           if (type === 'team') setAdminTeam(updater);
           if (type === 'project') setAdminProjects(updater);
           if (type === 'insight') setAdminInsights(updater);
@@ -203,14 +200,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (type === 'job') setAdminJobs(updater);
           if (type === 'partner') setAdminPartners(updater);
           if (type === 'story') setAdminStories(updater);
-          
-          alert("Item hidden from view.\n\nNote: Since this is a static item (hardcoded), it will reappear if you refresh the page unless you create a database version with the exact same Title/Slug to override it.");
+      };
+
+      const supabase = getSupabaseClient();
+      if (!supabase) {
+          alert("Cannot connect to database. Item will only be hidden locally.");
+          hideItem();
           return;
       }
-
-      // CASE 2: DATABASE ITEM
-      const supabase = getSupabaseClient();
-      if (!supabase) return;
 
       setIsSyncing(true);
       try {
@@ -223,28 +220,53 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (type === 'partner') table = 'partners';
           if (type === 'story') table = 'reviews';
 
-          const { error } = await supabase.from(table).delete().eq('id', id);
+          const { data: deletedRows, error } = await supabase
+              .from(table)
+              .delete()
+              .eq('id', id)
+              .select('id');
 
           if (error) throw error;
-          
-          // Optimistic Update
-          const updater = (prev: any[]) => prev.filter(i => i.id !== id);
 
-          if (type === 'team') setAdminTeam(updater);
-          if (type === 'project') setAdminProjects(updater);
-          if (type === 'insight') setAdminInsights(updater);
-          if (type === 'service') setAdminServices(updater);
-          if (type === 'job') setAdminJobs(updater);
-          if (type === 'partner') setAdminPartners(updater);
-          if (type === 'story') setAdminStories(updater);
-          
-          // CRITICAL: Refresh Global DataContext so public site is updated
-          await refreshData(); 
-
-          alert("Item deleted permanently!");
+          hideItem();
+          if (deletedRows?.length) {
+              // CRITICAL: Refresh Global DataContext so public site is updated
+              await refreshData();
+              alert("Item deleted permanently!");
+          } else {
+              alert("Item hidden from view. No matching record found in the database.");
+          }
       } catch (err) {
           console.error(err);
           alert("Failed to delete. Check console.");
+      } finally {
+          setIsSyncing(false);
+      }
+  };
+
+  const handleToggleStatic = async (id: string) => {
+      const localOnlyMessage = 'បានកែប្រែ Hide/Show តែ local ប៉ុណ្ណោះ។ សូមពិនិត្យ GitHub Config ឬ permissions ដើម្បី sync ទៅ global។';
+      const next = hiddenStaticIds.includes(id)
+        ? hiddenStaticIds.filter(x => x !== id)
+        : [...hiddenStaticIds, id];
+      setHiddenStaticIds(next);
+      saveLocalHiddenStaticStories(next);
+      window.dispatchEvent(new Event('hidden_static_stories_updated'));
+      await refreshData();
+
+      const ghCfg = getGitHubConfig();
+      if (!ghCfg) return;
+
+      setIsSyncing(true);
+      try {
+          const ok = await syncHiddenStaticStoriesToGitHub(ghCfg, next);
+          if (ok) {
+              await refreshData();
+          } else {
+              alert(localOnlyMessage);
+          }
+      } catch {
+          alert(localOnlyMessage);
       } finally {
           setIsSyncing(false);
       }
@@ -754,6 +776,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onReorderTeam={handleReorderTeam}
+                    hiddenStaticIds={hiddenStaticIds}
+                    onToggleStatic={handleToggleStatic}
                  />
              )}
           </main>
