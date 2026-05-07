@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useCa
 import { SERVICES, PROJECTS, TEAM, INSIGHTS, JOBS, PARTNERS, TESTIMONIALS } from '../constants';
 import { Service, Project, TeamMember, Post, Job, Partner, Testimonial } from '../types';
 import { getSupabaseClient } from '../lib/supabase';
+import { getMergedHiddenStaticStories } from '../lib/github';
 import * as LucideIcons from 'lucide-react';
 import { slugify } from '../utils/format';
 
@@ -67,7 +68,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const fetchData = useCallback(async () => {
       const supabase = getSupabaseClient();
+      const hiddenStatic = await getMergedHiddenStaticStories();
+      const visibleStaticTestimonials = TESTIMONIALS.filter(t => !hiddenStatic.includes(t.id));
       if (!supabase) {
+          setTestimonials(visibleStaticTestimonials);
           setIsLoading(false);
           return;
       }
@@ -220,7 +224,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         // Fetch Testimonials (Reviews/Client Stories)
         const { data: dbTestimonials } = await supabase.from('reviews').select('*').order('created_at', { ascending: false });
-        if (dbTestimonials && dbTestimonials.length > 0) {
+        if (dbTestimonials) {
             const formatted = dbTestimonials.map((t: any) => ({
                 id: t.id,
                 name: t.name,
@@ -230,16 +234,14 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 contentKm: t.content_km || t.content,
                 avatar: t.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=${getColorFromName(t.name)}`
             }));
-            // Filter out hidden static stories, then prepend DB testimonials
-            const hiddenStatic: string[] = JSON.parse(localStorage.getItem('hidden_static_stories') || '[]');
-            setTestimonials([...formatted, ...TESTIMONIALS.filter(t => !hiddenStatic.includes(t.id))]);
+            setTestimonials([...formatted, ...visibleStaticTestimonials]);
         }
 
         setIsUsingSupabase(true);
       } catch (error) {
         console.warn("⚠️ Failed to fetch from Supabase.", error);
         setIsUsingSupabase(false);
-        // On error, we rely on the initial state (Static Constants)
+        setTestimonials(visibleStaticTestimonials);
       } finally {
         setIsLoading(false);
       }

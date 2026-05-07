@@ -15,6 +15,9 @@ import {
   clearGitHubConfig,
   fetchSiteDataFromGitHub,
   writeSiteDataToGitHub,
+  getLocalHiddenStaticStories,
+  saveLocalHiddenStaticStories,
+  syncHiddenStaticStoriesToGitHub,
 } from '../lib/github';
 import { testTelegramConnection } from '../lib/telegram';
 
@@ -49,9 +52,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   const [adminJobs, setAdminJobs] = useState<Job[]>(jobs);
   const [adminPartners, setAdminPartners] = useState<Partner[]>(partners);
   const [adminStories, setAdminStories] = useState<Testimonial[]>(testimonials);
-  const [hiddenStaticIds, setHiddenStaticIds] = useState<string[]>(() => {
-    try { return JSON.parse(localStorage.getItem('hidden_static_stories') || '[]'); } catch { return []; }
-  });
+  const [hiddenStaticIds, setHiddenStaticIds] = useState<string[]>(getLocalHiddenStaticStories);
 
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -243,12 +244,31 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
       }
   };
 
-  const handleToggleStatic = (id: string) => {
-      setHiddenStaticIds(prev => {
-          const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
-          localStorage.setItem('hidden_static_stories', JSON.stringify(next));
-          return next;
-      });
+  const handleToggleStatic = async (id: string) => {
+      const next = hiddenStaticIds.includes(id)
+        ? hiddenStaticIds.filter(x => x !== id)
+        : [...hiddenStaticIds, id];
+      setHiddenStaticIds(next);
+      saveLocalHiddenStaticStories(next);
+      window.dispatchEvent(new Event('hidden_static_stories_updated'));
+      await refreshData();
+
+      const ghCfg = getGitHubConfig();
+      if (!ghCfg) return;
+
+      setIsSyncing(true);
+      try {
+          const ok = await syncHiddenStaticStoriesToGitHub(ghCfg, next);
+          if (ok) {
+              await refreshData();
+          } else {
+              alert('បានកែប្រែ Hide/Show តែ local ប៉ុណ្ណោះ។ សូមពិនិត្យ GitHub Config ឬ permissions ដើម្បី sync ទៅ global។');
+          }
+      } catch {
+          alert('បានកែប្រែ Hide/Show តែ local ប៉ុណ្ណោះ។ ការផ្ញើទៅ global បរាជ័យ។');
+      } finally {
+          setIsSyncing(false);
+      }
   };
 
   const handleSave = async (e: React.FormEvent) => {
