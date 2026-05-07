@@ -200,6 +200,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 
       const supabase = getSupabaseClient();
       if (!supabase) {
+          alert("Cannot connect to database. Item will only be hidden locally.");
           hideItem();
           return;
       }
@@ -223,13 +224,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 
           if (error) throw error;
 
+          hideItem();
           if (deletedRows?.length) {
-              hideItem();
               // CRITICAL: Refresh Global DataContext so public site is updated
               await refreshData();
               alert("Item deleted permanently!");
           } else {
-              hideItem();
               alert("Item hidden from view.\n\nNote: This item appears to be static (hardcoded), so it may reappear after refresh.");
           }
       } catch (err) {
