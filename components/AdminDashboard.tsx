@@ -245,6 +245,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   };
 
   const handleToggleStatic = async (id: string) => {
+      const localOnlyMessage = 'បានកែប្រែ Hide/Show តែ local ប៉ុណ្ណោះ។ សូមពិនិត្យ GitHub Config ឬ permissions ដើម្បី sync ទៅ global។';
       const next = hiddenStaticIds.includes(id)
         ? hiddenStaticIds.filter(x => x !== id)
         : [...hiddenStaticIds, id];
@@ -262,10 +263,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (ok) {
               await refreshData();
           } else {
-              alert('បានកែប្រែ Hide/Show តែ local ប៉ុណ្ណោះ។ សូមពិនិត្យ GitHub Config ឬ permissions ដើម្បី sync ទៅ global។');
+              alert(localOnlyMessage);
           }
       } catch {
-          alert('បានកែប្រែ Hide/Show តែ local ប៉ុណ្ណោះ។ ការផ្ញើទៅ global បរាជ័យ។');
+          alert(localOnlyMessage);
       } finally {
           setIsSyncing(false);
       }

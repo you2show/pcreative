@@ -3,11 +3,6 @@ export type { GitHubConfig };
 
 const GITHUB_CONFIG_KEY = 'github_config';
 const HIDDEN_STATIC_STORIES_KEY = 'hidden_static_stories';
-const DEFAULT_PUBLIC_SITE_DATA = {
-  username: 'you2show',
-  repo: 'pcreative',
-  branch: 'main',
-} as const;
 
 export const getGitHubConfig = (): GitHubConfig | null => {
   try {
@@ -115,11 +110,11 @@ const parseHiddenStaticStories = (data: Record<string, unknown> | null): string[
 const fetchHiddenStaticStoriesPublic = async (): Promise<string[]> => {
   try {
     const ghCfg = getGitHubConfig();
-    const url = getSiteDataRawUrl(
-      ghCfg
-        ? { username: ghCfg.username, repo: ghCfg.repo, branch: ghCfg.branch }
-        : DEFAULT_PUBLIC_SITE_DATA
-    );
+    const envSiteDataUrl = (import.meta.env.VITE_SITE_DATA_URL as string | undefined)?.trim();
+    const url = ghCfg
+      ? getSiteDataRawUrl({ username: ghCfg.username, repo: ghCfg.repo, branch: ghCfg.branch })
+      : envSiteDataUrl;
+    if (!url) return [];
     const res = await fetch(`${url}?t=${Date.now()}`);
     if (!res.ok) return [];
     const data = await res.json();
