@@ -187,15 +187,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 
       if (!window.confirm("Are you sure you want to delete this item?")) return;
       
-      // Check if it's a UUID (Database Item)
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-      const isStatic = !uuidRegex.test(id);
-
-      // CASE 1: STATIC ITEM (ALLOW HIDING)
-      if (isStatic) {
-          // Simply remove from local state to "hide" it from view
-          const updater = (prev: any[]) => prev.filter(i => i.id !== id);
-          
+      const updater = (prev: any[]) => prev.filter(i => i.id !== id);
+      const hideItem = () => {
           if (type === 'team') setAdminTeam(updater);
           if (type === 'project') setAdminProjects(updater);
           if (type === 'insight') setAdminInsights(updater);
@@ -203,14 +196,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (type === 'job') setAdminJobs(updater);
           if (type === 'partner') setAdminPartners(updater);
           if (type === 'story') setAdminStories(updater);
-          
-          alert("Item hidden from view.\n\nNote: Since this is a static item (hardcoded), it will reappear if you refresh the page unless you create a database version with the exact same Title/Slug to override it.");
+      };
+
+      const supabase = getSupabaseClient();
+      if (!supabase) {
+          hideItem();
           return;
       }
-
-      // CASE 2: DATABASE ITEM
-      const supabase = getSupabaseClient();
-      if (!supabase) return;
 
       setIsSyncing(true);
       try {
@@ -223,25 +215,23 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (type === 'partner') table = 'partners';
           if (type === 'story') table = 'reviews';
 
-          const { error } = await supabase.from(table).delete().eq('id', id);
+          const { data: deletedRows, error } = await supabase
+              .from(table)
+              .delete()
+              .eq('id', id)
+              .select('id');
 
           if (error) throw error;
-          
-          // Optimistic Update
-          const updater = (prev: any[]) => prev.filter(i => i.id !== id);
 
-          if (type === 'team') setAdminTeam(updater);
-          if (type === 'project') setAdminProjects(updater);
-          if (type === 'insight') setAdminInsights(updater);
-          if (type === 'service') setAdminServices(updater);
-          if (type === 'job') setAdminJobs(updater);
-          if (type === 'partner') setAdminPartners(updater);
-          if (type === 'story') setAdminStories(updater);
-          
-          // CRITICAL: Refresh Global DataContext so public site is updated
-          await refreshData(); 
-
-          alert("Item deleted permanently!");
+          if (deletedRows && deletedRows.length > 0) {
+              hideItem();
+              // CRITICAL: Refresh Global DataContext so public site is updated
+              await refreshData();
+              alert("Item deleted permanently!");
+          } else {
+              hideItem();
+              alert("Item hidden from view.\n\nNote: This item appears to be static (hardcoded), so it may reappear after refresh.");
+          }
       } catch (err) {
           console.error(err);
           alert("Failed to delete. Check console.");
