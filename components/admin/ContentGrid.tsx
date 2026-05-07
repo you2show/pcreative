@@ -1,9 +1,12 @@
 import React from 'react';
-import { Edit, Trash2, FileText, Lock, GripVertical, MapPin, Briefcase } from 'lucide-react';
+import { Edit, Trash2, FileText, Lock, GripVertical, MapPin, Briefcase, Eye, EyeOff } from 'lucide-react';
 import { TeamMember, Project, Post, Service, Job, Partner, Testimonial } from '../../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const isStaticStoryId = (id: string) => !uuidRegex.test(id || '');
 
 interface ContentGridProps {
   activeTab: 'team' | 'projects' | 'insights' | 'services' | 'careers' | 'settings' | 'partners' | 'stories';
@@ -13,6 +16,8 @@ interface ContentGridProps {
   onEdit: (item: any) => void;
   onDelete: (type: 'service' | 'project' | 'team' | 'insight' | 'job' | 'partner' | 'story', id: string) => void;
   onReorderTeam?: (newOrder: TeamMember[]) => void;
+  hiddenStaticIds?: string[];
+  onToggleStatic?: (id: string) => void;
 }
 
 // Sortable Item Component
@@ -64,7 +69,7 @@ const SortableTeamItem = ({ item, isSuperAdmin, memberId, getPostCount, onEdit, 
     );
 };
 
-const ContentGrid: React.FC<ContentGridProps> = ({ activeTab, isSuperAdmin, memberId, data, onEdit, onDelete, onReorderTeam }) => {
+const ContentGrid: React.FC<ContentGridProps> = ({ activeTab, isSuperAdmin, memberId, data, onEdit, onDelete, onReorderTeam, hiddenStaticIds = [], onToggleStatic }) => {
   const getPostCount = (authorId: string) => (data.insights || []).filter(post => post.authorId === authorId).length;
   
   // DnD Sensors
@@ -217,22 +222,43 @@ const ContentGrid: React.FC<ContentGridProps> = ({ activeTab, isSuperAdmin, memb
       ))}
 
       {/* CLIENT STORIES */}
-      {activeTab === 'stories' && isSuperAdmin && (data.stories || []).map(item => (
-        <div key={item.id} className="bg-gray-900 border border-white/10 rounded-xl p-4 flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-                <img src={item.avatar} alt={item.name} className="w-12 h-12 rounded-full object-cover border-2 border-indigo-500/30" />
-                <div>
-                    <h4 className="font-bold text-white">{item.name}</h4>
-                    <p className="text-xs text-indigo-400">{item.role}{item.company ? `, ${item.company}` : ''}</p>
-                </div>
-            </div>
-            <p className="text-gray-300 text-sm line-clamp-3 italic">"{item.content}"</p>
-            <div className="mt-auto flex gap-2">
-                <button onClick={() => onEdit(item)} className="flex-1 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm font-bold flex items-center justify-center gap-2"><Edit size={14} /> Edit</button>
-                <button onClick={() => onDelete('story', item.id)} className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg"><Trash2 size={16} /></button>
-            </div>
-        </div>
-      ))}
+      {activeTab === 'stories' && isSuperAdmin && (data.stories || []).map(item => {
+        const isStatic = isStaticStoryId(item.id);
+        const isHidden = hiddenStaticIds.includes(item.id);
+        return (
+          <div key={item.id} className={`bg-gray-900 border rounded-xl p-4 flex flex-col gap-4 transition-opacity ${isHidden ? 'opacity-40 border-gray-700' : 'border-white/10'}`}>
+              {isStatic && (
+                <span className="self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest bg-yellow-500/20 text-yellow-400 rounded">
+                  MOCKUP
+                </span>
+              )}
+              <div className="flex items-center gap-3">
+                  <img src={item.avatar} alt={item.name} className="w-12 h-12 rounded-full object-cover border-2 border-indigo-500/30" />
+                  <div>
+                      <h4 className="font-bold text-white">{item.name}</h4>
+                      <p className="text-xs text-indigo-400">{item.role}{item.company ? `, ${item.company}` : ''}</p>
+                  </div>
+              </div>
+              <p className="text-gray-300 text-sm line-clamp-3 italic">"{item.content}"</p>
+              <div className="mt-auto flex gap-2">
+                  {!isStatic && (
+                    <button onClick={() => onEdit(item)} className="flex-1 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm font-bold flex items-center justify-center gap-2"><Edit size={14} /> Edit</button>
+                  )}
+                  {isStatic ? (
+                    <button
+                      onClick={() => onToggleStatic?.(item.id)}
+                      title={isHidden ? 'បង្ហាញ (Show on site)' : 'លាក់ (Hide from site)'}
+                      className={`flex-1 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-colors ${isHidden ? 'bg-green-500/10 hover:bg-green-500/20 text-green-400' : 'bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400'}`}
+                    >
+                      {isHidden ? <><Eye size={14} /> បង្ហាញ</> : <><EyeOff size={14} /> លាក់</>}
+                    </button>
+                  ) : (
+                    <button onClick={() => onDelete('story', item.id)} className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg"><Trash2 size={16} /></button>
+                  )}
+              </div>
+          </div>
+        );
+      })}
     </div>
   );
 };

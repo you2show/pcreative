@@ -42,8 +42,9 @@ const Testimonials: React.FC = () => {
                 avatar: r.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(r.name)}&background=random`
             }));
             
-            // Combine: New DB reviews first + original static reviews
-            setReviews([...dbReviews, ...TESTIMONIALS]);
+            // Combine: New DB reviews first + visible static reviews
+            const hiddenStatic: string[] = JSON.parse(localStorage.getItem('hidden_static_stories') || '[]');
+            setReviews([...dbReviews, ...TESTIMONIALS.filter(t => !hiddenStatic.includes(t.id))]);
         }
     };
     fetchReviews();

@@ -49,6 +49,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   const [adminJobs, setAdminJobs] = useState<Job[]>(jobs);
   const [adminPartners, setAdminPartners] = useState<Partner[]>(partners);
   const [adminStories, setAdminStories] = useState<Testimonial[]>(testimonials);
+  const [hiddenStaticIds, setHiddenStaticIds] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem('hidden_static_stories') || '[]'); } catch { return []; }
+  });
 
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -238,6 +241,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
       } finally {
           setIsSyncing(false);
       }
+  };
+
+  const handleToggleStatic = (id: string) => {
+      setHiddenStaticIds(prev => {
+          const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
+          localStorage.setItem('hidden_static_stories', JSON.stringify(next));
+          // Sync adminStories visibility immediately
+          setAdminStories(stories => stories.map(s => s.id === id ? { ...s, _hidden: !prev.includes(id) } : s));
+          return next;
+      });
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -744,6 +757,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onReorderTeam={handleReorderTeam}
+                    hiddenStaticIds={hiddenStaticIds}
+                    onToggleStatic={handleToggleStatic}
                  />
              )}
           </main>

@@ -230,8 +230,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 contentKm: t.content_km || t.content,
                 avatar: t.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=${getColorFromName(t.name)}`
             }));
-            // Prepend DB testimonials to static ones
-            setTestimonials([...formatted, ...TESTIMONIALS]);
+            // Filter out hidden static stories, then prepend DB testimonials
+            const hiddenStatic: string[] = JSON.parse(localStorage.getItem('hidden_static_stories') || '[]');
+            setTestimonials([...formatted, ...TESTIMONIALS.filter(t => !hiddenStatic.includes(t.id))]);
         }
 
         setIsUsingSupabase(true);
