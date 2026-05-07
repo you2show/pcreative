@@ -62,12 +62,6 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
           }
       }
   };
-      const file = e.target.files?.[0];
-      if (file) {
-          const url = await uploadImage(file);
-          if (url) setEditingItem({ ...editingItem, image: url });
-      }
-  };
 
   // Gallery Upload Handler
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
