@@ -233,7 +233,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
               await refreshData();
               alert("Item deleted permanently!");
           } else {
-              alert("Item hidden from view.\n\nNote: This item appears to be static (hardcoded), so it may reappear after refresh.");
+              alert("Item hidden from view. No matching record found in the database.");
           }
       } catch (err) {
           console.error(err);
@@ -247,8 +247,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
       setHiddenStaticIds(prev => {
           const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
           localStorage.setItem('hidden_static_stories', JSON.stringify(next));
-          // Sync adminStories visibility immediately
-          setAdminStories(stories => stories.map(s => s.id === id ? { ...s, _hidden: !prev.includes(id) } : s));
           return next;
       });
   };

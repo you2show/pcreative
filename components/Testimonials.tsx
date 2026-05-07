@@ -43,7 +43,8 @@ const Testimonials: React.FC = () => {
             }));
             
             // Combine: New DB reviews first + visible static reviews
-            const hiddenStatic: string[] = JSON.parse(localStorage.getItem('hidden_static_stories') || '[]');
+            let hiddenStatic: string[] = [];
+            try { hiddenStatic = JSON.parse(localStorage.getItem('hidden_static_stories') || '[]'); } catch { /* ignore */ }
             setReviews([...dbReviews, ...TESTIMONIALS.filter(t => !hiddenStatic.includes(t.id))]);
         }
     };

@@ -241,9 +241,14 @@ const ContentGrid: React.FC<ContentGridProps> = ({ activeTab, isSuperAdmin, memb
               </div>
               <p className="text-gray-300 text-sm line-clamp-3 italic">"{item.content}"</p>
               <div className="mt-auto flex gap-2">
-                  {!isStatic && (
-                    <button onClick={() => onEdit(item)} className="flex-1 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm font-bold flex items-center justify-center gap-2"><Edit size={14} /> Edit</button>
-                  )}
+                  <button
+                    onClick={() => !isStatic && onEdit(item)}
+                    disabled={isStatic}
+                    title={isStatic ? 'Mockup data cannot be edited' : 'Edit'}
+                    className={`flex-1 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 ${isStatic ? 'bg-white/5 text-gray-600 cursor-not-allowed opacity-40' : 'bg-white/5 hover:bg-white/10 text-white'}`}
+                  >
+                    <Edit size={14} /> Edit
+                  </button>
                   {isStatic ? (
                     <button
                       onClick={() => onToggleStatic?.(item.id)}
