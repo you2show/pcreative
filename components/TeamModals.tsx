@@ -71,6 +71,8 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                             src={member.image} 
                             alt={member.name} 
                             className="w-24 h-24 rounded-2xl border-4 border-gray-900 object-cover shadow-xl shrink-0"
+                            loading="lazy"
+                            decoding="async"
                         />
                         {/* Name + Role */}
                         <div className="mt-3 md:mt-0 md:mb-1 flex-1 min-w-0">
@@ -469,7 +471,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                     
                     {/* Hero Image */}
                     <div className="relative h-[40vh] md:h-[50vh] shrink-0">
-                        <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+                        <img src={post.image} alt={post.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent" />
                         
                         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
@@ -488,7 +490,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                                     className="flex items-center gap-4 cursor-pointer group"
                                     onClick={() => onAuthorClick?.(author.id)}
                                 >
-                                    <img src={author.image} alt={author.name} className="w-12 h-12 rounded-full border-2 border-white/20 group-hover:border-indigo-400 transition-colors" />
+                                    <img src={author.image} alt={author.name} className="w-12 h-12 rounded-full border-2 border-white/20 group-hover:border-indigo-400 transition-colors" loading="lazy" decoding="async" />
                                     <div>
                                         <p className="text-white font-bold group-hover:text-indigo-400 transition-colors">{author.name}</p>
                                         <p className="text-gray-400 text-xs font-khmer">{t(author.role, author.roleKm)}</p>

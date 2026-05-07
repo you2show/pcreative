@@ -15,6 +15,92 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 const SUPPORTED_LANGUAGES: Language[] = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
 const GOOGLE_LANGUAGES: Language[] = ['fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
+const GOOGLE_TRANSLATE_ELEMENT_ID = 'google_translate_element';
+const GOOGLE_TRANSLATE_SCRIPT_ID = 'google-translate-script';
+
+declare global {
+  interface Window {
+    google?: {
+      translate?: {
+        TranslateElement: new (
+          options: {
+            pageLanguage: string;
+            includedLanguages: string;
+            autoDisplay: boolean;
+          },
+          elementId: string
+        ) => unknown;
+      };
+    };
+    googleTranslateElementInit?: () => void;
+  }
+}
+
+let googleTranslateLoader: Promise<void> | null = null;
+
+const ensureGoogleTranslateElement = () => {
+  if (typeof document === 'undefined') return;
+  if (!document.getElementById(GOOGLE_TRANSLATE_ELEMENT_ID)) {
+    const element = document.createElement('div');
+    element.id = GOOGLE_TRANSLATE_ELEMENT_ID;
+    document.body.appendChild(element);
+  }
+};
+
+const loadGoogleTranslateScript = () => {
+  if (typeof window === 'undefined') return Promise.resolve();
+
+  if (window.google?.translate?.TranslateElement) {
+    ensureGoogleTranslateElement();
+    if (!document.querySelector(`#${GOOGLE_TRANSLATE_ELEMENT_ID} .goog-te-gadget`)) {
+      new window.google.translate.TranslateElement(
+        {
+          pageLanguage: 'en',
+          includedLanguages: 'en,km,fr,ja,ko,de,zh-CN,es,ar',
+          autoDisplay: false,
+        },
+        GOOGLE_TRANSLATE_ELEMENT_ID
+      );
+    }
+    return Promise.resolve();
+  }
+
+  if (googleTranslateLoader) return googleTranslateLoader;
+
+  googleTranslateLoader = new Promise<void>((resolve, reject) => {
+    ensureGoogleTranslateElement();
+
+    window.googleTranslateElementInit = () => {
+      if (window.google?.translate?.TranslateElement) {
+        new window.google.translate.TranslateElement(
+          {
+            pageLanguage: 'en',
+            includedLanguages: 'en,km,fr,ja,ko,de,zh-CN,es,ar',
+            autoDisplay: false,
+          },
+          GOOGLE_TRANSLATE_ELEMENT_ID
+        );
+      }
+      resolve();
+    };
+
+    const existingScript = document.getElementById(GOOGLE_TRANSLATE_SCRIPT_ID) as HTMLScriptElement | null;
+    if (existingScript) return;
+
+    const script = document.createElement('script');
+    script.id = GOOGLE_TRANSLATE_SCRIPT_ID;
+    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    script.async = true;
+    script.defer = true;
+    script.onerror = () => {
+      googleTranslateLoader = null;
+      reject(new Error('Failed to load Google Translate script'));
+    };
+    document.body.appendChild(script);
+  });
+
+  return googleTranslateLoader;
+};
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>('en');
@@ -65,6 +151,9 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
         setLanguageState(path);
         setGoogleCookie(path);
         updateSEOMetadata(path); // Update Title on Load
+        if (GOOGLE_LANGUAGES.includes(path)) {
+            void loadGoogleTranslateScript().catch(() => {});
+        }
         // Ensure trailing slash exists if missing
         if (!window.location.pathname.endsWith('/')) {
              const hash = window.location.hash;
@@ -100,9 +189,11 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     // Handling Google Translate Logic
     if (isNewGoogle) {
         setGoogleCookie(newLang);
-        // We need to reload to trigger the Google Script if we weren't already in a Google mode
-        // OR if we are switching between Google modes (e.g. FR -> JA) to update the iframe
-        setTimeout(() => window.location.reload(), 50);
+        void loadGoogleTranslateScript()
+          .catch(() => {})
+          .finally(() => {
+            setTimeout(() => window.location.reload(), 50);
+          });
     } else {
         // Switching to Manual (EN/KM)
         setGoogleCookie(newLang);

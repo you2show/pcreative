@@ -1,12 +1,13 @@
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, Suspense } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useData } from '../../contexts/DataContext';
 import { MemberDetailModal, AuthorArticlesModal, ArticleDetailModal } from '../TeamModals';
 import { TeamMember, Post } from '../../types';
 
 import HeroActions from './HeroActions';
-import HeroVisuals from './HeroVisuals';
+
+const HeroVisuals = React.lazy(() => import('./HeroVisuals'));
 
 const Hero: React.FC = () => {
   const { t } = useLanguage();
@@ -16,6 +17,7 @@ const Hero: React.FC = () => {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [authorPosts, setAuthorPosts] = useState<Post[] | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [shouldRenderVisuals, setShouldRenderVisuals] = useState(false);
 
   // Parallax Refs for Background
   const containerRef = useRef<HTMLDivElement>(null);
@@ -31,6 +33,14 @@ const Hero: React.FC = () => {
       document.body.style.overflow = 'unset';
     };
   }, [selectedMember, authorPosts, selectedPost]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+    const update = () => setShouldRenderVisuals(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener('change', update);
+    return () => mediaQuery.removeEventListener('change', update);
+  }, []);
 
   const handleShowArticles = (member: TeamMember) => {
       if (!insights) return;
@@ -99,7 +109,13 @@ const Hero: React.FC = () => {
           </div>
           
           {/* Right Content - Visuals */}
-          <HeroVisuals team={team} onMemberClick={setSelectedMember} />
+          {shouldRenderVisuals ? (
+            <Suspense fallback={<div className="hidden lg:block h-[600px] w-full" />}>
+              <HeroVisuals team={team} onMemberClick={setSelectedMember} />
+            </Suspense>
+          ) : (
+            <div className="hidden lg:block h-[600px] w-full" />
+          )}
         </div>
       </div>
 

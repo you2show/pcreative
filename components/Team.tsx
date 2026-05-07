@@ -84,9 +84,11 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                   <div className="relative h-40 overflow-hidden bg-gradient-to-br from-indigo-600/20 to-purple-600/20 shrink-0">
                     {member.coverImage ? (
                       <img 
-                        src={member.coverImage} 
-                        alt={`${member.name} cover`}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          src={member.coverImage} 
+                          alt={`${member.name} cover`}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          loading="lazy"
+                          decoding="async"
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-indigo-600/20 to-purple-600/20" />
@@ -119,6 +121,8 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                           src={member.image} 
                           alt={member.name}
                           className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500"
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
                     </div>
