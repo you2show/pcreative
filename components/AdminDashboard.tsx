@@ -187,8 +187,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 
       if (!window.confirm("Are you sure you want to delete this item?")) return;
       
-      const updater = (prev: any[]) => prev.filter(i => i.id !== id);
       const hideItem = () => {
+          const updater = (prev: any[]) => prev.filter(i => i.id !== id);
           if (type === 'team') setAdminTeam(updater);
           if (type === 'project') setAdminProjects(updater);
           if (type === 'insight') setAdminInsights(updater);
@@ -223,7 +223,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 
           if (error) throw error;
 
-          if (deletedRows && deletedRows.length > 0) {
+          if (deletedRows?.length) {
               hideItem();
               // CRITICAL: Refresh Global DataContext so public site is updated
               await refreshData();
