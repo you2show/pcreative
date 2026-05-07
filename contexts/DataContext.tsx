@@ -5,6 +5,16 @@ import { getSupabaseClient } from '../lib/supabase';
 import * as LucideIcons from 'lucide-react';
 import { slugify } from '../utils/format';
 
+// Helper function to generate deterministic color from name
+const getColorFromName = (name: string): string => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const colors = ['3b82f6', '8b5cf6', 'ec4899', 'f97316', '10b981', '06b6d4', 'f59e0b', 'ef4444'];
+  return colors[Math.abs(hash) % colors.length];
+};
+
 interface DataContextType {
   services: Service[];
   projects: Project[];
@@ -218,7 +228,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 company: t.company || '',
                 content: t.content,
                 contentKm: t.content_km || t.content,
-                avatar: t.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=random`
+                avatar: t.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=${getColorFromName(t.name)}`
             }));
             // Prepend DB testimonials to static ones
             setTestimonials([...formatted, ...TESTIMONIALS]);

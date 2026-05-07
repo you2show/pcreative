@@ -26,6 +26,16 @@ interface AdminDashboardProps {
 
 type TabType = 'team' | 'projects' | 'insights' | 'services' | 'careers' | 'settings' | 'partners' | 'stories';
 
+// Helper function to generate deterministic color from name
+const getColorFromName = (name: string): string => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const colors = ['3b82f6', '8b5cf6', 'ec4899', 'f97316', '10b981', '06b6d4', 'f59e0b', 'ef4444'];
+  return colors[Math.abs(hash) % colors.length];
+};
+
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, onViewSite }) => {
   const { isUsingSupabase, team = [], projects = [], insights = [], services: localServices = [], jobs = [], partners = [], testimonials = [], updateTeamOrder, refreshData } = useData();
   const [activeTab, setActiveTab] = useState<TabType>('team'); // Default to Team for members
@@ -359,13 +369,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
               }
           } else if (activeTab === 'stories') {
               table = 'reviews';
+              // Generate deterministic avatar if empty
+              const avatarUrl = item.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=${getColorFromName(item.name)}`;
               payload = {
                   name: item.name,
                   role: item.role || 'Client',
                   company: item.company || '',
                   content: item.content,
                   content_km: item.contentKm || item.content,
-                  avatar: item.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=random`
+                  avatar: avatarUrl
               }
           }
 
