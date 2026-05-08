@@ -6,6 +6,7 @@ import { MemberDetailModal, AuthorArticlesModal, ArticleDetailModal } from '../T
 import { TeamMember, Post } from '../../types';
 
 import HeroActions from './HeroActions';
+import HeroNetworkBg from './HeroNetworkBg';
 
 const HeroVisuals = React.lazy(() => import('./HeroVisuals'));
 
@@ -53,6 +54,8 @@ const Hero: React.FC = () => {
       
       {/* Background Ambience */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+        {/* Animated network web */}
+        <HeroNetworkBg />
         <div 
             className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] opacity-60"
         />
