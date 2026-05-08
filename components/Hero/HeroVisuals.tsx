@@ -102,6 +102,12 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
       return { left: `${left}%`, top: `${top}%`, size, speed };
   };
 
+  const getBeamAngle = (left: string, top: string) => {
+      const deltaX = parseFloat(left) - 50;
+      const deltaY = parseFloat(top) - 50;
+      return Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+  };
+
   return (
     <div className="relative hidden lg:block h-[600px] w-full" style={{ perspective: '1000px' }}>
         <div 
@@ -202,21 +208,27 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
                 const isHovered = hoveredMemberId === member.id;
                 const tiltX = (smoothMouse.current.y * 15);
                 const tiltY = -(smoothMouse.current.x * 15);
+                const beamAngle = getBeamAngle(pos.left, pos.top);
+                const streakDuration = isCoreHovered || !isOrbiting ? 1.4 : 3.8;
 
                 return (
                     <React.Fragment key={member.id}>
-                        <div 
-                            className="packet-container"
-                            style={{
-                                '--target-left': pos.left,
-                                '--target-top': pos.top,
-                                animationDuration: isCoreHovered || !isOrbiting ? '1s' : '4s',
-                                animationDelay: `${delay}s`
-                            } as React.CSSProperties}
-                        >
-                            <div className="packet-head" style={{ boxShadow: isCoreHovered || !isOrbiting ? '0 0 15px #fff, 0 0 30px cyan' : '' }}></div>
-                            <div className="packet-tail"></div>
-                        </div>
+                        {Array.from({ length: 3 }).map((_, streakIndex) => (
+                            <div 
+                                key={`${member.id}-streak-${streakIndex}`}
+                                className="streak-container"
+                                style={{
+                                    '--target-left': pos.left,
+                                    '--target-top': pos.top,
+                                    '--beam-angle': `${beamAngle}deg`,
+                                    animationDuration: `${streakDuration}s`,
+                                    animationDelay: `${delay + streakIndex * (streakDuration / 3)}s`,
+                                    opacity: isHovered || isCoreHovered || !isOrbiting ? 1 : 0.8
+                                } as React.CSSProperties}
+                            >
+                                <div className={`energy-streak ${isHovered || isCoreHovered || !isOrbiting ? 'energy-streak-active' : ''}`}></div>
+                            </div>
+                        ))}
 
                         <div
                             className="absolute z-20 cursor-pointer"
@@ -273,39 +285,70 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
         </div>
 
         <style>{`
-            @keyframes travel {
-                0% { left: 50%; top: 50%; opacity: 0; transform: rotate(var(--angle)) translateX(0) scale(0.5); }
-                10% { opacity: 1; transform: rotate(var(--angle)) translateX(20px) scale(1); }
-                80% { opacity: 1; transform: scale(1); }
-                90% { opacity: 1; }
-                100% { left: var(--target-left); top: var(--target-top); opacity: 0; transform: scale(0.2); }
+            @keyframes travel-streak {
+                0% {
+                    left: 50%;
+                    top: 50%;
+                    opacity: 0;
+                    transform: translate(-12%, -50%) rotate(var(--beam-angle)) scaleX(0.45);
+                }
+                12% {
+                    opacity: 1;
+                    transform: translate(-2%, -50%) rotate(var(--beam-angle)) scaleX(0.9);
+                }
+                55% {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) rotate(var(--beam-angle)) scaleX(1);
+                }
+                100% {
+                    left: var(--target-left);
+                    top: var(--target-top);
+                    opacity: 0;
+                    transform: translate(-88%, -50%) rotate(var(--beam-angle)) scaleX(0.5);
+                }
             }
-            .packet-container {
+            .streak-container {
                 position: absolute;
-                width: 4px; 
-                height: 4px;
-                animation: travel 4s infinite ease-in-out;
+                width: 84px;
+                height: 14px;
+                animation: travel-streak 4s infinite linear;
                 pointer-events: none;
                 z-index: 15;
             }
-            .packet-head {
-                width: 6px;
-                height: 6px;
-                background: white;
-                border-radius: 50%;
-                box-shadow: 0 0 10px #fff, 0 0 20px #6366f1, 0 0 30px #a855f7;
+            .energy-streak {
                 position: absolute;
-                top: 0; left: 0;
+                left: 0;
+                top: 50%;
+                width: 100%;
+                height: 3px;
+                border-radius: 999px;
+                transform: translateY(-50%);
+                background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.35) 22%, rgba(129, 140, 248, 0.95) 50%, rgba(216, 180, 254, 0.9) 78%, rgba(255,255,255,0));
+                box-shadow: 0 0 10px rgba(129, 140, 248, 0.85), 0 0 24px rgba(168, 85, 247, 0.55);
+                filter: blur(0.2px);
             }
-            .packet-tail {
+            .energy-streak::before,
+            .energy-streak::after {
+                content: '';
                 position: absolute;
-                top: 2px; left: 2px;
-                width: 40px; 
-                height: 2px;
-                background: linear-gradient(to left, rgba(99, 102, 241, 0.8), transparent);
-                transform-origin: left center;
-                transform: rotate(calc(atan2(var(--target-top) - 50%, var(--target-left) - 50%) * 1rad + 180deg));
-                opacity: 0.6;
+                inset: 0;
+                border-radius: inherit;
+            }
+            .energy-streak::before {
+                background: linear-gradient(90deg, rgba(99, 102, 241, 0), rgba(99, 102, 241, 0.8) 45%, rgba(255, 255, 255, 0) 100%);
+                filter: blur(5px);
+                opacity: 0.8;
+            }
+            .energy-streak::after {
+                width: 24px;
+                right: 0;
+                left: auto;
+                background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.95));
+                box-shadow: 0 0 14px rgba(255,255,255,0.95);
+            }
+            .energy-streak-active {
+                height: 4px;
+                box-shadow: 0 0 14px rgba(255,255,255,0.9), 0 0 30px rgba(96, 165, 250, 0.85), 0 0 42px rgba(168, 85, 247, 0.65);
             }
             @keyframes ripple {
                 0% { transform: scale(1); opacity: 0; border-width: 0px; }
