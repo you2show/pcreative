@@ -93,7 +93,7 @@ const Hero: React.FC = () => {
             <p className="text-lg text-gray-400 leading-relaxed font-khmer max-w-xl mx-auto lg:mx-0">
               {t(
                   "Cambodia's digital future, built by architects, developers & artists.",
-                  'ក្រុមស្ថាបត្យករ អ្នកអភិវឌ្ឍន៍ និងសិល្បករ — ដៃគូឌីជីថលនៅកម្ពុជា។'
+                  'ក្រុមស្ថាបត្យករ អ្នកអភិវឌ្ឍន៍ និងអ្នករចនា — ដៃគូឌីជីថលនៅកម្ពុជា។'
               )}
             </p>
             
