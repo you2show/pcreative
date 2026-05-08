@@ -8,8 +8,8 @@ interface NetNode {
     r: number;
     duration: number;
     delay: number;
-    /** Float amplitude in SVG viewBox units (viewBox is 0–100 in both axes). */
-    floatSvgUnits: number;
+    /** Float amplitude in CSS pixels – a small constant offset that looks consistent at any scale. */
+    floatPx: number;
     glow: boolean;
 }
 
@@ -35,7 +35,7 @@ const HeroNetworkBg: React.FC = () => {
             r: 1.5 + (i % 4) * 0.6,
             duration: 9 + (i % 7) * 1.8,
             delay: -(i % 12) * 1.3,
-            floatSvgUnits: 0.8 + (i % 5) * 0.35,
+            floatPx: 2 + (i % 5) * 1,
             glow: i % 5 === 0,
         }));
     }, []);
@@ -100,14 +100,14 @@ const HeroNetworkBg: React.FC = () => {
                     );
                 })}
 
-                {/* Nodes */}
+                {/* Nodes – share a single keyframe, parameterised via --float-y */}
                 {nodes.map((node) => (
                     <g
                         key={node.id}
                         style={{
-                            animation: `net-float-${node.id} ${node.duration}s ${node.delay}s ease-in-out infinite`,
-                            transformOrigin: `${node.x}% ${node.y}%`,
-                        }}
+                            '--float-y': `-${node.floatPx}px`,
+                            animation: `net-float ${node.duration}s ${node.delay}s ease-in-out infinite`,
+                        } as React.CSSProperties}
                     >
                         {node.glow && (
                             <circle
@@ -131,14 +131,12 @@ const HeroNetworkBg: React.FC = () => {
                 ))}
             </svg>
 
-            {/* Per-node float keyframes injected once */}
+            {/* Shared float keyframe – each node sets its own --float-y custom property */}
             <style>{`
-                ${nodes.map((n) => `
-                    @keyframes net-float-${n.id} {
-                        0%, 100% { transform: translateY(0); }
-                        50%       { transform: translateY(-${n.floatSvgUnits}); }
-                    }
-                `).join('')}
+                @keyframes net-float {
+                    0%, 100% { transform: translateY(0); }
+                    50%       { transform: translateY(var(--float-y, -4px)); }
+                }
 
                 @keyframes net-pulse {
                     0%, 100% { opacity: 0.2; }
