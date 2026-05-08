@@ -56,6 +56,8 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
   const handleAuthorClick = (authorId: string) => {
     const author = (team || []).find(t => t.id === authorId);
     if (author) {
+      setSelectedPost(null);
+      closeItem();
       setSelectedAuthor(author);
     }
   };

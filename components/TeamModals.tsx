@@ -541,7 +541,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                                     <Calendar size={12} /> {post.date}
                                 </span>
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-bold text-white font-khmer leading-tight mb-6">{t(post.title, post.titleKm)}</h2>
+                            <h2 className="text-xl md:text-3xl font-bold text-white font-khmer leading-tight mb-6">{t(post.title, post.titleKm)}</h2>
                             
                             {author && (
                                 <div 
