@@ -27,6 +27,7 @@ const Header: React.FC = () => {
     { name: t('Home', 'ទំព័រដើម'), href: '#home' },
     { name: t('Services', 'សេវាកម្ម'), href: '#services' },
     { name: t('Estimator', 'គណនាតម្លៃ'), href: '#estimator' },
+    { name: t('Process', 'ដំណើរការ'), href: '#process' },
     { name: t('Work', 'ស្នាដៃ'), href: '#portfolio' },
     { name: t('Team', 'ក្រុមការងារ'), href: '#team' },
     { name: t('Insights', 'ចំណេះដឹង'), href: '#insights' },
@@ -83,14 +84,30 @@ const Header: React.FC = () => {
       });
     }, { rootMargin: '-45% 0px -45% 0px' });
 
-    document.querySelectorAll('section').forEach(section => {
-      if (section.id) observer.observe(section);
+    const observeAllSections = () => {
+      document.querySelectorAll('section').forEach(section => {
+        if (section.id) observer.observe(section);
+      });
+    };
+
+    observeAllSections();
+
+    // Re-observe when lazy-loaded sections (e.g. #estimator) are added to the DOM
+    const mutationObserver = new MutationObserver((mutations) => {
+      const hasNewSection = mutations.some(m =>
+        Array.from(m.addedNodes).some(n =>
+          n instanceof Element && (n.tagName === 'SECTION' || n.querySelector('section'))
+        )
+      );
+      if (hasNewSection) observeAllSections();
     });
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       document.removeEventListener('mousedown', handleClickOutside);
       observer.disconnect();
+      mutationObserver.disconnect();
     };
   }, []);
 
