@@ -22,16 +22,19 @@ const getTotalCommentCount = (comments: Comment[]): number => {
 interface MemberDetailModalProps {
     member: TeamMember;
     onClose: () => void;
-    onShowArticles: (member: TeamMember) => void;
+    onShowArticles?: (member: TeamMember) => void;
+    onSelectPost?: (post: Post) => void;
 }
 
-export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, onClose, onShowArticles }) => {
+export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, onClose, onSelectPost }) => {
     const { t, language } = useLanguage();
-    const { insights = [] } = useData(); 
-    
+    const { insights = [] } = useData();
+    const [showArticlesView, setShowArticlesView] = useState(false);
+
     if (!member) return null;
 
-    const postCount = (insights || []).filter(post => post?.authorId === member.id).length;
+    const memberPosts = (insights || []).filter(post => post?.authorId === member.id);
+    const postCount = memberPosts.length;
     const skills = member.skills || [];
     const experience = member.experience || [];
     const experienceKm = member.experienceKm || [];
@@ -104,7 +107,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                             <p className="text-xl font-bold text-white">12+</p>
                         </div>
                         <button 
-                            onClick={() => onShowArticles(member)}
+                            onClick={() => setShowArticlesView(true)}
                             className="bg-white/5 rounded-2xl p-4 border border-white/5 text-left hover:bg-white/10 transition-all group"
                         >
                             <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">{t('Articles', 'អត្ថបទ')}</p>
@@ -115,6 +118,59 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                         </button>
                     </div>
 
+                    {showArticlesView ? (
+                        /* Inline Articles View */
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <h4 className="text-white font-bold flex items-center gap-2">
+                                    <FileText size={18} className="text-indigo-400" />
+                                    {t('Articles', 'អត្ថបទ')}
+                                </h4>
+                                <button
+                                    onClick={() => setShowArticlesView(false)}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs border border-white/10 transition-all"
+                                >
+                                    <X size={14} />
+                                    {t('Back', 'ត្រឡប់')}
+                                </button>
+                            </div>
+                            {memberPosts.length === 0 ? (
+                                <p className="text-gray-500 text-sm font-khmer text-center py-6">{t('No articles yet.', 'មិនទាន់មានអត្ថបទទេ។')}</p>
+                            ) : (
+                                <div className="space-y-3">
+                                    {memberPosts.map((post) => (
+                                        <article
+                                            key={post.id}
+                                            className="group flex gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer"
+                                            onClick={() => {
+                                                if (onSelectPost) {
+                                                    onClose();
+                                                    onSelectPost(post);
+                                                }
+                                            }}
+                                        >
+                                            <div className="w-16 h-16 shrink-0 rounded-xl overflow-hidden">
+                                                <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" decoding="async" />
+                                            </div>
+                                            <div className="flex-1 min-w-0 py-0.5">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{post.category}</span>
+                                                    <div className="flex items-center gap-1 text-[10px] text-gray-500">
+                                                        <Calendar size={10} />
+                                                        <span>{post.date}</span>
+                                                    </div>
+                                                </div>
+                                                <h4 className="text-white font-bold group-hover:text-indigo-400 transition-colors line-clamp-2 font-khmer text-sm">
+                                                    {t(post.title, post.titleKm)}
+                                                </h4>
+                                            </div>
+                                        </article>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <>
                     {/* Skills */}
                     <div className="mb-8">
                         <h4 className="text-white font-bold mb-4 flex items-center gap-2">
@@ -165,6 +221,8 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                             ))}
                         </div>
                     </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>,

@@ -67,7 +67,7 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-gray-950 pt-32 overflow-hidden">
+    <footer className="relative bg-gray-950 pt-16 overflow-hidden">
       {/* Decorative Top Gradient Line */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       
@@ -77,7 +77,7 @@ const Footer: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Top Section: Big CTA (Centered Design) */}
+        {/* Top Section: Big CTA - hidden
         <div className="flex flex-col items-center text-center mb-24 relative">
             <RevealOnScroll>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-indigo-300 text-sm font-bold tracking-wider mb-8 backdrop-blur-md animate-fade-in">
@@ -89,7 +89,6 @@ const Footer: React.FC = () => {
             <RevealOnScroll delay={100}>
                 <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-white font-khmer leading-[1.1] tracking-tight max-w-5xl mx-auto mb-10">
                     {t("Let's create something", "តោះបង្កើតអ្វីមួយ")} <br />
-                    {/* Added Drop Shadow Glow Effect */}
                     <span className="relative inline-block">
                         <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 blur-2xl opacity-30"></span>
                         <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
@@ -115,6 +114,7 @@ const Footer: React.FC = () => {
                 </a>
             </RevealOnScroll>
         </div>
+        */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-24 border-t border-white/5 pt-20">
             {/* Brand Column */}

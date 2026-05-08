@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowRight, Calendar, Tag, X, User, FileText, Code, Briefcase } from 'lucide-react';
+import { ArrowRight, Calendar, Tag, X } from 'lucide-react';
 import { Post, TeamMember } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useData } from '../contexts/DataContext';
 import ScrollBackgroundText from './ScrollBackgroundText';
 import RevealOnScroll from './RevealOnScroll';
-import { AuthorArticlesModal, ArticleDetailModal, MemberDetailModal } from './TeamModals';
+import { ArticleDetailModal, MemberDetailModal } from './TeamModals';
 import { useRouter } from '../hooks/useRouter';
 
 interface InsightsProps {
@@ -23,7 +23,6 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
   
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [selectedAuthor, setSelectedAuthor] = useState<TeamMember | null>(null);
-  const [authorPosts, setAuthorPosts] = useState<Post[] | null>(null);
   
   const [isViewAllOpen, setIsViewAllOpen] = useState(showPopupOnMount || false);
 
@@ -44,7 +43,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
 
   // Lock body scroll when any modal is open
   useEffect(() => {
-    if (selectedPost || isViewAllOpen || selectedAuthor || authorPosts) {
+    if (selectedPost || isViewAllOpen || selectedAuthor) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -52,18 +51,13 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [selectedPost, isViewAllOpen, selectedAuthor, authorPosts]);
+  }, [selectedPost, isViewAllOpen, selectedAuthor]);
 
   const handleAuthorClick = (authorId: string) => {
     const author = (team || []).find(t => t.id === authorId);
     if (author) {
       setSelectedAuthor(author);
     }
-  };
-  
-  const handleShowArticles = (member: TeamMember) => {
-      const posts = (insights || []).filter(p => p.authorId === member.id);
-      setAuthorPosts(posts);
   };
 
   const handleViewAllClick = () => {
@@ -203,69 +197,64 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
         </RevealOnScroll>
       </div>
 
-      {/* "View All Posts" Modal */}
+      {/* "View All Posts" Full Screen Overlay */}
       {isViewAllOpen && createPortal(
-         <div className="fixed inset-0 z-[10001] flex items-center justify-center p-4 overflow-hidden">
-            <div 
-                className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
-                onClick={handleViewAllClose}
-            />
-             <div className="relative w-full max-w-7xl h-full md:h-[90vh] bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up flex flex-col z-[10002]">              {/* Header */}
-                <div className="flex justify-between items-center p-6 md:p-8 border-b border-white/10 bg-gray-900 z-10">
-                    <div>
-                        <h3 className="text-2xl font-bold text-white font-khmer">{t('All Articles', 'អត្ថបទទាំងអស់')}</h3>
-                        <p className="text-gray-400 text-sm font-khmer">{t('Explore our latest thoughts and updates', 'ស្វែងរកគំនិត និងព័ត៌មានថ្មីៗរបស់យើង')}</p>
-                    </div>
-                    <button 
-                        onClick={handleViewAllClose}
-                        className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-full transition-all border border-white/5"
-                    >
-                        <X size={24} />
-                    </button>
-                </div>
+         <div className="fixed inset-0 z-[10001] flex flex-col overflow-hidden bg-gray-900">
+              {/* Header */}
+                <div className="flex justify-between items-center p-6 md:p-8 border-b border-white/10 bg-gray-900 shrink-0">
+                     <div>
+                         <h3 className="text-2xl font-bold text-white font-khmer">{t('All Articles', 'អត្ថបទទាំងអស់')}</h3>
+                         <p className="text-gray-400 text-sm font-khmer">{t('Explore our latest thoughts and updates', 'ស្វែងរកគំនិត និងព័ត៌មានថ្មីៗរបស់យើង')}</p>
+                     </div>
+                     <button 
+                         onClick={handleViewAllClose}
+                         className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-full transition-all border border-white/5"
+                     >
+                         <X size={24} />
+                     </button>
+                 </div>
 
-                {/* Grid Content */}
-                <div className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-hide">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {(insights || []).map((post) => (
-                             <article 
-                                key={post.id} 
-                                className="group flex flex-col bg-white/5 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-                                onClick={() => openItem(post.slug || post.id)}
-                            >
-                                <div className="relative h-48 overflow-hidden">
-                                    <img 
-                                        src={post.image} 
-                                        alt={post.title} 
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    />
-                                    <div className="absolute top-3 left-3">
-                                        <span className="px-2 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 border border-white/10">
-                                            <Tag size={10} /> {post.category}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="p-5 flex-1 flex flex-col">
-                                     <div className="flex items-center justify-between mb-2">
-                                        <div className="flex items-center gap-2 text-gray-400 text-xs font-mono">
-                                            <Calendar size={12} />
-                                            <span>{post.date}</span>
-                                        </div>
-                                        <AuthorBadge authorId={post.authorId} />
+                 {/* Grid Content */}
+                 <div className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-hide">
+                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                         {(insights || []).map((post) => (
+                              <article 
+                                 key={post.id} 
+                                 className="group flex flex-col bg-white/5 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                                 onClick={() => openItem(post.slug || post.id)}
+                             >
+                                 <div className="relative h-48 overflow-hidden">
+                                     <img 
+                                         src={post.image} 
+                                         alt={post.title} 
+                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                     />
+                                     <div className="absolute top-3 left-3">
+                                         <span className="px-2 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 border border-white/10">
+                                             <Tag size={10} /> {post.category}
+                                         </span>
                                      </div>
-                                    
-                                    <h3 className="text-lg font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors line-clamp-2 font-khmer">
-                                        {t(post.title, post.titleKm)}
-                                    </h3>
-                                    <p className="text-gray-400 text-xs leading-relaxed line-clamp-2 flex-1 font-khmer">
-                                        {post.excerpt}
-                                    </p>
-                                </div>
-                            </article>
-                        ))}
-                    </div>
-                </div>
-             </div>
+                                 </div>
+                                 <div className="p-5 flex-1 flex flex-col">
+                                      <div className="flex items-center justify-between mb-2">
+                                         <div className="flex items-center gap-2 text-gray-400 text-xs font-mono">
+                                             <Calendar size={12} />
+                                             <span>{post.date}</span>
+                                         </div>
+                                         <AuthorBadge authorId={post.authorId} />
+                                      </div>
+                                     
+                                     <h3 className="text-lg font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors line-clamp-2 font-khmer">
+                                         {t(post.title, post.titleKm)}
+                                     </h3>
+                                     <p className="text-gray-400 text-xs leading-relaxed line-clamp-2 flex-1 font-khmer">
+                                         {post.excerpt}
+                                     </p>
+                                 </div>
+                             </article>
+                         ))}
+                     </div>
+                 </div>
          </div>,
          document.body
       )}
@@ -283,19 +272,10 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
           <MemberDetailModal 
             member={selectedAuthor} 
             onClose={() => setSelectedAuthor(null)}
-            onShowArticles={handleShowArticles}
-          />
-      )}
-
-      {authorPosts && selectedAuthor && (
-          <AuthorArticlesModal 
-             author={selectedAuthor}
-             posts={authorPosts}
-             onClose={() => setAuthorPosts(null)}
-             onSelectPost={(post) => {
-                 setAuthorPosts(null);
-                 openItem(post.slug || post.id);
-             }}
+            onSelectPost={(post) => {
+              setSelectedAuthor(null);
+              openItem(post.slug || post.id);
+            }}
           />
       )}
     </section>
