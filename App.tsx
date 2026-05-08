@@ -138,8 +138,8 @@ function AppContent() {
       
       <main className="relative z-10">
         <Hero />
-        <Partners />
-        <Stats />
+        {/* <Partners /> */}
+        {/* <Stats /> */}
         
         <Services 
             showPopupOnMount={shouldShowServicesPopup}
@@ -154,13 +154,13 @@ function AppContent() {
         </Suspense>
 
         <Process />
-        <VideoShowreel />
+        {/* <VideoShowreel /> */}
         
         <Portfolio 
             showPopupOnMount={shouldShowPortfolioPopup} 
             usePathRouting={true} 
         />
-        <Testimonials />
+        {/* <Testimonials /> */}
 
         <Team 
             showPopupOnMount={shouldShowTeamPopup}
