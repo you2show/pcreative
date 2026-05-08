@@ -163,6 +163,8 @@ const Header: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const mobileNavLinks = navLinks.filter(link => !('xlOnly' in link && link.xlOnly));
+
   return (
     <>
       <header className="fixed top-6 left-0 right-0 z-50 transition-all duration-300 flex justify-center px-4">
@@ -177,7 +179,7 @@ const Header: React.FC = () => {
           <nav ref={navRef} className="hidden lg:flex items-center relative bg-white/5 p-1.5 rounded-full border border-white/5">
             <div className="absolute top-1.5 bottom-1.5 rounded-full bg-white/10 transition-all duration-500 ease-out" style={{ left: `${indicatorStyle.left}px`, width: `${indicatorStyle.width}px`, opacity: indicatorStyle.opacity }} />
             {navLinks.map((link, index) => (
-              <a key={link.name} href={link.href} ref={(el) => { itemsRef.current[index] = el }} onClick={(e) => scrollToSection(e, link.href)} className={`relative z-10 px-5 py-2 rounded-full text-sm font-medium font-khmer transition-colors duration-300 ${activeSection === link.href.substring(1) ? 'text-white' : 'text-gray-400 hover:text-white'} ${'xlOnly' in link && link.xlOnly ? 'hidden xl:inline-flex' : ''}`}>{link.name}</a>
+              <a key={link.name} href={link.href} ref={(el) => { itemsRef.current[index] = el }} onClick={(e) => scrollToSection(e, link.href)} className={`relative z-10 px-3 xl:px-5 py-2 rounded-full text-sm font-medium font-khmer transition-colors duration-300 whitespace-nowrap ${activeSection === link.href.substring(1) ? 'text-white' : 'text-gray-400 hover:text-white'} ${'xlOnly' in link && link.xlOnly ? 'hidden xl:inline-flex' : ''}`}>{link.name}</a>
             ))}
           </nav>
 
@@ -229,10 +231,10 @@ const Header: React.FC = () => {
 
       <div className={`fixed inset-0 bg-gray-950 z-40 flex items-center justify-center transition-all duration-500 ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
          <div className="flex flex-col items-center gap-8 relative z-10 w-full max-w-sm px-6 overflow-y-auto max-h-[calc(100dvh-6rem)] py-8">
-          {navLinks.map((link, idx) => (
+          {mobileNavLinks.map((link, idx) => (
             <a key={link.name} href={link.href} onClick={(e) => scrollToSection(e, link.href)} className={`text-3xl font-bold font-khmer text-white hover:text-indigo-400 transition-all transform ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: `${idx * 80}ms` }}>{link.name}</a>
           ))}
-          <a href="#contact" onClick={(e) => scrollToSection(e, '#contact')} className={`w-full text-center px-8 py-4 rounded-full bg-indigo-600 text-white font-bold text-lg font-khmer shadow-xl transform ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: `${navLinks.length * 80}ms` }}>{t("Start a Project", "ចាប់ផ្តើមគម្រោង")}</a>
+          <a href="#contact" onClick={(e) => scrollToSection(e, '#contact')} className={`w-full text-center px-8 py-4 rounded-full bg-indigo-600 text-white font-bold text-lg font-khmer shadow-xl transform ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: `${mobileNavLinks.length * 80}ms` }}>{t("Start a Project", "ចាប់ផ្តើមគម្រោង")}</a>
         </div>
       </div>
     </>
