@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowRight, Calendar, Tag, X } from 'lucide-react';
-import { Post, TeamMember } from '../types';
+import { Post } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useData } from '../contexts/DataContext';
 import ScrollBackgroundText from './ScrollBackgroundText';
 import RevealOnScroll from './RevealOnScroll';
-import { ArticleDetailModal, MemberDetailModal } from './TeamModals';
+import { ArticleDetailModal } from './TeamModals';
 import { useRouter } from '../hooks/useRouter';
 
 interface InsightsProps {
@@ -22,7 +22,6 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
   const { activeId, openItem, closeItem } = useRouter('insights', '', usePathRouting);
   
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [selectedAuthor, setSelectedAuthor] = useState<TeamMember | null>(null);
   
   const [isViewAllOpen, setIsViewAllOpen] = useState(showPopupOnMount || false);
 
@@ -43,7 +42,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
 
   // Lock body scroll when any modal is open
   useEffect(() => {
-    if (selectedPost || isViewAllOpen || selectedAuthor) {
+    if (selectedPost || isViewAllOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -51,14 +50,21 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [selectedPost, isViewAllOpen, selectedAuthor]);
+  }, [selectedPost, isViewAllOpen]);
 
   const handleAuthorClick = (authorId: string) => {
     const author = (team || []).find(t => t.id === authorId);
     if (author) {
       setSelectedPost(null);
-      closeItem();
-      setSelectedAuthor(author);
+      // Navigate to the team member's profile URL so Team's router opens the modal
+      const slug = author.slug || author.id;
+      const currentPath = window.location.pathname;
+      const parts = currentPath.split('/');
+      const currentLang = parts[1];
+      const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
+      const langPrefix = currentLang && supportedLangs.includes(currentLang) ? `/${currentLang}` : '';
+      window.history.pushState({ section: 'team', id: slug }, '', `${langPrefix}/team/${slug}`);
+      window.dispatchEvent(new Event('popstate'));
     }
   };
 
@@ -267,17 +273,6 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
             post={selectedPost}
             onClose={handleArticleDetailClose}
             onAuthorClick={handleAuthorClick}
-          />
-      )}
-      
-      {selectedAuthor && (
-          <MemberDetailModal 
-            member={selectedAuthor} 
-            onClose={() => setSelectedAuthor(null)}
-            onSelectPost={(post) => {
-              setSelectedAuthor(null);
-              openItem(post.slug || post.id);
-            }}
           />
       )}
     </section>
