@@ -11,8 +11,8 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
   const STREAK_WIDTH = 84;
   const STREAK_HEIGHT = 14;
   const STREAK_HEAD_WIDTH = 24;
-  const STREAK_ENTER_OFFSET = '12%';
-  const STREAK_EXIT_OFFSET = '88%';
+  const STREAK_ENTER_OFFSET = '-12%';
+  const STREAK_EXIT_OFFSET = '-88%';
   const [isOrbiting, setIsOrbiting] = useState(true);
   const [isCoreHovered, setIsCoreHovered] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
@@ -300,7 +300,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
                     left: 50%;
                     top: 50%;
                     opacity: 0;
-                    transform: translate(calc(var(--streak-enter-offset) * -1), -50%) rotate(var(--beam-angle)) scaleX(0.45);
+                    transform: translate(var(--streak-enter-offset), -50%) rotate(var(--beam-angle)) scaleX(0.45);
                 }
                 12% {
                     opacity: 1;
@@ -314,7 +314,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
                     left: var(--target-left);
                     top: var(--target-top);
                     opacity: 0;
-                    transform: translate(calc(var(--streak-exit-offset) * -1), -50%) rotate(var(--beam-angle)) scaleX(0.5);
+                    transform: translate(var(--streak-exit-offset), -50%) rotate(var(--beam-angle)) scaleX(0.5);
                 }
             }
             .streak-container {
