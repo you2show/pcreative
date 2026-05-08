@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Facebook, Send, FileText, Info } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useData } from '../contexts/DataContext';
-import { TeamMember, Post } from '../types';
+import { TeamMember } from '../types';
 import ScrollBackgroundText from './ScrollBackgroundText';
-import { MemberDetailModal, ArticleDetailModal } from './TeamModals';
+import { MemberDetailModal } from './TeamModals';
 import RevealOnScroll from './RevealOnScroll';
 import { useRouter } from '../hooks/useRouter';
 
@@ -21,7 +21,6 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
   const { activeId, openItem, closeItem } = useRouter('team', '', usePathRouting);
   
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   // Sync Router Active ID with Data
   useEffect(() => {
@@ -35,7 +34,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
 
   // Lock body scroll when modal is open
   useEffect(() => {
-    if (selectedMember || selectedPost) {
+    if (selectedMember) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -43,7 +42,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [selectedMember, selectedPost]);
+  }, [selectedMember]);
 
   const getPostCount = (memberId: string) => {
       return insights.filter(post => post.authorId === memberId).length;
@@ -154,15 +153,18 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
             member={selectedMember} 
             onClose={closeItem}
             onSelectPost={(post) => {
-              setSelectedPost(post);
+              // Navigate to the article's URL so Insights router opens the modal.
+              // closeItem() was already called by MemberDetailModal before onSelectPost,
+              // so we use replaceState to overwrite the /#team entry it pushed.
+              const slug = post.slug || post.id;
+              const currentPath = window.location.pathname;
+              const parts = currentPath.split('/');
+              const currentLang = parts[1];
+              const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
+              const langPrefix = currentLang && supportedLangs.includes(currentLang) ? `/${currentLang}` : '';
+              window.history.replaceState({ section: 'insights', id: slug }, '', `${langPrefix}/insights/${slug}`);
+              window.dispatchEvent(new Event('popstate'));
             }}
-          />
-      )}
-
-      {selectedPost && (
-          <ArticleDetailModal 
-            post={selectedPost}
-            onClose={() => setSelectedPost(null)}
           />
       )}
     </section>

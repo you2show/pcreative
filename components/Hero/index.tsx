@@ -88,19 +88,12 @@ const Hero: React.FC = () => {
                     </span>
                 </h1>
 
-                {/* Subtitle */}
-                <div className="text-2xl md:text-3xl font-bold font-khmer text-white/90 leading-relaxed mt-2" style={{ textShadow: '0 0 20px rgba(168, 85, 247, 0.4)' }}>
-                    {t(
-                        'Transforming ideas into reality.',
-                        'បំប្លែងគំនិតទៅជាការពិត' 
-                    )}
-                </div>
             </div>
             
             <p className="text-lg text-gray-400 leading-relaxed font-khmer max-w-xl mx-auto lg:mx-0">
               {t(
-                  'We are a team of architects, developers, and artists building the future of Cambodia\'s digital landscape.',
-                  'ក្រុមការងារស្ថាបត្យករ អ្នកអភិវឌ្ឍន៍ និងសិល្បករ ដែលកំពុងកសាងអនាគតនៃវិស័យឌីជីថលនៅកម្ពុជា។'
+                  "Cambodia's digital future, built by architects, developers & artists.",
+                  'ក្រុមស្ថាបត្យករ អ្នកអភិវឌ្ឍន៍ និងអ្នករចនា — ដៃគូឌីជីថលនៅកម្ពុជា។'
               )}
             </p>
             
