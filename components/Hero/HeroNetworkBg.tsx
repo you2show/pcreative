@@ -26,8 +26,8 @@ const CONNECTION_THRESHOLD = 24; // max distance in SVG viewBox percentage-point
 
 const HeroNetworkBg: React.FC = () => {
     const nodes = useMemo<NetNode[]>(() => {
-        // Use a seeded-like approach so the layout is stable across renders.
-        // Math.random() inside useMemo with empty deps only runs once per mount.
+        // Positions are derived deterministically from the index so the network
+        // layout is stable across re-renders without needing a seeded RNG.
         return Array.from({ length: NODE_COUNT }, (_, i) => ({
             id: i,
             x: (i * 31.7 + 7) % 96 + 2,
@@ -139,6 +139,7 @@ const HeroNetworkBg: React.FC = () => {
                 }
 
                 @keyframes net-pulse {
+                    /* Dim opacity (0.2) at rest → vibrant (0.65) at peak for a subtle breathe effect */
                     0%, 100% { opacity: 0.2; }
                     50%       { opacity: 0.65; }
                 }
