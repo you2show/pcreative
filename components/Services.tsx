@@ -281,7 +281,16 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
             className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
             onClick={closeItem}
           />
-          <div className="relative w-full max-w-4xl bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col md:flex-row max-h-[90vh]">
+          <div className="relative w-full max-w-4xl z-[10003] animate-scale-up">
+            {/* Close button outside the card */}
+            <button
+              onClick={closeItem}
+              className="absolute -top-4 -right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors border border-white/20 z-10"
+              aria-label="Close"
+            >
+              <X size={24} />
+            </button>
+          <div className="w-full bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
 
             {/* Left Column: Image with overlay */}
             <div className="relative w-full md:w-2/5 min-h-[260px] md:min-h-0 flex-shrink-0 overflow-hidden rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none">
@@ -317,16 +326,6 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
             {/* Right Column: Content */}
             <div className="flex-1 flex flex-col overflow-y-auto">
               <div className="p-8">
-                {/* Close button */}
-                <div className="flex justify-end mb-6">
-                  <button 
-                    onClick={closeItem}
-                    className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-full transition-colors border border-white/5"
-                  >
-                    <X size={24} />
-                  </button>
-                </div>
-
                 <div className="prose prose-invert max-w-none mb-8">
                   <p className="text-gray-300 leading-relaxed font-khmer">
                     {t(selectedService.description, selectedService.descriptionKm || selectedService.description)}
@@ -343,6 +342,7 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </div>,
         document.body
