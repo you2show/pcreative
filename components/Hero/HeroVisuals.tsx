@@ -7,15 +7,16 @@ interface HeroVisualsProps {
     onMemberClick: (member: TeamMember) => void;
 }
 
+const STREAK_WIDTH = 84;
+const STREAK_HEIGHT = 14;
+const STREAK_HEAD_WIDTH = 24;
+const STREAK_ENTER_OFFSET = '-12%';
+const STREAK_EXIT_OFFSET = '-88%';
+const STREAKS_PER_CONNECTION = 3;
+const STREAK_DURATION_FAST = 1.4;
+const STREAK_DURATION_SLOW = 3.8;
+
 const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
-  const STREAK_WIDTH = 84;
-  const STREAK_HEIGHT = 14;
-  const STREAK_HEAD_WIDTH = 24;
-  const STREAK_ENTER_OFFSET = '-12%';
-  const STREAK_EXIT_OFFSET = '-88%';
-  const STREAKS_PER_CONNECTION = 3;
-  const STREAK_DURATION_FAST = 1.4;
-  const STREAK_DURATION_SLOW = 3.8;
   const [isOrbiting, setIsOrbiting] = useState(true);
   const [isCoreHovered, setIsCoreHovered] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);

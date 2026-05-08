@@ -8,7 +8,8 @@ interface NetNode {
     r: number;
     duration: number;
     delay: number;
-    floatY: number;
+    /** Float amplitude in SVG viewBox units (viewBox is 0–100 in both axes). */
+    floatSvgUnits: number;
     glow: boolean;
 }
 
@@ -21,7 +22,7 @@ interface NetEdge {
 }
 
 const NODE_COUNT = 34;
-const CONNECTION_THRESHOLD = 24; // % of canvas width
+const CONNECTION_THRESHOLD = 24; // max distance in SVG viewBox percentage-points (viewBox is 0–100)
 
 const HeroNetworkBg: React.FC = () => {
     const nodes = useMemo<NetNode[]>(() => {
@@ -34,7 +35,7 @@ const HeroNetworkBg: React.FC = () => {
             r: 1.5 + (i % 4) * 0.6,
             duration: 9 + (i % 7) * 1.8,
             delay: -(i % 12) * 1.3,
-            floatY: 4 + (i % 5) * 1.5,
+            floatSvgUnits: 0.8 + (i % 5) * 0.35,
             glow: i % 5 === 0,
         }));
     }, []);
@@ -135,7 +136,7 @@ const HeroNetworkBg: React.FC = () => {
                 ${nodes.map((n) => `
                     @keyframes net-float-${n.id} {
                         0%, 100% { transform: translateY(0); }
-                        50%       { transform: translateY(-${n.floatY}px); }
+                        50%       { transform: translateY(-${n.floatSvgUnits}); }
                     }
                 `).join('')}
 
