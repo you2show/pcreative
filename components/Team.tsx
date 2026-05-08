@@ -4,7 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useData } from '../contexts/DataContext';
 import { TeamMember, Post } from '../types';
 import ScrollBackgroundText from './ScrollBackgroundText';
-import { MemberDetailModal, AuthorArticlesModal, ArticleDetailModal } from './TeamModals';
+import { MemberDetailModal, ArticleDetailModal } from './TeamModals';
 import RevealOnScroll from './RevealOnScroll';
 import { useRouter } from '../hooks/useRouter';
 
@@ -21,7 +21,6 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
   const { activeId, openItem, closeItem } = useRouter('team', '', usePathRouting);
   
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
-  const [authorPosts, setAuthorPosts] = useState<Post[] | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   // Sync Router Active ID with Data
@@ -36,7 +35,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
 
   // Lock body scroll when modal is open
   useEffect(() => {
-    if (selectedMember || authorPosts || selectedPost) {
+    if (selectedMember || selectedPost) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -44,13 +43,8 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [selectedMember, authorPosts, selectedPost]);
+  }, [selectedMember, selectedPost]);
 
-  const handleShowArticles = (member: TeamMember) => {
-      const posts = insights.filter(p => p.authorId === member.id);
-      setAuthorPosts(posts);
-  };
-  
   const getPostCount = (memberId: string) => {
       return insights.filter(post => post.authorId === memberId).length;
   };
@@ -159,16 +153,9 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
           <MemberDetailModal 
             member={selectedMember} 
             onClose={closeItem}
-            onShowArticles={handleShowArticles}
-          />
-      )}
-
-      {authorPosts && selectedMember && (
-          <AuthorArticlesModal 
-             author={selectedMember}
-             posts={authorPosts}
-             onClose={() => setAuthorPosts(null)}
-             onSelectPost={(post) => setSelectedPost(post)}
+            onSelectPost={(post) => {
+              setSelectedPost(post);
+            }}
           />
       )}
 
