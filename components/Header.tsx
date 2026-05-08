@@ -164,7 +164,7 @@ const Header: React.FC = () => {
   return (
     <>
       <header className="fixed top-6 left-0 right-0 z-50 transition-all duration-300 flex justify-center px-4">
-        <div className={`flex items-center justify-between px-4 md:px-6 py-2.5 md:py-3 rounded-full border transition-all duration-300 w-full max-w-6xl ${isScrolled ? 'bg-gray-950/80 backdrop-blur-xl border-white/10 shadow-2xl shadow-indigo-500/10' : 'bg-white/5 backdrop-blur-md border-white/5'}`}>
+        <div className={`flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2.5 md:py-3 rounded-full border transition-all duration-300 w-full max-w-7xl ${isScrolled ? 'bg-gray-950/80 backdrop-blur-xl border-white/10 shadow-2xl shadow-indigo-500/10' : 'bg-white/5 backdrop-blur-md border-white/5'}`}>
           <a href="#home" onClick={(e) => scrollToSection(e, '#home')} className="flex items-center gap-2 group relative z-50">
             <PonloeLogo size={32} />
             <span className="text-lg md:text-xl font-bold font-khmer tracking-tight text-white group-hover:text-indigo-400 transition-colors">
