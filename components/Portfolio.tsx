@@ -144,7 +144,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ showPopupOnMount = false, onPopup
                         <h3 className="text-2xl font-bold text-white font-khmer">{t('All Projects', 'គម្រោងទាំងអស់')}</h3>
                         <p className="text-gray-400 text-sm font-khmer">{t('Browse our complete portfolio', 'មើលផលប័ត្រពេញលេញរបស់យើង')}</p>
                     </div>
-                    <button onClick={handleViewAllClose} className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-full transition-all border border-white/5 active:scale-95">
+                    <button onClick={handleViewAllClose} aria-label={t('Close', 'បិទ')} className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-full transition-all border border-white/5 active:scale-95">
                         <X size={24} />
                     </button>
                 </div>
