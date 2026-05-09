@@ -141,3 +141,26 @@ export const syncHiddenStaticStoriesToGitHub = async (
   const updated = { ...file.content, hiddenStaticStories: ids };
   return writeSiteDataToGitHub(cfg, updated, file.sha, 'Update hidden static stories via Admin Panel');
 };
+
+/**
+ * Verify that the GitHub config is valid by reading site-data.json.
+ * Returns ok=true with the current SHA on success, or an error message on failure.
+ */
+export const testGitHubConnection = async (
+  cfg: GitHubConfig
+): Promise<{ ok: boolean; sha?: string; error?: string }> => {
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${cfg.username}/${cfg.repo}/contents/site-data.json?ref=${cfg.branch}`,
+      { headers: githubHeaders(cfg.token) }
+    );
+    if (res.status === 401) return { ok: false, error: 'Invalid token or missing repo scope. Check your Personal Access Token.' };
+    if (res.status === 403) return { ok: false, error: 'Access forbidden. Ensure the token has "repo" (contents write) scope.' };
+    if (res.status === 404) return { ok: false, error: 'Repository or file not found. Check username, repo name, and branch.' };
+    if (!res.ok) return { ok: false, error: `GitHub API error ${res.status}.` };
+    const file = await res.json();
+    return { ok: true, sha: file.sha };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : 'Network error' };
+  }
+};

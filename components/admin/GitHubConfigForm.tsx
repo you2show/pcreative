@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Cloud, RotateCcw } from 'lucide-react';
+import { Cloud, RotateCcw, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { GitHubConfig } from '../../types';
+import { testGitHubConnection } from '../../lib/github';
 
 interface GitHubConfigFormProps {
   initialConfig: GitHubConfig;
@@ -10,6 +11,8 @@ interface GitHubConfigFormProps {
 
 const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSave, onReset }) => {
   const [repoConfig, setRepoConfig] = useState<GitHubConfig>(initialConfig);
+  const [isTesting, setIsTesting] = useState(false);
+  const [testResult, setTestResult] = useState<{ ok: boolean; message: string } | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,6 +23,28 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
         branch: repoConfig.branch.trim(),
         token: repoConfig.token.trim()
     });
+  };
+
+  const handleTest = async () => {
+    const cfg: GitHubConfig = {
+        username: repoConfig.username.trim(),
+        repo: repoConfig.repo.trim(),
+        branch: repoConfig.branch.trim(),
+        token: repoConfig.token.trim()
+    };
+    if (!cfg.username || !cfg.repo || !cfg.branch || !cfg.token) {
+        setTestResult({ ok: false, message: 'Please fill in all fields before testing.' });
+        return;
+    }
+    setIsTesting(true);
+    setTestResult(null);
+    const result = await testGitHubConnection(cfg);
+    setIsTesting(false);
+    if (result.ok) {
+        setTestResult({ ok: true, message: `✅ Connection successful! site-data.json found in ${cfg.username}/${cfg.repo}@${cfg.branch}.` });
+    } else {
+        setTestResult({ ok: false, message: `❌ ${result.error}` });
+    }
   };
 
   return (
@@ -60,6 +85,25 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
           <button type="submit" className="w-full py-3 bg-white text-gray-950 font-bold rounded-lg hover:bg-gray-200 transition-colors">
             Save Configuration
           </button>
+
+          <button
+            type="button"
+            onClick={handleTest}
+            disabled={isTesting}
+            className="w-full py-3 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+          >
+            {isTesting ? <Loader2 size={16} className="animate-spin" /> : null}
+            {isTesting ? 'Testing...' : '🔍 Test Connection'}
+          </button>
+
+          {testResult && (
+            <div className={`flex items-start gap-2 p-3 rounded-lg text-sm ${testResult.ok ? 'bg-green-500/10 border border-green-500/20 text-green-400' : 'bg-red-500/10 border border-red-500/20 text-red-400'}`}>
+              {testResult.ok
+                ? <CheckCircle size={16} className="shrink-0 mt-0.5" />
+                : <AlertCircle size={16} className="shrink-0 mt-0.5" />}
+              {testResult.message}
+            </div>
+          )}
         </form>
       </div>
 
