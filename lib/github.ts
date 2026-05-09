@@ -201,6 +201,29 @@ export const fetchPostCommentsPublic = async (postId: string): Promise<Comment[]
 };
 
 /**
+ * Post a comment (or reply) via the Vercel serverless function /api/add-comment.
+ * The serverless function uses server-side env vars for the GitHub token so any
+ * visitor can post without supplying credentials.
+ * Returns true on success, false if the endpoint is unavailable or returns an error.
+ */
+export const addPostCommentViaAPI = async (
+  postId: string,
+  comment: Comment,
+  parentId?: string | null
+): Promise<boolean> => {
+  try {
+    const res = await fetch('/api/add-comment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ postId, comment, parentId: parentId ?? null }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+};
+
+/**
  * Append a comment (or reply) to site-data.json via the GitHub API.
  * Returns true on success, false if no GitHub config or on any error.
  */

@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { getSupabaseClient } from '../lib/supabase';
 import {
     fetchPostCommentsPublic,
+    addPostCommentViaAPI,
     addPostCommentToGitHub,
 } from '../lib/github';
 import ContentRenderer from './ContentRenderer';
@@ -488,7 +489,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                 console.warn('Supabase comment insert failed, trying GitHub site-data.json:', error);
             }
 
-            // ── Priority 2: GitHub site-data.json ─────────────────────────────
+            // ── Priority 2: Serverless API (Vercel — token stays server-side) ──────
             const fallbackComment: Comment = {
                 id: (typeof crypto !== 'undefined' && crypto.randomUUID)
                     ? crypto.randomUUID()
@@ -500,6 +501,16 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                 replies: []
             };
 
+            const savedViaAPI = await addPostCommentViaAPI(post.id, fallbackComment, replyTo?.id || null);
+            if (savedViaAPI) {
+                applyToUI(fallbackComment);
+                setNewComment('');
+                setReplyTo(null);
+                if (!currentUser) setGuestName('');
+                return;
+            }
+
+            // ── Priority 3: Direct GitHub (local dev fallback with localStorage token) ─
             const savedToGitHub = await addPostCommentToGitHub(post.id, fallbackComment, replyTo?.id || null);
 
             if (!savedToGitHub) {
