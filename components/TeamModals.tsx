@@ -5,7 +5,12 @@ import { TeamMember, Post, Comment } from '../types';
 import { useData } from '../contexts/DataContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
-import { getSupabaseClient } from '../lib/supabase';
+import {
+    fetchPostCommentsPublic,
+    addPostCommentToGitHub,
+    getLocalPostComments,
+    saveLocalPostComments,
+} from '../lib/github';
 import ContentRenderer from './ContentRenderer';
 import LocalScrollButton from './LocalScrollButton';
 import { useSEO } from '../hooks/useSEO';
@@ -366,52 +371,19 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
         },
     });
 
-    // Fetch comments from Supabase
+    // Fetch comments from site-data.json; merge with any locally-stored ones
     useEffect(() => {
         const fetchComments = async () => {
             setIsLoadingComments(true);
             try {
-                const supabase = getSupabaseClient();
-                if (!supabase) {
-                    setIsLoadingComments(false);
-                    return;
-                }
-
-                const { data, error } = await supabase
-                    .from('comments')
-                    .select('*')
-                    .eq('post_id', post.id)
-                    .order('created_at', { ascending: true });
-
-                if (error) throw error;
-
-                // Build comment tree
-                const commentMap = new Map();
-                const roots: Comment[] = [];
-
-                data.forEach(c => {
-                    // Map Supabase column names (user_name, created_at) to the Comment interface (user, date)
-                    const comment: Comment = {
-                        id: c.id,
-                        user: c.user_name || 'Anonymous',
-                        avatar: c.avatar || '',
-                        content: c.content,
-                        date: c.created_at,
-                        replies: []
-                    };
-                    commentMap.set(c.id, comment);
-                });
-
-                data.forEach(c => {
-                    const comment = commentMap.get(c.id);
-                    if (c.parent_id && commentMap.has(c.parent_id)) {
-                        commentMap.get(c.parent_id).replies.push(comment);
-                    } else {
-                        roots.push(comment);
-                    }
-                });
-
-                setComments(roots);
+                const [serverComments, localComments] = await Promise.all([
+                    fetchPostCommentsPublic(post.id),
+                    Promise.resolve(getLocalPostComments(post.id)),
+                ]);
+                // Local comments not yet on the server are appended at the end
+                const serverIds = new Set(serverComments.map(c => c.id));
+                const onlyLocal = localComments.filter(c => !serverIds.has(c.id));
+                setComments([...serverComments, ...onlyLocal]);
             } catch (err) {
                 console.error('Error fetching comments:', err);
             } finally {
@@ -437,42 +409,37 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
         setIsSubmitting(true);
         setCommentError('');
         try {
-            const supabase = getSupabaseClient();
-            if (!supabase) {
-                setCommentError(t('Database not connected. Comments are currently unavailable.', 'មូលដ្ឋានទិន្នន័យមិនបានភ្ជាប់។ មតិយោបល់មិនអាចប្រើបានជាបណ្ដោះអាសន្ន។'));
-                setIsSubmitting(false);
-                return;
-            }
-
-            const commentData = {
-                post_id: post.id,
-                user_id: currentUser ? (currentUser.id || 'anonymous') : 'guest',
-                user_name: authorName,
-                content: newComment.trim(),
-                parent_id: replyTo?.id || null
-            };
-
-            const { data, error } = await supabase
-                .from('comments')
-                .insert([commentData])
-                .select()
-                .single();
-
-            if (error) throw error;
-
-            // Map Supabase column names (user_name, created_at) to the Comment interface (user, date)
             const newLocalComment: Comment = {
-                id: data.id,
-                user: data.user_name || authorName,
-                avatar: data.avatar || '',
-                content: data.content,
-                date: data.created_at || new Date().toISOString(),
+                id: `c_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+                user: authorName,
+                avatar: '',
+                content: newComment.trim(),
+                date: new Date().toISOString(),
                 replies: []
             };
 
+            // Try to persist to site-data.json via GitHub API
+            const saved = await addPostCommentToGitHub(post.id, newLocalComment, replyTo?.id || null);
+
+            if (!saved) {
+                // Fall back to localStorage so the comment survives a page refresh
+                // for the user who posted it, even without a GitHub config.
+                const existing = getLocalPostComments(post.id);
+                const addToTree = (list: Comment[], parentId: string | null): Comment[] => {
+                    if (!parentId) return [...list, newLocalComment];
+                    return list.map(c =>
+                        c.id === parentId
+                            ? { ...c, replies: [...(c.replies ?? []), newLocalComment] }
+                            : { ...c, replies: c.replies ? addToTree(c.replies, parentId) : [] }
+                    );
+                };
+                saveLocalPostComments(post.id, addToTree(existing, replyTo?.id || null));
+            }
+
+            // Optimistically update the comment tree in UI
             if (replyTo) {
-                const updateReplies = (list: Comment[]): Comment[] => {
-                    return list.map(c => {
+                const updateReplies = (list: Comment[]): Comment[] =>
+                    list.map(c => {
                         if (c.id === replyTo.id) {
                             return { ...c, replies: [...(c.replies || []), newLocalComment] };
                         }
@@ -481,7 +448,6 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                         }
                         return c;
                     });
-                };
                 setComments(prev => updateReplies(prev));
             } else {
                 setComments(prev => [...prev, newLocalComment]);
