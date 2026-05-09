@@ -265,7 +265,7 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
                 // First test the new token with the existing repo config
                 const cfg = getGitHubConfig();
                 if (!cfg) {
-                  setRenewResult({ ok: false, message: 'No existing config found.' });
+                  setRenewResult({ ok: false, message: 'No existing config found. Save a full configuration first.' });
                   setIsRenewing(false);
                   return;
                 }
@@ -281,7 +281,7 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
                   setRenewToken('');
                   setRenewResult({ ok: true, message: '✅ Token បានអាប់ដេត និងបានផ្ទៀងផ្ទាត់រួចហើយ!' });
                 } else {
-                  setRenewResult({ ok: false, message: 'Failed to save — no existing config found.' });
+                  setRenewResult({ ok: false, message: 'No existing config found. Save a full configuration first.' });
                 }
                 setIsRenewing(false);
               }}
