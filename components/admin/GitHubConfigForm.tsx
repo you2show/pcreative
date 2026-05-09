@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Cloud, RotateCcw, CheckCircle, AlertCircle, Loader2, Lock, ExternalLink } from 'lucide-react';
+import { Cloud, RotateCcw, CheckCircle, AlertCircle, Loader2, Lock, ExternalLink, Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { GitHubConfig } from '../../types';
-import { testGitHubConnection } from '../../lib/github';
+import { testGitHubConnection, saveGitHubToken, getGitHubConfig } from '../../lib/github';
 
 interface GitHubConfigFormProps {
   initialConfig: GitHubConfig;
@@ -13,6 +13,14 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
   const [repoConfig, setRepoConfig] = useState<GitHubConfig>(initialConfig);
   const [isTesting, setIsTesting] = useState(false);
   const [testResult, setTestResult] = useState<{ ok: boolean; message: string } | null>(null);
+  const [showToken, setShowToken] = useState(false);
+
+  // Quick-renew state (token-only update)
+  const [renewToken, setRenewToken] = useState('');
+  const [isRenewing, setIsRenewing] = useState(false);
+  const [renewResult, setRenewResult] = useState<{ ok: boolean; message: string } | null>(null);
+
+  const hasExistingConfig = !!initialConfig.username;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,13 +172,23 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
               <Lock size={11} className="text-gray-500" /> Personal Access Token (PAT)
               <span className="ml-auto text-[10px] font-normal text-gray-600">localStorage only · មិនបញ្ជូន server</span>
             </label>
-            <input
-              type="password"
-              className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-              placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-              value={repoConfig.token}
-              onChange={(e) => setRepoConfig({ ...repoConfig, token: e.target.value })}
-            />
+            <div className="relative">
+              <input
+                type={showToken ? 'text' : 'password'}
+                className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 pr-10 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                value={repoConfig.token}
+                onChange={(e) => setRepoConfig({ ...repoConfig, token: e.target.value })}
+              />
+              <button
+                type="button"
+                onClick={() => setShowToken(v => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+                title={showToken ? 'Hide token' : 'Show token'}
+              >
+                {showToken ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
+            </div>
             <p className="text-[10px] text-gray-600 mt-1">
               Required scope: <code className="bg-gray-800 px-1 rounded text-indigo-400">repo</code> (contents read + write)
             </p>
@@ -207,6 +225,80 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
           <RotateCcw size={16} /> លុបការភ្ជាប់ GitHub
         </button>
       </div>
+
+      {/* Quick Renew Token — update only the PAT without re-entering all fields */}
+      {hasExistingConfig && (
+        <div className="mt-4 bg-gray-900 border border-white/10 rounded-2xl p-5">
+          <h4 className="font-bold text-white mb-1 flex items-center gap-2">
+            <RefreshCw size={16} className="text-yellow-400" /> Renew Token Only
+          </h4>
+          <p className="text-gray-400 text-xs mb-3 leading-relaxed">
+            Token ផុតកំណត់? បិទ Token ចាស់ ហើយបង្កើត Token ថ្មី
+            (<a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">github.com/settings/tokens</a>)
+            ។ Username / Repo / Branch <strong>មិនចាំបាច់បញ្ចូលម្ដងទៀតទេ</strong> — paste token ថ្មី ហើយ save ។
+          </p>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <input
+                type={showToken ? 'text' : 'password'}
+                value={renewToken}
+                onChange={(e) => { setRenewToken(e.target.value); setRenewResult(null); }}
+                placeholder="ghp_… (new token)"
+                className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 pr-10 text-white text-sm focus:ring-2 focus:ring-yellow-500 outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setShowToken(v => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+              >
+                {showToken ? <EyeOff size={14} /> : <Eye size={14} />}
+              </button>
+            </div>
+            <button
+              type="button"
+              disabled={isRenewing || !renewToken.trim()}
+              onClick={async () => {
+                const t = renewToken.trim();
+                if (!t) return;
+                setIsRenewing(true);
+                setRenewResult(null);
+                // First test the new token with the existing repo config
+                const cfg = getGitHubConfig();
+                if (!cfg) {
+                  setRenewResult({ ok: false, message: 'No existing config found.' });
+                  setIsRenewing(false);
+                  return;
+                }
+                const result = await testGitHubConnection({ ...cfg, token: t });
+                if (!result.ok) {
+                  setRenewResult({ ok: false, message: `❌ ${result.error}` });
+                  setIsRenewing(false);
+                  return;
+                }
+                const saved = saveGitHubToken(t);
+                if (saved) {
+                  setRepoConfig(prev => ({ ...prev, token: t }));
+                  setRenewToken('');
+                  setRenewResult({ ok: true, message: '✅ Token បានអាប់ដេត និងបានផ្ទៀងផ្ទាត់រួចហើយ!' });
+                } else {
+                  setRenewResult({ ok: false, message: 'Failed to save — no existing config found.' });
+                }
+                setIsRenewing(false);
+              }}
+              className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 disabled:opacity-40 text-gray-950 font-bold rounded-lg text-sm transition-colors flex items-center gap-1 shrink-0"
+            >
+              {isRenewing ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
+              {isRenewing ? '...' : 'Save'}
+            </button>
+          </div>
+          {renewResult && (
+            <div className={`flex items-start gap-2 mt-2 p-2 rounded-lg text-xs ${renewResult.ok ? 'bg-green-500/10 border border-green-500/20 text-green-400' : 'bg-red-500/10 border border-red-500/20 text-red-400'}`}>
+              {renewResult.ok ? <CheckCircle size={13} className="shrink-0 mt-0.5" /> : <AlertCircle size={13} className="shrink-0 mt-0.5" />}
+              {renewResult.message}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

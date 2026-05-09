@@ -24,6 +24,17 @@ export const clearGitHubConfig = (): void => {
   localStorage.removeItem(GITHUB_CONFIG_KEY);
 };
 
+/**
+ * Update only the PAT token in the stored GitHub config, leaving username/repo/branch intact.
+ * Returns false if no config exists to update.
+ */
+export const saveGitHubToken = (token: string): boolean => {
+  const cfg = getGitHubConfig();
+  if (!cfg) return false;
+  localStorage.setItem(GITHUB_CONFIG_KEY, JSON.stringify({ ...cfg, token }));
+  return true;
+};
+
 interface SiteDataFile {
   content: Record<string, unknown>;
   sha: string;
