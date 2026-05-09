@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Menu, X, ArrowUpRight, ChevronDown, Check, Globe } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { smoothScrollTo } from '../utils/scroll';
@@ -16,8 +16,11 @@ const Header: React.FC = () => {
   const { language, setLanguage, t, languageName } = useLanguage();
 
   const navRef = useRef<HTMLElement>(null);
+  const navScrollRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
   const langMenuRef = useRef<HTMLDivElement>(null);
+  const [showLeftFade, setShowLeftFade] = useState(false);
+  const [showRightFade, setShowRightFade] = useState(false);
   
   // CRITICAL: Prevent IntersectionObserver from triggering during manual click scrolls
   const isManualScrolling = useRef(false);
@@ -32,8 +35,8 @@ const Header: React.FC = () => {
     { name: t('Work', 'ស្នាដៃ'), href: '#portfolio' },
     { name: t('Team', 'ក្រុមការងារ'), href: '#team' },
     { name: t('Insights', 'ចំណេះដឹង'), href: '#insights' },
-    { name: t('FAQ', 'សំណួរចម្លើយ'), href: '#faq', xlOnly: true },
-    { name: t('Contact', 'ទំនាក់ទំនង'), href: '#contact', xlOnly: true },
+    { name: t('FAQ', 'សំណួរចម្លើយ'), href: '#faq', mobileOnly: false },
+    { name: t('Contact', 'ទំនាក់ទំនង'), href: '#contact', mobileOnly: false },
   ];
 
   const languages = [
@@ -59,7 +62,7 @@ const Header: React.FC = () => {
         if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) setIsLangMenuOpen(false);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     document.addEventListener('mousedown', handleClickOutside);
     
     const observer = new IntersectionObserver((entries) => {
@@ -164,7 +167,29 @@ const Header: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const mobileNavLinks = navLinks.filter(link => !('xlOnly' in link && link.xlOnly));
+  const mobileNavLinks = navLinks;
+
+  const SCROLL_FADE_THRESHOLD = 4; // px — small buffer to avoid flicker at resting position
+
+  const updateFades = useCallback(() => {
+    const el = navScrollRef.current;
+    if (!el) return;
+    setShowLeftFade(el.scrollLeft > SCROLL_FADE_THRESHOLD);
+    setShowRightFade(el.scrollLeft + el.clientWidth < el.scrollWidth - SCROLL_FADE_THRESHOLD);
+  }, []);
+
+  useEffect(() => {
+    const el = navScrollRef.current;
+    if (!el) return;
+    updateFades();
+    el.addEventListener('scroll', updateFades, { passive: true });
+    const ro = new ResizeObserver(updateFades);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener('scroll', updateFades);
+      ro.disconnect();
+    };
+  }, [updateFades, language]);
 
   return (
     <>
@@ -198,11 +223,22 @@ const Header: React.FC = () => {
             </span>
           </a>
 
-          <nav ref={navRef} className="hidden lg:flex items-center relative bg-white/5 p-1.5 rounded-full border border-white/5">
-            <div className="absolute top-1.5 bottom-1.5 rounded-full bg-white/10 transition-all duration-500 ease-out" style={{ left: `${indicatorStyle.left}px`, width: `${indicatorStyle.width}px`, opacity: indicatorStyle.opacity }} />
-            {navLinks.map((link, index) => (
-              <a key={link.name} href={link.href} ref={(el) => { itemsRef.current[index] = el }} onClick={(e) => scrollToSection(e, link.href)} className={`relative z-10 px-3 xl:px-5 py-2 rounded-full text-sm font-medium font-khmer transition-colors duration-300 whitespace-nowrap ${activeSection === link.href.substring(1) ? 'text-white' : 'text-gray-400 hover:text-white'} ${'xlOnly' in link && link.xlOnly ? 'hidden xl:inline-flex' : ''}`}>{link.name}</a>
-            ))}
+          <nav ref={navRef} className="hidden lg:flex items-center relative">
+            {/* Left fade edge */}
+            <div className={`absolute left-0 top-0 bottom-0 w-8 rounded-l-full bg-gradient-to-r from-gray-950/60 to-transparent pointer-events-none z-20 transition-opacity duration-200 ${showLeftFade ? 'opacity-100' : 'opacity-0'}`} />
+              {/* max-w-[46vw]: caps width on lg so items overflow into scrollable area; xl screens have room for all items */}
+            <div
+              ref={navScrollRef}
+              className="flex items-center relative bg-white/5 p-1.5 rounded-full border border-white/5 overflow-x-auto scrollbar-hide max-w-[46vw] xl:max-w-none"
+              style={{ WebkitOverflowScrolling: 'touch' } as React.CSSProperties}
+            >
+              <div className="absolute top-1.5 bottom-1.5 rounded-full bg-white/10 transition-all duration-500 ease-out" style={{ left: `${indicatorStyle.left}px`, width: `${indicatorStyle.width}px`, opacity: indicatorStyle.opacity }} />
+              {navLinks.map((link, index) => (
+                <a key={link.name} href={link.href} ref={(el) => { itemsRef.current[index] = el }} onClick={(e) => scrollToSection(e, link.href)} className={`relative z-10 px-3 xl:px-4 py-2 rounded-full text-sm font-medium font-khmer transition-colors duration-300 whitespace-nowrap flex-shrink-0 ${activeSection === link.href.substring(1) ? 'text-white' : 'text-gray-400 hover:text-white'}`}>{link.name}</a>
+              ))}
+            </div>
+            {/* Right fade edge */}
+            <div className={`absolute right-0 top-0 bottom-0 w-8 rounded-r-full bg-gradient-to-l from-gray-950/60 to-transparent pointer-events-none z-20 transition-opacity duration-200 ${showRightFade ? 'opacity-100' : 'opacity-0'}`} />
           </nav>
 
           <div className="flex items-center gap-2 md:gap-4 relative z-50">

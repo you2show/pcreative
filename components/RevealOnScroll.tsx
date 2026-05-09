@@ -72,10 +72,11 @@ const RevealOnScroll: React.FC<RevealOnScrollProps> = ({
   return (
     <div
       ref={ref}
-      className={`${className} transition-all cubic-bezier(0.25, 1, 0.5, 1) transform will-change-transform ${getTransformClasses()}`}
+      className={`${className} transition-[opacity,transform,filter] transform ${!isVisible ? 'will-change-transform' : ''} ${getTransformClasses()}`}
       style={{ 
         transitionDuration: `${duration}ms`,
         transitionDelay: `${delay}ms`,
+        transitionTimingFunction: 'cubic-bezier(0.25, 1, 0.5, 1)',
       }}
     >
       {children}
