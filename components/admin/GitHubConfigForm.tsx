@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Cloud, RotateCcw, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Cloud, RotateCcw, CheckCircle, AlertCircle, Loader2, Lock, ExternalLink, Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { GitHubConfig } from '../../types';
-import { testGitHubConnection } from '../../lib/github';
+import { testGitHubConnection, saveGitHubToken, getGitHubConfig } from '../../lib/github';
 
 interface GitHubConfigFormProps {
   initialConfig: GitHubConfig;
@@ -13,6 +13,14 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
   const [repoConfig, setRepoConfig] = useState<GitHubConfig>(initialConfig);
   const [isTesting, setIsTesting] = useState(false);
   const [testResult, setTestResult] = useState<{ ok: boolean; message: string } | null>(null);
+  const [showToken, setShowToken] = useState(false);
+
+  // Quick-renew state (token-only update)
+  const [renewToken, setRenewToken] = useState('');
+  const [isRenewing, setIsRenewing] = useState(false);
+  const [renewResult, setRenewResult] = useState<{ ok: boolean; message: string } | null>(null);
+
+  const hasExistingConfig = !!initialConfig.username;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,36 +58,140 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
   return (
     <div className="max-w-2xl">
       <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
-        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
           <Cloud className="text-indigo-400" /> GitHub Configuration
         </h3>
-        <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-           ភ្ជាប់ GitHub repo ដើម្បីរក្សាទុក Telegram Config នៅក្នុង <code className="bg-gray-800 px-1 rounded text-indigo-300">site-data.json</code>។<br/>
-           PAT Token ត្រូវការ scope: <code className="bg-gray-800 px-1 rounded text-indigo-300">repo</code> (contents write)。Token ត្រូវបានរក្សាតែក្នុង browser localStorage ប៉ុណ្ណោះ។
+        <p className="text-gray-400 text-sm mb-4 leading-relaxed">
+          ភ្ជាប់ GitHub repo ដើម្បីរក្សាទុក Telegram Config នៅក្នុង{' '}
+          <code className="bg-gray-800 px-1 rounded text-indigo-300">site-data.json</code>
+          {' '}ដូច្នេះ visitor ម្នាក់ក្រៅ browser ក៏អាចប្រើ Live Chat បាន។
         </p>
+
+        {/* Security notice */}
+        <div className="flex items-start gap-2 bg-indigo-500/10 border border-indigo-500/20 rounded-lg p-3 mb-5 text-xs text-indigo-300">
+          <Lock size={14} className="shrink-0 mt-0.5" />
+          <span>
+            PAT Token ត្រូវការ scope:{' '}
+            <code className="bg-gray-800 px-1 rounded font-bold">repo</code>{' '}
+            (contents write) — Token <strong>ត្រូវបានរក្សាតែក្នុង browser localStorage</strong>{' '}
+            ប៉ុណ្ណោះ។ មិនបានបញ្ជូនទៅ server ណាមួយឡើយ។
+          </span>
+        </div>
+
+        {/* Step-by-step PAT guide */}
+        <details className="mb-5 group">
+          <summary className="cursor-pointer text-xs font-bold text-gray-400 hover:text-white flex items-center gap-1 select-none">
+            <span className="group-open:rotate-90 transition-transform inline-block">▶</span>
+            {' '}របៀបបង្កើត PAT Token (ចុចដើម្បីពង្រីក)
+          </summary>
+          <ol className="mt-3 space-y-2 text-xs text-gray-400 pl-1">
+            <li className="flex gap-2">
+              <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">1</span>
+              <span>
+                ចូល{' '}
+                <a
+                  href="https://github.com/settings/tokens/new"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-400 underline inline-flex items-center gap-0.5"
+                >
+                  github.com/settings/tokens/new <ExternalLink size={10} />
+                </a>
+                {' '}(GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token)
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">2</span>
+              <span>
+                ដាក់ <strong>Note</strong> ណាមួយ ដូចជា <code className="bg-gray-800 px-1 rounded">pcreative-site-data</code>
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">3</span>
+              <span>
+                ជ្រើស <strong>Expiration</strong> (អាចជា No expiration ក្នុង private project)
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">4</span>
+              <span>
+                ចុច checkbox{' '}
+                <code className="bg-gray-800 px-1 rounded text-green-400 font-bold">✓ repo</code>{' '}
+                (Full control of private repositories) — scope នេះអনុញ្ញាតអាន/សរសេរ contents
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">5</span>
+              <span>
+                ចុច <strong>Generate token</strong> ហើយ copy Token{' '}
+                (<code className="bg-gray-800 px-1 rounded">ghp_…</code>)
+                ដាក់ field <em>Personal Access Token</em> ខាងក្រោម
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">6</span>
+              <span>
+                ចុច <strong>🔍 Test Connection</strong> ដើម្បីផ្ទៀងផ្ទាត់ ហើយ <strong>Save Configuration</strong>
+              </span>
+            </li>
+          </ol>
+        </details>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-gray-500 mb-1">GitHub Username</label>
-              <input className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" 
-                value={repoConfig.username} onChange={(e) => setRepoConfig({ ...repoConfig, username: e.target.value })} />
+              <input
+                className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                placeholder="e.g. you2show"
+                value={repoConfig.username}
+                onChange={(e) => setRepoConfig({ ...repoConfig, username: e.target.value })}
+              />
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 mb-1">Repository Name</label>
-              <input className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" 
-                value={repoConfig.repo} onChange={(e) => setRepoConfig({ ...repoConfig, repo: e.target.value })} />
+              <input
+                className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                placeholder="e.g. pcreative"
+                value={repoConfig.repo}
+                onChange={(e) => setRepoConfig({ ...repoConfig, repo: e.target.value })}
+              />
             </div>
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 mb-1">Branch Name</label>
-            <input className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" 
-                value={repoConfig.branch} onChange={(e) => setRepoConfig({ ...repoConfig, branch: e.target.value })} />
+            <input
+              className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+              placeholder="main"
+              value={repoConfig.branch}
+              onChange={(e) => setRepoConfig({ ...repoConfig, branch: e.target.value })}
+            />
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-500 mb-1">Personal Access Token (PAT)</label>
-            <input type="password" className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" 
-                placeholder="ghp_..." value={repoConfig.token} onChange={(e) => setRepoConfig({ ...repoConfig, token: e.target.value })} />
+            <label className="block text-xs font-bold text-gray-500 mb-1 flex items-center gap-1">
+              <Lock size={11} className="text-gray-500" /> Personal Access Token (PAT)
+              <span className="ml-auto text-[10px] font-normal text-gray-600">localStorage only · មិនបញ្ជូន server</span>
+            </label>
+            <div className="relative">
+              <input
+                type={showToken ? 'text' : 'password'}
+                className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 pr-10 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                value={repoConfig.token}
+                onChange={(e) => setRepoConfig({ ...repoConfig, token: e.target.value })}
+              />
+              <button
+                type="button"
+                onClick={() => setShowToken(v => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+                title={showToken ? 'Hide token' : 'Show token'}
+              >
+                {showToken ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
+            </div>
+            <p className="text-[10px] text-gray-600 mt-1">
+              Required scope: <code className="bg-gray-800 px-1 rounded text-indigo-400">repo</code> (contents read + write)
+            </p>
           </div>
 
           <button type="submit" className="w-full py-3 bg-white text-gray-950 font-bold rounded-lg hover:bg-gray-200 transition-colors">
@@ -113,6 +225,80 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
           <RotateCcw size={16} /> លុបការភ្ជាប់ GitHub
         </button>
       </div>
+
+      {/* Quick Renew Token — update only the PAT without re-entering all fields */}
+      {hasExistingConfig && (
+        <div className="mt-4 bg-gray-900 border border-white/10 rounded-2xl p-5">
+          <h4 className="font-bold text-white mb-1 flex items-center gap-2">
+            <RefreshCw size={16} className="text-yellow-400" /> Renew Token Only
+          </h4>
+          <p className="text-gray-400 text-xs mb-3 leading-relaxed">
+            Token ផុតកំណត់? បិទ Token ចាស់ ហើយបង្កើត Token ថ្មី
+            (<a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">github.com/settings/tokens</a>)
+            ។ Username / Repo / Branch <strong>មិនចាំបាច់បញ្ចូលម្ដងទៀតទេ</strong> — paste token ថ្មី ហើយ save ។
+          </p>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <input
+                type={showToken ? 'text' : 'password'}
+                value={renewToken}
+                onChange={(e) => { setRenewToken(e.target.value); setRenewResult(null); }}
+                placeholder="ghp_… (new token)"
+                className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 pr-10 text-white text-sm focus:ring-2 focus:ring-yellow-500 outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setShowToken(v => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+              >
+                {showToken ? <EyeOff size={14} /> : <Eye size={14} />}
+              </button>
+            </div>
+            <button
+              type="button"
+              disabled={isRenewing || !renewToken.trim()}
+              onClick={async () => {
+                const t = renewToken.trim();
+                if (!t) return;
+                setIsRenewing(true);
+                setRenewResult(null);
+                // First test the new token with the existing repo config
+                const cfg = getGitHubConfig();
+                if (!cfg) {
+                  setRenewResult({ ok: false, message: 'No existing config found. Save a full configuration first.' });
+                  setIsRenewing(false);
+                  return;
+                }
+                const result = await testGitHubConnection({ ...cfg, token: t });
+                if (!result.ok) {
+                  setRenewResult({ ok: false, message: `❌ ${result.error}` });
+                  setIsRenewing(false);
+                  return;
+                }
+                const saved = saveGitHubToken(t);
+                if (saved) {
+                  setRepoConfig(prev => ({ ...prev, token: t }));
+                  setRenewToken('');
+                  setRenewResult({ ok: true, message: '✅ Token បានអាប់ដេត និងបានផ្ទៀងផ្ទាត់រួចហើយ!' });
+                } else {
+                  setRenewResult({ ok: false, message: 'No existing config found. Save a full configuration first.' });
+                }
+                setIsRenewing(false);
+              }}
+              className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 disabled:opacity-40 text-gray-950 font-bold rounded-lg text-sm transition-colors flex items-center gap-1 shrink-0"
+            >
+              {isRenewing ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
+              {isRenewing ? '...' : 'Save'}
+            </button>
+          </div>
+          {renewResult && (
+            <div className={`flex items-start gap-2 mt-2 p-2 rounded-lg text-xs ${renewResult.ok ? 'bg-green-500/10 border border-green-500/20 text-green-400' : 'bg-red-500/10 border border-red-500/20 text-red-400'}`}>
+              {renewResult.ok ? <CheckCircle size={13} className="shrink-0 mt-0.5" /> : <AlertCircle size={13} className="shrink-0 mt-0.5" />}
+              {renewResult.message}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
