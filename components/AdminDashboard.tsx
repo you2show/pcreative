@@ -631,6 +631,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                          )}
                      </div>
 
+                     {/* GitHub Configuration — must appear before Telegram so users set it up first */}
+                     <GitHubConfigForm
+                         initialConfig={githubConfig || { username: '', repo: '', branch: 'main', token: '' }}
+                         onSave={(cfg) => {
+                             saveGitHubConfig(cfg);
+                             setGithubConfig(cfg);
+                             alert('✅ GitHub Config បានរក្សាទុក!\nឥឡូវអ្នកអាចរក្សាទុក Telegram Config ទៅ GitHub បាន។');
+                         }}
+                         onReset={() => {
+                             if (window.confirm('លុប GitHub Config?')) {
+                                 clearGitHubConfig();
+                                 setGithubConfig(null);
+                             }
+                         }}
+                     />
+
                      {/* Telegram Live Chat Config */}
                      <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
                          <h3 className="text-xl font-bold mb-2 flex items-center gap-2"><Send size={20} className="text-[#229ED9]"/> Telegram Live Chat</h3>
@@ -641,7 +657,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                          <p className="text-gray-500 text-xs mb-4">
                              💡 Bot នឹងស្នើ Admin <b>Reply</b> ដោយស្វ័យប្រវត្តិ (force reply)។ ការ Reply ក្នុង Telegram Group ផ្ញើ reply ទៅ user ១០០%។
                              {githubConfig ? (
-                                 <span className="ml-2 text-green-400">✓ រក្សាទុកទៅ GitHub site-data.json</span>
+                                 <span className="ml-2 text-green-400">✓ GitHub Config ត្រូវបានភ្ជាប់ — Config នឹងរក្សាទុកទៅ site-data.json</span>
                              ) : (
                                  <span className="ml-2 text-yellow-500">⚠ បញ្ចូល GitHub Config ខាងលើដើម្បីរក្សាទុកនៅ GitHub</span>
                              )}
@@ -750,22 +766,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                              {isTesting ? 'Testing...' : '🔍 Test Connection'}
                          </button>
                      </div>
-
-                     {/* GitHub Configuration — for saving config to site-data.json */}
-                     <GitHubConfigForm
-                         initialConfig={githubConfig || { username: '', repo: '', branch: 'main', token: '' }}
-                         onSave={(cfg) => {
-                             saveGitHubConfig(cfg);
-                             setGithubConfig(cfg);
-                             alert('✅ GitHub Config បានរក្សាទុក!\nឥឡូវអ្នកអាចរក្សាទុក Telegram Config ទៅ GitHub បាន។');
-                         }}
-                         onReset={() => {
-                             if (window.confirm('លុប GitHub Config?')) {
-                                 clearGitHubConfig();
-                                 setGithubConfig(null);
-                             }
-                         }}
-                     />
                  </div>
              ) : (
                  <ContentGrid 
