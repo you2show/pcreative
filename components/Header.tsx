@@ -62,7 +62,7 @@ const Header: React.FC = () => {
         if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) setIsLangMenuOpen(false);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     document.addEventListener('mousedown', handleClickOutside);
     
     const observer = new IntersectionObserver((entries) => {
