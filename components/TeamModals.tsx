@@ -6,6 +6,10 @@ import { useData } from '../contexts/DataContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { getSupabaseClient } from '../lib/supabase';
+import {
+    fetchPostCommentsPublic,
+    addPostCommentToGitHub,
+} from '../lib/github';
 import ContentRenderer from './ContentRenderer';
 import LocalScrollButton from './LocalScrollButton';
 import { useSEO } from '../hooks/useSEO';
@@ -16,6 +20,31 @@ const getTotalCommentCount = (comments: Comment[]): number => {
   return comments.reduce((acc, comment) => {
     return acc + 1 + (comment.replies ? getTotalCommentCount(comment.replies) : 0);
   }, 0);
+};
+
+// Build a nested comment tree from Supabase flat rows
+const buildCommentTree = (rows: any[]): Comment[] => {
+    const map = new Map<string, Comment>();
+    const roots: Comment[] = [];
+    rows.forEach(c => {
+        map.set(c.id, {
+            id: c.id,
+            user: c.user_name || 'Anonymous',
+            avatar: c.avatar || '',
+            content: c.content,
+            date: c.created_at,
+            replies: []
+        });
+    });
+    rows.forEach(c => {
+        const comment = map.get(c.id)!;
+        if (c.parent_id && map.has(c.parent_id)) {
+            map.get(c.parent_id)!.replies!.push(comment);
+        } else {
+            roots.push(comment);
+        }
+    });
+    return roots;
 };
 
 // --- Member Detail Modal ---
@@ -366,52 +395,26 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
         },
     });
 
-    // Fetch comments from Supabase
+    // Fetch comments: Supabase first, fall back to site-data.json
     useEffect(() => {
         const fetchComments = async () => {
             setIsLoadingComments(true);
             try {
                 const supabase = getSupabaseClient();
-                if (!supabase) {
-                    setIsLoadingComments(false);
-                    return;
-                }
-
-                const { data, error } = await supabase
-                    .from('comments')
-                    .select('*')
-                    .eq('post_id', post.id)
-                    .order('created_at', { ascending: true });
-
-                if (error) throw error;
-
-                // Build comment tree
-                const commentMap = new Map();
-                const roots: Comment[] = [];
-
-                data.forEach(c => {
-                    // Map Supabase column names (user_name, created_at) to the Comment interface (user, date)
-                    const comment: Comment = {
-                        id: c.id,
-                        user: c.user_name || 'Anonymous',
-                        avatar: c.avatar || '',
-                        content: c.content,
-                        date: c.created_at,
-                        replies: []
-                    };
-                    commentMap.set(c.id, comment);
-                });
-
-                data.forEach(c => {
-                    const comment = commentMap.get(c.id);
-                    if (c.parent_id && commentMap.has(c.parent_id)) {
-                        commentMap.get(c.parent_id).replies.push(comment);
-                    } else {
-                        roots.push(comment);
+                if (supabase) {
+                    const { data, error } = await supabase
+                        .from('comments')
+                        .select('*')
+                        .eq('post_id', post.id)
+                        .order('created_at', { ascending: true });
+                    if (!error && data) {
+                        setComments(buildCommentTree(data));
+                        return;
                     }
-                });
-
-                setComments(roots);
+                    console.warn('Supabase comment fetch failed, falling back to site-data.json:', error);
+                }
+                // Fallback: site-data.json public URL
+                setComments(await fetchPostCommentsPublic(post.id));
             } catch (err) {
                 console.error('Error fetching comments:', err);
             } finally {
@@ -436,57 +439,74 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
 
         setIsSubmitting(true);
         setCommentError('');
+
+        const applyToUI = (comment: Comment) => {
+            if (replyTo) {
+                const updateReplies = (list: Comment[]): Comment[] =>
+                    list.map(c => {
+                        if (c.id === replyTo.id) return { ...c, replies: [...(c.replies || []), comment] };
+                        if (c.replies?.length) return { ...c, replies: updateReplies(c.replies) };
+                        return c;
+                    });
+                setComments(prev => updateReplies(prev));
+            } else {
+                setComments(prev => [...prev, comment]);
+            }
+        };
+
         try {
+            // ── Priority 1: Supabase ──────────────────────────────────────────
             const supabase = getSupabaseClient();
-            if (!supabase) {
-                setCommentError(t('Database not connected. Comments are currently unavailable.', 'មូលដ្ឋានទិន្នន័យមិនបានភ្ជាប់។ មតិយោបល់មិនអាចប្រើបានជាបណ្ដោះអាសន្ន។'));
-                setIsSubmitting(false);
-                return;
+            if (supabase) {
+                const commentData = {
+                    post_id: post.id,
+                    user_id: currentUser ? (currentUser.id || 'anonymous') : 'guest',
+                    user_name: authorName,
+                    content: newComment.trim(),
+                    parent_id: replyTo?.id || null
+                };
+                const { data, error } = await supabase
+                    .from('comments')
+                    .insert([commentData])
+                    .select()
+                    .single();
+                if (!error && data) {
+                    const saved: Comment = {
+                        id: data.id,
+                        user: data.user_name || authorName,
+                        avatar: data.avatar || '',
+                        content: data.content,
+                        date: data.created_at || new Date().toISOString(),
+                        replies: []
+                    };
+                    applyToUI(saved);
+                    setNewComment('');
+                    setReplyTo(null);
+                    if (!currentUser) setGuestName('');
+                    return;
+                }
+                console.warn('Supabase comment insert failed, trying GitHub site-data.json:', error);
             }
 
-            const commentData = {
-                post_id: post.id,
-                user_id: currentUser ? (currentUser.id || 'anonymous') : 'guest',
-                user_name: authorName,
+            // ── Priority 2: GitHub site-data.json ─────────────────────────────
+            const fallbackComment: Comment = {
+                id: (typeof crypto !== 'undefined' && crypto.randomUUID)
+                    ? crypto.randomUUID()
+                    : `c_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+                user: authorName,
+                avatar: '',
                 content: newComment.trim(),
-                parent_id: replyTo?.id || null
-            };
-
-            const { data, error } = await supabase
-                .from('comments')
-                .insert([commentData])
-                .select()
-                .single();
-
-            if (error) throw error;
-
-            // Map Supabase column names (user_name, created_at) to the Comment interface (user, date)
-            const newLocalComment: Comment = {
-                id: data.id,
-                user: data.user_name || authorName,
-                avatar: data.avatar || '',
-                content: data.content,
-                date: data.created_at || new Date().toISOString(),
+                date: new Date().toISOString(),
                 replies: []
             };
 
-            if (replyTo) {
-                const updateReplies = (list: Comment[]): Comment[] => {
-                    return list.map(c => {
-                        if (c.id === replyTo.id) {
-                            return { ...c, replies: [...(c.replies || []), newLocalComment] };
-                        }
-                        if (c.replies && c.replies.length > 0) {
-                            return { ...c, replies: updateReplies(c.replies) };
-                        }
-                        return c;
-                    });
-                };
-                setComments(prev => updateReplies(prev));
-            } else {
-                setComments(prev => [...prev, newLocalComment]);
+            const savedToGitHub = await addPostCommentToGitHub(post.id, fallbackComment, replyTo?.id || null);
+
+            if (!savedToGitHub) {
+                throw new Error('Both Supabase and GitHub are unavailable.');
             }
 
+            applyToUI(fallbackComment);
             setNewComment('');
             setReplyTo(null);
             if (!currentUser) setGuestName('');

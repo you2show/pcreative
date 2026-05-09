@@ -1,4 +1,4 @@
-import { GitHubConfig } from '../types';
+import { GitHubConfig, Comment } from '../types';
 export type { GitHubConfig };
 
 const GITHUB_CONFIG_KEY = 'github_config';
@@ -162,5 +162,68 @@ export const testGitHubConnection = async (
     return { ok: true, sha: file.sha };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : 'Network error' };
+  }
+};
+
+// ---------------------------------------------------------------------------
+// Comment helpers — stored in site-data.json under the "comments" key,
+// keyed by post ID.
+// ---------------------------------------------------------------------------
+
+/** Fetch comments for a post from the public site-data.json URL (no auth needed). */
+export const fetchPostCommentsPublic = async (postId: string): Promise<Comment[]> => {
+  try {
+    const ghCfg = getGitHubConfig();
+    const envUrl = (import.meta.env.VITE_SITE_DATA_URL as string | undefined)?.trim();
+    const baseUrl = ghCfg
+      ? getSiteDataRawUrl({ username: ghCfg.username, repo: ghCfg.repo, branch: ghCfg.branch })
+      : envUrl;
+    if (!baseUrl) return [];
+    const res = await fetch(`${baseUrl}?t=${Date.now()}`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    const allComments = data?.comments as Record<string, Comment[]> | undefined;
+    return allComments?.[postId] ?? [];
+  } catch {
+    return [];
+  }
+};
+
+/**
+ * Append a comment (or reply) to site-data.json via the GitHub API.
+ * Returns true on success, false if no GitHub config or on any error.
+ */
+export const addPostCommentToGitHub = async (
+  postId: string,
+  comment: Comment,
+  parentId?: string | null
+): Promise<boolean> => {
+  const cfg = getGitHubConfig();
+  if (!cfg) return false;
+  try {
+    const file = await fetchSiteDataFromGitHub(cfg);
+    if (!file) return false;
+
+    const allComments = ((file.content.comments as Record<string, Comment[]> | undefined) ?? {});
+    const postComments: Comment[] = allComments[postId] ?? [];
+
+    const insertReply = (list: Comment[], pid: string): Comment[] =>
+      list.map(c => {
+        if (c.id === pid) return { ...c, replies: [...(c.replies ?? []), comment] };
+        if (!c.replies?.length) return c;
+        return { ...c, replies: insertReply(c.replies, pid) };
+      });
+
+    const updated = {
+      ...file.content,
+      comments: {
+        ...allComments,
+        [postId]: parentId ? insertReply(postComments, parentId) : [...postComments, comment],
+      },
+    };
+
+    return writeSiteDataToGitHub(cfg, updated, file.sha, `Add comment on post ${postId}`);
+  } catch {
+    return false;
   }
 };
