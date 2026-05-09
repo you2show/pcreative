@@ -440,6 +440,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
             const supabase = getSupabaseClient();
             if (!supabase) {
                 setCommentError(t('Database not connected. Comments are currently unavailable.', 'មូលដ្ឋានទិន្នន័យមិនបានភ្ជាប់។ មតិយោបល់មិនអាចប្រើបានជាបណ្ដោះអាសន្ន។'));
+                setIsSubmitting(false);
                 return;
             }
 
