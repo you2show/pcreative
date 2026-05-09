@@ -227,11 +227,11 @@ export const addPostCommentToGitHub = async (
     const postComments: Comment[] = allComments[postId] ?? [];
 
     const insertReply = (list: Comment[], pid: string): Comment[] =>
-      list.map(c =>
-        c.id === pid
-          ? { ...c, replies: [...(c.replies ?? []), comment] }
-          : { ...c, replies: c.replies ? insertReply(c.replies, pid) : [] }
-      );
+      list.map(c => {
+        if (c.id === pid) return { ...c, replies: [...(c.replies ?? []), comment] };
+        if (!c.replies?.length) return c;
+        return { ...c, replies: insertReply(c.replies, pid) };
+      });
 
     const updated = {
       ...file.content,

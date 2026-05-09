@@ -318,6 +318,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
     const [guestName, setGuestName] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [commentError, setCommentError] = useState('');
+    const [commentInfo, setCommentInfo] = useState('');
     const [replyTo, setReplyTo] = useState<{id: string, name: string} | null>(null);
     const [copied, setCopied] = useState(false);
     const [isLoadingComments, setIsLoadingComments] = useState(true);
@@ -408,6 +409,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
 
         setIsSubmitting(true);
         setCommentError('');
+        setCommentInfo('');
         try {
             const newLocalComment: Comment = {
                 id: `c_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
@@ -427,13 +429,14 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                 const existing = getLocalPostComments(post.id);
                 const addToTree = (list: Comment[], parentId: string | null): Comment[] => {
                     if (!parentId) return [...list, newLocalComment];
-                    return list.map(c =>
-                        c.id === parentId
-                            ? { ...c, replies: [...(c.replies ?? []), newLocalComment] }
-                            : { ...c, replies: c.replies ? addToTree(c.replies, parentId) : [] }
-                    );
+                    return list.map(c => {
+                        if (c.id === parentId) return { ...c, replies: [...(c.replies ?? []), newLocalComment] };
+                        if (!c.replies?.length) return c;
+                        return { ...c, replies: addToTree(c.replies, parentId) };
+                    });
                 };
                 saveLocalPostComments(post.id, addToTree(existing, replyTo?.id || null));
+                setCommentInfo(t('Your comment is saved locally and visible only on this device.', 'មតិរបស់អ្នកត្រូវបានរក្សាទុកតែក្នុងឧបករណ៍នេះប៉ុណ្ណោះ។'));
             }
 
             // Optimistically update the comment tree in UI
@@ -597,6 +600,12 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                                         <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 text-sm font-khmer">
                                             <AlertCircle size={14} className="shrink-0" />
                                             {commentError}
+                                        </div>
+                                    )}
+                                    {commentInfo && !commentError && (
+                                        <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-sm font-khmer">
+                                            <AlertCircle size={14} className="shrink-0" />
+                                            {commentInfo}
                                         </div>
                                     )}
                                     {currentUser ? (
