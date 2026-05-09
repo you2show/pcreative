@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Facebook, Send, FileText, User, Code, Briefcase, Calendar, Tag, MessageCircle, Share2, Check, Copy, Loader2, ArrowRight } from 'lucide-react';
+import { X, Facebook, Send, FileText, User, Code, Briefcase, Calendar, Tag, MessageCircle, Share2, Check, Copy, Loader2, ArrowRight, AlertCircle } from 'lucide-react';
 import { TeamMember, Post, Comment } from '../types';
 import { useData } from '../contexts/DataContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -312,6 +312,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
     const [newComment, setNewComment] = useState('');
     const [guestName, setGuestName] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [commentError, setCommentError] = useState('');
     const [replyTo, setReplyTo] = useState<{id: string, name: string} | null>(null);
     const [copied, setCopied] = useState(false);
     const [isLoadingComments, setIsLoadingComments] = useState(true);
@@ -389,7 +390,15 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                 const roots: Comment[] = [];
 
                 data.forEach(c => {
-                    const comment = { ...c, replies: [] };
+                    // Map Supabase column names (user_name, created_at) to the Comment interface (user, date)
+                    const comment: Comment = {
+                        id: c.id,
+                        user: c.user_name || 'Anonymous',
+                        avatar: c.avatar || '',
+                        content: c.content,
+                        date: c.created_at,
+                        replies: []
+                    };
                     commentMap.set(c.id, comment);
                 });
 
@@ -426,9 +435,14 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
         if (!newComment.trim() || !authorName) return;
 
         setIsSubmitting(true);
+        setCommentError('');
         try {
             const supabase = getSupabaseClient();
-            if (!supabase) return;
+            if (!supabase) {
+                setCommentError(t('Database not connected. Comments are currently unavailable.', 'មូលដ្ឋានទិន្នន័យមិនបានភ្ជាប់។ មតិយោបល់មិនអាចប្រើបានជាបណ្ដោះអាសន្ន។'));
+                setIsSubmitting(false);
+                return;
+            }
 
             const commentData = {
                 post_id: post.id,
@@ -446,9 +460,13 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
 
             if (error) throw error;
 
-            // Update local state
+            // Map Supabase column names (user_name, created_at) to the Comment interface (user, date)
             const newLocalComment: Comment = {
-                ...data,
+                id: data.id,
+                user: data.user_name || authorName,
+                avatar: data.avatar || '',
+                content: data.content,
+                date: data.created_at || new Date().toISOString(),
                 replies: []
             };
 
@@ -474,6 +492,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
             if (!currentUser) setGuestName('');
         } catch (err) {
             console.error('Error posting comment:', err);
+            setCommentError(t('Failed to post comment. Please try again.', 'បរាជ័យក្នុងការផ្ញើមតិ។ សូមព្យាយាមម្ដងទៀត។'));
         } finally {
             setIsSubmitting(false);
         }
@@ -608,6 +627,12 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
 
                                 {/* Comment Form */}
                                 <div className="mt-12 bg-white/5 rounded-3xl p-6 border border-white/5">
+                                    {commentError && (
+                                        <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 text-sm font-khmer">
+                                            <AlertCircle size={14} className="shrink-0" />
+                                            {commentError}
+                                        </div>
+                                    )}
                                     {currentUser ? (
                                         <form onSubmit={handleSubmitComment}>
                                             {replyTo && (
