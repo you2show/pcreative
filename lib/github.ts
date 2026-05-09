@@ -167,27 +167,8 @@ export const testGitHubConnection = async (
 
 // ---------------------------------------------------------------------------
 // Comment helpers — stored in site-data.json under the "comments" key,
-// keyed by post ID.  Falls back to localStorage when no GitHub config.
+// keyed by post ID.
 // ---------------------------------------------------------------------------
-
-const localCommentsKey = (postId: string) => `post_comments_${postId}`;
-
-/** Read the locally-cached (localStorage) comments for a post. */
-export const getLocalPostComments = (postId: string): Comment[] => {
-  try {
-    const raw = localStorage.getItem(localCommentsKey(postId));
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-};
-
-/** Persist comments to localStorage for a post. */
-export const saveLocalPostComments = (postId: string, comments: Comment[]): void => {
-  localStorage.setItem(localCommentsKey(postId), JSON.stringify(comments));
-};
 
 /** Fetch comments for a post from the public site-data.json URL (no auth needed). */
 export const fetchPostCommentsPublic = async (postId: string): Promise<Comment[]> => {

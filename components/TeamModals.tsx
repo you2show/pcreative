@@ -9,8 +9,6 @@ import { getSupabaseClient } from '../lib/supabase';
 import {
     fetchPostCommentsPublic,
     addPostCommentToGitHub,
-    getLocalPostComments,
-    saveLocalPostComments,
 } from '../lib/github';
 import ContentRenderer from './ContentRenderer';
 import LocalScrollButton from './LocalScrollButton';
@@ -47,14 +45,6 @@ const buildCommentTree = (rows: any[]): Comment[] => {
         }
     });
     return roots;
-};
-
-// Collect all comment IDs from a tree (for deduplication)
-const flattenCommentIds = (comments: Comment[]): Set<string> => {
-    const ids = new Set<string>();
-    const walk = (list: Comment[]) => list.forEach(c => { ids.add(c.id); if (c.replies) walk(c.replies); });
-    walk(comments);
-    return ids;
 };
 
 // --- Member Detail Modal ---
@@ -352,7 +342,6 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
     const [guestName, setGuestName] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [commentError, setCommentError] = useState('');
-    const [commentInfo, setCommentInfo] = useState('');
     const [replyTo, setReplyTo] = useState<{id: string, name: string} | null>(null);
     const [copied, setCopied] = useState(false);
     const [isLoadingComments, setIsLoadingComments] = useState(true);
@@ -406,7 +395,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
         },
     });
 
-    // Fetch comments: Supabase first, fall back to site-data.json + localStorage
+    // Fetch comments: Supabase first, fall back to site-data.json
     useEffect(() => {
         const fetchComments = async () => {
             setIsLoadingComments(true);
@@ -419,23 +408,13 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                         .eq('post_id', post.id)
                         .order('created_at', { ascending: true });
                     if (!error && data) {
-                        const tree = buildCommentTree(data);
-                        // Append any local-only comments not yet synced to Supabase
-                        const serverIds = flattenCommentIds(tree);
-                        const onlyLocal = getLocalPostComments(post.id).filter(c => !serverIds.has(c.id));
-                        setComments([...tree, ...onlyLocal]);
+                        setComments(buildCommentTree(data));
                         return;
                     }
                     console.warn('Supabase comment fetch failed, falling back to site-data.json:', error);
                 }
-                // Fallback: site-data.json public URL + localStorage
-                const [serverComments, localComments] = await Promise.all([
-                    fetchPostCommentsPublic(post.id),
-                    Promise.resolve(getLocalPostComments(post.id)),
-                ]);
-                const serverIds = flattenCommentIds(serverComments);
-                const onlyLocal = localComments.filter(c => !serverIds.has(c.id));
-                setComments([...serverComments, ...onlyLocal]);
+                // Fallback: site-data.json public URL
+                setComments(await fetchPostCommentsPublic(post.id));
             } catch (err) {
                 console.error('Error fetching comments:', err);
             } finally {
@@ -460,16 +439,6 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
 
         setIsSubmitting(true);
         setCommentError('');
-        setCommentInfo('');
-
-        const addToLocalTree = (list: Comment[], parentId: string | null, comment: Comment): Comment[] => {
-            if (!parentId) return [...list, comment];
-            return list.map(c => {
-                if (c.id === parentId) return { ...c, replies: [...(c.replies ?? []), comment] };
-                if (!c.replies?.length) return c;
-                return { ...c, replies: addToLocalTree(c.replies, parentId, comment) };
-            });
-        };
 
         const applyToUI = (comment: Comment) => {
             if (replyTo) {
@@ -534,10 +503,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
             const savedToGitHub = await addPostCommentToGitHub(post.id, fallbackComment, replyTo?.id || null);
 
             if (!savedToGitHub) {
-                // ── Priority 3: localStorage ──────────────────────────────────
-                const existing = getLocalPostComments(post.id);
-                saveLocalPostComments(post.id, addToLocalTree(existing, replyTo?.id || null, fallbackComment));
-                setCommentInfo(t('Your comment is saved locally and visible only on this device.', 'មតិរបស់អ្នកត្រូវបានរក្សាទុកតែក្នុងឧបករណ៍នេះប៉ុណ្ណោះ។'));
+                throw new Error('Both Supabase and GitHub are unavailable.');
             }
 
             applyToUI(fallbackComment);
@@ -685,12 +651,6 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                                         <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 text-sm font-khmer">
                                             <AlertCircle size={14} className="shrink-0" />
                                             {commentError}
-                                        </div>
-                                    )}
-                                    {commentInfo && !commentError && (
-                                        <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-sm font-khmer">
-                                            <AlertCircle size={14} className="shrink-0" />
-                                            {commentInfo}
                                         </div>
                                     )}
                                     {currentUser ? (
