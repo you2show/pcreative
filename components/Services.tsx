@@ -158,7 +158,7 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
   // Sync Router Active ID with Data
   useEffect(() => {
       if (activeId && services) {
-          const found = services.find(s => s.id === activeId);
+          const found = services.find(s => s.slug === activeId || s.id === activeId);
           setSelectedService(found || null);
       } else {
           setSelectedService(null);
@@ -259,7 +259,7 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
                             key={service.id} 
                             service={service} 
                             index={index} 
-                            onSelect={(s) => openItem(s.id)}
+                            onSelect={(s) => openItem(s.slug || s.id)}
                             t={t}
                         />
                     ))}
