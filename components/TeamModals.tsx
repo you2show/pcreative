@@ -13,6 +13,7 @@ import {
 } from '../lib/github';
 import ContentRenderer from './ContentRenderer';
 import LocalScrollButton from './LocalScrollButton';
+import { getAvatarFallbackUrl } from '../utils/format';
 import { useSEO } from '../hooks/useSEO';
 
 // Helper to count comments recursively
@@ -106,6 +107,11 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                             className="w-24 h-24 rounded-2xl border-4 border-gray-900 object-cover shadow-xl shrink-0"
                             loading="lazy"
                             decoding="async"
+                            onError={(e) => {
+                              const el = e.currentTarget;
+                              el.onerror = null;
+                              el.src = getAvatarFallbackUrl(member.name);
+                            }}
                         />
                         {/* Name + Role */}
                         <div className="mt-3 md:mt-0 md:mb-1 flex-1 min-w-0">
@@ -280,7 +286,9 @@ export const AuthorArticlesModal: React.FC<AuthorArticlesModalProps> = ({ author
             <div className="relative w-full max-w-2xl bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10005] flex flex-col max-h-[80vh]">
                 <div className="p-6 border-b border-white/10 flex justify-between items-center bg-gray-900 z-10">
                     <div className="flex items-center gap-4">
-                        <img src={author.image} alt={author.name} className="w-10 h-10 rounded-full object-cover" />
+                        <img src={author.image} alt={author.name} className="w-10 h-10 rounded-full object-cover"
+                            onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = getAvatarFallbackUrl(author.name, 80); }}
+                        />
                         <div>
                             <h3 className="text-lg font-bold text-white">{author.name}</h3>
                             <p className="text-xs text-gray-500 font-khmer">{t('All Articles', 'អត្ថបទទាំងអស់')}</p>
@@ -598,7 +606,9 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                                     className="flex items-center gap-4 cursor-pointer group"
                                     onClick={() => onAuthorClick?.(author.id)}
                                 >
-                                    <img src={author.image} alt={author.name} className="w-12 h-12 rounded-full border-2 border-white/20 group-hover:border-indigo-400 transition-colors" loading="lazy" decoding="async" />
+                                    <img src={author.image} alt={author.name} className="w-12 h-12 rounded-full border-2 border-white/20 group-hover:border-indigo-400 transition-colors" loading="lazy" decoding="async"
+                                        onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = getAvatarFallbackUrl(author.name, 96); }}
+                                    />
                                     <div>
                                         <p className="text-white font-bold group-hover:text-indigo-400 transition-colors">{author.name}</p>
                                         <p className="text-gray-400 text-xs font-khmer">{t(author.role, author.roleKm)}</p>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowUpRight, X, CheckCircle2, RotateCcw } from 'lucide-react';
+import { ArrowUpRight, X, CheckCircle2, RotateCcw, ArrowRight } from 'lucide-react';
 import { Service } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useData } from '../contexts/DataContext';
@@ -339,6 +339,17 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
                       <span className="text-gray-300 text-sm font-khmer">{t(feature, feature)}</span>
                     </div>
                   ))}
+                </div>
+
+                {/* CTA */}
+                <div className="mt-8 pt-6 border-t border-white/10">
+                  <button
+                    onClick={() => { closeItem(); window.location.hash = '#contact'; }}
+                    className="group w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-base transition-all duration-300 hover:scale-[1.02] font-khmer"
+                  >
+                    <span>{t('Get in Touch', 'ទំនាក់ទំនងយើង')}</span>
+                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
                 </div>
               </div>
             </div>

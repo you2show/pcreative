@@ -7,6 +7,7 @@ import ScrollBackgroundText from './ScrollBackgroundText';
 import { MemberDetailModal } from './TeamModals';
 import RevealOnScroll from './RevealOnScroll';
 import { useRouter } from '../hooks/useRouter';
+import { getAvatarFallbackUrl } from '../utils/format';
 
 interface TeamProps {
   showPopupOnMount?: boolean;
@@ -82,6 +83,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           loading="lazy"
                           decoding="async"
+                          onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.style.display = 'none'; }}
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-indigo-600/20 to-purple-600/20" />
@@ -116,6 +118,11 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                           className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500"
                           loading="lazy"
                           decoding="async"
+                          onError={(e) => {
+                            const el = e.currentTarget;
+                            el.onerror = null;
+                            el.src = getAvatarFallbackUrl(member.name);
+                          }}
                         />
                       </div>
                     </div>

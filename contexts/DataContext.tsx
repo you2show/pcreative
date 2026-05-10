@@ -165,7 +165,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 	                 slug: t.slug || slugify(t.name),
 	                 orderIndex: t.order_index, // Ensure this maps correctly
 	                 pinCode: t.pin_code,
-	                 coverImage: t.coverImage // Map coverImage from DB
+	                 coverImage: t.cover_image // Map coverImage from DB
 	             }));
              // STRICT MODE: Use only DB data
              setTeam(formatted);
