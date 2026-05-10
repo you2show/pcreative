@@ -123,10 +123,14 @@ const FloatingChat: React.FC = () => {
         <div className="absolute inset-0 group" style={fanStyle(-STEP * 2, 0, 60)}>
           <button
             onClick={handleLiveChatOpen}
-            className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-500 text-white shadow-lg shadow-indigo-500/40 hover:scale-110 transition-transform duration-200 active:scale-95"
+            className="relative flex items-center justify-center w-12 h-12 rounded-full bg-indigo-500 text-white shadow-lg shadow-indigo-500/40 hover:scale-110 transition-transform duration-200 active:scale-95"
             aria-label="Live Chat"
           >
             <MessageSquare size={22} />
+            {/* Active/online indicator dot */}
+            <span className="absolute top-0.5 right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-white">
+              <span className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-75" />
+            </span>
           </button>
           <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-lg bg-gray-900/90 text-white text-[11px] font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-md">
             {t('Live Chat', 'ជជែកផ្ទាល់')}
