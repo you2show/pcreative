@@ -82,6 +82,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           loading="lazy"
                           decoding="async"
+                          onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.style.display = 'none'; }}
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-indigo-600/20 to-purple-600/20" />
@@ -116,6 +117,11 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                           className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500"
                           loading="lazy"
                           decoding="async"
+                          onError={(e) => {
+                            const el = e.currentTarget;
+                            el.onerror = null;
+                            el.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&size=200&background=4f46e5&color=ffffff&bold=true`;
+                          }}
                         />
                       </div>
                     </div>
