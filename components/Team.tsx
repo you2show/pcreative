@@ -7,6 +7,7 @@ import ScrollBackgroundText from './ScrollBackgroundText';
 import { MemberDetailModal } from './TeamModals';
 import RevealOnScroll from './RevealOnScroll';
 import { useRouter } from '../hooks/useRouter';
+import { getAvatarFallbackUrl } from '../utils/format';
 
 interface TeamProps {
   showPopupOnMount?: boolean;
@@ -120,7 +121,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                           onError={(e) => {
                             const el = e.currentTarget;
                             el.onerror = null;
-                            el.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&size=200&background=4f46e5&color=ffffff&bold=true`;
+                            el.src = getAvatarFallbackUrl(member.name);
                           }}
                         />
                       </div>

@@ -13,6 +13,7 @@ import {
 } from '../lib/github';
 import ContentRenderer from './ContentRenderer';
 import LocalScrollButton from './LocalScrollButton';
+import { getAvatarFallbackUrl } from '../utils/format';
 import { useSEO } from '../hooks/useSEO';
 
 // Helper to count comments recursively
@@ -109,7 +110,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                             onError={(e) => {
                               const el = e.currentTarget;
                               el.onerror = null;
-                              el.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&size=200&background=4f46e5&color=ffffff&bold=true`;
+                              el.src = getAvatarFallbackUrl(member.name);
                             }}
                         />
                         {/* Name + Role */}
@@ -286,7 +287,7 @@ export const AuthorArticlesModal: React.FC<AuthorArticlesModalProps> = ({ author
                 <div className="p-6 border-b border-white/10 flex justify-between items-center bg-gray-900 z-10">
                     <div className="flex items-center gap-4">
                         <img src={author.image} alt={author.name} className="w-10 h-10 rounded-full object-cover"
-                            onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(author.name)}&size=80&background=4f46e5&color=ffffff&bold=true`; }}
+                            onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = getAvatarFallbackUrl(author.name, 80); }}
                         />
                         <div>
                             <h3 className="text-lg font-bold text-white">{author.name}</h3>
@@ -606,7 +607,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                                     onClick={() => onAuthorClick?.(author.id)}
                                 >
                                     <img src={author.image} alt={author.name} className="w-12 h-12 rounded-full border-2 border-white/20 group-hover:border-indigo-400 transition-colors" loading="lazy" decoding="async"
-                                        onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(author.name)}&size=96&background=4f46e5&color=ffffff&bold=true`; }}
+                                        onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = getAvatarFallbackUrl(author.name, 96); }}
                                     />
                                     <div>
                                         <p className="text-white font-bold group-hover:text-indigo-400 transition-colors">{author.name}</p>
