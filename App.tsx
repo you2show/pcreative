@@ -131,8 +131,8 @@ function AppContent() {
       <OfflinePage />
       <InstallPrompt />
       
-      <div className="pointer-events-none fixed inset-0 z-30 opacity-40 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.16),transparent_45%)]" />
-      <div className="pointer-events-none fixed inset-x-0 top-1/3 z-30 h-80 bg-[radial-gradient(circle,rgba(168,85,247,0.08),transparent_55%)]" />
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-40 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.16),transparent_45%)]" />
+      <div className="pointer-events-none fixed inset-x-0 top-1/3 z-0 h-80 bg-[radial-gradient(circle,rgba(168,85,247,0.08),transparent_55%)]" />
       
       <Header />
       
