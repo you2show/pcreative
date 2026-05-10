@@ -52,7 +52,7 @@ const Hero: React.FC = () => {
     <section ref={containerRef} id="home" className="relative min-h-screen flex items-center pt-24 pb-12 md:pt-32 md:pb-20 overflow-hidden perspective-1000">
       
       {/* Background Ambience */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
         <div 
             className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] opacity-60"
         />
