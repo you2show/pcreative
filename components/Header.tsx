@@ -248,7 +248,7 @@ const Header: React.FC = () => {
                      hapticTap();
                      setIsLangMenuOpen(!isLangMenuOpen);
                    }}
-                   className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-xs md:text-sm font-medium text-gray-300 hover:text-white"
+                   className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-xs md:text-sm font-medium text-gray-300 hover:text-white"
                  >
                     <img src={currentFlag} alt={language} className="w-4 h-4 md:w-5 md:h-5 rounded-full object-cover" />
                     <span className="uppercase hidden md:inline">{languageName}</span>
