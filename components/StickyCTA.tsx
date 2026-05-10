@@ -176,13 +176,13 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
                     name="service"
                     value={form.service}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
                   >
-                    <option value="Web Development">{t('Web Development', 'ការអភិវឌ្ឍវេប')}</option>
-                    <option value="Mobile App">{t('Mobile App', 'កម្មវិធីទូរស័ព្ទ')}</option>
-                    <option value="Graphic Design">{t('Graphic Design', 'ក្រាហ្វិករចនា')}</option>
-                    <option value="Architecture">{t('Architecture', 'ស្ថាបត្យកម្ម')}</option>
-                    <option value="Other">{t('Other', 'ផ្សេងៗ')}</option>
+                    <option value="Web Development" className="bg-gray-800 text-white">{t('Web Development', 'ការអភិវឌ្ឍវេប')}</option>
+                    <option value="Mobile App" className="bg-gray-800 text-white">{t('Mobile App', 'កម្មវិធីទូរស័ព្ទ')}</option>
+                    <option value="Graphic Design" className="bg-gray-800 text-white">{t('Graphic Design', 'ក្រាហ្វិករចនា')}</option>
+                    <option value="Architecture" className="bg-gray-800 text-white">{t('Architecture', 'ស្ថាបត្យកម្ម')}</option>
+                    <option value="Other" className="bg-gray-800 text-white">{t('Other', 'ផ្សេងៗ')}</option>
                   </select>
                 </div>
                 <div className="space-y-1.5">
@@ -193,12 +193,12 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
                     name="preferredTime"
                     value={form.preferredTime}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
                   >
-                    <option value="Morning (9am–12pm)">{t('Morning (9–12pm)', 'ព្រឹក (9–12)')}</option>
-                    <option value="Afternoon (12pm–5pm)">{t('Afternoon (12–5pm)', 'រសៀល (12–5)')}</option>
-                    <option value="Evening (5pm–8pm)">{t('Evening (5–8pm)', 'ល្ងាច (5–8)')}</option>
-                    <option value="Anytime">{t('Anytime', 'ពេលណាក៏បាន')}</option>
+                    <option value="Morning (9am–12pm)" className="bg-gray-800 text-white">{t('Morning (9–12pm)', 'ព្រឹក (9–12)')}</option>
+                    <option value="Afternoon (12pm–5pm)" className="bg-gray-800 text-white">{t('Afternoon (12–5pm)', 'រសៀល (12–5)')}</option>
+                    <option value="Evening (5pm–8pm)" className="bg-gray-800 text-white">{t('Evening (5–8pm)', 'ល្ងាច (5–8)')}</option>
+                    <option value="Anytime" className="bg-gray-800 text-white">{t('Anytime', 'ពេលណាក៏បាន')}</option>
                   </select>
                 </div>
               </div>
