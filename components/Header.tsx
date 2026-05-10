@@ -11,7 +11,6 @@ const Header: React.FC = () => {
   const [activeSection, setActiveSection] = useState('home');
   
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
   
   const { language, setLanguage, t, languageName } = useLanguage();
 
@@ -196,29 +195,13 @@ const Header: React.FC = () => {
       <header className="fixed top-6 left-0 right-0 z-50 transition-all duration-300 flex justify-center px-4">
         <div className={`flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2.5 md:py-3 rounded-full border transition-all duration-300 w-full max-w-7xl ${isScrolled ? 'bg-gray-950/80 backdrop-blur-xl border-white/10 shadow-2xl shadow-indigo-500/10' : 'bg-white/5 backdrop-blur-md border-white/5'}`}>
           <a href="#home" onClick={(e) => scrollToSection(e, '#home')} className="flex items-center gap-2 group relative z-50">
-            <span onMouseEnter={() => setIsCollapsed(false)}>
-              <PonloeLogo size={32} />
-            </span>
+            <PonloeLogo size={40} />
             <span className="flex items-center">
               <span
                 className="text-lg md:text-xl font-bold font-khmer tracking-tight text-white group-hover:text-indigo-400 transition-colors"
-                onMouseEnter={() => setIsCollapsed(false)}
               >p</span>
               <span
-                className="text-lg md:text-xl font-bold font-khmer tracking-tight text-white group-hover:text-indigo-400 transition-colors overflow-hidden whitespace-nowrap inline-block align-baseline"
-                style={{
-                  maxWidth: isCollapsed ? '0' : '3.5em',
-                  opacity: isCollapsed ? 0 : 1,
-                  transition: 'max-width 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s cubic-bezier(0.4,0,0.2,1)',
-                }}
-              >onloe</span>
-              <span
-                className="text-gray-500 font-normal text-lg md:text-xl font-khmer cursor-pointer select-none"
-                tabIndex={0}
-                role="button"
-                aria-label="Collapse brand name"
-                onClick={(e) => { e.stopPropagation(); setIsCollapsed(true); }}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); setIsCollapsed(true); } }}
+                className="text-gray-500 font-normal text-lg md:text-xl font-khmer"
               >.creative</span>
             </span>
           </a>
