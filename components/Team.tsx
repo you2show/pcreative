@@ -80,7 +80,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                       <img 
                           src={member.coverImage} 
                           alt={`${member.name} cover`}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
                           loading="lazy"
                           decoding="async"
                           onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.style.display = 'none'; }}
