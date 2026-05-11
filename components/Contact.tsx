@@ -110,13 +110,13 @@ export default function Contact() {
                             </div>
                             <div className="space-y-1.5 md:space-y-2">
                                 <label className="text-[10px] md:text-xs font-bold text-gray-500 ml-1 font-khmer uppercase tracking-wider">{t('Service', 'សេវាកម្ម')}</label>
-                                <select name="service" value={formData.service} onChange={handleChange} className="w-full px-4 py-3 md:py-4 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer">
-                                    <option value="Graphic Design">{t('Graphic Design', 'ការរចនាក្រាហ្វិក')}</option>
-                                    <option value="Web Development">{t('Web Development', 'ការអភិវឌ្ឍវេបសាយ')}</option>
-                                    <option value="Architecture">{t('Architecture', 'ស្ថាបត្យកម្ម')}</option>
-                                    <option value="MVAC System">{t('MVAC System', 'ប្រព័ន្ធម៉ាស៊ីនត្រជាក់')}</option>
-                                    <option value="Translation">{t('Translation', 'ការបកប្រែ')}</option>
-                                    <option value="Other">{t('Other', 'ផ្សេងៗ')}</option>
+                                <select name="service" value={formData.service} onChange={handleChange} className="w-full px-4 py-3 md:py-4 rounded-xl bg-gray-800 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer appearance-none cursor-pointer">
+                                    <option value="Graphic Design" className="bg-gray-800 text-white">{t('Graphic Design', 'ការរចនាក្រាហ្វិក')}</option>
+                                    <option value="Web Development" className="bg-gray-800 text-white">{t('Web Development', 'ការអភិវឌ្ឍវេបសាយ')}</option>
+                                    <option value="Architecture" className="bg-gray-800 text-white">{t('Architecture', 'ស្ថាបត្យកម្ម')}</option>
+                                    <option value="MVAC System" className="bg-gray-800 text-white">{t('MVAC System', 'ប្រព័ន្ធម៉ាស៊ីនត្រជាក់')}</option>
+                                    <option value="Translation" className="bg-gray-800 text-white">{t('Translation', 'ការបកប្រែ')}</option>
+                                    <option value="Other" className="bg-gray-800 text-white">{t('Other', 'ផ្សេងៗ')}</option>
                                 </select>
                             </div>
                             <div className="space-y-1.5 md:space-y-2">
