@@ -355,7 +355,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 	                  socials: item.socials,
 	                  slug: generatedSlug,
 	                  pin_code: item.pinCode,
-	                  coverImage: item.coverImage // Include coverImage in payload
+	                  cover_image: item.coverImage // Include coverImage in payload
 	              };
           } else if (activeTab === 'insights') {
               table = 'insights';
@@ -459,7 +459,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           const newItem = { ...item, ...res.data[0] }; 
           
           if (activeTab === 'projects') newItem.createdBy = res.data[0].created_by;
-          if (activeTab === 'team') newItem.pinCode = res.data[0].pin_code;
+          if (activeTab === 'team') {
+              newItem.pinCode = res.data[0].pin_code;
+              if (!res.data[0].pin_code) {
+                  console.error('⚠️ pin_code was not saved to Supabase. Please check that the `pin_code` column exists in the `team` table and that the anon role has INSERT/UPDATE privileges on it.');
+              }
+          }
 
           // --- CRITICAL FIX: SMART UPDATE OF LOCAL STATE ---
           const updater = (list: any[]) => {
