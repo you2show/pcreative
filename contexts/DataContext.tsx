@@ -99,12 +99,18 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           fetchSiteDataPublic(),
       ]);
 
-      // Build a map of id → coverImage from site-data.json for fast lookup
-      const ghTeamCoverMap: Record<string, string> = {};
+      // Build cover-image lookup maps from site-data.json
+      const ghTeamCoverMapById: Record<string, string> = {};
+      const ghTeamCoverMapBySlug: Record<string, string> = {};
+      const ghTeamCoverMapByName: Record<string, string> = {};
+      const normalizeName = (value: string) => value.trim().toLowerCase().replace(/\s+/g, ' ');
       const ghTeamRaw = ghSiteData?.team;
       if (Array.isArray(ghTeamRaw)) {
-          for (const m of ghTeamRaw as Array<{ id?: string; coverImage?: string }>) {
-              if (m.id && m.coverImage) ghTeamCoverMap[m.id] = m.coverImage;
+          for (const m of ghTeamRaw as Array<{ id?: string; slug?: string; name?: string; coverImage?: string }>) {
+              if (!m.coverImage) continue;
+              if (m.id) ghTeamCoverMapById[m.id] = m.coverImage;
+              if (m.slug) ghTeamCoverMapBySlug[m.slug] = m.coverImage;
+              if (m.name) ghTeamCoverMapByName[normalizeName(m.name)] = m.coverImage;
           }
       }
 
@@ -113,7 +119,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           // Hydrate static TEAM with cover images from site-data.json (no-op if map is empty)
           setTeam(TEAM.map(m => ({
               ...m,
-              coverImage: m.coverImage || ghTeamCoverMap[m.id] || '',
+              coverImage:
+                m.coverImage ||
+                ghTeamCoverMapById[m.id] ||
+                (m.slug ? ghTeamCoverMapBySlug[m.slug] : '') ||
+                ghTeamCoverMapByName[normalizeName(m.name)] ||
+                '',
           })));
           setTestimonials(visibleStaticTestimonials);
           setIsLoading(false);
@@ -179,12 +190,17 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                  skills: t.skills || [],
                  experience: t.experience || [],
                  experienceKm: t.experience || [],
-	                 socials: t.socials || {},
-	                 slug: t.slug || slugify(t.name),
-	                 orderIndex: t.order_index, // Ensure this maps correctly
-	                 pinCode: t.pin_code,
-	                 coverImage: t.cover_image || ghTeamCoverMap[t.id] || '' // Fallback to GitHub site-data.json
-	             }));
+ 	                 socials: t.socials || {},
+ 	                 slug: t.slug || slugify(t.name),
+ 	                 orderIndex: t.order_index, // Ensure this maps correctly
+ 	                 pinCode: t.pin_code,
+	                 coverImage:
+                     t.cover_image ||
+                     ghTeamCoverMapById[t.id] ||
+                     ghTeamCoverMapBySlug[t.slug || slugify(t.name)] ||
+                     ghTeamCoverMapByName[normalizeName(t.name)] ||
+                     '' // Fallback to GitHub site-data.json
+ 	             }));
              // STRICT MODE: Use only DB data
              setTeam(formatted);
         }

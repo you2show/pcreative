@@ -404,11 +404,17 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
         },
     });
 
-    // Fetch comments: Supabase first, fall back to site-data.json
+    // Fetch comments: GitHub/site-data first, Supabase as secondary fallback
     useEffect(() => {
         const fetchComments = async () => {
             setIsLoadingComments(true);
             try {
+                const githubComments = await fetchPostCommentsPublic(post.id);
+                if (githubComments.length > 0) {
+                    setComments(githubComments);
+                    return;
+                }
+
                 const supabase = getSupabaseClient();
                 if (supabase) {
                     const { data, error } = await supabase
@@ -420,10 +426,9 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                         setComments(buildCommentTree(data));
                         return;
                     }
-                    console.warn('Supabase comment fetch failed, falling back to site-data.json:', error);
+                    console.warn('Supabase comment fetch fallback failed:', error);
                 }
-                // Fallback: site-data.json public URL
-                setComments(await fetchPostCommentsPublic(post.id));
+                setComments(githubComments);
             } catch (err) {
                 console.error('Error fetching comments:', err);
             } finally {
@@ -464,40 +469,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
         };
 
         try {
-            // ── Priority 1: Supabase ──────────────────────────────────────────
-            const supabase = getSupabaseClient();
-            if (supabase) {
-                const commentData = {
-                    post_id: post.id,
-                    user_id: currentUser ? (currentUser.id || 'anonymous') : 'guest',
-                    user_name: authorName,
-                    content: newComment.trim(),
-                    parent_id: replyTo?.id || null
-                };
-                const { data, error } = await supabase
-                    .from('comments')
-                    .insert([commentData])
-                    .select()
-                    .single();
-                if (!error && data) {
-                    const saved: Comment = {
-                        id: data.id,
-                        user: data.user_name || authorName,
-                        avatar: data.avatar || '',
-                        content: data.content,
-                        date: data.created_at || new Date().toISOString(),
-                        replies: []
-                    };
-                    applyToUI(saved);
-                    setNewComment('');
-                    setReplyTo(null);
-                    if (!currentUser) setGuestName('');
-                    return;
-                }
-                console.warn('Supabase comment insert failed, trying GitHub site-data.json:', error);
-            }
-
-            // ── Priority 2: Serverless API (Vercel — token stays server-side) ──────
+            // ── Priority 1: GitHub (serverless API first) ─────────────────────
             const fallbackComment: Comment = {
                 id: (typeof crypto !== 'undefined' && crypto.randomUUID)
                     ? crypto.randomUUID()
@@ -518,17 +490,51 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                 return;
             }
 
-            // ── Priority 3: Direct GitHub (local dev fallback with localStorage token) ─
+            // ── Priority 2: Direct GitHub (local dev fallback with localStorage token) ─
             const savedToGitHub = await addPostCommentToGitHub(post.id, fallbackComment, replyTo?.id || null);
-
-            if (!savedToGitHub) {
-                throw new Error('Both Supabase and GitHub are unavailable.');
+            if (savedToGitHub) {
+                applyToUI(fallbackComment);
+                setNewComment('');
+                setReplyTo(null);
+                if (!currentUser) setGuestName('');
+                return;
             }
 
-            applyToUI(fallbackComment);
-            setNewComment('');
-            setReplyTo(null);
-            if (!currentUser) setGuestName('');
+            // ── Priority 3: Supabase fallback ─────────────────────────────────
+            const supabase = getSupabaseClient();
+            if (supabase) {
+                const commentData = {
+                    post_id: post.id,
+                    user_id: currentUser ? (currentUser.id || 'anonymous') : 'guest',
+                    user_name: authorName,
+                    content: newComment.trim(),
+                    parent_id: replyTo?.id || null
+                };
+                const { data, error } = await supabase
+                    .from('comments')
+                    .insert([commentData])
+                    .select()
+                    .single();
+
+                if (!error && data) {
+                    const saved: Comment = {
+                        id: data.id,
+                        user: data.user_name || authorName,
+                        avatar: data.avatar || '',
+                        content: data.content,
+                        date: data.created_at || new Date().toISOString(),
+                        replies: []
+                    };
+                    applyToUI(saved);
+                    setNewComment('');
+                    setReplyTo(null);
+                    if (!currentUser) setGuestName('');
+                    return;
+                }
+                console.warn('Supabase fallback comment insert failed:', error);
+            }
+
+            throw new Error('GitHub and Supabase comment backends are unavailable.');
         } catch (err) {
             console.error('Error posting comment:', err);
             setCommentError(t('Failed to post comment. Please try again.', 'បរាជ័យក្នុងការផ្ញើមតិ។ សូមព្យាយាមម្ដងទៀត។'));
