@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Send, Check, Loader2, AlertCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, Send, Check, Loader2, AlertCircle, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import ScrollBackgroundText from './ScrollBackgroundText';
 import RevealOnScroll from './RevealOnScroll';
@@ -110,7 +110,8 @@ export default function Contact() {
                             </div>
                             <div className="space-y-1.5 md:space-y-2">
                                 <label className="text-[10px] md:text-xs font-bold text-gray-500 ml-1 font-khmer uppercase tracking-wider">{t('Service', 'សេវាកម្ម')}</label>
-                                <select name="service" value={formData.service} onChange={handleChange} className="w-full px-4 py-3 md:py-4 rounded-xl bg-gray-800 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer appearance-none cursor-pointer">
+                            <div className="relative">
+                                <select name="service" value={formData.service} onChange={handleChange} className="w-full px-4 py-3 md:py-4 pr-10 rounded-xl bg-gray-800 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer appearance-none cursor-pointer">
                                     <option value="Graphic Design" className="bg-gray-800 text-white">{t('Graphic Design', 'ការរចនាក្រាហ្វិក')}</option>
                                     <option value="Web Development" className="bg-gray-800 text-white">{t('Web Development', 'ការអភិវឌ្ឍវេបសាយ')}</option>
                                     <option value="Architecture" className="bg-gray-800 text-white">{t('Architecture', 'ស្ថាបត្យកម្ម')}</option>
@@ -118,6 +119,8 @@ export default function Contact() {
                                     <option value="Translation" className="bg-gray-800 text-white">{t('Translation', 'ការបកប្រែ')}</option>
                                     <option value="Other" className="bg-gray-800 text-white">{t('Other', 'ផ្សេងៗ')}</option>
                                 </select>
+                                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                            </div>
                             </div>
                             <div className="space-y-1.5 md:space-y-2">
                                 <label className="text-[10px] md:text-xs font-bold text-gray-500 ml-1 font-khmer uppercase tracking-wider">{t('Message', 'សារ')}</label>
