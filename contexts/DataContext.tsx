@@ -110,13 +110,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       const visibleStaticTestimonials = TESTIMONIALS.filter(t => !hiddenStatic.includes(t.id));
       if (!supabase) {
-          // Try to hydrate static TEAM with cover images from site-data.json
-          if (Object.keys(ghTeamCoverMap).length > 0) {
-              setTeam(TEAM.map(m => ({
-                  ...m,
-                  coverImage: m.coverImage || ghTeamCoverMap[m.id] || '',
-              })));
-          }
+          // Hydrate static TEAM with cover images from site-data.json (no-op if map is empty)
+          setTeam(TEAM.map(m => ({
+              ...m,
+              coverImage: m.coverImage || ghTeamCoverMap[m.id] || '',
+          })));
           setTestimonials(visibleStaticTestimonials);
           setIsLoading(false);
           return;
