@@ -468,7 +468,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (activeTab === 'projects') newItem.createdBy = res.data[0].created_by;
           if (activeTab === 'team') {
               newItem.pinCode = res.data[0].pin_code;
-              newItem.coverImage = res.data[0].cover_image || item.coverImage || '';
+              newItem.coverImage = res.data[0].cover_image ?? item.coverImage ?? '';
               if (!res.data[0].pin_code) {
                   if (item.pinCode) {
                       console.error('⚠️ pin_code was provided but not saved to Supabase. Please check that the `pin_code` column exists in the `team` table and that the anon role has INSERT/UPDATE privileges on it.');
