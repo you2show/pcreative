@@ -620,6 +620,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
       (import.meta.env.VITE_TELEGRAM_BOT_TOKEN && import.meta.env.VITE_TELEGRAM_CHAT_ID)
   );
   const isServerGitHubConfigured = Boolean(envConfigStatus?.github?.configured);
+  const getLocalTelegramConfig = (): { botToken?: string; chatId?: string } => {
+      try {
+          const raw = localStorage.getItem('telegram_chat_config');
+          if (!raw) return {};
+          const parsed = JSON.parse(raw);
+          return {
+              botToken: typeof parsed.botToken === 'string' ? parsed.botToken : undefined,
+              chatId: typeof parsed.chatId === 'string' ? parsed.chatId : undefined,
+          };
+      } catch {
+          return {};
+      }
+  };
 
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col">
@@ -739,12 +752,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                                       setIsServerGitHubTesting(true);
                                       setServerGitHubTest(null);
                                       try {
-                                          const res = await fetch(`/api/site-data?t=${Date.now()}`);
+                                          const res = await fetch(`/api/test-github?t=${Date.now()}`);
                                           if (!res.ok) {
                                               setServerGitHubTest({ ok: false, message: `GitHub server connection failed (${res.status}).` });
                                               return;
                                           }
-                                          setServerGitHubTest({ ok: true, message: '✅ GitHub server connection successful (site-data.json reachable).' });
+                                          setServerGitHubTest({ ok: true, message: '✅ GitHub server connection successful.' });
                                       } catch (err) {
                                           setServerGitHubTest({
                                               ok: false,
@@ -885,13 +898,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                               type="button"
                               disabled={isTesting}
                               onClick={async () => {
+                                  const localTg = getLocalTelegramConfig();
                                   const envCfg = getTelegramConfig();
                                   const token = envCfg?.botToken
                                       || (document.getElementById('tgBotToken') as HTMLInputElement)?.value.trim()
-                                      || (() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').botToken || ''; } catch { return ''; } })();
+                                      || localTg.botToken
+                                      || '';
                                   const chatId = envCfg?.chatId
                                       || (document.getElementById('tgChatId') as HTMLInputElement)?.value.trim()
-                                      || (() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').chatId || ''; } catch { return ''; } })();
+                                      || localTg.chatId
+                                      || '';
                                   if (!token || !chatId) {
                                       alert('⚠ សូមបញ្ចឺល Bot Token នឹង Chat ID ជាមុនសិន័');
                                       return;

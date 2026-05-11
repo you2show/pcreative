@@ -24,7 +24,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
   const githubUsername = process.env.GITHUB_USERNAME || '';
   const githubRepo = process.env.GITHUB_REPO || '';
   const githubBranch = process.env.GITHUB_BRANCH || 'main';
-  const githubTokenConfigured = Boolean(process.env.GITHUB_TOKEN);
+  const githubToken = process.env.GITHUB_TOKEN || '';
 
   const telegramToken = process.env.VITE_TELEGRAM_BOT_TOKEN || '';
   const telegramChatId = process.env.VITE_TELEGRAM_CHAT_ID || '';
@@ -34,7 +34,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
   res.setHeader('Cache-Control', 'no-store');
   res.status(200).json({
     github: {
-      configured: githubTokenConfigured && !!githubUsername && !!githubRepo,
+      configured: !!githubToken && !!githubUsername && !!githubRepo,
       username: githubUsername,
       repo: githubRepo,
       branch: githubBranch,
