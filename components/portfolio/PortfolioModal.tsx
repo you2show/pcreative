@@ -46,8 +46,8 @@ const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose, usePa
           </div>
 
           <div className="w-full md:w-1/2 flex flex-col bg-gray-900">
-            <div className="p-8 md:p-12 pb-6 border-b border-white/5">
-                <div className="flex flex-wrap gap-3 mb-6">
+            <div className="p-5 md:p-8 pb-4 border-b border-white/5">
+                <div className="flex flex-wrap gap-3 mb-4">
                     <span className="px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-bold tracking-wider uppercase flex items-center gap-2 border border-indigo-500/20">
                         <Tag size={12} /> {project.category}
                     </span>
@@ -64,7 +64,7 @@ const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose, usePa
                 </div>
             </div>
 
-            <div ref={textContainerRef} className="flex-1 overflow-y-auto p-8 md:p-12 pt-6 scrollbar-hide space-y-12">
+            <div ref={textContainerRef} className="flex-1 overflow-y-auto p-5 md:p-8 pt-4 scrollbar-hide space-y-8">
                 {/* --- ធានាថាបង្ហាញ OVERVIEW ពី project.description --- */}
                 <section>
                     <h3 className="text-white font-bold mb-4 flex items-center gap-3">
