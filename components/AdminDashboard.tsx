@@ -149,7 +149,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
     setIsAdding(true);
     // Default Templates
     const templates: any = {
-      team: { name: '', role: '', roleKm: '', image: '', bio: '', bioKm: '', skills: [], experience: [], socials: {}, pinCode: '1111' },
+      team: { name: '', role: '', roleKm: '', image: '', bio: '', bioKm: '', skills: [], experience: [], socials: {}, pinCode: '1111', coverImage: '' },
       projects: { title: '', category: 'graphicdesign', image: '', client: '', description: '', link: '', gallery: [], challenge: '', challengeKm: '', solution: '', solutionKm: '', result: '', resultKm: '' },
       insights: { title: '', titleKm: '', excerpt: '', content: '', date: new Date().toISOString().split('T')[0], category: 'Design', image: '', authorId: currentUser.role === 'member' ? currentUser.id : 't1' },
       services: { title: '', titleKm: '', subtitle: '', subtitleKm: '', description: '', descriptionKm: '', features: [], featuresKm: [], icon: 'Box', color: 'bg-indigo-500', image: '' },
@@ -355,7 +355,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 	                  socials: item.socials,
 	                  slug: generatedSlug,
 	                  pin_code: item.pinCode,
-	                  coverImage: item.coverImage // Include coverImage in payload
+	                  cover_image: item.coverImage // Include coverImage in payload
 	              };
           } else if (activeTab === 'insights') {
               table = 'insights';
@@ -454,12 +454,29 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                res = await executeQuery(fallbackPayload);
           }
 
+          // Fallback for team cover_image if column not yet added to DB
+          if (res.error && activeTab === 'team' && res.error.message.includes("cover_image")) {
+               console.warn('⚠️ cover_image column not found in team table. Please run: ALTER TABLE team ADD COLUMN cover_image TEXT;');
+               const { cover_image, ...fallbackPayload } = payload;
+               res = await executeQuery(fallbackPayload);
+          }
+
           if (res.error) throw res.error;
 
           const newItem = { ...item, ...res.data[0] }; 
           
           if (activeTab === 'projects') newItem.createdBy = res.data[0].created_by;
-          if (activeTab === 'team') newItem.pinCode = res.data[0].pin_code;
+          if (activeTab === 'team') {
+              newItem.pinCode = res.data[0].pin_code;
+              newItem.coverImage = res.data[0].cover_image ?? item.coverImage ?? '';
+              if (!res.data[0].pin_code) {
+                  if (item.pinCode) {
+                      console.error('⚠️ pin_code was provided but not saved to Supabase. Please check that the `pin_code` column exists in the `team` table and that the anon role has INSERT/UPDATE privileges on it.');
+                  } else {
+                      console.warn('⚠️ No pin_code was provided for this team member. The member will not be able to log in until a PIN is set.');
+                  }
+              }
+          }
 
           // --- CRITICAL FIX: SMART UPDATE OF LOCAL STATE ---
           const updater = (list: any[]) => {
