@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Settings, Database, ExternalLink, LogOut, Users, FileText, Briefcase, LayoutGrid, Menu, Star, Handshake, Send } from 'lucide-react';
+import { Plus, Settings, Database, ExternalLink, LogOut, Users, FileText, Briefcase, LayoutGrid, Menu, Star, Handshake, Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { getSupabaseClient, DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_KEY } from '../lib/supabase';
 import { useData } from '../contexts/DataContext';
 import AdminHeader from './admin/AdminHeader';
@@ -20,7 +20,7 @@ import {
   syncHiddenStaticStoriesToGitHub,
   upsertTeamCoverImageToGitHub,
 } from '../lib/github';
-import { testTelegramConnection } from '../lib/telegram';
+import { getTelegramConfig, testTelegramConnection } from '../lib/telegram';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -63,6 +63,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   const [isSyncing, setIsSyncing] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [githubConfig, setGithubConfig] = useState<GitHubConfig | null>(getGitHubConfig);
+  const [envConfigStatus, setEnvConfigStatus] = useState<{
+      github?: { configured: boolean; username: string; repo: string; branch: string };
+      telegram?: { configured: boolean; chatId: string; adminUserId?: string };
+      imgbb?: { configured: boolean };
+  } | null>(null);
+  const [serverGitHubTest, setServerGitHubTest] = useState<{ ok: boolean; message: string } | null>(null);
+  const [isServerGitHubTesting, setIsServerGitHubTesting] = useState(false);
 
   // Set initial tab based on role
   useEffect(() => {
@@ -91,6 +98,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
       setAdminPartners(partners || []);
       setAdminStories(testimonials || []);
   }, [team, projects, insights, localServices, jobs, partners, testimonials]);
+
+  useEffect(() => {
+      const loadEnvConfigStatus = async () => {
+          try {
+              const res = await fetch('/api/config-status');
+              if (!res.ok) return;
+              const data = await res.json();
+              setEnvConfigStatus(data);
+          } catch {
+              // no-op for local/dev fallback
+          }
+      };
+      loadEnvConfigStatus();
+  }, []);
 
   const handleConfigSave = (e: React.FormEvent) => {
       e.preventDefault();
@@ -591,6 +612,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
       </button>
   );
 
+  const isEnvImgBBConfigured = Boolean(envConfigStatus?.imgbb?.configured || import.meta.env.VITE_IMGBB_API_KEY);
+  const isEnvTelegramConfigured = Boolean(
+      envConfigStatus?.telegram?.configured ||
+      (import.meta.env.VITE_TELEGRAM_BOT_TOKEN && import.meta.env.VITE_TELEGRAM_CHAT_ID)
+  );
+  const isServerGitHubConfigured = Boolean(envConfigStatus?.github?.configured);
+
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col">
        <AdminHeader 
@@ -655,49 +683,103 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                             {localStorage.getItem('supabase_url') ? "Reset to Defaults" : "Reload Connection"}
                          </button>
                      </div>
-                     <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
-                         <h3 className="text-xl font-bold mb-2 flex items-center gap-2"><Settings size={20} className="text-indigo-400"/> ImgBB Image Upload</h3>
-                         <p className="text-gray-400 text-sm mb-1">ImgBB API Key ត្រូវការដើម្បី upload រូបភាព។ យក key ពី <a href="https://imgbb.com/account/api" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">imgbb.com/account/api</a></p>
-                         <p className="text-gray-500 text-xs mb-4">💡 Vercel environment variable name: <code className="bg-gray-800 px-1 rounded text-indigo-300">VITE_IMGBB_API_KEY</code> (ប្រសិនបើកំណត់ env var នោះ field ខាងក្រោមមិនចាំបាច់)</p>
-                         <form onSubmit={(e) => {
-                             e.preventDefault();
-                             const key = (document.getElementById('imgbbKey') as HTMLInputElement).value.trim();
-                             if (key) {
-                                 localStorage.setItem('imgbb_api_key', key);
-                                 alert('ImgBB API Key បានរក្សាទុក!');
-                             }
-                         }} className="flex gap-2">
-                             <input
-                                 id="imgbbKey"
-                                 type="password"
-                                 defaultValue={localStorage.getItem('imgbb_api_key') || ''}
-                                 placeholder="ImgBB API Key..."
-                                 className="flex-1 bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
-                             />
-                             <button type="submit" className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm transition-all">Save</button>
-                         </form>
-                         {localStorage.getItem('imgbb_api_key') && (
-                             <button onClick={() => { if(window.confirm('លុប ImgBB API Key?')) { localStorage.removeItem('imgbb_api_key'); window.location.reload(); } }} className="mt-3 text-xs text-red-400 hover:text-red-300">
-                                 លុប API Key
-                             </button>
-                         )}
-                     </div>
+                      <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
+                          <h3 className="text-xl font-bold mb-2 flex items-center gap-2"><Settings size={20} className="text-indigo-400"/> ImgBB Image Upload</h3>
+                          <p className="text-gray-400 text-sm mb-1">ImgBB API Key ត្រូវការដើម្បី upload រូបភាព។ យក key ពី <a href="https://imgbb.com/account/api" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">imgbb.com/account/api</a></p>
+                          <p className="text-gray-500 text-xs mb-4">💡 Vercel environment variable name: <code className="bg-gray-800 px-1 rounded text-indigo-300">VITE_IMGBB_API_KEY</code></p>
+                          {isEnvImgBBConfigured ? (
+                              <div className="flex items-center gap-2 rounded-xl border border-green-500/20 bg-green-500/10 p-3 text-sm text-green-400">
+                                  <CheckCircle size={16} />
+                                  ImgBB ត្រូវបានកំណត់ពី Vercel environment រួចហើយ។
+                              </div>
+                          ) : (
+                              <>
+                                  <form onSubmit={(e) => {
+                                      e.preventDefault();
+                                      const key = (document.getElementById('imgbbKey') as HTMLInputElement).value.trim();
+                                      if (key) {
+                                          localStorage.setItem('imgbb_api_key', key);
+                                          alert('ImgBB API Key បានរក្សាទុក!');
+                                      }
+                                  }} className="flex gap-2">
+                                      <input
+                                          id="imgbbKey"
+                                          type="password"
+                                          defaultValue={localStorage.getItem('imgbb_api_key') || ''}
+                                          placeholder="ImgBB API Key..."
+                                          className="flex-1 bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                      />
+                                      <button type="submit" className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm transition-all">Save</button>
+                                  </form>
+                                  {localStorage.getItem('imgbb_api_key') && (
+                                      <button onClick={() => { if(window.confirm('លុប ImgBB API Key?')) { localStorage.removeItem('imgbb_api_key'); window.location.reload(); } }} className="mt-3 text-xs text-red-400 hover:text-red-300">
+                                          លុប API Key
+                                      </button>
+                                  )}
+                              </>
+                          )}
+                      </div>
 
-                     {/* GitHub Configuration — must appear before Telegram so users set it up first */}
-                     <GitHubConfigForm
-                         initialConfig={githubConfig || { username: '', repo: '', branch: 'main', token: '' }}
-                         onSave={(cfg) => {
-                             saveGitHubConfig(cfg);
-                             setGithubConfig(cfg);
-                             alert('✅ GitHub Config បានរក្សាទុក!\nឥឡូវអ្នកអាចរក្សាទុក Telegram Config ទៅ GitHub បាន។');
-                         }}
-                         onReset={() => {
-                             if (window.confirm('លុប GitHub Config?')) {
-                                 clearGitHubConfig();
-                                 setGithubConfig(null);
-                             }
-                         }}
-                     />
+                      {/* GitHub Configuration — must appear before Telegram so users set it up first */}
+                      {isServerGitHubConfigured ? (
+                          <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
+                              <h3 className="text-xl font-bold text-white mb-2">GitHub Configuration</h3>
+                              <p className="text-sm text-green-400 mb-2 flex items-center gap-2">
+                                  <CheckCircle size={15} /> Connected from Vercel environment
+                              </p>
+                              <p className="text-xs text-gray-400 mb-4">
+                                  {envConfigStatus?.github?.username}/{envConfigStatus?.github?.repo}@{envConfigStatus?.github?.branch}
+                              </p>
+                              <button
+                                  type="button"
+                                  disabled={isServerGitHubTesting}
+                                  onClick={async () => {
+                                      setIsServerGitHubTesting(true);
+                                      setServerGitHubTest(null);
+                                      try {
+                                          const res = await fetch(`/api/site-data?t=${Date.now()}`);
+                                          if (!res.ok) {
+                                              setServerGitHubTest({ ok: false, message: `GitHub server connection failed (${res.status}).` });
+                                              return;
+                                          }
+                                          setServerGitHubTest({ ok: true, message: '✅ GitHub server connection successful (site-data.json reachable).' });
+                                      } catch (err) {
+                                          setServerGitHubTest({
+                                              ok: false,
+                                              message: err instanceof Error ? err.message : 'Network error',
+                                          });
+                                      } finally {
+                                          setIsServerGitHubTesting(false);
+                                      }
+                                  }}
+                                  className="w-full py-3 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+                              >
+                                  {isServerGitHubTesting ? <Loader2 size={16} className="animate-spin" /> : null}
+                                  {isServerGitHubTesting ? 'Testing...' : '🔍 Test Connection'}
+                              </button>
+                              {serverGitHubTest && (
+                                  <div className={`mt-3 flex items-start gap-2 p-3 rounded-lg text-sm ${serverGitHubTest.ok ? 'bg-green-500/10 border border-green-500/20 text-green-400' : 'bg-red-500/10 border border-red-500/20 text-red-400'}`}>
+                                      {serverGitHubTest.ok ? <CheckCircle size={16} className="shrink-0 mt-0.5" /> : <AlertCircle size={16} className="shrink-0 mt-0.5" />}
+                                      {serverGitHubTest.message}
+                                  </div>
+                              )}
+                          </div>
+                      ) : (
+                          <GitHubConfigForm
+                              initialConfig={githubConfig || { username: '', repo: '', branch: 'main', token: '' }}
+                              onSave={(cfg) => {
+                                  saveGitHubConfig(cfg);
+                                  setGithubConfig(cfg);
+                                  alert('✅ GitHub Config បានរក្សាទុក!\nឥឡូវអ្នកអាចរក្សាទុក Telegram Config ទៅ GitHub បាន។');
+                              }}
+                              onReset={() => {
+                                  if (window.confirm('លុប GitHub Config?')) {
+                                      clearGitHubConfig();
+                                      setGithubConfig(null);
+                                  }
+                              }}
+                          />
+                      )}
 
                      {/* Telegram Live Chat Config */}
                      <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
@@ -706,101 +788,113 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                              កំណត់ Telegram Bot ដើម្បីបើក Live Chat widget។ <br/>
                              Bot Token ពី <a href="https://t.me/BotFather" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">@BotFather</a> &nbsp;·&nbsp; Chat ID អាចជា Group ID ឬ Channel ID។
                          </p>
-                         <p className="text-gray-500 text-xs mb-4">
-                             💡 Bot នឹងស្នើ Admin <b>Reply</b> ដោយស្វ័យប្រវត្តិ (force reply)។ ការ Reply ក្នុង Telegram Group ផ្ញើ reply ទៅ user ១០០%។
-                             {githubConfig ? (
-                                 <span className="ml-2 text-green-400">✓ GitHub Config ត្រូវបានភ្ជាប់ — Config នឹងរក្សាទុកទៅ site-data.json</span>
-                             ) : (
-                                 <span className="ml-2 text-yellow-500">⚠ បញ្ចូល GitHub Config ខាងលើដើម្បីរក្សាទុកនៅ GitHub</span>
-                             )}
-                         </p>
-                         <form onSubmit={async (e) => {
-                             e.preventDefault();
-                             const token = (document.getElementById('tgBotToken') as HTMLInputElement).value.trim();
-                             const chatId = (document.getElementById('tgChatId') as HTMLInputElement).value.trim();
-                             const adminUserIdRaw = (document.getElementById('tgAdminUserId') as HTMLInputElement).value.trim();
-                             const parsedAdminId = parseInt(adminUserIdRaw, 10);
-                             const adminUserId = adminUserIdRaw && !isNaN(parsedAdminId) && parsedAdminId > 0 ? parsedAdminId : undefined;
-                             if (!token || !chatId) return;
+                          <p className="text-gray-500 text-xs mb-4">
+                              💡 Bot នឹងស្នើ Admin <b>Reply</b> ដោយស្វ័យប្រវត្តិ (force reply)។ ការ Reply ក្នុង Telegram Group ផ្ញើ reply ទៅ user ១០០%។
+                              {(githubConfig || isServerGitHubConfigured) ? (
+                                  <span className="ml-2 text-green-400">✓ GitHub Config ត្រូវបានភ្ជាប់ — Config នឹងរក្សាទុកទៅ site-data.json</span>
+                              ) : (
+                                  <span className="ml-2 text-yellow-500">⚠ បញ្ចូល GitHub Config ខាងលើដើម្បីរក្សាទុកនៅ GitHub</span>
+                              )}
+                          </p>
+                          {isEnvTelegramConfigured ? (
+                              <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-3 text-sm text-green-400">
+                                  ✅ Telegram ត្រូវបានកំណត់ពី Vercel environment រួចហើយ
+                                  {envConfigStatus?.telegram?.chatId ? ` (Chat ID: ${envConfigStatus.telegram.chatId})` : ''}។
+                              </div>
+                          ) : (
+                              <>
+                                  <form onSubmit={async (e) => {
+                                      e.preventDefault();
+                                      const token = (document.getElementById('tgBotToken') as HTMLInputElement).value.trim();
+                                      const chatId = (document.getElementById('tgChatId') as HTMLInputElement).value.trim();
+                                      const adminUserIdRaw = (document.getElementById('tgAdminUserId') as HTMLInputElement).value.trim();
+                                      const parsedAdminId = parseInt(adminUserIdRaw, 10);
+                                      const adminUserId = adminUserIdRaw && !isNaN(parsedAdminId) && parsedAdminId > 0 ? parsedAdminId : undefined;
+                                      if (!token || !chatId) return;
 
-                             // 1. Save to localStorage immediately
-                             localStorage.setItem('telegram_chat_config', JSON.stringify({ botToken: token, chatId, adminUserId }));
-                             window.dispatchEvent(new Event('telegram_config_updated'));
+                                      // 1. Save to localStorage immediately
+                                      localStorage.setItem('telegram_chat_config', JSON.stringify({ botToken: token, chatId, adminUserId }));
+                                      window.dispatchEvent(new Event('telegram_config_updated'));
 
-                             // 2. If GitHub is configured, also save to site-data.json on GitHub
-                             const ghCfg = getGitHubConfig();
-                             if (ghCfg) {
-                                 setIsSyncing(true);
-                                 try {
-                                     const file = await fetchSiteDataFromGitHub(ghCfg);
-                                     if (file) {
-                                         const updated = { ...file.content, telegramConfig: { botToken: token, chatId, adminUserId } };
-                                         const ok = await writeSiteDataToGitHub(ghCfg, updated, file.sha);
-                                         if (ok) {
-                                             alert('✅ Telegram Config បានរក្សាទុក!\n📁 site-data.json នៅ GitHub ត្រូវបានអាប់ដេត។');
-                                         } else {
-                                             alert('✅ Telegram Config បានរក្សាទុកក្នុង browser!\n⚠ មិនអាចអាប់ដេតទៅ GitHub បាន — សូមពិនិត្យ Token/permissions។');
-                                         }
-                                     } else {
-                                         alert('✅ Telegram Config បានរក្សាទុក!\n⚠ មិនអាចអានឯកសារ site-data.json ពី GitHub — សូមពិនិត្យ GitHub Config។');
-                                     }
-                                 } catch {
-                                     alert('✅ Telegram Config បានរក្សាទុក!\n⚠ GitHub sync failed.');
-                                 } finally {
-                                     setIsSyncing(false);
-                                 }
-                             } else {
-                                 alert('✅ Telegram Config បានរក្សាទុកក្នុង browser!\n💡 បញ្ចូល GitHub Config ដើម្បីរក្សាទុកនៅ GitHub ផ្ងារ។');
-                             }
-                         }} className="space-y-3">
-                             <input
-                                 id="tgBotToken"
-                                 type="password"
-                                 defaultValue={(() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').botToken || ''; } catch { return ''; } })()}
-                                 placeholder="Bot Token (e.g. 123456:ABC-DEF...)"
-                                 className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
-                             />
-                             <div className="flex gap-2">
-                                 <input
-                                     id="tgChatId"
-                                     type="text"
-                                     defaultValue={(() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').chatId || ''; } catch { return ''; } })()}
-                                     placeholder="Chat ID (e.g. -1001234567890)"
-                                     className="flex-1 bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
-                                 />
-                                 <button type="submit" disabled={isSyncing} className="px-4 py-2 bg-[#229ED9] hover:bg-[#1a8bc7] text-white rounded-xl font-bold text-sm transition-all disabled:opacity-50">
-                                     {isSyncing ? '...' : 'Save'}
-                                 </button>
-                             </div>
-                             <input
-                                 id="tgAdminUserId"
-                                 type="number"
-                                 defaultValue={(() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').adminUserId || ''; } catch { return ''; } })()}
-                                 placeholder="Admin User ID (optional — ប្រើ @userinfobot)"
-                                 className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm placeholder-gray-500"
-                             />
-                             <p className="text-gray-500 text-xs">
-                                 💡 <b>Admin User ID</b>: បញ្ចូល Telegram User ID របស់ Admin ដើម្បីឱ្យ live chat ទទួល reply ត្រឹមត្រូវ ១០០%។ ផ្ញើ <code>/start</code> ទៅ <b>@userinfobot</b> ក្នុង Telegram ដើម្បីរកដឹង ID របស់អ្នក (គ្រាន់តែលេខ ដូចជា <code>123456789</code>)។
-                             </p>
-                         </form>
-                         {localStorage.getItem('telegram_chat_config') && (
-                             <button onClick={() => { if(window.confirm('លុប Telegram Config?')) { localStorage.removeItem('telegram_chat_config'); window.location.reload(); } }} className="mt-3 text-xs text-red-400 hover:text-red-300">
-                                 លុប Telegram Config
-                             </button>
-                         )}
+                                      // 2. If GitHub is configured, also save to site-data.json on GitHub
+                                      const ghCfg = getGitHubConfig();
+                                      if (ghCfg) {
+                                          setIsSyncing(true);
+                                          try {
+                                              const file = await fetchSiteDataFromGitHub(ghCfg);
+                                              if (file) {
+                                                  const updated = { ...file.content, telegramConfig: { botToken: token, chatId, adminUserId } };
+                                                  const ok = await writeSiteDataToGitHub(ghCfg, updated, file.sha);
+                                                  if (ok) {
+                                                      alert('✅ Telegram Config បានរក្សាទុក!\n📁 site-data.json នៅ GitHub ត្រូវបានអាប់ដេត។');
+                                                  } else {
+                                                      alert('✅ Telegram Config បានរក្សាទុកក្នុង browser!\n⚠ មិនអាចអាប់ដេតទៅ GitHub បាន — សូមពិនិត្យ Token/permissions។');
+                                                  }
+                                              } else {
+                                                  alert('✅ Telegram Config បានរក្សាទុក!\n⚠ មិនអាចអានឯកសារ site-data.json ពី GitHub — សូមពិនិត្យ GitHub Config។');
+                                              }
+                                          } catch {
+                                              alert('✅ Telegram Config បានរក្សាទុក!\n⚠ GitHub sync failed.');
+                                          } finally {
+                                              setIsSyncing(false);
+                                          }
+                                      } else {
+                                          alert('✅ Telegram Config បានរក្សាទុកក្នុង browser!\n💡 បញ្ចូល GitHub Config ដើម្បីរក្សាទុកនៅ GitHub ផ្ងារ។');
+                                      }
+                                  }} className="space-y-3">
+                                      <input
+                                          id="tgBotToken"
+                                          type="password"
+                                          defaultValue={(() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').botToken || ''; } catch { return ''; } })()}
+                                          placeholder="Bot Token (e.g. 123456:ABC-DEF...)"
+                                          className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                      />
+                                      <div className="flex gap-2">
+                                          <input
+                                              id="tgChatId"
+                                              type="text"
+                                              defaultValue={(() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').chatId || ''; } catch { return ''; } })()}
+                                              placeholder="Chat ID (e.g. -1001234567890)"
+                                              className="flex-1 bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                          />
+                                          <button type="submit" disabled={isSyncing} className="px-4 py-2 bg-[#229ED9] hover:bg-[#1a8bc7] text-white rounded-xl font-bold text-sm transition-all disabled:opacity-50">
+                                              {isSyncing ? '...' : 'Save'}
+                                          </button>
+                                      </div>
+                                      <input
+                                          id="tgAdminUserId"
+                                          type="number"
+                                          defaultValue={(() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').adminUserId || ''; } catch { return ''; } })()}
+                                          placeholder="Admin User ID (optional — ប្រើ @userinfobot)"
+                                          className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm placeholder-gray-500"
+                                      />
+                                      <p className="text-gray-500 text-xs">
+                                          💡 <b>Admin User ID</b>: បញ្ចូល Telegram User ID របស់ Admin ដើម្បីឱ្យ live chat ទទួល reply ត្រឹមត្រូវ ១០០%។ ផ្ញើ <code>/start</code> ទៅ <b>@userinfobot</b> ក្នុង Telegram ដើម្បីរកដឹង ID របស់អ្នក (គ្រាន់តែលេខ ដូចជា <code>123456789</code>)។
+                                      </p>
+                                  </form>
+                                  {localStorage.getItem('telegram_chat_config') && (
+                                      <button onClick={() => { if(window.confirm('លុប Telegram Config?')) { localStorage.removeItem('telegram_chat_config'); window.location.reload(); } }} className="mt-3 text-xs text-red-400 hover:text-red-300">
+                                          លុប Telegram Config
+                                      </button>
+                                  )}
+                              </>
+                          )}
                          {/* Test current Telegram config (token + chat ID) */}
                          <button
-                             type="button"
-                             disabled={isTesting}
-                             onClick={async () => {
-                                 const token = (document.getElementById('tgBotToken') as HTMLInputElement)?.value.trim()
-                                     || (() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').botToken || ''; } catch { return ''; } })();
-                                 const chatId = (document.getElementById('tgChatId') as HTMLInputElement)?.value.trim()
-                                     || (() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').chatId || ''; } catch { return ''; } })();
-                                 if (!token || !chatId) {
-                                     alert('⚠ សូមបញ្ចឺល Bot Token នឹង Chat ID ជាមុនសិន័');
-                                     return;
-                                 }
+                              type="button"
+                              disabled={isTesting}
+                              onClick={async () => {
+                                  const envCfg = getTelegramConfig();
+                                  const token = envCfg?.botToken
+                                      || (document.getElementById('tgBotToken') as HTMLInputElement)?.value.trim()
+                                      || (() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').botToken || ''; } catch { return ''; } })();
+                                  const chatId = envCfg?.chatId
+                                      || (document.getElementById('tgChatId') as HTMLInputElement)?.value.trim()
+                                      || (() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').chatId || ''; } catch { return ''; } })();
+                                  if (!token || !chatId) {
+                                      alert('⚠ សូមបញ្ចឺល Bot Token នឹង Chat ID ជាមុនសិន័');
+                                      return;
+                                  }
                                  setIsTesting(true);
                                  try {
                                      const result = await testTelegramConnection({ botToken: token, chatId });
