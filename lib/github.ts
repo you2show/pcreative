@@ -90,11 +90,29 @@ export const writeSiteDataToGitHub = async (
   }
 };
 
-/** Public raw URL — no auth needed — for reading telegramConfig on app start */
+/** Public raw URL — no auth needed — for reading site-data.json from a public repo. */
 export const getSiteDataRawUrl = (
   cfg: Pick<GitHubConfig, 'username' | 'repo' | 'branch'>
 ): string =>
   `https://raw.githubusercontent.com/${cfg.username}/${cfg.repo}/${cfg.branch}/site-data.json`;
+
+/**
+ * Resolve the best URL to read site-data.json.
+ * Priority order:
+ *  1. raw.githubusercontent.com — when the admin has a localStorage GitHub config
+ *  2. VITE_SITE_DATA_URL        — explicit env-var override (useful for public repos)
+ *  3. /api/site-data            — Vercel serverless proxy (works for private repos)
+ *
+ * Always returns a non-empty string; callers do not need a null check.
+ */
+const resolveSiteDataUrl = (): string => {
+  const ghCfg = getGitHubConfig();
+  if (ghCfg) {
+    return getSiteDataRawUrl({ username: ghCfg.username, repo: ghCfg.repo, branch: ghCfg.branch });
+  }
+  const envUrl = (import.meta.env.VITE_SITE_DATA_URL as string | undefined)?.trim();
+  return envUrl || '/api/site-data';
+};
 
 export const getLocalHiddenStaticStories = (): string[] => {
   try {
@@ -120,12 +138,7 @@ const parseHiddenStaticStories = (data: Record<string, unknown> | null): string[
 
 const fetchHiddenStaticStoriesPublic = async (): Promise<string[]> => {
   try {
-    const ghCfg = getGitHubConfig();
-    const envSiteDataUrl = (import.meta.env.VITE_SITE_DATA_URL as string | undefined)?.trim();
-    const url = ghCfg
-      ? getSiteDataRawUrl({ username: ghCfg.username, repo: ghCfg.repo, branch: ghCfg.branch })
-      : envSiteDataUrl;
-    if (!url) return [];
+    const url = resolveSiteDataUrl();
     const res = await fetch(`${url}?t=${Date.now()}`);
     if (!res.ok) return [];
     const data = await res.json();
@@ -181,16 +194,11 @@ export const testGitHubConnection = async (
 // keyed by post ID.
 // ---------------------------------------------------------------------------
 
-/** Fetch comments for a post from the public site-data.json URL (no auth needed). */
+/** Fetch comments for a post from site-data.json (via serverless proxy for private repos). */
 export const fetchPostCommentsPublic = async (postId: string): Promise<Comment[]> => {
   try {
-    const ghCfg = getGitHubConfig();
-    const envUrl = (import.meta.env.VITE_SITE_DATA_URL as string | undefined)?.trim();
-    const baseUrl = ghCfg
-      ? getSiteDataRawUrl({ username: ghCfg.username, repo: ghCfg.repo, branch: ghCfg.branch })
-      : envUrl;
-    if (!baseUrl) return [];
-    const res = await fetch(`${baseUrl}?t=${Date.now()}`);
+    const url = resolveSiteDataUrl();
+    const res = await fetch(`${url}?t=${Date.now()}`);
     if (!res.ok) return [];
     const data = await res.json();
     const allComments = data?.comments as Record<string, Comment[]> | undefined;
@@ -201,18 +209,14 @@ export const fetchPostCommentsPublic = async (postId: string): Promise<Comment[]
 };
 
 /**
- * Fetch the raw site-data.json without requiring authentication.
- * Uses localStorage GitHub config if available, otherwise the VITE_SITE_DATA_URL env var.
- * Returns null if neither source is configured or the request fails.
+ * Fetch the raw site-data.json.
+ * Uses the admin's localStorage GitHub config when available (fastest),
+ * then VITE_SITE_DATA_URL, then falls back to the /api/site-data serverless
+ * proxy so private-repo deployments work for every visitor.
  */
 export const fetchSiteDataPublic = async (): Promise<Record<string, unknown> | null> => {
   try {
-    const ghCfg = getGitHubConfig();
-    const envUrl = (import.meta.env.VITE_SITE_DATA_URL as string | undefined)?.trim();
-    const url = ghCfg
-      ? getSiteDataRawUrl({ username: ghCfg.username, repo: ghCfg.repo, branch: ghCfg.branch })
-      : envUrl;
-    if (!url) return null;
+    const url = resolveSiteDataUrl();
     const res = await fetch(`${url}?t=${Date.now()}`);
     if (!res.ok) return null;
     return await res.json();
