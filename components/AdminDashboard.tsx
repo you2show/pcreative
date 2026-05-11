@@ -462,7 +462,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (activeTab === 'team') {
               newItem.pinCode = res.data[0].pin_code;
               if (!res.data[0].pin_code) {
-                  console.error('⚠️ pin_code was not saved to Supabase. Please check that the `pin_code` column exists in the `team` table and that the anon role has INSERT/UPDATE privileges on it.');
+                  if (item.pinCode) {
+                      console.error('⚠️ pin_code was provided but not saved to Supabase. Please check that the `pin_code` column exists in the `team` table and that the anon role has INSERT/UPDATE privileges on it.');
+                  } else {
+                      console.warn('⚠️ No pin_code was provided for this team member. The member will not be able to log in until a PIN is set.');
+                  }
               }
           }
 
