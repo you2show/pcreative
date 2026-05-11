@@ -266,18 +266,32 @@ export const addPostCommentToGitHub = async (
     const allComments = ((file.content.comments as Record<string, Comment[]> | undefined) ?? {});
     const postComments: Comment[] = allComments[postId] ?? [];
 
-    const insertReply = (list: Comment[], pid: string): Comment[] =>
-      list.map(c => {
-        if (c.id === pid) return { ...c, replies: [...(c.replies ?? []), comment] };
+    const insertReply = (list: Comment[], pid: string): { list: Comment[]; inserted: boolean } => {
+      let inserted = false;
+      const next = list.map(c => {
+        if (c.id === pid) {
+          inserted = true;
+          return { ...c, replies: [...(c.replies ?? []), comment] };
+        }
         if (!c.replies?.length) return c;
-        return { ...c, replies: insertReply(c.replies, pid) };
+        const nested = insertReply(c.replies, pid);
+        if (nested.inserted) inserted = true;
+        return { ...c, replies: nested.list };
       });
+      return { list: next, inserted };
+    };
+
+    const nextComments = (() => {
+      if (!parentId) return [...postComments, comment];
+      const insertedReply = insertReply(postComments, parentId);
+      return insertedReply.inserted ? insertedReply.list : [...postComments, comment];
+    })();
 
     const updated = {
       ...file.content,
       comments: {
         ...allComments,
-        [postId]: parentId ? insertReply(postComments, parentId) : [...postComments, comment],
+        [postId]: nextComments,
       },
     };
 

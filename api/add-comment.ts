@@ -54,12 +54,26 @@ const githubHeaders = (token: string) => ({
   'Content-Type': 'application/json',
 });
 
-const insertReply = (list: Comment[], parentId: string, reply: Comment): Comment[] =>
-  list.map((c) => {
-    if (c.id === parentId) return { ...c, replies: [...(c.replies ?? []), reply] };
-    if (c.replies?.length) return { ...c, replies: insertReply(c.replies, parentId, reply) };
+const insertReply = (
+  list: Comment[],
+  parentId: string,
+  reply: Comment
+): { list: Comment[]; inserted: boolean } => {
+  let inserted = false;
+  const next = list.map((c) => {
+    if (c.id === parentId) {
+      inserted = true;
+      return { ...c, replies: [...(c.replies ?? []), reply] };
+    }
+    if (c.replies?.length) {
+      const nested = insertReply(c.replies, parentId, reply);
+      if (nested.inserted) inserted = true;
+      return { ...c, replies: nested.list };
+    }
     return c;
   });
+  return { list: next, inserted };
+};
 
 /** Returns true only if the value is a safe https:// URL or an empty string. */
 const isSafeUrl = (value: unknown): boolean => {
@@ -126,6 +140,10 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     res.status(400).json({ error: 'parentId must be a string or null.' });
     return;
   }
+  if (typeof parentId === 'string' && parentId.length > MAX_ID_LENGTH) {
+    res.status(400).json({ error: 'parentId is too long.' });
+    return;
+  }
 
   // Validate avatar: must be an https:// URL or empty — prevents js: or data: injection
   if (!isSafeUrl(comment.avatar)) {
@@ -167,9 +185,14 @@ export default async function handler(req: Req, res: Res): Promise<void> {
       (siteData.comments as Record<string, Comment[]>) ?? {};
     const postComments: Comment[] = allComments[postId] ?? [];
 
-    allComments[postId] = parentId
-      ? insertReply(postComments, parentId as string, sanitisedComment)
-      : [...postComments, sanitisedComment];
+    if (parentId) {
+      const insertedReply = insertReply(postComments, parentId as string, sanitisedComment);
+      allComments[postId] = insertedReply.inserted
+        ? insertedReply.list
+        : [...postComments, sanitisedComment];
+    } else {
+      allComments[postId] = [...postComments, sanitisedComment];
+    }
 
     const updatedData = { ...siteData, comments: allComments };
 
