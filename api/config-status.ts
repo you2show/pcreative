@@ -28,7 +28,6 @@ export default async function handler(req: Req, res: Res): Promise<void> {
 
   const telegramToken = process.env.VITE_TELEGRAM_BOT_TOKEN || '';
   const telegramChatId = process.env.VITE_TELEGRAM_CHAT_ID || '';
-  const telegramAdminUserId = process.env.VITE_TELEGRAM_ADMIN_USER_ID || '';
 
   const imgbbKeyConfigured = Boolean(process.env.VITE_IMGBB_API_KEY);
 
@@ -42,8 +41,6 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     },
     telegram: {
       configured: !!telegramToken && !!telegramChatId,
-      chatId: telegramChatId,
-      adminUserId: telegramAdminUserId,
     },
     imgbb: {
       configured: imgbbKeyConfigured,

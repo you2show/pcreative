@@ -30,6 +30,12 @@ interface AdminDashboardProps {
 
 type TabType = 'team' | 'projects' | 'insights' | 'services' | 'careers' | 'settings' | 'partners' | 'stories';
 
+interface EnvConfigStatus {
+  github?: { configured: boolean; username: string; repo: string; branch: string };
+  telegram?: { configured: boolean };
+  imgbb?: { configured: boolean };
+}
+
 // Helper function to generate deterministic color from name
 const getColorFromName = (name: string): string => {
   let hash = 0;
@@ -63,11 +69,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   const [isSyncing, setIsSyncing] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [githubConfig, setGithubConfig] = useState<GitHubConfig | null>(getGitHubConfig);
-  const [envConfigStatus, setEnvConfigStatus] = useState<{
-      github?: { configured: boolean; username: string; repo: string; branch: string };
-      telegram?: { configured: boolean; chatId: string; adminUserId?: string };
-      imgbb?: { configured: boolean };
-  } | null>(null);
+  const [envConfigStatus, setEnvConfigStatus] = useState<EnvConfigStatus | null>(null);
   const [serverGitHubTest, setServerGitHubTest] = useState<{ ok: boolean; message: string } | null>(null);
   const [isServerGitHubTesting, setIsServerGitHubTesting] = useState(false);
 
@@ -798,8 +800,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                           </p>
                           {isEnvTelegramConfigured ? (
                               <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-3 text-sm text-green-400">
-                                  ✅ Telegram ត្រូវបានកំណត់ពី Vercel environment រួចហើយ
-                                  {envConfigStatus?.telegram?.chatId ? ` (Chat ID: ${envConfigStatus.telegram.chatId})` : ''}។
+                                  ✅ Telegram ត្រូវបានកំណត់ពី Vercel environment រួចហើយ។
                               </div>
                           ) : (
                               <>
