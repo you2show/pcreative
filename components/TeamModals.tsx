@@ -534,7 +534,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                 console.warn('Supabase fallback comment insert failed:', error);
             }
 
-            throw new Error('GitHub and Supabase comment backends are unavailable.');
+            throw new Error('Failed to save comment: all storage methods (GitHub API, direct GitHub, and Supabase fallback) are unavailable.');
         } catch (err) {
             console.error('Error posting comment:', err);
             setCommentError(t('Failed to post comment. Please try again.', 'បរាជ័យក្នុងការផ្ញើមតិ។ សូមព្យាយាមម្ដងទៀត។'));

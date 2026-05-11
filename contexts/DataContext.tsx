@@ -103,7 +103,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const ghTeamCoverMapById: Record<string, string> = {};
       const ghTeamCoverMapBySlug: Record<string, string> = {};
       const ghTeamCoverMapByName: Record<string, string> = {};
-      const normalizeName = (value: string) => value.trim().toLowerCase().replace(/\s+/g, ' ');
+      const normalizeName = (value: unknown): string => String(value ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
       const ghTeamRaw = ghSiteData?.team;
       if (Array.isArray(ghTeamRaw)) {
           for (const m of ghTeamRaw as Array<{ id?: string; slug?: string; name?: string; coverImage?: string }>) {

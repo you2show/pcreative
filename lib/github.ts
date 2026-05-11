@@ -180,12 +180,16 @@ export const upsertTeamCoverImageToGitHub = async (member: {
   if (!cfg) return false;
   if (typeof member.coverImage !== 'string') return false;
 
-  const normalize = (value?: string): string =>
+  const normalizeString = (value?: string): string =>
     (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, ' ');
+  const sanitizeCommitValue = (value?: string): string => {
+    const cleaned = (value ?? '').replace(/[\r\n\t]/g, ' ').trim();
+    return cleaned.slice(0, 60);
+  };
 
-  const targetId = normalize(member.id);
-  const targetSlug = normalize(member.slug);
-  const targetName = normalize(member.name);
+  const targetId = normalizeString(member.id);
+  const targetSlug = normalizeString(member.slug);
+  const targetName = normalizeString(member.name);
 
   try {
     const file = await fetchSiteDataFromGitHub(cfg);
@@ -197,9 +201,9 @@ export const upsertTeamCoverImageToGitHub = async (member: {
     const index = team.findIndex((entry) => {
       if (!entry || typeof entry !== 'object') return false;
       const item = entry as Record<string, unknown>;
-      const itemId = normalize(typeof item.id === 'string' ? item.id : '');
-      const itemSlug = normalize(typeof item.slug === 'string' ? item.slug : '');
-      const itemName = normalize(typeof item.name === 'string' ? item.name : '');
+      const itemId = normalizeString(typeof item.id === 'string' ? item.id : '');
+      const itemSlug = normalizeString(typeof item.slug === 'string' ? item.slug : '');
+      const itemName = normalizeString(typeof item.name === 'string' ? item.name : '');
       if (targetId && itemId === targetId) return true;
       if (targetSlug && itemSlug === targetSlug) return true;
       if (targetName && itemName === targetName) return true;
@@ -225,7 +229,8 @@ export const upsertTeamCoverImageToGitHub = async (member: {
     }
 
     const updated = { ...file.content, team };
-    return writeSiteDataToGitHub(cfg, updated, file.sha, `Update team cover image for ${member.name || member.id || 'member'}`);
+    const commitTarget = sanitizeCommitValue(member.name) || sanitizeCommitValue(member.id) || 'member';
+    return writeSiteDataToGitHub(cfg, updated, file.sha, `Update team cover image for ${commitTarget}`);
   } catch {
     return false;
   }
