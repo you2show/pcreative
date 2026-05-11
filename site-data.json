@@ -539,7 +539,16 @@
         "avatar": "",
         "content": "test",
         "date": "2026-05-11T18:46:55.211Z",
-        "replies": []
+        "replies": [
+          {
+            "id": "81263c51-0fd4-419a-b208-3076c6c81ae8",
+            "user": "test",
+            "avatar": "",
+            "content": "test",
+            "date": "2026-05-11T18:47:07.486Z",
+            "replies": []
+          }
+        ]
       }
     ]
   }
