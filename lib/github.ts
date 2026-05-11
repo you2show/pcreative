@@ -201,6 +201,27 @@ export const fetchPostCommentsPublic = async (postId: string): Promise<Comment[]
 };
 
 /**
+ * Fetch the raw site-data.json without requiring authentication.
+ * Uses localStorage GitHub config if available, otherwise the VITE_SITE_DATA_URL env var.
+ * Returns null if neither source is configured or the request fails.
+ */
+export const fetchSiteDataPublic = async (): Promise<Record<string, unknown> | null> => {
+  try {
+    const ghCfg = getGitHubConfig();
+    const envUrl = (import.meta.env.VITE_SITE_DATA_URL as string | undefined)?.trim();
+    const url = ghCfg
+      ? getSiteDataRawUrl({ username: ghCfg.username, repo: ghCfg.repo, branch: ghCfg.branch })
+      : envUrl;
+    if (!url) return null;
+    const res = await fetch(`${url}?t=${Date.now()}`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+};
+
+/**
  * Post a comment (or reply) via the Vercel serverless function /api/add-comment.
  * The serverless function uses server-side env vars for the GitHub token so any
  * visitor can post without supplying credentials.

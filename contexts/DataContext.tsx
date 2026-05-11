@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useCa
 import { SERVICES, PROJECTS, TEAM, INSIGHTS, JOBS, PARTNERS, TESTIMONIALS } from '../constants';
 import { Service, Project, TeamMember, Post, Job, Partner, Testimonial } from '../types';
 import { getSupabaseClient } from '../lib/supabase';
-import { getMergedHiddenStaticStories } from '../lib/github';
+import { getMergedHiddenStaticStories, fetchSiteDataPublic } from '../lib/github';
 import { BookOpen, Box, Briefcase, Building2, Camera, Code, Cpu, Droplet, Feather, Gem, Globe, Home, Languages, Layout, Lightbulb, Monitor, Palette, PenLine, PenTool, Rocket, Search, Video, Wind, Zap, type LucideIcon } from 'lucide-react';
 import { slugify } from '../utils/format';
 
@@ -94,9 +94,27 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const fetchData = useCallback(async () => {
       const supabase = getSupabaseClient();
-      const hiddenStatic = await getMergedHiddenStaticStories();
+      const [hiddenStatic, ghSiteData] = await Promise.all([
+          getMergedHiddenStaticStories(),
+          fetchSiteDataPublic(),
+      ]);
+
+      // Build a map of id → coverImage from site-data.json for fast lookup
+      const ghTeamCoverMap: Record<string, string> = {};
+      const ghTeamRaw = ghSiteData?.team;
+      if (Array.isArray(ghTeamRaw)) {
+          for (const m of ghTeamRaw as Array<{ id?: string; coverImage?: string }>) {
+              if (m.id && m.coverImage) ghTeamCoverMap[m.id] = m.coverImage;
+          }
+      }
+
       const visibleStaticTestimonials = TESTIMONIALS.filter(t => !hiddenStatic.includes(t.id));
       if (!supabase) {
+          // Hydrate static TEAM with cover images from site-data.json (no-op if map is empty)
+          setTeam(TEAM.map(m => ({
+              ...m,
+              coverImage: m.coverImage || ghTeamCoverMap[m.id] || '',
+          })));
           setTestimonials(visibleStaticTestimonials);
           setIsLoading(false);
           return;
@@ -165,7 +183,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 	                 slug: t.slug || slugify(t.name),
 	                 orderIndex: t.order_index, // Ensure this maps correctly
 	                 pinCode: t.pin_code,
-	                 coverImage: t.cover_image // Map coverImage from DB
+	                 coverImage: t.cover_image || ghTeamCoverMap[t.id] || '' // Fallback to GitHub site-data.json
 	             }));
              // STRICT MODE: Use only DB data
              setTeam(formatted);
