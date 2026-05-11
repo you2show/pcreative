@@ -572,7 +572,16 @@
         "avatar": "",
         "content": "1234",
         "date": "2026-05-11T21:29:27.858Z",
-        "replies": []
+        "replies": [
+          {
+            "id": "8f57af23-58bc-41e4-973f-881fba5a7d72",
+            "user": "yu",
+            "avatar": "",
+            "content": "wer",
+            "date": "2026-05-11T21:29:38.254Z",
+            "replies": []
+          }
+        ]
       }
     ]
   }
