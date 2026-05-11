@@ -167,6 +167,76 @@ export const syncHiddenStaticStoriesToGitHub = async (
 };
 
 /**
+ * Upsert a team member coverImage in site-data.json.
+ * Match priority: id -> slug -> normalized name.
+ */
+export const upsertTeamCoverImageToGitHub = async (member: {
+  id?: string;
+  slug?: string;
+  name?: string;
+  coverImage?: string;
+}): Promise<boolean> => {
+  const cfg = getGitHubConfig();
+  if (!cfg) return false;
+  if (typeof member.coverImage !== 'string') return false;
+
+  const normalizeString = (value?: string): string =>
+    (value ?? '').toString().trim().toLowerCase().replace(/\s+/g, ' ');
+  const sanitizeCommitValue = (value?: string): string => {
+    const cleaned = (value ?? '').replace(/[\r\n\t]/g, ' ').trim();
+    return cleaned.slice(0, 60);
+  };
+
+  const targetId = normalizeString(member.id);
+  const targetSlug = normalizeString(member.slug);
+  const targetName = normalizeString(member.name);
+
+  try {
+    const file = await fetchSiteDataFromGitHub(cfg);
+    if (!file) return false;
+
+    const teamRaw = file.content.team;
+    const team = Array.isArray(teamRaw) ? [...teamRaw] : [];
+
+    const index = team.findIndex((entry) => {
+      if (!entry || typeof entry !== 'object') return false;
+      const item = entry as Record<string, unknown>;
+      const itemId = normalizeString(typeof item.id === 'string' ? item.id : '');
+      const itemSlug = normalizeString(typeof item.slug === 'string' ? item.slug : '');
+      const itemName = normalizeString(typeof item.name === 'string' ? item.name : '');
+      if (targetId && itemId === targetId) return true;
+      if (targetSlug && itemSlug === targetSlug) return true;
+      if (targetName && itemName === targetName) return true;
+      return false;
+    });
+
+    if (index >= 0) {
+      const existing = team[index] as Record<string, unknown>;
+      team[index] = {
+        ...existing,
+        ...(member.id ? { id: member.id } : {}),
+        ...(member.slug ? { slug: member.slug } : {}),
+        ...(member.name ? { name: member.name } : {}),
+        coverImage: member.coverImage,
+      };
+    } else {
+      team.push({
+        ...(member.id ? { id: member.id } : {}),
+        ...(member.slug ? { slug: member.slug } : {}),
+        ...(member.name ? { name: member.name } : {}),
+        coverImage: member.coverImage,
+      });
+    }
+
+    const updated = { ...file.content, team };
+    const commitTarget = sanitizeCommitValue(member.name) || sanitizeCommitValue(member.id) || 'member';
+    return writeSiteDataToGitHub(cfg, updated, file.sha, `Update team cover image for ${commitTarget}`);
+  } catch {
+    return false;
+  }
+};
+
+/**
  * Verify that the GitHub config is valid by reading site-data.json.
  * Returns ok=true with the current SHA on success, or an error message on failure.
  */

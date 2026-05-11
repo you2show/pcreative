@@ -18,6 +18,7 @@ import {
   getLocalHiddenStaticStories,
   saveLocalHiddenStaticStories,
   syncHiddenStaticStoriesToGitHub,
+  upsertTeamCoverImageToGitHub,
 } from '../lib/github';
 import { testTelegramConnection } from '../lib/telegram';
 
@@ -274,8 +275,33 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 
   const handleSave = async (e: React.FormEvent) => {
       e.preventDefault();
+      const teamSlug = editingItem?.slug || slugify(editingItem?.name || '');
+      const shouldSyncTeamCoverToGitHub = activeTab === 'team' && typeof editingItem?.coverImage === 'string';
+      let githubCoverPreSynced = false;
+      if (shouldSyncTeamCoverToGitHub) {
+          githubCoverPreSynced = await upsertTeamCoverImageToGitHub({
+              id: editingItem?.id,
+              slug: teamSlug,
+              name: editingItem?.name,
+              coverImage: editingItem?.coverImage,
+          });
+      }
+
       const supabase = getSupabaseClient();
-      if (!supabase) return;
+      if (!supabase) {
+          if (shouldSyncTeamCoverToGitHub && githubCoverPreSynced) {
+              const fallbackUpdated = {
+                  ...editingItem,
+                  slug: teamSlug,
+              };
+              setAdminTeam(prev => prev.map(member => member.id === fallbackUpdated.id ? fallbackUpdated : member));
+              await refreshData();
+              setIsModalOpen(false);
+              alert("Team cover image saved to GitHub. Supabase unavailable, so only cover sync was applied.");
+              return;
+          }
+          return;
+      }
 
       // Keep reference to the ORIGINAL ID (e.g. 'graphic', 'j1', or 'uuid')
       const originalId = editingItem.id;
@@ -469,6 +495,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           if (activeTab === 'team') {
               newItem.pinCode = res.data[0].pin_code;
               newItem.coverImage = res.data[0].cover_image ?? item.coverImage ?? '';
+              const githubCoverSynced = await upsertTeamCoverImageToGitHub({
+                  id: newItem.id,
+                  slug: newItem.slug || generatedSlug,
+                  name: newItem.name,
+                  coverImage: newItem.coverImage,
+              });
+              if (!githubCoverSynced && newItem.coverImage) {
+                  console.warn('⚠️ Failed to sync team cover to GitHub; Supabase value will be used as secondary fallback.');
+              }
               if (!res.data[0].pin_code) {
                   if (item.pinCode) {
                       console.error('⚠️ pin_code was provided but not saved to Supabase. Please check that the `pin_code` column exists in the `team` table and that the anon role has INSERT/UPDATE privileges on it.');
