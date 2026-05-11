@@ -99,17 +99,16 @@ export const getSiteDataRawUrl = (
 /**
  * Resolve the best URL to read site-data.json.
  * Priority order:
- *  1. raw.githubusercontent.com — when the admin has a localStorage GitHub config
- *  2. VITE_SITE_DATA_URL        — explicit env-var override (useful for public repos)
- *  3. /api/site-data            — Vercel serverless proxy (works for private repos)
+ *  1. VITE_SITE_DATA_URL        — explicit env-var override (useful for public repos)
+ *  2. /api/site-data            — Vercel serverless proxy (works for private repos)
+ *
+ * raw.githubusercontent.com is intentionally skipped: it returns 404 for private
+ * repositories because it requires authentication that the browser cannot supply.
+ * The /api/site-data serverless function uses server-side env vars and always works.
  *
  * Always returns a non-empty string; callers do not need a null check.
  */
 const resolveSiteDataUrl = (): string => {
-  const ghCfg = getGitHubConfig();
-  if (ghCfg) {
-    return getSiteDataRawUrl({ username: ghCfg.username, repo: ghCfg.repo, branch: ghCfg.branch });
-  }
   const envUrl = (import.meta.env.VITE_SITE_DATA_URL as string | undefined)?.trim();
   return envUrl || '/api/site-data';
 };
