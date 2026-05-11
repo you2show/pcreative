@@ -84,7 +84,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                         <img 
                             src={member.coverImage} 
                             alt="" 
-                            className="w-full h-full object-cover opacity-50"
+                            className="absolute inset-0 w-full h-full object-cover object-center opacity-50"
                         />
                     ) : (
                         <div className="w-full h-full bg-gradient-to-r from-indigo-600/20 to-purple-600/20" />

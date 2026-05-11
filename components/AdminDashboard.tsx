@@ -457,6 +457,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           // Fallback for team cover_image if column not yet added to DB
           if (res.error && activeTab === 'team' && res.error.message.includes("cover_image")) {
                console.warn('⚠️ cover_image column not found in team table. Please run: ALTER TABLE team ADD COLUMN cover_image TEXT;');
+               alert('⚠️ រូប Cover Image មិនទាន់ត្រូវបានរក្សាទុក!\nដើម្បីជំរុញ Cover Image, សូម Run SQL នៅក្នុង Supabase:\nALTER TABLE team ADD COLUMN cover_image TEXT;');
                const { cover_image, ...fallbackPayload } = payload;
                res = await executeQuery(fallbackPayload);
           }
