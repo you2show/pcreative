@@ -133,7 +133,7 @@ function AppContent() {
       
       <div className="pointer-events-none fixed inset-0 z-0 opacity-40 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.16),transparent_45%)]" />
       
-      <Header />
+      <Header onGetQuote={() => setIsConsultationOpen(true)} />
       
       <main className="relative z-10">
         <Hero />
