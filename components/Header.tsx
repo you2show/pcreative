@@ -5,7 +5,11 @@ import { smoothScrollTo } from '../utils/scroll';
 import { hapticLanguageChange, hapticTap } from '../utils/haptic';
 import PonloeLogo from './PonloeLogo';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onGetQuote?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
@@ -259,9 +263,9 @@ const Header: React.FC = () => {
                  )}
              </div>
 
-             <a href="#contact" onClick={(e) => scrollToSection(e, '#contact')} className="hidden sm:flex group px-5 py-2.5 rounded-full bg-white text-gray-950 font-bold text-sm hover:scale-105 transition-all duration-300 items-center gap-2 font-khmer">
+             <button onClick={() => { hapticTap(); onGetQuote?.(); }} className="hidden sm:flex group px-5 py-2.5 rounded-full bg-white text-gray-950 font-bold text-sm hover:scale-105 transition-all duration-300 items-center gap-2 font-khmer">
               {t("Get a Quote", "ស្នើសុំតម្លៃ")} <ArrowUpRight size={16} className="group-hover:rotate-45 transition-transform" />
-            </a>
+            </button>
 
             <button onClick={toggleMenu} className="lg:hidden text-white p-2">
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
