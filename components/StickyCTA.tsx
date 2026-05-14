@@ -276,41 +276,7 @@ const StickyCTA: React.FC<StickyCTAProps> = ({ onConsultationOpen }) => {
 
   if (dismissed) return null;
 
-  return (
-    <div
-      className={`fixed bottom-0 left-0 right-0 z-[9900] transition-transform duration-500 ${
-        visible ? 'translate-y-0' : 'translate-y-full'
-      }`}
-    >
-      <div className="bg-gray-950 border-t border-indigo-500/30 shadow-[0_-4px_30px_rgba(99,102,241,0.2)]">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse shrink-0" />
-            <p className="text-white font-khmer text-sm md:text-base font-medium text-center sm:text-left">
-              {t('🚀 Ready to start your project?', '🚀 ត្រៀមចាប់ផ្ដើមគម្រោងរបស់អ្នក?')}{' '}
-              <span className="text-indigo-400 font-bold">{t('Get a free consultation today!', 'ទទួលការពិគ្រោះឥតគិតថ្លៃថ្ងៃនេះ!')}</span>
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3 shrink-0">
-            <button
-              onClick={onConsultationOpen}
-              className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-full text-sm transition-all hover:scale-105 font-khmer shadow-lg shadow-indigo-500/30"
-            >
-              {t('Book Free Consult', 'ចុះឈ្មោះពិគ្រោះ')} <ArrowRight size={16} />
-            </button>
-            <button
-              onClick={handleDismiss}
-              className="p-2 text-gray-500 hover:text-white transition-colors rounded-full hover:bg-white/10"
-              aria-label="Dismiss"
-            >
-              <X size={18} />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 };
 
 export default StickyCTA;
