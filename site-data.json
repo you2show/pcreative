@@ -621,7 +621,16 @@
         "avatar": "",
         "content": "test",
         "date": "2026-05-18T10:39:18.550Z",
-        "replies": []
+        "replies": [
+          {
+            "id": "9da08671-a6ea-47a1-baf8-1cb3f04e8653",
+            "user": "you",
+            "avatar": "",
+            "content": "test2",
+            "date": "2026-05-18T10:39:35.131Z",
+            "replies": []
+          }
+        ]
       }
     ]
   }
