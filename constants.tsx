@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Palette, Home, PenTool, Languages, Camera, Monitor, Video, BookOpen, Wind, Search, Lightbulb, PenLine, Rocket, Building2, Cpu, Globe, Zap, Gem, Feather, Anchor, Droplet, Code, Layout, Briefcase } from 'lucide-react';
+import { Palette, Home, PenTool, Languages, Camera, Monitor, Video, BookOpen, Wind, Search, Lightbulb, PenLine, Rocket, Building2, Code, Layout, Briefcase } from 'lucide-react';
 import { Service, Project, TeamMember, Post, Testimonial, ProcessStep, Partner, Job } from './types';
 
 export const SERVICES: Service[] = [
@@ -118,75 +117,7 @@ export const SERVICES: Service[] = [
   },
 ];
 
-export const PROJECTS: Project[] = [
-  {
-    id: 'p1',
-    title: 'Book Art Design',
-    category: 'website',
-    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi81tg3VCyPdGdmmHdbUTf5GeNwi0bI28uJ6F5H-_Jj8TSGZFchga1miJvW0blcvp0e33B0SyNoxGRNp-sf7gev3yZSx8YR8giKDUmxfX_ffqmM6ZdM-xtrXwNburJn3r6g-Rr_DX5IEGSht-0N9eSQzh7pXgLstekmoRUM5q4drRghQTLAdRh6b2B6dqA/s1600/fb%20cover.jpg',
-    slug: 'book-art-design'
-  },
-  {
-    id: 'p2',
-    title: 'Social Media Poster',
-    category: 'graphicdesign',
-    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgBNO6soY5uydiJo7csDhel8zSlg3q7DIFAA6rSIF44qJyBsv2WD8eUGu5ZYDuJu1I1NppTG70NNW0PIHbXxjvBTygXJGVMBLIpjID9__SVIA_Roox9_A8Z6yqBYsSBXRQoRfPotUJnTBo8c_1YG6Ui3Aa5ohGt-7z7f-ciJQwEIwA7njLehAGhClTflSzs/s1600/ponloe.poster.jpg',
-    slug: 'social-media-poster'
-  },
-  {
-    id: 'p3',
-    title: 'Ponloe Creative Web',
-    category: 'webapp',
-    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiuEcfaETv68lAV6WDzh7Gub7lzi2fwpPjmPmcq0EMklRIUB4K8t4rHJBcB7uAK_LMpvQnJpuFV8T_XjnDSoSEIII9FDpOFBU4i1hRpWCxYW5QQQmFoRTRneazGjdgZT8ZME6cDx652INDsd2s6FnV9DiiKyo40XwgHA5gRXn1QM0pD0gr440JEjV1pock/s1600/ponloe.jpg',
-    slug: 'ponloe-creative-web',
-    challenge: "The agency needed a digital presence that reflected its modern, multi-disciplinary approach while appealing to both local and international clients.",
-    challengeKm: "ភ្នាក់ងារត្រូវការវត្តមានឌីជីថលដែលឆ្លុះបញ្ចាំងពីភាពទំនើប និងពហុជំនាញ ដោយទាក់ទាញទាំងអតិថិជនក្នុងស្រុក និងអន្តរជាតិ។",
-    solution: "We developed a high-performance Next.js application featuring glassmorphism design, bilingual support (Khmer/English), and a custom CMS for easy content updates.",
-    solutionKm: "យើងបានបង្កើតកម្មវិធី Next.js ដែលមានដំណើរការលឿន ដោយប្រើការរចនា Glassmorphism គាំទ្រភាសាពីរ (ខ្មែរ/អង់គ្លេស) និងប្រព័ន្ធគ្រប់គ្រងមាតិកាងាយស្រួល។",
-    result: "Increased client inquiries by 150% in the first month and established a strong brand identity in the competitive Phnom Penh market.",
-    resultKm: "បង្កើនការសាកសួរពីអតិថិជន ១៥០% ក្នុងខែដំបូង និងបង្កើតអត្តសញ្ញាណម៉ាកយីហោដ៏រឹងមាំនៅក្នុងទីផ្សារភ្នំពេញ។"
-  },
-  {
-    id: 'p4',
-    title: 'Islamic School',
-    category: 'architecture',
-    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj7Ps8IhveUmB9RFKJYQCvOzWQH3j5nb7cByL7PjJD3tIN7oRsEkP0HLIKB0j1sNyVPrJF6c6M8rv7CH2XUI38_6x7xgecWFFZy07bLfh3kodS1759LxMRcghxElhyj3AJCMoCbRpW5-JlllAG6iAaYOP4UXFbAQtcnAHFOs-F-zBtiOkGKXTeBqPFz1xc/s320/near%20pic.png',
-    slug: 'islamic-school-architecture',
-    challenge: "Designing a modern educational facility that respects traditional Islamic architecture while maximizing natural light and ventilation.",
-    challengeKm: "ការរចនាមជ្ឈមណ្ឌលអប់រំទំនើបដែលគោរពតាមស្ថាបត្យកម្មឥស្លាមប្រពៃណី ព្រមទាំងទាញយកពន្លឺ និងខ្យល់អាកាសធម្មជាតិឱ្យបានច្រើនបំផុត។",
-    solution: "We implemented a modular design with geometric patterns and central courtyards, ensuring sustainability and cultural relevance.",
-    solutionKm: "យើងបានអនុវត្តការរចនាតែមួយគត់ជាមួយនឹងលំនាំធរណីមាត្រ និងទីធ្លាកណ្តាល ដោយធានាបាននូវនិរន្តរភាព និងភាពពាក់ព័ន្ធនឹងវប្បធម៌។",
-    result: "Approved for construction with accolades for its eco-friendly approach and community-centric layout.",
-    resultKm: "ត្រូវបានអនុម័តសម្រាប់ការសាងសង់ជាមួយនឹងការកោតសរសើរចំពោះវិធីសាស្រ្តដែលមិនប៉ះពាល់ដល់បរិស្ថាន និងប្លង់ដែលផ្តោតលើសហគមន៍។"
-  },
-  {
-    id: 'p5',
-    title: 'Air System',
-    category: 'mvac',
-    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEigqOTALAa-2e4EfpXN9r_wBNE6ZdiSf69XjUIrkVioxdSVafgPdvfJLglejFykZ4XUrrdxZUunKv8cFE-pFT1EMqWtj-BTLmgiE8LHrG3-oLfVZ72B7WRe6JxxHLQKqSfe1qRuo1Xf6TaeCFLqZbEnbZnN5PYss-2uc6Fej9cZy53ZrQjj9ubeSDVZpz4/s320/image_2025-11-23_23-35-04.png',
-    slug: 'air-system-design'
-  },
-   {
-    id: 'p6',
-    title: 'Arabic Calligraphy Art',
-    category: 'arabiccalligraphy',
-    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgdO1wHd0pb8bMDmGo2Br1-wfWpBvUfvlm6Ze6pu0je9j8cUwNlEeCeAhUXHr7H1eKv_ptkZr-RQv5HLqB-r77Rex_Lxpzs9vr1a3S7ICb61ycbSwX_DeeWMOlFFrEy1ljUu9pUu2DjWyEjKZ4me6WWSXDXuCmgB2K_XeMNMNglN4-GqBVIydnFx0qxDYQ/s1600/486282539_1128936618973719_3554373107042098501_n.jpg',
-    slug: 'arabic-calligraphy-art'
-  },
-  {
-    id: 'p7',
-    title: 'Gohome App',
-    category: 'webapp',
-    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi_utIYD5sz6iR93lfrMGuMmO9K-0UZf8i7rNbnmJRfuFtng7gOWiqF2McMUptkaVOk04KkBxAyZxo1YGFWg6QqbrcsZ7W-H4LohazfWeNsttcjN2rPsdAQ8jAoicidnXtPz_S6lqNBb8JOGbiu48ZdM-xtrXwNburJn3r6g-Rr_DX5IEGSht-0N9eSQzh7pXgLstekmoRUM5q4drRghQTLAdRh6b2B6dqA/s1600/Gohome.jpg',
-    slug: 'gohome-app',
-    challenge: "Creating a seamless transportation booking experience for rural Cambodia where internet connectivity is often unstable.",
-    challengeKm: "បង្កើតបទពិសោធន៍កក់ការដឹកជញ្ជូនដ៏រលូនសម្រាប់ជនបទកម្ពុជា ដែលការតភ្ជាប់អ៊ីនធឺណិតមិនសូវមានស្ថេរភាព។",
-    solution: "Built a Lite version of the app using Flutter with offline-first architecture and SMS fallback capabilities.",
-    solutionKm: "បានបង្កើតកម្មវិធីជំនាន់ Lite ដោយប្រើ Flutter ជាមួយបច្ចេកវិទ្យា Offline-first និងសមត្ថភាពប្រើប្រាស់ SMS នៅពេលគ្មានអ៊ីនធឺណិត។",
-    result: "Successfully launched with 10,000+ downloads in the first 3 months, connecting remote villages to city centers.",
-    resultKm: "បានដាក់ឱ្យដំណើរការដោយជោគជ័យជាមួយការទាញយកជាង ១០,០០០ ដងក្នុងរយៈពេល ៣ ខែដំបូង ដោយភ្ជាប់ភូមិដាច់ស្រយាលទៅកាន់ទីក្រុង។"
-  }
-];
+export const PROJECTS: Project[] = [];
 
 export const TEAM: TeamMember[] = [
   {
@@ -275,94 +206,11 @@ export const TEAM: TeamMember[] = [
   }
 ];
 
-export const JOBS: Job[] = [
-    {
-        id: 'j1',
-        title: "Senior Frontend Developer",
-        type: "Full-time",
-        location: "Phnom Penh / Remote",
-        department: "Engineering",
-        icon: 'Code',
-        link: 'mailto:creative.ponloe.org@gmail.com?subject=Application for Senior Frontend Developer'
-    },
-    {
-        id: 'j2',
-        title: "UI/UX Designer",
-        type: "Full-time",
-        location: "Phnom Penh",
-        department: "Design",
-        icon: 'PenTool',
-        link: 'mailto:creative.ponloe.org@gmail.com?subject=Application for UI/UX Designer'
-    },
-    {
-        id: 'j3',
-        title: "Architectural Intern",
-        type: "Internship",
-        location: "Phnom Penh",
-        department: "Architecture",
-        icon: 'Layout',
-        link: 'mailto:creative.ponloe.org@gmail.com?subject=Application for Architectural Intern'
-    }
-];
+export const JOBS: Job[] = [];
 
-export const INSIGHTS: Post[] = [
-  {
-    id: 'post_code_1',
-    title: 'Modern CSS Glassmorphism Generator',
-    titleKm: 'បង្កើត Glassmorphism ទំនើបជាមួយ CSS',
-    excerpt: 'Copy and paste this production-ready CSS code to give your website that premium frosted glass look immediately.',
-    date: 'March 20, 2025',
-    category: 'Code',
-    authorId: 't1',
-    image: 'https://images.unsplash.com/photo-1550063873-ab792950096b?auto=format&fit=crop&q=80&w=800',
-    link: '#',
-    content: "Creating a stunning glassmorphism effect is easier than you think. It adds depth and a premium feel to your UI.\n\nHere is the exact CSS snippet we use at Ponloe Creative for our cards and modals:\n\n" + 
-             "```css\n/* Glassmorphism Card Style */\n.glass-panel {\n  background: rgba(255, 255, 255, 0.05);\n  backdrop-filter: blur(16px);\n  -webkit-backdrop-filter: blur(16px);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);\n  border-radius: 24px;\n}\n\n/* Dark Mode Support */\n@media (prefers-color-scheme: dark) {\n  .glass-panel {\n    background: rgba(0, 0, 0, 0.2);\n    border: 1px solid rgba(255, 255, 255, 0.05);\n  }\n}\n```" +
-             "\n\nSimply copy this class into your stylesheet and apply it to any `div` element. The `backdrop-filter` property does the heavy lifting by blurring whatever is behind the element.\n\n**Pro Tip:** Add a subtle noise texture overlay to make it look even more cinematic!",
-    comments: [],
-    slug: 'modern-css-glassmorphism-generator'
-  },
-  // ... rest of posts (kept same)
-];
+export const INSIGHTS: Post[] = [];
 
-export const TESTIMONIALS: Testimonial[] = [
-  {
-    id: 'tm1',
-    name: 'Sokha Chan',
-    role: 'Marketing Director',
-    company: 'Khmer Enterprise',
-    content: "Ponloe Creative transformed our digital presence. Their attention to detail and understanding of Khmer culture is unmatched.",
-    contentKm: "Ponloe Creative បានផ្លាស់ប្តូរវត្តមានឌីជីថលរបស់យើង។ ការយកចិត្តទុកដាក់របស់ពួកគេលើព័ត៌មានលម្អិត និងការយល់ដឹងពីវប្បធម៌ខ្មែរគឺពិតជាល្អឯក។",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
-  },
-  {
-    id: 'tm2',
-    name: 'David Miller',
-    role: 'CEO',
-    company: 'Angkor Tech Solutions',
-    content: "The best agency we've worked with in Southeast Asia. Professional, timely, and incredibly talented.",
-    contentKm: "ភ្នាក់ងារដែលល្អបំផុតដែលយើងធ្លាប់សហការនៅអាស៊ីអាគ្នេយ៍។ មានវិជ្ជាជីវៈ ទាន់ពេលវេលា និងមានទេពកោសល្យខ្ពស់។",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
-  },
-  {
-    id: 'tm3',
-    name: 'Bopha Vong',
-    role: 'Founder',
-    company: 'Lotus Spa',
-    content: "Our booking system is now seamless thanks to their web dev team. Revenue increased by 40% in just two months.",
-    contentKm: "ប្រព័ន្ធកក់របស់យើងឥឡូវនេះដំណើរការយ៉ាងរលូន ដោយសារក្រុមអភិវឌ្ឍន៍វេបសាយរបស់ពួកគេ។ ប្រាក់ចំណូលកើនឡើង ៤០% ត្រឹមតែ ២ ខែប៉ុណ្ណោះ។",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
-  },
-  {
-    id: 'tm4',
-    name: 'Sarah Chen',
-    role: 'Project Manager',
-    company: 'Global Development',
-    content: "The architectural rendering provided for our new eco-resort was breathtaking. Highly recommended!",
-    contentKm: "ប្លង់ស្ថាបត្យកម្មសម្រាប់រមណីយដ្ឋានធម្មជាតិថ្មីរបស់យើងពិតជាអស្ចារ្យណាស់។ សូមណែនាំយ៉ាងខ្លាំង!",
-    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
-  }
-];
+export const TESTIMONIALS: Testimonial[] = [];
 
 export const PROCESS_STEPS: ProcessStep[] = [
   {
@@ -403,14 +251,4 @@ export const PROCESS_STEPS: ProcessStep[] = [
   },
 ];
 
-export const PARTNERS: Partner[] = [
-    { id: '1', name: 'Khmer Enterprise', icon: <Building2 size={32} /> },
-    { id: '2', name: 'Angkor Tech', icon: <Cpu size={32} /> },
-    { id: '3', name: 'Global Dev', icon: <Globe size={32} /> },
-    { id: '4', name: 'Lotus Spa', icon: <Droplet size={32} /> },
-    { id: '5', name: 'Smart Axiata', icon: <Zap size={32} /> },
-    { id: '6', name: 'Chip Mong', icon: <Gem size={32} /> },
-    { id: '7', name: 'Vattanac Bank', icon: <Building2 size={32} /> },
-    { id: '8', name: 'Brown Coffee', icon: <Feather size={32} /> },
-    { id: '9', name: 'Sihanutville Port', icon: <Anchor size={32} /> },
-];
+export const PARTNERS: Partner[] = [];

@@ -136,6 +136,7 @@ export interface Partner {
   name: string;
   icon: React.ReactNode;
   image?: string; // New: Logo URL
+  url?: string; // Optional: clickable link for the logo
   _iconString?: string; // Internal use for admin
 }
 

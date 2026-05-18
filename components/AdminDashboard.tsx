@@ -178,7 +178,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
       insights: { title: '', titleKm: '', excerpt: '', content: '', date: new Date().toISOString().split('T')[0], category: 'Design', image: '', authorId: currentUser.role === 'member' ? currentUser.id : 't1' },
       services: { title: '', titleKm: '', subtitle: '', subtitleKm: '', description: '', descriptionKm: '', features: [], featuresKm: [], icon: 'Box', color: 'bg-indigo-500', image: '' },
       careers: { title: '', type: 'Full-time', location: 'Phnom Penh', department: 'Engineering', icon: 'Code', link: '', description: '' },
-      partners: { name: '', icon: 'Building2', image: '' },
+      partners: { name: '', icon: 'Building2', image: '', url: '' },
       stories: { name: '', role: 'Client', company: '', content: '', contentKm: '', avatar: '' }
     };
     setEditingItem(templates[activeTab]);
@@ -436,7 +436,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
               payload = {
                   name: item.name,
                   icon: (typeof item.icon === 'string' && item.icon.trim()) ? item.icon : 'Building2',
-                  image: item.image
+                  image: item.image,
+                  url: item.url || ''
               }
           } else if (activeTab === 'stories') {
               table = 'reviews';
@@ -490,6 +491,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
           }
           if (res.error && activeTab === 'partners' && res.error.message.includes("Could not find the 'image' column")) {
               const { image, ...fallbackPayload } = payload;
+              res = await executeQuery(fallbackPayload);
+          }
+          if (res.error && activeTab === 'partners' && res.error.message.includes("Could not find the 'url' column")) {
+              const { url, ...fallbackPayload } = payload;
               res = await executeQuery(fallbackPayload);
           }
           // Fallback for Projects gallery if database not migrated yet

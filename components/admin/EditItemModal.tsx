@@ -140,6 +140,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
             let label = key.charAt(0).toUpperCase() + key.slice(1);
             if (activeTab === 'services' && key === 'image') label = 'Background Image (Hover Effect)';
             if (activeTab === 'partners' && key === 'image') label = 'Logo Image (Optional)';
+            if (activeTab === 'partners' && key === 'url') label = 'Website URL (Optional)';
 
             // Special Fields Handlers (PIN, Socials, Links, etc.) -> SAME AS BEFORE
             if (key === 'pinCode' && activeTab === 'team') {
