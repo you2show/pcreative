@@ -137,7 +137,7 @@ function AppContent() {
       
       <main className="relative z-10">
         <Hero />
-        {/* <Partners /> */}
+        <Partners />
         {/* <Stats /> */}
         
         <Services 
