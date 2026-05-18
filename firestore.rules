@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /comments/{comment} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['post_id', 'user_name', 'content', 'created_at']);
+    }
+  }
+}
