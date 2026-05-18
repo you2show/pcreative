@@ -11,6 +11,7 @@ import {
     addPostCommentViaAPI,
     addPostCommentToGitHub,
 } from '../lib/github';
+import { fetchCommentsFromFirebase, addCommentToFirebase } from '../lib/firebase-comments';
 import ContentRenderer from './ContentRenderer';
 import LocalScrollButton from './LocalScrollButton';
 import { getAvatarFallbackUrl } from '../utils/format';
@@ -24,7 +25,7 @@ const getTotalCommentCount = (comments: Comment[]): number => {
   }, 0);
 };
 
-// Build a nested comment tree from Supabase flat rows
+// Build a nested comment tree from flat rows (Firebase or Supabase)
 const buildCommentTree = (rows: any[]): Comment[] => {
     const map = new Map<string, Comment>();
     const roots: Comment[] = [];
@@ -124,11 +125,20 @@ const ArticleDetailPanel: React.FC<{
         const fetchComments = async () => {
             setIsLoadingComments(true);
             try {
+                // Try Firebase First
+                const firebaseComments = await fetchCommentsFromFirebase(post.id);
+                if (firebaseComments && firebaseComments.length > 0) {
+                    setComments(buildCommentTree(firebaseComments));
+                    return;
+                }
+
+                // Fallback to GitHub
                 const githubComments = await fetchPostCommentsPublic(post.id);
                 if (githubComments.length > 0) {
                     setComments(githubComments);
                     return;
                 }
+                // Fallback to Supabase
                 const supabase = getSupabaseClient();
                 if (supabase) {
                     const { data, error } = await supabase
@@ -182,6 +192,34 @@ const ArticleDetailPanel: React.FC<{
         };
 
         try {
+            const commentData = {
+                post_id: post.id,
+                user_id: currentUser ? (currentUser.id || 'anonymous') : 'guest',
+                user_name: authorName,
+                content: newComment.trim(),
+                parent_id: replyTo?.id || null
+            };
+
+            // Try Firebase First
+            const firebaseResult = await addCommentToFirebase(commentData);
+            
+            if (firebaseResult) {
+               const saved: Comment = {
+                    id: firebaseResult.id,
+                    user: firebaseResult.user_name || authorName,
+                    avatar: firebaseResult.avatar || '',
+                    content: firebaseResult.content,
+                    date: firebaseResult.created_at || new Date().toISOString(),
+                    replies: []
+                };
+                applyToUI(saved);
+                setNewComment('');
+                setReplyTo(null);
+                if (!currentUser) setGuestName('');
+                return;
+            }
+
+            // Fallback methods
             const fallbackComment: Comment = {
                 id: (typeof crypto !== 'undefined' && crypto.randomUUID)
                     ? crypto.randomUUID()
@@ -213,13 +251,6 @@ const ArticleDetailPanel: React.FC<{
 
             const supabase = getSupabaseClient();
             if (supabase) {
-                const commentData = {
-                    post_id: post.id,
-                    user_id: currentUser ? (currentUser.id || 'anonymous') : 'guest',
-                    user_name: authorName,
-                    content: newComment.trim(),
-                    parent_id: replyTo?.id || null
-                };
                 const { data, error } = await supabase
                     .from('comments')
                     .insert([commentData])
@@ -243,7 +274,7 @@ const ArticleDetailPanel: React.FC<{
                 console.warn('Supabase fallback comment insert failed:', error);
             }
 
-            throw new Error('Failed to save comment: all storage methods (GitHub API, direct GitHub, and Supabase fallback) are unavailable.');
+            throw new Error('Failed to save comment: all storage methods are unavailable.');
         } catch (err) {
             console.error('Error posting comment:', err);
             setCommentError(t('Failed to post comment. Please try again.', 'បរាជ័យក្នុងការផ្ញើមតិ។ សូមព្យាយាមម្ដងទៀត។'));
@@ -376,7 +407,7 @@ const ArticleDetailPanel: React.FC<{
                                         ))
                                     ) : (
                                         <div className="bg-white/5 rounded-2xl p-10 text-center border border-white/5 border-dashed">
-                                            <p className="text-gray-500 text-sm font-khmer">{t('No comments yet. Be the first to share your thoughts!', 'មិនទាន់មានមតិយោបល់នៅឡើយទេ។ ក្លាយជាអ្នកដំបូងដែលចែករំលែកគំនិតរបស់អ្នក!')}</p>
+                                            <p className="text-gray-500 text-sm font-khmer">{t('No comments yet. Be the first to share your thoughts!', 'មិនទាន់មានមតិយោបល់នៅឡើយទេ។ សូមបញ្ចេញមតិយោបល់របស់អ្នកមុនគេ!')}</p>
                                         </div>
                                     )}
                                 </div>
@@ -408,7 +439,7 @@ const ArticleDetailPanel: React.FC<{
                                             <button
                                                 type="submit"
                                                 disabled={isSubmitting || !newComment.trim()}
-                                                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-bold rounded-xl transition-all flex items-center gap-2 text-sm"
+                                                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-bold rounded-xl transition-all flex items-center gap-2"
                                             >
                                                 {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
                                                 {t('Post Comment', 'ផ្ញើមតិ')}
@@ -433,7 +464,7 @@ const ArticleDetailPanel: React.FC<{
                                                 onChange={(e) => setGuestName(e.target.value)}
                                                 placeholder={t('Your name', 'ឈ្មោះរបស់អ្នក')}
                                                 required
-                                                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm font-khmer placeholder-gray-500 focus:outline-none focus:border-indigo-500/50"
+                                                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm font-khmer placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
                                             />
                                         </div>
                                         <textarea
@@ -446,7 +477,7 @@ const ArticleDetailPanel: React.FC<{
                                             <button
                                                 type="submit"
                                                 disabled={isSubmitting || !newComment.trim() || !guestName.trim()}
-                                                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-bold rounded-xl transition-all flex items-center gap-2 text-sm"
+                                                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-bold rounded-xl transition-all flex items-center gap-2"
                                             >
                                                 {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
                                                 {t('Post Comment', 'ផ្ញើមតិ')}
@@ -542,7 +573,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                 className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
                 onClick={handleTeamClose}
             />
-            <div className={`relative bg-gray-900 border-white/10 shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col ${isSplitView ? 'w-[440px] xl:w-[480px] shrink-0 h-full border-r' : 'w-full max-w-lg h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] md:h-[80vh] md:max-h-[80vh] border rounded-3xl'}`}
+            <div className={`relative bg-gray-900 border-white/10 shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col ${isSplitView ? 'w-[440px] xl:w-[480px] shrink-0 h-full border-r' : 'w-full max-w-4xl max-h-full rounded-[2rem]'}`}
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header / Cover */}
@@ -588,12 +619,12 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                         {/* Social Links — far right on desktop */}
                         <div className="flex gap-3 mt-4 md:mt-0 md:mb-1 md:shrink-0">
                             {socials.facebook && (
-                                <a href={socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5">
+                                <a href={socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5 hover:border-white/20">
                                     <Facebook size={18} />
                                 </a>
                             )}
                             {socials.telegram && (
-                                <a href={socials.telegram} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5">
+                                <a href={socials.telegram} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5 hover:border-white/20">
                                     <Send size={18} />
                                 </a>
                             )}
@@ -631,7 +662,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                                 </h4>
                                 <button
                                     onClick={() => setShowArticlesView(false)}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs border border-white/10 transition-all"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs border border-white/10 transition-colors"
                                 >
                                     <X size={14} />
                                     {t('Back', 'ត្រឡប់')}
