@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { X, Save, Loader2, Upload, Image as ImageIcon, ExternalLink, Lock, Facebook, Send, Link as LinkIcon, Tag, FileText, Target, Zap, TrendingUp, Images, Plus as PlusIcon } from 'lucide-react';
 import { uploadImageToImgBB } from '../../lib/imageUpload';
+import { uploadCoverToFirebase } from '../../lib/firebase-storage';
 import { useData } from '../../contexts/DataContext';
 import RichTextEditor from './editor/RichTextEditor';
 
@@ -77,7 +78,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
       }
   };
 
-  // Cover Image Upload Handler (NEW)
+  // Cover Image Upload Handler
   const handleCoverImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
@@ -98,6 +99,13 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
 
       setIsCoverImageUploading(true);
       try {
+          // Use Firebase Storage for all cover images (team and insights)
+          const firebaseUrl = await uploadCoverToFirebase(file, activeTab);
+          if (firebaseUrl) {
+              setEditingItem({ ...editingItem, coverImage: firebaseUrl });
+              return;
+          }
+          // Fallback to ImgBB if Firebase Storage fails
           const url = await uploadImage(file);
           if (url) {
               setEditingItem({ ...editingItem, coverImage: url });
@@ -263,13 +271,16 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
             );
           })}
 
-          {/* --- COVER IMAGE SECTION FOR TEAM MEMBERS (NEW) --- */}
+          {/* --- COVER IMAGE SECTION FOR TEAM MEMBERS --- */}
           {activeTab === 'team' && (
               <div className="mt-6 pt-6 border-t border-white/10">
                   <label className="block text-xs font-bold text-indigo-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
                       <ImageIcon size={14} /> Cover Image (ផ្ទៃខាងក្រោយ)
                   </label>
-                  
+                  <p className="text-xs text-gray-500 font-khmer mb-3">
+                      រូបភាពនេះផ្ទុកទៅ Firebase Storage ដោយស្វ័យប្រវត្តិ។
+                  </p>
+
                   {/* Cover Image Preview */}
                   {editingItem.coverImage && (
                       <div className="relative w-full h-40 rounded-xl overflow-hidden border border-white/10 mb-3 group">
@@ -314,12 +325,86 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                               {isCoverImageUploading ? (
                                   <>
                                       <Loader2 size={14} className="animate-spin" />
-                                      កំពុងផ្ទុក...
+                                      កំពុងផ្ទុកទៅ Firebase...
                                   </>
                               ) : (
                                   <>
                                       <Upload size={14} />
-                                      Upload Cover Image
+                                      Upload Cover (Firebase Storage)
+                                  </>
+                              )}
+                          </button>
+                      </div>
+                      <p className="text-xs text-gray-500 font-khmer">
+                          ✓ ទំហំ: ឯកសារ JPG, PNG ឬ WEBP (អតិបរមា 5MB)
+                      </p>
+                      <p className="text-xs text-gray-500 font-khmer">
+                          ✓ ផ្ទៃលក្ខណៈ: 16:9 ឬ 21:9 ផ្តល់លទ្ធផលល្អបំផុត
+                      </p>
+                  </div>
+              </div>
+          )}
+
+          {/* --- COVER IMAGE SECTION FOR INSIGHTS ARTICLES --- */}
+          {activeTab === 'insights' && (
+              <div className="mt-6 pt-6 border-t border-white/10">
+                  <label className="block text-xs font-bold text-indigo-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                      <ImageIcon size={14} /> Cover Image (រូបភាពគម្របអត្ថបទ)
+                  </label>
+                  <p className="text-xs text-gray-500 font-khmer mb-3">
+                      រូបភាពនេះនឹងបង្ហាញជា Hero ក្នុងអត្ថបទ។ ប្រើ Firebase Storage ដើម្បីផ្ទុក។
+                  </p>
+
+                  {/* Cover Image Preview */}
+                  {editingItem.coverImage && (
+                      <div className="relative w-full h-40 rounded-xl overflow-hidden border border-white/10 mb-3 group">
+                          <img 
+                              src={editingItem.coverImage} 
+                              alt="Cover Preview" 
+                              className="w-full h-full object-cover"
+                          />
+                          <button
+                              type="button"
+                              onClick={() => setEditingItem({ ...editingItem, coverImage: '' })}
+                              className="absolute top-2 right-2 p-2 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                              <X size={16} />
+                          </button>
+                      </div>
+                  )}
+
+                  {/* Upload Controls */}
+                  <div className="space-y-2">
+                      <input 
+                          type="text" 
+                          placeholder="ឬ Paste Cover Image URL នៅទីនេះ" 
+                          className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white text-sm" 
+                          value={editingItem.coverImage || ''} 
+                          onChange={(e) => setEditingItem({ ...editingItem, coverImage: e.target.value })} 
+                      />
+                      <div className="flex gap-2">
+                          <input 
+                              type="file" 
+                              ref={coverImageInputRef} 
+                              className="hidden" 
+                              accept="image/jpeg,image/png,image/webp"
+                              onChange={handleCoverImageUpload}
+                          />
+                          <button 
+                              type="button" 
+                              onClick={() => coverImageInputRef.current?.click()} 
+                              disabled={isCoverImageUploading}
+                              className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-600 border border-indigo-500/50 rounded-lg text-xs text-white font-bold flex items-center justify-center gap-2 transition-colors"
+                          >
+                              {isCoverImageUploading ? (
+                                  <>
+                                      <Loader2 size={14} className="animate-spin" />
+                                      កំពុងផ្ទុកទៅ Firebase...
+                                  </>
+                              ) : (
+                                  <>
+                                      <Upload size={14} />
+                                      Upload Cover (Firebase Storage)
                                   </>
                               )}
                           </button>

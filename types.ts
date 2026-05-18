@@ -98,6 +98,7 @@ export interface Post {
   date: string;
   category: string;
   image: string;
+  coverImage?: string; // Optional cover/hero image for article detail
   link: string;
   authorId: string;
   content?: string;
