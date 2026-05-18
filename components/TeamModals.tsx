@@ -68,7 +68,12 @@ const ArticleDetailPanel: React.FC<{
     const [isLoadingComments, setIsLoadingComments] = useState(true);
 
     const scrollRef = useRef<HTMLDivElement>(null);
+    const commentsRef = useRef<HTMLDivElement>(null);
     const author = team.find(m => m.id === post.authorId);
+
+    const handleScrollToComments = () => {
+        commentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
     const articleSlug = post.slug || post.id;
     const articleUrl = `https://ponloe.org/insights/${articleSlug}`;
@@ -306,44 +311,50 @@ const ArticleDetailPanel: React.FC<{
                         </div>
                         <h2 className="text-xl md:text-3xl font-bold text-white font-khmer leading-tight mb-6">{t(post.title, post.titleKm)}</h2>
 
-                        {author && (
-                            <div
-                                className="flex items-center gap-4 cursor-pointer group"
-                                onClick={() => onAuthorClick?.(author.id)}
-                            >
-                                <img src={author.image} alt={author.name} className="w-12 h-12 rounded-full border-2 border-white/20 group-hover:border-indigo-400 transition-colors" loading="lazy" decoding="async"
-                                    onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = getAvatarFallbackUrl(author.name, 96); }}
-                                />
-                                <div>
-                                    <p className="text-white font-bold group-hover:text-indigo-400 transition-colors">{author.name}</p>
-                                    <p className="text-gray-400 text-xs font-khmer">{t(author.role, author.roleKm)}</p>
+                        <div className="flex items-center justify-between gap-4">
+                            {author && (
+                                <div
+                                    className="flex items-center gap-4 cursor-pointer group"
+                                    onClick={() => onAuthorClick?.(author.id)}
+                                >
+                                    <img src={author.image} alt={author.name} className="w-12 h-12 rounded-full border-2 border-white/20 group-hover:border-indigo-400 transition-colors" loading="lazy" decoding="async"
+                                        onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = getAvatarFallbackUrl(author.name, 96); }}
+                                    />
+                                    <div>
+                                        <p className="text-white font-bold group-hover:text-indigo-400 transition-colors">{author.name}</p>
+                                        <p className="text-gray-400 text-xs font-khmer">{t(author.role, author.roleKm)}</p>
+                                    </div>
                                 </div>
+                            )}
+                            <div className="flex items-center gap-2 ml-auto shrink-0">
+                                <button
+                                    onClick={handleScrollToComments}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all border border-white/10 text-xs font-bold backdrop-blur-md"
+                                >
+                                    <MessageCircle size={14} />
+                                    {t('Comment', 'មតិ')}
+                                </button>
+                                <button
+                                    onClick={handleShare}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all border border-white/10 text-xs font-bold backdrop-blur-md"
+                                >
+                                    {copied ? <Check size={14} className="text-green-400" /> : <Share2 size={14} />}
+                                    {copied ? t('Copied!', 'បានចម្លង!') : t('Share', 'ចែករំលែក')}
+                                </button>
                             </div>
-                        )}
+                        </div>
                     </div>
                 </div>
 
                 {/* Article Content */}
                 <div className="px-6 md:px-10 py-10">
                     <div className="max-w-3xl mx-auto">
-                        <div className="flex justify-between items-center mb-10 pb-6 border-b border-white/10">
-                            <div className="flex gap-4">
-                                <button onClick={handleShare} className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5 text-sm font-bold">
-                                    {copied ? <Check size={16} className="text-green-400" /> : <Share2 size={16} />}
-                                    {copied ? t('Copied!', 'បានចម្លង!') : t('Share', 'ចែករំលែក')}
-                                </button>
-                            </div>
-                            <button onClick={onClose} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-bold text-sm uppercase tracking-widest">
-                                {t('Close', 'បិទ')} <X size={20} />
-                            </button>
-                        </div>
-
                         <div className="prose prose-invert prose-indigo max-w-none">
                             <ContentRenderer content={t(post.content, post.contentKm || post.content)} />
                         </div>
 
                         {/* Comments Section */}
-                        <div className="mt-20 pt-10 border-t border-white/10">
+                        <div ref={commentsRef} className="mt-20 pt-10 border-t border-white/10">
                             <div className="flex items-center justify-between mb-8">
                                 <h3 className="text-2xl font-bold text-white flex items-center gap-3">
                                     <MessageCircle size={24} className="text-indigo-400" />
