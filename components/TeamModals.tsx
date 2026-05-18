@@ -49,6 +49,409 @@ const buildCommentTree = (rows: any[]): Comment[] => {
     return roots;
 };
 
+// --- Article Detail Panel (shared by ArticleDetailModal and split-view in MemberDetailModal) ---
+const ArticleDetailPanel: React.FC<{
+    post: Post;
+    onClose: () => void;
+    onAuthorClick?: (authorId: string) => void;
+}> = ({ post, onClose, onAuthorClick }) => {
+    const { t, language } = useLanguage();
+    const { team = [] } = useData();
+    const { currentUser } = useAuth();
+    const [comments, setComments] = useState<Comment[]>([]);
+    const [newComment, setNewComment] = useState('');
+    const [guestName, setGuestName] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [commentError, setCommentError] = useState('');
+    const [replyTo, setReplyTo] = useState<{id: string, name: string} | null>(null);
+    const [copied, setCopied] = useState(false);
+    const [isLoadingComments, setIsLoadingComments] = useState(true);
+
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const author = team.find(m => m.id === post.authorId);
+
+    const articleSlug = post.slug || post.id;
+    const articleUrl = `https://ponloe.org/insights/${articleSlug}`;
+    const articleTitle = `${language === 'km' && post.titleKm ? post.titleKm : post.title} | Ponloe Creative`;
+    const rawContent = language === 'km' && post.contentKm ? post.contentKm : post.content || '';
+    const strippedContent = (() => {
+        try {
+            return new DOMParser().parseFromString(rawContent, 'text/html').body.textContent || '';
+        } catch {
+            return rawContent.replace(/<[^>]*>/g, '');
+        }
+    })();
+    const articleDesc = post.excerpt || strippedContent.slice(0, 160);
+    useSEO({
+        title: articleTitle,
+        description: articleDesc,
+        image: post.image,
+        url: articleUrl,
+        type: 'article',
+        article: {
+            publishedTime: post.date,
+            author: author?.name,
+            section: post.category,
+        },
+        jsonLd: {
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: language === 'km' && post.titleKm ? post.titleKm : post.title,
+            description: articleDesc,
+            image: post.image,
+            url: articleUrl,
+            datePublished: post.date,
+            author: author
+                ? { '@type': 'Person', name: author.name, url: `https://ponloe.org/team/${author.slug || author.id}` }
+                : { '@type': 'Organization', name: 'Ponloe Creative', url: 'https://ponloe.org' },
+            publisher: {
+                '@type': 'Organization',
+                name: 'Ponloe Creative',
+                logo: { '@type': 'ImageObject', url: 'https://ponloe.org/ponloe-logo.svg' },
+            },
+            mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
+            articleSection: post.category,
+            inLanguage: ['km', 'en'],
+        },
+    });
+
+    useEffect(() => {
+        const fetchComments = async () => {
+            setIsLoadingComments(true);
+            try {
+                const githubComments = await fetchPostCommentsPublic(post.id);
+                if (githubComments.length > 0) {
+                    setComments(githubComments);
+                    return;
+                }
+                const supabase = getSupabaseClient();
+                if (supabase) {
+                    const { data, error } = await supabase
+                        .from('comments')
+                        .select('*')
+                        .eq('post_id', post.id)
+                        .order('created_at', { ascending: true });
+                    if (!error && data) {
+                        setComments(buildCommentTree(data));
+                        return;
+                    }
+                    console.warn('Supabase comment fetch fallback failed:', error);
+                }
+                setComments(githubComments);
+            } catch (err) {
+                console.error('Error fetching comments:', err);
+            } finally {
+                setIsLoadingComments(false);
+            }
+        };
+        if (post.id) fetchComments();
+    }, [post.id]);
+
+    const handleShare = () => {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleSubmitComment = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const authorName = currentUser ? (currentUser.name || 'Guest') : guestName.trim();
+        if (!newComment.trim() || !authorName) return;
+
+        setIsSubmitting(true);
+        setCommentError('');
+
+        const applyToUI = (comment: Comment) => {
+            if (replyTo) {
+                const updateReplies = (list: Comment[]): Comment[] =>
+                    list.map(c => {
+                        if (c.id === replyTo.id) return { ...c, replies: [...(c.replies || []), comment] };
+                        if (c.replies?.length) return { ...c, replies: updateReplies(c.replies) };
+                        return c;
+                    });
+                setComments(prev => updateReplies(prev));
+            } else {
+                setComments(prev => [...prev, comment]);
+            }
+        };
+
+        try {
+            const fallbackComment: Comment = {
+                id: (typeof crypto !== 'undefined' && crypto.randomUUID)
+                    ? crypto.randomUUID()
+                    : `c_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+                user: authorName,
+                avatar: '',
+                content: newComment.trim(),
+                date: new Date().toISOString(),
+                replies: []
+            };
+
+            const savedViaAPI = await addPostCommentViaAPI(post.id, fallbackComment, replyTo?.id || null);
+            if (savedViaAPI) {
+                applyToUI(fallbackComment);
+                setNewComment('');
+                setReplyTo(null);
+                if (!currentUser) setGuestName('');
+                return;
+            }
+
+            const savedToGitHub = await addPostCommentToGitHub(post.id, fallbackComment, replyTo?.id || null);
+            if (savedToGitHub) {
+                applyToUI(fallbackComment);
+                setNewComment('');
+                setReplyTo(null);
+                if (!currentUser) setGuestName('');
+                return;
+            }
+
+            const supabase = getSupabaseClient();
+            if (supabase) {
+                const commentData = {
+                    post_id: post.id,
+                    user_id: currentUser ? (currentUser.id || 'anonymous') : 'guest',
+                    user_name: authorName,
+                    content: newComment.trim(),
+                    parent_id: replyTo?.id || null
+                };
+                const { data, error } = await supabase
+                    .from('comments')
+                    .insert([commentData])
+                    .select()
+                    .single();
+                if (!error && data) {
+                    const saved: Comment = {
+                        id: data.id,
+                        user: data.user_name || authorName,
+                        avatar: data.avatar || '',
+                        content: data.content,
+                        date: data.created_at || new Date().toISOString(),
+                        replies: []
+                    };
+                    applyToUI(saved);
+                    setNewComment('');
+                    setReplyTo(null);
+                    if (!currentUser) setGuestName('');
+                    return;
+                }
+                console.warn('Supabase fallback comment insert failed:', error);
+            }
+
+            throw new Error('Failed to save comment: all storage methods (GitHub API, direct GitHub, and Supabase fallback) are unavailable.');
+        } catch (err) {
+            console.error('Error posting comment:', err);
+            setCommentError(t('Failed to post comment. Please try again.', 'បរាជ័យក្នុងការផ្ញើមតិ។ សូមព្យាយាមម្ដងទៀត។'));
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const CommentItem = ({ comment, isReply = false }: { comment: Comment, isReply?: boolean }) => (
+        <div className={`flex gap-3 ${isReply ? 'ml-8 mt-4' : 'mt-6'}`}>
+            <div className="shrink-0">
+                <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs font-bold">
+                    {comment.user.charAt(0)}
+                </div>
+            </div>
+            <div className="flex-1">
+                <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
+                    <div className="flex justify-between items-center mb-1">
+                        <span className="text-white font-bold text-sm">{comment.user}</span>
+                        <span className="text-gray-500 text-[10px]">{new Date(comment.date).toLocaleDateString()}</span>
+                    </div>
+                    <p className="text-gray-300 text-sm font-khmer">{comment.content}</p>
+                </div>
+                <div className="flex gap-4 mt-2 ml-2">
+                    <button
+                        onClick={() => setReplyTo({id: comment.id, name: comment.user})}
+                        className="text-[10px] font-bold text-gray-500 hover:text-indigo-400 transition-colors uppercase tracking-wider"
+                    >
+                        {t('Reply', 'ឆ្លើយតប')}
+                    </button>
+                </div>
+                {comment.replies && comment.replies.map(reply => (
+                    <CommentItem key={reply.id} comment={reply} isReply={true} />
+                ))}
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="relative flex flex-col h-full overflow-hidden">
+            {/* Close button — always visible */}
+            <button
+                onClick={onClose}
+                className="absolute top-4 right-4 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors backdrop-blur-md z-50"
+            >
+                <X size={20} />
+            </button>
+
+            <div className="flex-1 overflow-y-auto scrollbar-hide relative" ref={scrollRef}>
+                <LocalScrollButton containerRef={scrollRef} />
+
+                {/* Hero Image */}
+                <div className="relative h-[40vh] md:h-[50vh] shrink-0">
+                    <img src={post.image} alt={post.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent" />
+
+                    <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
+                        <div className="flex flex-wrap gap-3 mb-4">
+                            <span className="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+                                <Tag size={12} /> {post.category}
+                            </span>
+                            <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-white text-xs font-bold flex items-center gap-1.5 border border-white/10">
+                                <Calendar size={12} /> {post.date}
+                            </span>
+                        </div>
+                        <h2 className="text-xl md:text-3xl font-bold text-white font-khmer leading-tight mb-6">{t(post.title, post.titleKm)}</h2>
+
+                        {author && (
+                            <div
+                                className="flex items-center gap-4 cursor-pointer group"
+                                onClick={() => onAuthorClick?.(author.id)}
+                            >
+                                <img src={author.image} alt={author.name} className="w-12 h-12 rounded-full border-2 border-white/20 group-hover:border-indigo-400 transition-colors" loading="lazy" decoding="async"
+                                    onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = getAvatarFallbackUrl(author.name, 96); }}
+                                />
+                                <div>
+                                    <p className="text-white font-bold group-hover:text-indigo-400 transition-colors">{author.name}</p>
+                                    <p className="text-gray-400 text-xs font-khmer">{t(author.role, author.roleKm)}</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Article Content */}
+                <div className="px-6 md:px-10 py-10">
+                    <div className="max-w-3xl mx-auto">
+                        <div className="flex justify-between items-center mb-10 pb-6 border-b border-white/10">
+                            <div className="flex gap-4">
+                                <button onClick={handleShare} className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5 text-sm font-bold">
+                                    {copied ? <Check size={16} className="text-green-400" /> : <Share2 size={16} />}
+                                    {copied ? t('Copied!', 'បានចម្លង!') : t('Share', 'ចែករំលែក')}
+                                </button>
+                            </div>
+                            <button onClick={onClose} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-bold text-sm uppercase tracking-widest">
+                                {t('Close', 'បិទ')} <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="prose prose-invert prose-indigo max-w-none">
+                            <ContentRenderer content={t(post.content, post.contentKm || post.content)} />
+                        </div>
+
+                        {/* Comments Section */}
+                        <div className="mt-20 pt-10 border-t border-white/10">
+                            <div className="flex items-center justify-between mb-8">
+                                <h3 className="text-2xl font-bold text-white flex items-center gap-3">
+                                    <MessageCircle size={24} className="text-indigo-400" />
+                                    {t('Comments', 'មតិយោបល់')}
+                                    <span className="text-sm bg-white/5 px-2 py-1 rounded-lg text-gray-500">{getTotalCommentCount(comments)}</span>
+                                </h3>
+                            </div>
+
+                            {isLoadingComments ? (
+                                <div className="flex items-center gap-2 text-gray-500 py-10">
+                                    <Loader2 className="animate-spin" size={20} />
+                                    <span className="text-sm">Loading comments...</span>
+                                </div>
+                            ) : (
+                                <div className="space-y-2">
+                                    {comments.length > 0 ? (
+                                        comments.map(comment => (
+                                            <CommentItem key={comment.id} comment={comment} />
+                                        ))
+                                    ) : (
+                                        <div className="bg-white/5 rounded-2xl p-10 text-center border border-white/5 border-dashed">
+                                            <p className="text-gray-500 text-sm font-khmer">{t('No comments yet. Be the first to share your thoughts!', 'មិនទាន់មានមតិយោបល់នៅឡើយទេ។ ក្លាយជាអ្នកដំបូងដែលចែករំលែកគំនិតរបស់អ្នក!')}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Comment Form */}
+                            <div className="mt-12 bg-white/5 rounded-3xl p-6 border border-white/5">
+                                {commentError && (
+                                    <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 text-sm font-khmer">
+                                        <AlertCircle size={14} className="shrink-0" />
+                                        {commentError}
+                                    </div>
+                                )}
+                                {currentUser ? (
+                                    <form onSubmit={handleSubmitComment}>
+                                        {replyTo && (
+                                            <div className="flex items-center justify-between bg-indigo-500/10 px-4 py-2 rounded-xl mb-4 border border-indigo-500/20">
+                                                <p className="text-xs text-indigo-300">Replying to <span className="font-bold">{replyTo.name}</span></p>
+                                                <button type="button" onClick={() => setReplyTo(null)} className="text-gray-500 hover:text-white"><X size={14} /></button>
+                                            </div>
+                                        )}
+                                        <textarea
+                                            value={newComment}
+                                            onChange={(e) => setNewComment(e.target.value)}
+                                            placeholder={t('Write your comment...', 'សរសេរមតិយោបល់របស់អ្នក...')}
+                                            className="w-full bg-transparent border-none focus:ring-0 text-white font-khmer resize-none min-h-[100px]"
+                                        />
+                                        <div className="flex justify-end mt-4">
+                                            <button
+                                                type="submit"
+                                                disabled={isSubmitting || !newComment.trim()}
+                                                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-bold rounded-xl transition-all flex items-center gap-2 text-sm"
+                                            >
+                                                {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
+                                                {t('Post Comment', 'ផ្ញើមតិ')}
+                                            </button>
+                                        </div>
+                                    </form>
+                                ) : (
+                                    <form onSubmit={handleSubmitComment}>
+                                        {replyTo && (
+                                            <div className="flex items-center justify-between bg-indigo-500/10 px-4 py-2 rounded-xl mb-4 border border-indigo-500/20">
+                                                <p className="text-xs text-indigo-300">Replying to <span className="font-bold">{replyTo.name}</span></p>
+                                                <button type="button" onClick={() => setReplyTo(null)} className="text-gray-500 hover:text-white"><X size={14} /></button>
+                                            </div>
+                                        )}
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
+                                                <User size={14} />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={guestName}
+                                                onChange={(e) => setGuestName(e.target.value)}
+                                                placeholder={t('Your name', 'ឈ្មោះរបស់អ្នក')}
+                                                required
+                                                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm font-khmer placeholder-gray-500 focus:outline-none focus:border-indigo-500/50"
+                                            />
+                                        </div>
+                                        <textarea
+                                            value={newComment}
+                                            onChange={(e) => setNewComment(e.target.value)}
+                                            placeholder={t('Write your comment...', 'សរសេរមតិយោបល់របស់អ្នក...')}
+                                            className="w-full bg-transparent border-none focus:ring-0 text-white font-khmer resize-none min-h-[80px]"
+                                        />
+                                        <div className="flex justify-end mt-3">
+                                            <button
+                                                type="submit"
+                                                disabled={isSubmitting || !newComment.trim() || !guestName.trim()}
+                                                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-bold rounded-xl transition-all flex items-center gap-2 text-sm"
+                                            >
+                                                {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
+                                                {t('Post Comment', 'ផ្ញើមតិ')}
+                                            </button>
+                                        </div>
+                                    </form>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // --- Member Detail Modal ---
 interface MemberDetailModalProps {
     member: TeamMember;
@@ -61,6 +464,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
     const { t, language } = useLanguage();
     const { insights = [] } = useData();
     const [showArticlesView, setShowArticlesView] = useState(false);
+    const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
     if (!member) return null;
 
@@ -71,13 +475,25 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
     const experienceKm = member.experienceKm || [];
     const socials = member.socials || {};
 
+    const handleArticleClick = (post: Post) => {
+        if (window.innerWidth >= 768) {
+            setSelectedPost(post);
+        } else {
+            onClose();
+            if (onSelectPost) onSelectPost(post);
+        }
+    };
+    const isSplitView = selectedPost !== null;
+
     return createPortal(
-        <div className="fixed inset-0 z-[10002] flex items-center justify-center px-4 py-8 md:p-4 overflow-hidden">
+        <div className={`fixed inset-0 z-[10002] overflow-hidden ${isSplitView ? 'flex' : 'flex items-center justify-center px-4 py-8 md:p-4'}`}>
             <div 
                 className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
-                onClick={onClose}
+                onClick={isSplitView ? () => { setSelectedPost(null); onClose(); } : onClose}
             />
-            <div className="relative w-full max-w-lg h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] md:h-[80vh] md:max-h-[80vh] bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col">
+            <div className={`relative bg-gray-900 border-white/10 shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col ${isSplitView ? 'w-[440px] xl:w-[480px] shrink-0 h-full border-r' : 'w-full max-w-lg h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] md:h-[80vh] md:max-h-[80vh] border rounded-3xl'}`}
+                onClick={(e) => e.stopPropagation()}
+            >
                 {/* Header / Cover */}
                 <div className="h-32 bg-gray-800 relative shrink-0 overflow-hidden">
                     {member.coverImage ? (
@@ -90,7 +506,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                         <div className="w-full h-full bg-gradient-to-r from-indigo-600/20 to-purple-600/20" />
                     )}
                     <button 
-                        onClick={onClose}
+                        onClick={isSplitView ? () => { setSelectedPost(null); onClose(); } : onClose}
                         className="absolute top-4 right-4 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors backdrop-blur-md z-10"
                     >
                         <X size={20} />
@@ -178,12 +594,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                                         <article
                                             key={post.id}
                                             className="group flex gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer"
-                                            onClick={() => {
-                                                if (onSelectPost) {
-                                                    onClose();
-                                                    onSelectPost(post);
-                                                }
-                                            }}
+                                            onClick={() => handleArticleClick(post)}
                                         >
                                             <div className="w-16 h-16 shrink-0 rounded-xl overflow-hidden">
                                                 <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" decoding="async" />
@@ -261,6 +672,15 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                     )}
                 </div>
             </div>
+            {/* Article panel – visible only in split-view (md+) when an article is selected */}
+            {isSplitView && (
+                <div
+                    className="relative flex-1 h-full bg-gray-900 border-l border-white/10 z-[10003] overflow-hidden animate-scale-up"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <ArticleDetailPanel post={selectedPost} onClose={() => setSelectedPost(null)} />
+                </div>
+            )}
         </div>,
         document.body
     );
@@ -343,236 +763,6 @@ interface ArticleDetailModalProps {
 }
 
 export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, onClose, onAuthorClick }) => {
-    const { t, language } = useLanguage();
-    const { team = [] } = useData();
-    const { currentUser } = useAuth();
-    const [comments, setComments] = useState<Comment[]>([]);
-    const [newComment, setNewComment] = useState('');
-    const [guestName, setGuestName] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [commentError, setCommentError] = useState('');
-    const [replyTo, setReplyTo] = useState<{id: string, name: string} | null>(null);
-    const [copied, setCopied] = useState(false);
-    const [isLoadingComments, setIsLoadingComments] = useState(true);
-    
-    const scrollRef = useRef<HTMLDivElement>(null);
-    const author = team.find(m => m.id === post.authorId);
-
-    // SEO: update <head> meta tags while article is open so Google can index each article URL
-    const articleSlug = post.slug || post.id;
-    const articleUrl = `https://ponloe.org/insights/${articleSlug}`;
-    const articleTitle = `${language === 'km' && post.titleKm ? post.titleKm : post.title} | Ponloe Creative`;
-    const rawContent = language === 'km' && post.contentKm ? post.contentKm : post.content || '';
-    const strippedContent = (() => {
-        try {
-            return new DOMParser().parseFromString(rawContent, 'text/html').body.textContent || '';
-        } catch {
-            return rawContent.replace(/<[^>]*>/g, '');
-        }
-    })();
-    const articleDesc = post.excerpt || strippedContent.slice(0, 160);
-    useSEO({
-        title: articleTitle,
-        description: articleDesc,
-        image: post.image,
-        url: articleUrl,
-        type: 'article',
-        article: {
-            publishedTime: post.date,
-            author: author?.name,
-            section: post.category,
-        },
-        jsonLd: {
-            '@context': 'https://schema.org',
-            '@type': 'BlogPosting',
-            headline: language === 'km' && post.titleKm ? post.titleKm : post.title,
-            description: articleDesc,
-            image: post.image,
-            url: articleUrl,
-            datePublished: post.date,
-            author: author
-                ? { '@type': 'Person', name: author.name, url: `https://ponloe.org/team/${author.slug || author.id}` }
-                : { '@type': 'Organization', name: 'Ponloe Creative', url: 'https://ponloe.org' },
-            publisher: {
-                '@type': 'Organization',
-                name: 'Ponloe Creative',
-                logo: { '@type': 'ImageObject', url: 'https://ponloe.org/ponloe-logo.svg' },
-            },
-            mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
-            articleSection: post.category,
-            inLanguage: ['km', 'en'],
-        },
-    });
-
-    // Fetch comments: GitHub/site-data first, Supabase as secondary fallback
-    useEffect(() => {
-        const fetchComments = async () => {
-            setIsLoadingComments(true);
-            try {
-                const githubComments = await fetchPostCommentsPublic(post.id);
-                if (githubComments.length > 0) {
-                    setComments(githubComments);
-                    return;
-                }
-
-                const supabase = getSupabaseClient();
-                if (supabase) {
-                    const { data, error } = await supabase
-                        .from('comments')
-                        .select('*')
-                        .eq('post_id', post.id)
-                        .order('created_at', { ascending: true });
-                    if (!error && data) {
-                        setComments(buildCommentTree(data));
-                        return;
-                    }
-                    console.warn('Supabase comment fetch fallback failed:', error);
-                }
-                setComments(githubComments);
-            } catch (err) {
-                console.error('Error fetching comments:', err);
-            } finally {
-                setIsLoadingComments(false);
-            }
-        };
-
-        if (post.id) fetchComments();
-    }, [post.id]);
-
-    const handleShare = () => {
-        const url = window.location.href;
-        navigator.clipboard.writeText(url);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
-    const handleSubmitComment = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const authorName = currentUser ? (currentUser.name || 'Guest') : guestName.trim();
-        if (!newComment.trim() || !authorName) return;
-
-        setIsSubmitting(true);
-        setCommentError('');
-
-        const applyToUI = (comment: Comment) => {
-            if (replyTo) {
-                const updateReplies = (list: Comment[]): Comment[] =>
-                    list.map(c => {
-                        if (c.id === replyTo.id) return { ...c, replies: [...(c.replies || []), comment] };
-                        if (c.replies?.length) return { ...c, replies: updateReplies(c.replies) };
-                        return c;
-                    });
-                setComments(prev => updateReplies(prev));
-            } else {
-                setComments(prev => [...prev, comment]);
-            }
-        };
-
-        try {
-            // ── Priority 1: GitHub (serverless API first) ─────────────────────
-            const fallbackComment: Comment = {
-                id: (typeof crypto !== 'undefined' && crypto.randomUUID)
-                    ? crypto.randomUUID()
-                    : `c_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-                user: authorName,
-                avatar: '',
-                content: newComment.trim(),
-                date: new Date().toISOString(),
-                replies: []
-            };
-
-            const savedViaAPI = await addPostCommentViaAPI(post.id, fallbackComment, replyTo?.id || null);
-            if (savedViaAPI) {
-                applyToUI(fallbackComment);
-                setNewComment('');
-                setReplyTo(null);
-                if (!currentUser) setGuestName('');
-                return;
-            }
-
-            // ── Priority 2: Direct GitHub (local dev fallback with localStorage token) ─
-            const savedToGitHub = await addPostCommentToGitHub(post.id, fallbackComment, replyTo?.id || null);
-            if (savedToGitHub) {
-                applyToUI(fallbackComment);
-                setNewComment('');
-                setReplyTo(null);
-                if (!currentUser) setGuestName('');
-                return;
-            }
-
-            // ── Priority 3: Supabase fallback ─────────────────────────────────
-            const supabase = getSupabaseClient();
-            if (supabase) {
-                const commentData = {
-                    post_id: post.id,
-                    user_id: currentUser ? (currentUser.id || 'anonymous') : 'guest',
-                    user_name: authorName,
-                    content: newComment.trim(),
-                    parent_id: replyTo?.id || null
-                };
-                const { data, error } = await supabase
-                    .from('comments')
-                    .insert([commentData])
-                    .select()
-                    .single();
-
-                if (!error && data) {
-                    const saved: Comment = {
-                        id: data.id,
-                        user: data.user_name || authorName,
-                        avatar: data.avatar || '',
-                        content: data.content,
-                        date: data.created_at || new Date().toISOString(),
-                        replies: []
-                    };
-                    applyToUI(saved);
-                    setNewComment('');
-                    setReplyTo(null);
-                    if (!currentUser) setGuestName('');
-                    return;
-                }
-                console.warn('Supabase fallback comment insert failed:', error);
-            }
-
-            throw new Error('Failed to save comment: all storage methods (GitHub API, direct GitHub, and Supabase fallback) are unavailable.');
-        } catch (err) {
-            console.error('Error posting comment:', err);
-            setCommentError(t('Failed to post comment. Please try again.', 'បរាជ័យក្នុងការផ្ញើមតិ។ សូមព្យាយាមម្ដងទៀត។'));
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    const CommentItem = ({ comment, isReply = false }: { comment: Comment, isReply?: boolean }) => (
-        <div className={`flex gap-3 ${isReply ? 'ml-8 mt-4' : 'mt-6'}`}>
-            <div className="shrink-0">
-                <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs font-bold">
-                    {comment.user.charAt(0)}
-                </div>
-            </div>
-            <div className="flex-1">
-                <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
-                    <div className="flex justify-between items-center mb-1">
-                        <span className="text-white font-bold text-sm">{comment.user}</span>
-                        <span className="text-gray-500 text-[10px]">{new Date(comment.date).toLocaleDateString()}</span>
-                    </div>
-                    <p className="text-gray-300 text-sm font-khmer">{comment.content}</p>
-                </div>
-                <div className="flex gap-4 mt-2 ml-2">
-                    <button 
-                        onClick={() => setReplyTo({id: comment.id, name: comment.user})}
-                        className="text-[10px] font-bold text-gray-500 hover:text-indigo-400 transition-colors uppercase tracking-wider"
-                    >
-                        {t('Reply', 'ឆ្លើយតប')}
-                    </button>
-                </div>
-                {comment.replies && comment.replies.map(reply => (
-                    <CommentItem key={reply.id} comment={reply} isReply={true} />
-                ))}
-            </div>
-        </div>
-    );
-
     return createPortal(
         <div className="fixed inset-0 z-[10006] flex items-center justify-center p-0 md:p-4 overflow-hidden">
             <div 
@@ -580,175 +770,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, on
                 onClick={onClose}
             />
             <div className="relative w-full max-w-4xl h-full md:h-[95vh] bg-gray-900 md:border md:border-white/10 md:rounded-3xl shadow-2xl overflow-hidden animate-scale-up flex flex-col z-[10007]">
-                {/* Close Button Mobile */}
-                <button 
-                    onClick={onClose}
-                    className="absolute top-4 right-4 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors backdrop-blur-md z-50 md:hidden"
-                >
-                    <X size={20} />
-                </button>
-
-                <div className="flex-1 overflow-y-auto scrollbar-hide relative" ref={scrollRef}>
-                    <LocalScrollButton containerRef={scrollRef} />
-                    
-                    {/* Hero Image */}
-                    <div className="relative h-[40vh] md:h-[50vh] shrink-0">
-                        <img src={post.image} alt={post.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent" />
-                        
-                        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
-                            <div className="flex flex-wrap gap-3 mb-4">
-                                <span className="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
-                                    <Tag size={12} /> {post.category}
-                                </span>
-                                <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-white text-xs font-bold flex items-center gap-1.5 border border-white/10">
-                                    <Calendar size={12} /> {post.date}
-                                </span>
-                            </div>
-                            <h2 className="text-xl md:text-3xl font-bold text-white font-khmer leading-tight mb-6">{t(post.title, post.titleKm)}</h2>
-                            
-                            {author && (
-                                <div 
-                                    className="flex items-center gap-4 cursor-pointer group"
-                                    onClick={() => onAuthorClick?.(author.id)}
-                                >
-                                    <img src={author.image} alt={author.name} className="w-12 h-12 rounded-full border-2 border-white/20 group-hover:border-indigo-400 transition-colors" loading="lazy" decoding="async"
-                                        onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = getAvatarFallbackUrl(author.name, 96); }}
-                                    />
-                                    <div>
-                                        <p className="text-white font-bold group-hover:text-indigo-400 transition-colors">{author.name}</p>
-                                        <p className="text-gray-400 text-xs font-khmer">{t(author.role, author.roleKm)}</p>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Article Content */}
-                    <div className="px-6 md:px-10 py-10">
-                        <div className="max-w-3xl mx-auto">
-                            <div className="flex justify-between items-center mb-10 pb-6 border-b border-white/10">
-                                <div className="flex gap-4">
-                                    <button onClick={handleShare} className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5 text-sm font-bold">
-                                        {copied ? <Check size={16} className="text-green-400" /> : <Share2 size={16} />}
-                                        {copied ? t('Copied!', 'បានចម្លង!') : t('Share', 'ចែករំលែក')}
-                                    </button>
-                                </div>
-                                <button onClick={onClose} className="hidden md:flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-bold text-sm uppercase tracking-widest">
-                                    {t('Close', 'បិទ')} <X size={20} />
-                                </button>
-                            </div>
-
-                            <div className="prose prose-invert prose-indigo max-w-none">
-                                <ContentRenderer content={t(post.content, post.contentKm || post.content)} />
-                            </div>
-
-                            {/* Comments Section */}
-                            <div className="mt-20 pt-10 border-t border-white/10">
-                                <div className="flex items-center justify-between mb-8">
-                                    <h3 className="text-2xl font-bold text-white flex items-center gap-3">
-                                        <MessageCircle size={24} className="text-indigo-400" />
-                                        {t('Comments', 'មតិយោបល់')} 
-                                        <span className="text-sm bg-white/5 px-2 py-1 rounded-lg text-gray-500">{getTotalCommentCount(comments)}</span>
-                                    </h3>
-                                </div>
-
-                                {isLoadingComments ? (
-                                    <div className="flex items-center gap-2 text-gray-500 py-10">
-                                        <Loader2 className="animate-spin" size={20} />
-                                        <span className="text-sm">Loading comments...</span>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-2">
-                                        {comments.length > 0 ? (
-                                            comments.map(comment => (
-                                                <CommentItem key={comment.id} comment={comment} />
-                                            ))
-                                        ) : (
-                                            <div className="bg-white/5 rounded-2xl p-10 text-center border border-white/5 border-dashed">
-                                                <p className="text-gray-500 text-sm font-khmer">{t('No comments yet. Be the first to share your thoughts!', 'មិនទាន់មានមតិយោបល់នៅឡើយទេ។ ក្លាយជាអ្នកដំបូងដែលចែករំលែកគំនិតរបស់អ្នក!')}</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-
-                                {/* Comment Form */}
-                                <div className="mt-12 bg-white/5 rounded-3xl p-6 border border-white/5">
-                                    {commentError && (
-                                        <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 text-sm font-khmer">
-                                            <AlertCircle size={14} className="shrink-0" />
-                                            {commentError}
-                                        </div>
-                                    )}
-                                    {currentUser ? (
-                                        <form onSubmit={handleSubmitComment}>
-                                            {replyTo && (
-                                                <div className="flex items-center justify-between bg-indigo-500/10 px-4 py-2 rounded-xl mb-4 border border-indigo-500/20">
-                                                    <p className="text-xs text-indigo-300">Replying to <span className="font-bold">{replyTo.name}</span></p>
-                                                    <button type="button" onClick={() => setReplyTo(null)} className="text-gray-500 hover:text-white"><X size={14} /></button>
-                                                </div>
-                                            )}
-                                            <textarea 
-                                                value={newComment}
-                                                onChange={(e) => setNewComment(e.target.value)}
-                                                placeholder={t('Write your comment...', 'សរសេរមតិយោបល់របស់អ្នក...')}
-                                                className="w-full bg-transparent border-none focus:ring-0 text-white font-khmer resize-none min-h-[100px]"
-                                            />
-                                            <div className="flex justify-end mt-4">
-                                                <button 
-                                                    type="submit" 
-                                                    disabled={isSubmitting || !newComment.trim()}
-                                                    className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-bold rounded-xl transition-all flex items-center gap-2 text-sm"
-                                                >
-                                                    {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
-                                                    {t('Post Comment', 'ផ្ញើមតិ')}
-                                                </button>
-                                            </div>
-                                        </form>
-                                    ) : (
-                                        <form onSubmit={handleSubmitComment}>
-                                            {replyTo && (
-                                                <div className="flex items-center justify-between bg-indigo-500/10 px-4 py-2 rounded-xl mb-4 border border-indigo-500/20">
-                                                    <p className="text-xs text-indigo-300">Replying to <span className="font-bold">{replyTo.name}</span></p>
-                                                    <button type="button" onClick={() => setReplyTo(null)} className="text-gray-500 hover:text-white"><X size={14} /></button>
-                                                </div>
-                                            )}
-                                            <div className="flex items-center gap-2 mb-3">
-                                                <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
-                                                    <User size={14} />
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    value={guestName}
-                                                    onChange={(e) => setGuestName(e.target.value)}
-                                                    placeholder={t('Your name', 'ឈ្មោះរបស់អ្នក')}
-                                                    required
-                                                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm font-khmer placeholder-gray-500 focus:outline-none focus:border-indigo-500/50"
-                                                />
-                                            </div>
-                                            <textarea
-                                                value={newComment}
-                                                onChange={(e) => setNewComment(e.target.value)}
-                                                placeholder={t('Write your comment...', 'សរសេរមតិយោបល់របស់អ្នក...')}
-                                                className="w-full bg-transparent border-none focus:ring-0 text-white font-khmer resize-none min-h-[80px]"
-                                            />
-                                            <div className="flex justify-end mt-3">
-                                                <button
-                                                    type="submit"
-                                                    disabled={isSubmitting || !newComment.trim() || !guestName.trim()}
-                                                    className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-bold rounded-xl transition-all flex items-center gap-2 text-sm"
-                                                >
-                                                    {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
-                                                    {t('Post Comment', 'ផ្ញើមតិ')}
-                                                </button>
-                                            </div>
-                                        </form>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <ArticleDetailPanel post={post} onClose={onClose} onAuthorClick={onAuthorClick} />
             </div>
         </div>,
         document.body
