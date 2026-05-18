@@ -5,12 +5,6 @@ import { TeamMember, Post, Comment } from '../types';
 import { useData } from '../contexts/DataContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
-import { getSupabaseClient } from '../lib/supabase';
-import {
-    fetchPostCommentsPublic,
-    addPostCommentViaAPI,
-    addPostCommentToGitHub,
-} from '../lib/github';
 import { fetchCommentsFromFirebase, addCommentToFirebase } from '../lib/firebase-comments';
 import ContentRenderer from './ContentRenderer';
 import LocalScrollButton from './LocalScrollButton';
@@ -125,34 +119,8 @@ const ArticleDetailPanel: React.FC<{
         const fetchComments = async () => {
             setIsLoadingComments(true);
             try {
-                // Try Firebase First
                 const firebaseComments = await fetchCommentsFromFirebase(post.id);
-                if (firebaseComments && firebaseComments.length > 0) {
-                    setComments(buildCommentTree(firebaseComments));
-                    return;
-                }
-
-                // Fallback to GitHub
-                const githubComments = await fetchPostCommentsPublic(post.id);
-                if (githubComments.length > 0) {
-                    setComments(githubComments);
-                    return;
-                }
-                // Fallback to Supabase
-                const supabase = getSupabaseClient();
-                if (supabase) {
-                    const { data, error } = await supabase
-                        .from('comments')
-                        .select('*')
-                        .eq('post_id', post.id)
-                        .order('created_at', { ascending: true });
-                    if (!error && data) {
-                        setComments(buildCommentTree(data));
-                        return;
-                    }
-                    console.warn('Supabase comment fetch fallback failed:', error);
-                }
-                setComments(githubComments);
+                setComments(buildCommentTree(firebaseComments));
             } catch (err) {
                 console.error('Error fetching comments:', err);
             } finally {
@@ -200,9 +168,7 @@ const ArticleDetailPanel: React.FC<{
                 parent_id: replyTo?.id || null
             };
 
-            // Try Firebase First
             const firebaseResult = await addCommentToFirebase(commentData);
-            
             if (firebaseResult) {
                const saved: Comment = {
                     id: firebaseResult.id,
@@ -219,62 +185,7 @@ const ArticleDetailPanel: React.FC<{
                 return;
             }
 
-            // Fallback methods
-            const fallbackComment: Comment = {
-                id: (typeof crypto !== 'undefined' && crypto.randomUUID)
-                    ? crypto.randomUUID()
-                    : `c_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-                user: authorName,
-                avatar: '',
-                content: newComment.trim(),
-                date: new Date().toISOString(),
-                replies: []
-            };
-
-            const savedViaAPI = await addPostCommentViaAPI(post.id, fallbackComment, replyTo?.id || null);
-            if (savedViaAPI) {
-                applyToUI(fallbackComment);
-                setNewComment('');
-                setReplyTo(null);
-                if (!currentUser) setGuestName('');
-                return;
-            }
-
-            const savedToGitHub = await addPostCommentToGitHub(post.id, fallbackComment, replyTo?.id || null);
-            if (savedToGitHub) {
-                applyToUI(fallbackComment);
-                setNewComment('');
-                setReplyTo(null);
-                if (!currentUser) setGuestName('');
-                return;
-            }
-
-            const supabase = getSupabaseClient();
-            if (supabase) {
-                const { data, error } = await supabase
-                    .from('comments')
-                    .insert([commentData])
-                    .select()
-                    .single();
-                if (!error && data) {
-                    const saved: Comment = {
-                        id: data.id,
-                        user: data.user_name || authorName,
-                        avatar: data.avatar || '',
-                        content: data.content,
-                        date: data.created_at || new Date().toISOString(),
-                        replies: []
-                    };
-                    applyToUI(saved);
-                    setNewComment('');
-                    setReplyTo(null);
-                    if (!currentUser) setGuestName('');
-                    return;
-                }
-                console.warn('Supabase fallback comment insert failed:', error);
-            }
-
-            throw new Error('Failed to save comment: all storage methods are unavailable.');
+            throw new Error('Failed to save comment to Firebase.');
         } catch (err) {
             console.error('Error posting comment:', err);
             setCommentError(t('Failed to post comment. Please try again.', 'បរាជ័យក្នុងការផ្ញើមតិ។ សូមព្យាយាមម្ដងទៀត។'));

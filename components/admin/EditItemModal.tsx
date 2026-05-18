@@ -99,15 +99,13 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
 
       setIsCoverImageUploading(true);
       try {
-          // For insights articles, try Firebase Storage first
-          if (activeTab === 'insights') {
-              const firebaseUrl = await uploadCoverToFirebase(file, 'insights');
-              if (firebaseUrl) {
-                  setEditingItem({ ...editingItem, coverImage: firebaseUrl });
-                  return;
-              }
+          // Use Firebase Storage for all cover images (team and insights)
+          const firebaseUrl = await uploadCoverToFirebase(file, activeTab);
+          if (firebaseUrl) {
+              setEditingItem({ ...editingItem, coverImage: firebaseUrl });
+              return;
           }
-          // Fallback to ImgBB
+          // Fallback to ImgBB if Firebase Storage fails
           const url = await uploadImage(file);
           if (url) {
               setEditingItem({ ...editingItem, coverImage: url });
@@ -273,13 +271,16 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
             );
           })}
 
-          {/* --- COVER IMAGE SECTION FOR TEAM MEMBERS (NEW) --- */}
+          {/* --- COVER IMAGE SECTION FOR TEAM MEMBERS --- */}
           {activeTab === 'team' && (
               <div className="mt-6 pt-6 border-t border-white/10">
                   <label className="block text-xs font-bold text-indigo-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
                       <ImageIcon size={14} /> Cover Image (ផ្ទៃខាងក្រោយ)
                   </label>
-                  
+                  <p className="text-xs text-gray-500 font-khmer mb-3">
+                      រូបភាពនេះផ្ទុកទៅ Firebase Storage ដោយស្វ័យប្រវត្តិ។
+                  </p>
+
                   {/* Cover Image Preview */}
                   {editingItem.coverImage && (
                       <div className="relative w-full h-40 rounded-xl overflow-hidden border border-white/10 mb-3 group">
@@ -324,12 +325,12 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                               {isCoverImageUploading ? (
                                   <>
                                       <Loader2 size={14} className="animate-spin" />
-                                      កំពុងផ្ទុក...
+                                      កំពុងផ្ទុកទៅ Firebase...
                                   </>
                               ) : (
                                   <>
                                       <Upload size={14} />
-                                      Upload Cover Image
+                                      Upload Cover (Firebase Storage)
                                   </>
                               )}
                           </button>
