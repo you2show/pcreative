@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { X, Save, Loader2, Upload, Image as ImageIcon, ExternalLink, Lock, Facebook, Send, Link as LinkIcon, Tag, FileText, Target, Zap, TrendingUp, Images, Plus as PlusIcon } from 'lucide-react';
 import { uploadImageToImgBB } from '../../lib/imageUpload';
-import { uploadCoverToFirebase } from '../../lib/firebase-storage';
 import { useData } from '../../contexts/DataContext';
 import RichTextEditor from './editor/RichTextEditor';
 
@@ -99,13 +98,6 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
 
       setIsCoverImageUploading(true);
       try {
-          // Use Firebase Storage for all cover images (team and insights)
-          const firebaseUrl = await uploadCoverToFirebase(file, activeTab);
-          if (firebaseUrl) {
-              setEditingItem({ ...editingItem, coverImage: firebaseUrl });
-              return;
-          }
-          // Fallback to ImgBB if Firebase Storage fails
           const url = await uploadImage(file);
           if (url) {
               setEditingItem({ ...editingItem, coverImage: url });
