@@ -68,7 +68,12 @@ const ArticleDetailPanel: React.FC<{
     const [isLoadingComments, setIsLoadingComments] = useState(true);
 
     const scrollRef = useRef<HTMLDivElement>(null);
+    const commentsRef = useRef<HTMLDivElement>(null);
     const author = team.find(m => m.id === post.authorId);
+
+    const handleScrollToComments = () => {
+        commentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
     const articleSlug = post.slug || post.id;
     const articleUrl = `https://ponloe.org/insights/${articleSlug}`;
@@ -306,44 +311,50 @@ const ArticleDetailPanel: React.FC<{
                         </div>
                         <h2 className="text-xl md:text-3xl font-bold text-white font-khmer leading-tight mb-6">{t(post.title, post.titleKm)}</h2>
 
-                        {author && (
-                            <div
-                                className="flex items-center gap-4 cursor-pointer group"
-                                onClick={() => onAuthorClick?.(author.id)}
-                            >
-                                <img src={author.image} alt={author.name} className="w-12 h-12 rounded-full border-2 border-white/20 group-hover:border-indigo-400 transition-colors" loading="lazy" decoding="async"
-                                    onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = getAvatarFallbackUrl(author.name, 96); }}
-                                />
-                                <div>
-                                    <p className="text-white font-bold group-hover:text-indigo-400 transition-colors">{author.name}</p>
-                                    <p className="text-gray-400 text-xs font-khmer">{t(author.role, author.roleKm)}</p>
+                        <div className="flex items-center justify-between gap-4">
+                            {author && (
+                                <div
+                                    className="flex items-center gap-4 cursor-pointer group"
+                                    onClick={() => onAuthorClick?.(author.id)}
+                                >
+                                    <img src={author.image} alt={author.name} className="w-12 h-12 rounded-full border-2 border-white/20 group-hover:border-indigo-400 transition-colors" loading="lazy" decoding="async"
+                                        onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = getAvatarFallbackUrl(author.name, 96); }}
+                                    />
+                                    <div>
+                                        <p className="text-white font-bold group-hover:text-indigo-400 transition-colors">{author.name}</p>
+                                        <p className="text-gray-400 text-xs font-khmer">{t(author.role, author.roleKm)}</p>
+                                    </div>
                                 </div>
+                            )}
+                            <div className="flex items-center gap-2 ml-auto shrink-0">
+                                <button
+                                    onClick={handleScrollToComments}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all border border-white/10 text-xs font-bold backdrop-blur-md"
+                                >
+                                    <MessageCircle size={14} />
+                                    {t('Comment', 'មតិ')}
+                                </button>
+                                <button
+                                    onClick={handleShare}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all border border-white/10 text-xs font-bold backdrop-blur-md"
+                                >
+                                    {copied ? <Check size={14} className="text-green-400" /> : <Share2 size={14} />}
+                                    {copied ? t('Copied!', 'បានចម្លង!') : t('Share', 'ចែករំលែក')}
+                                </button>
                             </div>
-                        )}
+                        </div>
                     </div>
                 </div>
 
                 {/* Article Content */}
                 <div className="px-6 md:px-10 py-10">
                     <div className="max-w-3xl mx-auto">
-                        <div className="flex justify-between items-center mb-10 pb-6 border-b border-white/10">
-                            <div className="flex gap-4">
-                                <button onClick={handleShare} className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5 text-sm font-bold">
-                                    {copied ? <Check size={16} className="text-green-400" /> : <Share2 size={16} />}
-                                    {copied ? t('Copied!', 'បានចម្លង!') : t('Share', 'ចែករំលែក')}
-                                </button>
-                            </div>
-                            <button onClick={onClose} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-bold text-sm uppercase tracking-widest">
-                                {t('Close', 'បិទ')} <X size={20} />
-                            </button>
-                        </div>
-
                         <div className="prose prose-invert prose-indigo max-w-none">
                             <ContentRenderer content={t(post.content, post.contentKm || post.content)} />
                         </div>
 
                         {/* Comments Section */}
-                        <div className="mt-20 pt-10 border-t border-white/10">
+                        <div ref={commentsRef} className="mt-20 pt-10 border-t border-white/10">
                             <div className="flex items-center justify-between mb-8">
                                 <h3 className="text-2xl font-bold text-white flex items-center gap-3">
                                     <MessageCircle size={24} className="text-indigo-400" />
@@ -475,21 +486,61 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
     const experienceKm = member.experienceKm || [];
     const socials = member.socials || {};
 
+    const memberSlug = member.slug || member.id;
+
+    const getSupportedLangPrefix = () => {
+        const parts = window.location.pathname.split('/');
+        const lang = parts[1];
+        const supported = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
+        return lang && supported.includes(lang) ? `/${lang}` : '';
+    };
+
     const handleArticleClick = (post: Post) => {
         if (window.innerWidth >= 768) {
             setSelectedPost(post);
+            // Update URL to include team + article context so Share copies the right link
+            const langPrefix = getSupportedLangPrefix();
+            const articleSlug = post.slug || post.id;
+            window.history.pushState(
+                { section: 'team', id: memberSlug, article: articleSlug },
+                '',
+                `${langPrefix}/team/${memberSlug}/insights/${articleSlug}`
+            );
         } else {
             onClose();
             if (onSelectPost) onSelectPost(post);
         }
     };
+
+    const handleArticlePanelClose = () => {
+        setSelectedPost(null);
+        // Revert URL back to team member URL
+        const langPrefix = getSupportedLangPrefix();
+        window.history.pushState(
+            { section: 'team', id: memberSlug },
+            '',
+            `${langPrefix}/team/${memberSlug}`
+        );
+    };
+
     const isSplitView = selectedPost !== null;
+
+    // When the team modal is closed while an article is open in split-view,
+    // promote the article to a full-screen insights modal instead of closing everything.
+    const handleTeamClose = () => {
+        if (isSplitView && selectedPost && onSelectPost) {
+            onClose();
+            onSelectPost(selectedPost);
+        } else {
+            onClose();
+        }
+    };
 
     return createPortal(
         <div className={`fixed inset-0 z-[10002] overflow-hidden ${isSplitView ? 'flex' : 'flex items-center justify-center px-4 py-8 md:p-4'}`}>
             <div 
                 className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
-                onClick={isSplitView ? () => { setSelectedPost(null); onClose(); } : onClose}
+                onClick={handleTeamClose}
             />
             <div className={`relative bg-gray-900 border-white/10 shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col ${isSplitView ? 'w-[440px] xl:w-[480px] shrink-0 h-full border-r' : 'w-full max-w-lg h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] md:h-[80vh] md:max-h-[80vh] border rounded-3xl'}`}
                 onClick={(e) => e.stopPropagation()}
@@ -506,7 +557,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                         <div className="w-full h-full bg-gradient-to-r from-indigo-600/20 to-purple-600/20" />
                     )}
                     <button 
-                        onClick={isSplitView ? () => { setSelectedPost(null); onClose(); } : onClose}
+                        onClick={handleTeamClose}
                         className="absolute top-4 right-4 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors backdrop-blur-md z-10"
                     >
                         <X size={20} />
@@ -678,7 +729,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                     className="relative flex-1 h-full bg-gray-900 border-l border-white/10 z-[10003] overflow-hidden animate-scale-up"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <ArticleDetailPanel post={selectedPost} onClose={() => setSelectedPost(null)} />
+                    <ArticleDetailPanel post={selectedPost} onClose={handleArticlePanelClose} />
                 </div>
             )}
         </div>,
