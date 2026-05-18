@@ -87,7 +87,18 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
   };
 
   const handleArticleDetailClose = () => {
-    window.history.back();
+    // When the article was promoted from a team split-view context (fromTeam flag),
+    // going back would land on /team/.../insights/... and reopen both the team
+    // modal and the article. Instead, navigate to the clean base URL so nothing shows.
+    if (window.history.state?.fromTeam) {
+      const lang = window.location.pathname.split('/')[1];
+      const supported = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
+      const langPrefix = lang && supported.includes(lang) ? `/${lang}` : '';
+      window.history.pushState(null, '', `${langPrefix || '/'}`);
+      window.dispatchEvent(new Event('popstate'));
+    } else {
+      window.history.back();
+    }
   };
 
   // Helper component to render Author Info on Card

@@ -163,13 +163,15 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
               // Navigate to the article's URL so Insights router opens the modal.
               // closeItem() was already called by MemberDetailModal before onSelectPost,
               // so we use replaceState to overwrite the /#team entry it pushed.
+              // fromTeam: true signals that closing this article should not go back
+              // into the team history (which would re-open the team modal + article).
               const slug = post.slug || post.id;
               const currentPath = window.location.pathname;
               const parts = currentPath.split('/');
               const currentLang = parts[1];
               const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
               const langPrefix = currentLang && supportedLangs.includes(currentLang) ? `/${currentLang}` : '';
-              window.history.replaceState({ section: 'insights', id: slug }, '', `${langPrefix}/insights/${slug}`);
+              window.history.replaceState({ section: 'insights', id: slug, fromTeam: true }, '', `${langPrefix}/insights/${slug}`);
               window.dispatchEvent(new Event('popstate'));
             }}
           />
