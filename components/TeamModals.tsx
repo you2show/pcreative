@@ -77,7 +77,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                 className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
                 onClick={onClose}
             />
-            <div className="relative w-full max-w-lg bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col max-h-full">
+            <div className="relative w-full max-w-lg h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] md:h-[80vh] md:max-h-[80vh] bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col">
                 {/* Header / Cover */}
                 <div className="h-32 bg-gray-800 relative shrink-0 overflow-hidden">
                     {member.coverImage ? (
