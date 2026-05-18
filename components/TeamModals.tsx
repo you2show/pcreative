@@ -764,12 +764,8 @@ interface ArticleDetailModalProps {
 
 export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, onClose, onAuthorClick }) => {
     return createPortal(
-        <div className="fixed inset-0 z-[10006] flex items-center justify-center p-0 md:p-4 overflow-hidden">
-            <div 
-                className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
-                onClick={onClose}
-            />
-            <div className="relative w-full max-w-4xl h-full md:h-[95vh] bg-gray-900 md:border md:border-white/10 md:rounded-3xl shadow-2xl overflow-hidden animate-scale-up flex flex-col z-[10007]">
+        <div className="fixed inset-0 z-[10006] overflow-hidden">
+            <div className="relative w-full h-full bg-gray-900 overflow-hidden flex flex-col z-[10007]">
                 <ArticleDetailPanel post={post} onClose={onClose} onAuthorClick={onAuthorClick} />
             </div>
         </div>,
