@@ -475,14 +475,43 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
     const experienceKm = member.experienceKm || [];
     const socials = member.socials || {};
 
+    const memberSlug = member.slug || member.id;
+
+    const getSupportedLangPrefix = () => {
+        const parts = window.location.pathname.split('/');
+        const lang = parts[1];
+        const supported = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
+        return lang && supported.includes(lang) ? `/${lang}` : '';
+    };
+
     const handleArticleClick = (post: Post) => {
         if (window.innerWidth >= 768) {
             setSelectedPost(post);
+            // Update URL to include team + article context so Share copies the right link
+            const langPrefix = getSupportedLangPrefix();
+            const articleSlug = post.slug || post.id;
+            window.history.pushState(
+                { section: 'team', id: memberSlug, article: articleSlug },
+                '',
+                `${langPrefix}/team/${memberSlug}/insights/${articleSlug}`
+            );
         } else {
             onClose();
             if (onSelectPost) onSelectPost(post);
         }
     };
+
+    const handleArticlePanelClose = () => {
+        setSelectedPost(null);
+        // Revert URL back to team member URL
+        const langPrefix = getSupportedLangPrefix();
+        window.history.pushState(
+            { section: 'team', id: memberSlug },
+            '',
+            `${langPrefix}/team/${memberSlug}`
+        );
+    };
+
     const isSplitView = selectedPost !== null;
 
     return createPortal(
@@ -678,7 +707,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                     className="relative flex-1 h-full bg-gray-900 border-l border-white/10 z-[10003] overflow-hidden animate-scale-up"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <ArticleDetailPanel post={selectedPost} onClose={() => setSelectedPost(null)} />
+                    <ArticleDetailPanel post={selectedPost} onClose={handleArticlePanelClose} />
                 </div>
             )}
         </div>,
