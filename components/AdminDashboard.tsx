@@ -175,7 +175,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
     const templates: any = {
       team: { name: '', role: '', roleKm: '', image: '', bio: '', bioKm: '', skills: [], experience: [], socials: {}, pinCode: '1111', coverImage: '' },
       projects: { title: '', category: 'graphicdesign', image: '', client: '', description: '', link: '', gallery: [], challenge: '', challengeKm: '', solution: '', solutionKm: '', result: '', resultKm: '' },
-      insights: { title: '', titleKm: '', excerpt: '', content: '', date: new Date().toISOString().split('T')[0], category: 'Design', image: '', authorId: currentUser.role === 'member' ? currentUser.id : 't1' },
+      insights: { title: '', titleKm: '', excerpt: '', content: '', date: new Date().toISOString().split('T')[0], category: 'Design', image: '', coverImage: '', authorId: currentUser.role === 'member' ? currentUser.id : 't1' },
       services: { title: '', titleKm: '', subtitle: '', subtitleKm: '', description: '', descriptionKm: '', features: [], featuresKm: [], icon: 'Box', color: 'bg-indigo-500', image: '' },
       careers: { title: '', type: 'Full-time', location: 'Phnom Penh', department: 'Engineering', icon: 'Code', link: '', description: '' },
       partners: { name: '', icon: 'Building2', image: '', url: '' },
@@ -415,7 +415,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                   content: item.content, 
                   date: item.date, 
                   category: item.category, 
-                  image: item.image, 
+                  image: item.image,
+                  cover_image: item.coverImage || null,
                   author_id: item.authorId,
                   slug: generatedSlug
               };
@@ -515,11 +516,21 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                res = await executeQuery(fallbackPayload);
           }
 
+          // Fallback for insights cover_image if column not yet added to DB
+          if (res.error && activeTab === 'insights' && res.error.message.includes("cover_image")) {
+               console.warn('⚠️ cover_image column not found in insights table. Please run: ALTER TABLE insights ADD COLUMN cover_image TEXT;');
+               const { cover_image, ...fallbackPayload } = payload;
+               res = await executeQuery(fallbackPayload);
+          }
+
           if (res.error) throw res.error;
 
           const newItem = { ...item, ...res.data[0] }; 
           
           if (activeTab === 'projects') newItem.createdBy = res.data[0].created_by;
+          if (activeTab === 'insights') {
+              newItem.coverImage = res.data[0].cover_image ?? item.coverImage ?? '';
+          }
           if (activeTab === 'team') {
               newItem.pinCode = res.data[0].pin_code;
               newItem.coverImage = res.data[0].cover_image ?? item.coverImage ?? '';

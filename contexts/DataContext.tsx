@@ -216,6 +216,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                  date: i.date,
                  category: i.category,
                  image: i.image,
+                 coverImage: i.cover_image || '',
                  authorId: i.author_id,
                  link: i.link || '#',
                  content: i.content,

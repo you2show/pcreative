@@ -328,7 +328,7 @@ const ArticleDetailPanel: React.FC<{
 
                 {/* Hero Image */}
                 <div className="relative h-[40vh] md:h-[50vh] shrink-0">
-                    <img src={post.image} alt={post.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                    <img src={post.coverImage || post.image} alt={post.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent" />
 
                     <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
