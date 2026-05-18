@@ -525,11 +525,22 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
 
     const isSplitView = selectedPost !== null;
 
+    // When the team modal is closed while an article is open in split-view,
+    // promote the article to a full-screen insights modal instead of closing everything.
+    const handleTeamClose = () => {
+        if (isSplitView && selectedPost && onSelectPost) {
+            onClose();
+            onSelectPost(selectedPost);
+        } else {
+            onClose();
+        }
+    };
+
     return createPortal(
         <div className={`fixed inset-0 z-[10002] overflow-hidden ${isSplitView ? 'flex' : 'flex items-center justify-center px-4 py-8 md:p-4'}`}>
             <div 
                 className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
-                onClick={isSplitView ? () => { setSelectedPost(null); onClose(); } : onClose}
+                onClick={handleTeamClose}
             />
             <div className={`relative bg-gray-900 border-white/10 shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col ${isSplitView ? 'w-[440px] xl:w-[480px] shrink-0 h-full border-r' : 'w-full max-w-lg h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] md:h-[80vh] md:max-h-[80vh] border rounded-3xl'}`}
                 onClick={(e) => e.stopPropagation()}
@@ -546,7 +557,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                         <div className="w-full h-full bg-gradient-to-r from-indigo-600/20 to-purple-600/20" />
                     )}
                     <button 
-                        onClick={isSplitView ? () => { setSelectedPost(null); onClose(); } : onClose}
+                        onClick={handleTeamClose}
                         className="absolute top-4 right-4 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors backdrop-blur-md z-10"
                     >
                         <X size={20} />
