@@ -71,7 +71,7 @@ const ArticleDetailPanel: React.FC<{
     };
 
     const articleSlug = post.slug || post.id;
-    const articleUrl = `https://ponloe.org/insights/${articleSlug}`;
+    const articleUrl = `https://creative.ponloe.app/insights/${articleSlug}`;
     const articleTitle = `${language === 'km' && post.titleKm ? post.titleKm : post.title} | Ponloe Creative`;
     const rawContent = language === 'km' && post.contentKm ? post.contentKm : post.content || '';
     const strippedContent = (() => {
@@ -102,12 +102,12 @@ const ArticleDetailPanel: React.FC<{
             url: articleUrl,
             datePublished: post.date,
             author: author
-                ? { '@type': 'Person', name: author.name, url: `https://ponloe.org/team/${author.slug || author.id}` }
-                : { '@type': 'Organization', name: 'Ponloe Creative', url: 'https://ponloe.org' },
+                ? { '@type': 'Person', name: author.name, url: `https://creative.ponloe.app/team/${author.slug || author.id}` }
+                : { '@type': 'Organization', name: 'Ponloe Creative', url: 'https://creative.ponloe.app' },
             publisher: {
                 '@type': 'Organization',
                 name: 'Ponloe Creative',
-                logo: { '@type': 'ImageObject', url: 'https://ponloe.org/ponloe-logo.svg' },
+                logo: { '@type': 'ImageObject', url: 'https://creative.ponloe.app/ponloe-logo.svg' },
             },
             mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
             articleSection: post.category,
