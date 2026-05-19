@@ -20,7 +20,7 @@ const DEFAULT_DESCRIPTION =
   'Ponloe Creative (ពន្លឺច្នៃប្រឌិត) – Cambodia\'s leading creative agency for website design, web app development, mobile apps, graphic design, UI/UX, Canva design, digital marketing, and architecture. Based in Phnom Penh.';
 const DEFAULT_IMAGE =
   'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiuEcfaETv68lAV6WDzh7Gub7lzi2fwpPjmPmcq0EMklRIUB4K8t4rHJBcB7uAK_LMpvQnJpuFV8T_XjnDSoSEIII9FDpOFBU4i1hRpWCxYW5QQQmFoRTRneazGjdgZT8ZME6cDx652INDsd2s6FnV9DiiKyo40XwgHA5gRXn1QM0pD0gr440JEjV1pock/s1600/ponloe.jpg';
-const DEFAULT_URL = 'https://ponloe.org/';
+const DEFAULT_URL = 'https://creative.ponloe.app/';
 const JSON_LD_ID = 'dynamic-json-ld';
 
 function setMeta(selector: string, attr: string, value: string) {

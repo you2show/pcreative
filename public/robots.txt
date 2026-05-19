@@ -7,7 +7,7 @@ Disallow: /admin/
 Crawl-delay: 1
 
 # Sitemaps
-Sitemap: https://ponloe.org/sitemap.xml
+Sitemap: https://creative.ponloe.app/sitemap.xml
 
 # Allow social bots
 User-agent: facebookexternalhit
