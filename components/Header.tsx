@@ -81,10 +81,9 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
           const currentHash = window.location.hash;
           const currentPath = window.location.pathname;
           
-          // CRITICAL FIX: Only update hash if we are on the homepage (not a deep link path like /portfolio/...)
-          const isDeepLink = currentPath.split('/').filter(Boolean).some(part => 
-              ['portfolio', 'services', 'insights', 'team', 'estimator'].includes(part)
-          );
+          // CRITICAL FIX: Only update hash if we are on the homepage (not a deep link path like /portfolio/... or /about)
+          // Any path with more than one non-empty segment (e.g. ['en', 'about']) is considered a deep link
+          const isDeepLink = currentPath.split('/').filter(Boolean).length > 1;
 
           if (!isMobile && !isDeepLink && currentHash !== '#admin') {
               window.history.replaceState(null, '', `#${newSection}`);
