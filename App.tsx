@@ -79,12 +79,12 @@ function AppContent() {
         setShouldShowTeamPopup(pathWithoutLang === '/team' || pathWithoutLang.startsWith('/team/'));
         setShouldShowEstimatorPopup(pathWithoutLang === '/estimator' || pathWithoutLang.startsWith('/estimator/'));
 
-        // Check for hash-based pages
-        if (hash === '#about') {
+        // Check for hash-based or path-based pages
+        if (hash === '#about' || pathWithoutLang === '/about') {
             setActivePage('about');
-        } else if (hash === '#careers') {
+        } else if (hash === '#careers' || pathWithoutLang === '/careers') {
             setActivePage('careers');
-        } else if (hash === '#privacy') {
+        } else if (hash === '#privacy' || pathWithoutLang === '/privacy') {
             setActivePage('privacy');
         } else {
             setActivePage(null);
@@ -183,8 +183,8 @@ function AppContent() {
       <ExitIntentPopup onConsultationOpen={() => setIsConsultationOpen(true)} />
       
       {/* Overlay Pages */}
-      {activePage === 'about' && <About onClose={() => window.location.hash = ''} />}
-      {activePage === 'careers' && <Careers onClose={() => window.location.hash = ''} />}
+      {activePage === 'about' && <About onClose={() => { if (window.location.pathname.includes('/about')) { window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); } else { window.location.hash = ''; } }} />}
+      {activePage === 'careers' && <Careers onClose={() => { if (window.location.pathname.includes('/careers')) { window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); } else { window.location.hash = ''; } }} />}
       {activePage === 'privacy' && <PrivacyPolicy onClose={() => window.location.hash = ''} />}
       
       {/* Admin Login Modal */}
