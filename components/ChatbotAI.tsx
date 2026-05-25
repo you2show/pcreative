@@ -135,25 +135,25 @@ const ChatbotAI: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-            className="fixed bottom-24 right-6 z-[8000] w-[360px] max-w-[calc(100vw-2rem)] h-[500px] max-h-[70vh] bg-gray-900 border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 z-[8000] w-[360px] max-w-[calc(100vw-2rem)] h-[500px] max-h-[70vh] bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-white/10 bg-gray-900/95 backdrop-blur-md">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
                   <Sparkles size={16} className="text-white" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">Ponloe AI</h4>
+                  <h4 className="text-sm font-bold text-gray-900 dark:text-white">Ponloe AI</h4>
                   <p className="text-xs text-green-400">{t('Online 24/7', 'អនឡាញ ២៤/៧')}</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors"
                 aria-label="Close chat"
               >
-                <X size={16} className="text-gray-400" />
+                <X size={16} className="text-gray-600 dark:text-gray-400" />
               </button>
             </div>
 
@@ -174,13 +174,13 @@ const ChatbotAI: React.FC = () => {
                   <div className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
                     msg.role === 'user' 
                       ? 'bg-indigo-600 text-white rounded-br-md' 
-                      : 'bg-gray-800 text-gray-200 rounded-bl-md border border-white/5'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 rounded-bl-md border border-gray-100 dark:border-white/5'
                   }`}>
                     {msg.content}
                   </div>
                   {msg.role === 'user' && (
-                    <div className="w-7 h-7 bg-gray-700 rounded-full flex items-center justify-center shrink-0 mt-1">
-                      <User size={14} className="text-gray-300" />
+                    <div className="w-7 h-7 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center shrink-0 mt-1">
+                      <User size={14} className="text-gray-700 dark:text-gray-300" />
                     </div>
                   )}
                 </motion.div>
@@ -190,7 +190,7 @@ const ChatbotAI: React.FC = () => {
                   <div className="w-7 h-7 bg-indigo-500/20 rounded-full flex items-center justify-center shrink-0">
                     <Bot size={14} className="text-indigo-400" />
                   </div>
-                  <div className="bg-gray-800 border border-white/5 rounded-2xl rounded-bl-md px-4 py-3">
+                  <div className="bg-gray-100 dark:bg-gray-800 border border-gray-100 dark:border-white/5 rounded-2xl rounded-bl-md px-4 py-3">
                     <div className="flex gap-1">
                       {[0, 1, 2].map(i => (
                         <motion.div
@@ -208,14 +208,14 @@ const ChatbotAI: React.FC = () => {
             </div>
 
             {/* Input */}
-            <div className="p-3 border-t border-white/10 bg-gray-900/95">
+            <div className="p-3 border-t border-gray-200 dark:border-white/10 bg-white/95 dark:bg-gray-900/95">
               <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={t('Ask me anything...', 'សួរខ្ញុំអ្វីក៏បាន...')}
-                  className="flex-1 bg-gray-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="flex-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
                 <button
                   type="submit"

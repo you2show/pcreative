@@ -38,7 +38,7 @@ const NewsletterForm: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="flex-1 min-w-0 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500 font-khmer"
+            className="flex-1 min-w-0 px-4 py-2.5 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500 font-khmer"
             placeholder={t('Your email', 'អ៊ីមែលរបស់អ្នក')}
           />
           <button
@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-gray-950 pt-16 overflow-hidden" role="contentinfo" aria-label="Site footer">
+    <footer className="relative bg-white dark:bg-gray-950 pt-16 overflow-hidden" role="contentinfo" aria-label="Site footer">
       {/* Decorative Top Gradient Line */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       
@@ -109,14 +109,14 @@ const Footer: React.FC = () => {
         </div>
         */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-24 border-t border-white/5 pt-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-24 border-t border-gray-100 dark:border-white/5 pt-20">
             {/* Brand Column */}
             <div className="lg:col-span-4 space-y-8">
                 <a href="#" className="flex items-center gap-3 group w-fit">
                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform text-xl border border-white/10 group-hover:border-indigo-400/50">P</div>
-                    <span className="text-2xl font-bold text-white tracking-tight group-hover:text-indigo-300 transition-colors">ponloe<span className="text-gray-500 group-hover:text-gray-400">.creative</span></span>
+                    <span className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight group-hover:text-indigo-300 transition-colors">ponloe<span className="text-gray-500 group-hover:text-gray-400">.creative</span></span>
                 </a>
-                <p className="text-gray-400 leading-relaxed font-khmer max-w-sm text-base">
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-khmer max-w-sm text-base">
                     {t(
                         "Pioneering the future of digital design and architectural innovation in Cambodia. We build brands that matter.",
                         "ត្រួសត្រាយអនាគតនៃការរចនាឌីជីថល និងនវានុវត្តន៍ស្ថាបត្យកម្មនៅកម្ពុជា។ យើងកសាងម៉ាកយីហោដែលមានតម្លៃ។"
@@ -128,7 +128,7 @@ const Footer: React.FC = () => {
                         { icon: Send, href: "https://telegram.org" }, 
                         { icon: Instagram, href: "https://instagram.com" }
                     ].map((Item, idx) => (
-                        <a key={idx} href={Item.href} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-gray-400 hover:bg-white hover:text-gray-950 hover:scale-110 hover:shadow-[0_0_15px_rgba(255,255,255,0.5)] transition-all duration-300">
+                        <a key={idx} href={Item.href} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-gray-950 hover:scale-110 hover:shadow-[0_0_15px_rgba(255,255,255,0.5)] transition-all duration-300">
                             <Item.icon size={20} />
                         </a>
                     ))}
@@ -137,7 +137,7 @@ const Footer: React.FC = () => {
 
             {/* Links Columns */}
             <div className="lg:col-span-2 md:col-span-1">
-                <h4 className="text-white font-bold mb-8 font-khmer text-lg">{t("Services", "សេវាកម្ម")}</h4>
+                <h4 className="text-gray-900 dark:text-white font-bold mb-8 font-khmer text-lg">{t("Services", "សេវាកម្ម")}</h4>
                 <ul className="space-y-4">
                     {['Web Development', 'App Development', 'Graphic Design', 'Architecture', 'MVAC System'].map((item) => (
                         <li key={item}>
@@ -151,7 +151,7 @@ const Footer: React.FC = () => {
             </div>
 
             <div className="lg:col-span-2 md:col-span-1">
-                <h4 className="text-white font-bold mb-8 font-khmer text-lg">{t("Company", "ក្រុមហ៊ុន")}</h4>
+                <h4 className="text-gray-900 dark:text-white font-bold mb-8 font-khmer text-lg">{t("Company", "ក្រុមហ៊ុន")}</h4>
                 <ul className="space-y-4">
                     {[
                         { label: t('About Us', 'អំពីយើង'), href: `/${language}/about` },
@@ -180,26 +180,26 @@ const Footer: React.FC = () => {
 
             {/* Contact Column - Stylized Card */}
             <div className="lg:col-span-4 md:col-span-2">
-                 <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 border border-white/10 relative overflow-hidden group hover:border-indigo-500/30 transition-colors hover:shadow-[0_0_30px_rgba(99,102,241,0.15)]">
+                 <div className="bg-gradient-to-br from-gray-50 dark:from-gray-900 to-gray-100 dark:to-gray-800 rounded-3xl p-8 border border-gray-200 dark:border-white/10 relative overflow-hidden group hover:border-indigo-500/30 transition-colors hover:shadow-[0_0_30px_rgba(99,102,241,0.15)]">
                      {/* Glow Effect */}
                      <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-all"></div>
                      
-                     <h4 className="text-white font-bold mb-6 font-khmer text-lg relative z-10">{t("Contact Info", "ព័ត៌មានទំនាក់ទំនង")}</h4>
+                     <h4 className="text-gray-900 dark:text-white font-bold mb-6 font-khmer text-lg relative z-10">{t("Contact Info", "ព័ត៌មានទំនាក់ទំនង")}</h4>
                      <div className="space-y-6 relative z-10">
-                        <a href="mailto:creative.ponloe.org@gmail.com" className="flex items-center gap-4 text-gray-400 hover:text-white transition-colors group/link">
-                            <div className="p-3 bg-gray-950 rounded-xl group-hover/link:bg-indigo-600 transition-colors border border-white/5 group-hover/link:shadow-[0_0_15px_rgba(99,102,241,0.5)]"><Mail size={20} /></div>
+                        <a href="mailto:creative.ponloe.org@gmail.com" className="flex items-center gap-4 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors group/link">
+                            <div className="p-3 bg-white dark:bg-gray-950 rounded-xl group-hover/link:bg-indigo-600 transition-colors border border-gray-100 dark:border-white/5 group-hover/link:shadow-[0_0_15px_rgba(99,102,241,0.5)]"><Mail size={20} /></div>
                             <span className="text-sm md:text-base font-medium break-all">creative.ponloe.org@gmail.com</span>
                         </a>
-                        <div className="flex items-center gap-4 text-gray-400 group/link">
-                            <div className="p-3 bg-gray-950 rounded-xl border border-white/5"><MapPin size={20} /></div>
+                        <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 group/link">
+                            <div className="p-3 bg-white dark:bg-gray-950 rounded-xl border border-gray-100 dark:border-white/5"><MapPin size={20} /></div>
                             <span className="text-sm md:text-base font-medium font-khmer">Russey Keo, Phnom Penh, Cambodia</span>
                         </div>
                      </div>
                  </div>
 
                  {/* Newsletter Subscription */}
-                 <div className="mt-6 bg-white/[0.03] rounded-3xl p-6 border border-white/5">
-                     <h4 className="text-white font-bold mb-2 font-khmer text-sm">{t('Stay Updated', 'ទទួលព័ត៌មានថ្មី')}</h4>
+                 <div className="mt-6 bg-gray-50 dark:bg-white/[0.03] rounded-3xl p-6 border border-gray-100 dark:border-white/5">
+                     <h4 className="text-gray-900 dark:text-white font-bold mb-2 font-khmer text-sm">{t('Stay Updated', 'ទទួលព័ត៌មានថ្មី')}</h4>
                      <p className="text-gray-500 text-xs font-khmer mb-4">{t('Get insights, tips & project updates.', 'ទទួលដំណឹង គន្លឹះ & ការអាប់ដេតគម្រោង។')}</p>
                      <NewsletterForm />
                  </div>
@@ -207,7 +207,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="relative border-t border-white/5 pt-8 pb-12 flex flex-col md:flex-row justify-between items-center gap-4 z-20">
+        <div className="relative border-t border-gray-100 dark:border-white/5 pt-8 pb-12 flex flex-col md:flex-row justify-between items-center gap-4 z-20">
              <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
                <p className="text-gray-600 text-sm font-khmer">
                   © {currentYear} Ponloe Creative. All Rights Reserved.
@@ -215,7 +215,7 @@ const Footer: React.FC = () => {
                {isInstallable && (
                  <button 
                    onClick={installPWA}
-                   className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-indigo-400 text-sm font-bold transition-all duration-300 group"
+                   className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-full text-indigo-400 text-sm font-bold transition-all duration-300 group"
                  >
                    <Download size={16} className="group-hover:bounce" />
                    <span className="font-khmer">{t("Install App", "ដំឡើងកម្មវិធី")}</span>

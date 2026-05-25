@@ -84,7 +84,7 @@ const SortableServiceItem: React.FC<SortableServiceItemProps> = ({ service, inde
       <div className={`absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-opacity duration-500 animate-spin-slow blur-lg ${isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
       
       {/* Inner Card Content */}
-      <div className={`relative h-full bg-gray-900/90 backdrop-blur-xl rounded-[23px] p-8 border border-white/10 transition-all duration-300 overflow-hidden ${isDragging ? 'bg-gray-800 scale-[1.02] shadow-2xl' : 'hover:bg-gray-900/80'}`}>
+      <div className={`relative h-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-[23px] p-8 border border-gray-200 dark:border-white/10 transition-all duration-300 overflow-hidden ${isDragging ? 'bg-gray-100 dark:bg-gray-800 scale-[1.02] shadow-2xl' : 'hover:bg-white/80 dark:hover:bg-gray-900/80'}`}>
           
           {/* Background Image Always Visible with Hover Darkening */}
           {bgImage && (
@@ -102,7 +102,7 @@ const SortableServiceItem: React.FC<SortableServiceItemProps> = ({ service, inde
           
           <div className="relative z-10 h-full flex flex-col justify-between">
             <div className="flex justify-between items-start">
-                <div className={`p-3 rounded-2xl bg-white/5 text-white border border-white/10 group-hover:scale-110 transition-transform duration-500 ${service.color.replace('bg-', 'text-')}`}>
+                <div className={`p-3 rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 group-hover:scale-110 transition-transform duration-500 ${service.color.replace('bg-', 'text-')}`}>
                     {service.icon}
                 </div>
                 
@@ -114,7 +114,7 @@ const SortableServiceItem: React.FC<SortableServiceItemProps> = ({ service, inde
                         onSelect(service);
                       }}
                       onPointerDown={(e) => e.stopPropagation()} // Stop pointer down from starting drag
-                      className="p-2 rounded-full border border-white/10 text-gray-400 hover:text-white hover:border-white hover:bg-white/10 transition-all cursor-pointer"
+                      className="p-2 rounded-full border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-white hover:bg-gray-200 dark:hover:bg-white/10 transition-all cursor-pointer"
                       aria-label={`View details for ${service.title}`}
                     >
                         <ArrowUpRight size={18} />
@@ -123,8 +123,8 @@ const SortableServiceItem: React.FC<SortableServiceItemProps> = ({ service, inde
             </div>
             
             <div className="mt-6 select-none">
-                <h3 className="text-2xl font-bold text-white mb-2 font-khmer drop-shadow-md">{t(service.title, service.titleKm)}</h3>
-                <p className="text-gray-400 text-sm font-khmer line-clamp-2 drop-shadow-sm">{t(service.subtitle, service.subtitleKm || service.subtitle)}</p>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 font-khmer drop-shadow-md">{t(service.title, service.titleKm)}</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm font-khmer line-clamp-2 drop-shadow-sm">{t(service.subtitle, service.subtitleKm || service.subtitle)}</p>
             </div>
           </div>
       </div>
@@ -215,7 +215,7 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
   };
 
   return (
-    <section id="services" className="py-24 bg-gray-950 relative overflow-hidden">
+    <section id="services" className="py-24 bg-white dark:bg-gray-950 relative overflow-hidden">
       {/* Background Text */}
       <ScrollBackgroundText text="EXPERTISE" className="top-10" />
 
@@ -224,7 +224,7 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
               <div className="max-w-3xl">
                   <span className="text-indigo-400 font-bold tracking-wider uppercase text-sm mb-4 block font-khmer">{t('Our Expertise', 'ជំនាញរបស់យើង')}</span>
-                  <h2 className="text-4xl md:text-5xl font-bold text-white font-khmer leading-tight">
+                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer leading-tight">
                       {t('Comprehensive solutions for', 'ដំណោះស្រាយពេញលេញសម្រាប់')}{' '}
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">{t('Digital Dominance.', 'ភាពលេចធ្លោលើឌីជីថល')}</span>
                   </h2>
@@ -233,7 +233,7 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
               {hasReordered && (
                   <button 
                       onClick={handleReset}
-                      className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all font-khmer text-sm animate-fade-in"
+                      className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 transition-all font-khmer text-sm animate-fade-in"
                   >
                       <RotateCcw size={16} />
                       {t('Reset Layout', 'កំណត់ឡើងវិញ')}
@@ -278,19 +278,19 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
 {selectedService && createPortal(
         <div className="fixed inset-0 z-[10002] flex items-center justify-center p-4 overflow-hidden">
           <div 
-            className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
+            className="absolute inset-0 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md animate-fade-in"
             onClick={closeItem}
           />
           <div className="relative w-full max-w-4xl z-[10003] animate-scale-up">
             {/* Close button outside the card */}
             <button
               onClick={closeItem}
-              className="absolute -top-4 -right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors border border-white/20 z-10"
+              className="absolute -top-4 -right-4 p-2 bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/20 text-gray-900 dark:text-white rounded-full transition-colors border border-gray-300 dark:border-white/20 z-10"
               aria-label="Close"
             >
               <X size={24} />
             </button>
-          <div className="w-full bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
+          <div className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
 
             {/* Left Column: Image with overlay */}
             <div className="relative w-full md:w-2/5 min-h-[260px] md:min-h-0 flex-shrink-0 overflow-hidden rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none">
@@ -303,7 +303,7 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
                     style={{ backgroundImage: `url('${encodeURI(imgSrc)}')` }}
                   />
                 ) : (
-                  <div className="absolute inset-0 bg-gray-800" />
+                  <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800" />
                 );
               })()}
               {/* Dark gradient overlay */}
@@ -311,10 +311,10 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
 
               {/* Overlay content: icon, title, subtitle */}
               <div className="relative z-10 flex flex-col justify-end h-full p-8">
-                <div className={`p-4 rounded-2xl bg-white/10 backdrop-blur-sm ${selectedService.color.replace('bg-', 'text-')} border border-white/10 w-fit mb-4`}>
+                <div className={`p-4 rounded-2xl bg-gray-200 dark:bg-white/10 backdrop-blur-sm ${selectedService.color.replace('bg-', 'text-')} border border-gray-200 dark:border-white/10 w-fit mb-4`}>
                   {selectedService.icon}
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2 font-khmer leading-tight drop-shadow-lg">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 font-khmer leading-tight drop-shadow-lg">
                   {t(selectedService.title, selectedService.titleKm)}
                 </h3>
                 <p className="text-indigo-300 font-medium text-sm font-khmer drop-shadow">
@@ -327,22 +327,22 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
             <div className="flex-1 flex flex-col overflow-y-auto">
               <div className="p-8">
                 <div className="prose prose-invert max-w-none mb-8">
-                  <p className="text-gray-300 leading-relaxed font-khmer">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed font-khmer">
                     {t(selectedService.description, selectedService.descriptionKm || selectedService.description)}
                   </p>
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {(selectedService.features || []).map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/5">
+                    <div key={idx} className="flex items-center gap-3 p-4 bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5">
                       <CheckCircle2 size={18} className="text-green-400 shrink-0" />
-                      <span className="text-gray-300 text-sm font-khmer">{t(feature, feature)}</span>
+                      <span className="text-gray-700 dark:text-gray-300 text-sm font-khmer">{t(feature, feature)}</span>
                     </div>
                   ))}
                 </div>
 
                 {/* CTA */}
-                <div className="mt-8 pt-6 border-t border-white/10">
+                <div className="mt-8 pt-6 border-t border-gray-200 dark:border-white/10">
                   <button
                     onClick={() => { closeItem(); window.location.hash = '#contact'; }}
                     className="group w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-base transition-all duration-300 hover:scale-[1.02] font-khmer"

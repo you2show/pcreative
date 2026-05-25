@@ -14,10 +14,10 @@ const OfflinePage: React.FC = () => {
   }, []);
   if (isOnline) return null;
   return (
-    <div className="fixed inset-0 z-40 bg-gray-950 flex flex-col items-center justify-center p-4 text-center">
+    <div className="fixed inset-0 z-40 bg-white dark:bg-gray-950 flex flex-col items-center justify-center p-4 text-center">
       <WifiOff size={64} className="text-indigo-500 mb-6" />
-      <h1 className="text-3xl font-bold text-white font-khmer mb-4">គ្មានការតភ្ជាប់</h1>
-      <p className="text-gray-400 font-khmer">សូមពិនិត្យមើលអ៊ីនធឺណិតរបស់អ្នក។</p>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white font-khmer mb-4">គ្មានការតភ្ជាប់</h1>
+      <p className="text-gray-600 dark:text-gray-400 font-khmer">សូមពិនិត្យមើលអ៊ីនធឺណិតរបស់អ្នក។</p>
     </div>
   );
 };

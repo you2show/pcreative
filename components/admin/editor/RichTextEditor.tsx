@@ -192,35 +192,35 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, label 
     return (
         <div className="flex flex-col h-full mb-6">
             <div className="flex justify-between items-end mb-2">
-                <label className="block text-xs font-bold text-gray-400">{label}</label>
-                <div className="flex bg-gray-800 rounded-lg p-1 border border-white/10">
-                    <button type="button" onClick={() => setEditorMode('markdown')} className={`px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1 transition-all ${editorMode === 'markdown' ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:text-white'}`}><Code size={12} /> Developer</button>
-                    <button type="button" onClick={() => setEditorMode('visual')} className={`px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1 transition-all ${editorMode === 'visual' ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:text-white'}`}><Type size={12} /> General</button>
+                <label className="block text-xs font-bold text-gray-600 dark:text-gray-400">{label}</label>
+                <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1 border border-gray-200 dark:border-white/10">
+                    <button type="button" onClick={() => setEditorMode('markdown')} className={`px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1 transition-all ${editorMode === 'markdown' ? 'bg-indigo-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}><Code size={12} /> Developer</button>
+                    <button type="button" onClick={() => setEditorMode('visual')} className={`px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1 transition-all ${editorMode === 'visual' ? 'bg-indigo-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}><Type size={12} /> General</button>
                 </div>
             </div>
 
-            <div className="border border-white/10 rounded-xl overflow-hidden bg-[#0d1117] flex flex-col h-[600px] relative">
+            <div className="border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden bg-gray-50 dark:bg-[#0d1117] flex flex-col h-[600px] relative">
                 
                 {/* --- TOOLBARS --- */}
                 
                 {/* Developer Toolbar */}
                 {editorMode === 'markdown' && (
-                    <div className="flex items-center justify-between px-2 py-2 border-b border-white/10 bg-[#0d1117] shrink-0">
+                    <div className="flex items-center justify-between px-2 py-2 border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0d1117] shrink-0">
                         <div className="flex items-center gap-1">
-                            <button type="button" onClick={() => setActiveView('write')} className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeView === 'write' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'}`}>Write</button>
-                            <button type="button" onClick={() => setActiveView('preview')} className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeView === 'preview' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'}`}>Preview</button>
+                            <button type="button" onClick={() => setActiveView('write')} className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeView === 'write' ? 'bg-gray-200 dark:bg-white/10 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>Write</button>
+                            <button type="button" onClick={() => setActiveView('preview')} className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeView === 'preview' ? 'bg-gray-200 dark:bg-white/10 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>Preview</button>
                         </div>
                         {activeView === 'write' && (
                             <div className="flex items-center gap-1">
-                                <button type="button" onClick={() => insertMarkdown('# ')} className="p-1.5 text-gray-400 hover:text-white rounded hover:bg-white/10" title="Heading"><Heading size={16} /></button>
-                                <button type="button" onClick={() => insertMarkdown('**', '**')} className="p-1.5 text-gray-400 hover:text-white rounded hover:bg-white/10" title="Bold"><Bold size={16} /></button>
-                                <button type="button" onClick={() => insertMarkdown('*', '*')} className="p-1.5 text-gray-400 hover:text-white rounded hover:bg-white/10" title="Italic"><Italic size={16} /></button>
-                                <div className="w-px h-4 bg-white/10 mx-1"></div>
-                                <button type="button" onClick={() => insertMarkdown('> ')} className="p-1.5 text-gray-400 hover:text-white rounded hover:bg-white/10" title="Quote"><Quote size={16} /></button>
-                                <button type="button" onClick={() => insertMarkdown('```\n', '\n```')} className="p-1.5 text-gray-400 hover:text-white rounded hover:bg-white/10" title="Code"><Code size={16} /></button>
-                                <button type="button" onClick={() => insertMarkdown('[', '](url)')} className="p-1.5 text-gray-400 hover:text-white rounded hover:bg-white/10" title="Link"><LinkIcon size={16} /></button>
-                                <button type="button" onClick={() => insertMarkdown('![alt](', ')')} className="p-1.5 text-gray-400 hover:text-white rounded hover:bg-white/10" title="Image"><ImageIcon size={16} /></button>
-                                <button type="button" onClick={() => insertMarkdown('[[DOWNLOAD:URL:', ']]')} className="p-1.5 text-gray-400 hover:text-white rounded hover:bg-white/10" title="Download"><Download size={16} /></button>
+                                <button type="button" onClick={() => insertMarkdown('# ')} className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded hover:bg-gray-200 dark:hover:bg-white/10" title="Heading"><Heading size={16} /></button>
+                                <button type="button" onClick={() => insertMarkdown('**', '**')} className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded hover:bg-gray-200 dark:hover:bg-white/10" title="Bold"><Bold size={16} /></button>
+                                <button type="button" onClick={() => insertMarkdown('*', '*')} className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded hover:bg-gray-200 dark:hover:bg-white/10" title="Italic"><Italic size={16} /></button>
+                                <div className="w-px h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
+                                <button type="button" onClick={() => insertMarkdown('> ')} className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded hover:bg-gray-200 dark:hover:bg-white/10" title="Quote"><Quote size={16} /></button>
+                                <button type="button" onClick={() => insertMarkdown('```\n', '\n```')} className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded hover:bg-gray-200 dark:hover:bg-white/10" title="Code"><Code size={16} /></button>
+                                <button type="button" onClick={() => insertMarkdown('[', '](url)')} className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded hover:bg-gray-200 dark:hover:bg-white/10" title="Link"><LinkIcon size={16} /></button>
+                                <button type="button" onClick={() => insertMarkdown('![alt](', ')')} className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded hover:bg-gray-200 dark:hover:bg-white/10" title="Image"><ImageIcon size={16} /></button>
+                                <button type="button" onClick={() => insertMarkdown('[[DOWNLOAD:URL:', ']]')} className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded hover:bg-gray-200 dark:hover:bg-white/10" title="Download"><Download size={16} /></button>
                             </div>
                         )}
                     </div>
@@ -228,44 +228,44 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, label 
 
                 {/* Visual Toolbar */}
                 {editorMode === 'visual' && (
-                    <div className="flex items-center justify-between px-3 py-2 border-b border-white/10 bg-[#161b22] shrink-0">
+                    <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-[#161b22] shrink-0">
                         <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-                            <button type="button" onMouseDown={(e) => { e.preventDefault(); execVisualCmd('bold'); }} className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded"><Bold size={18} /></button>
-                            <button type="button" onMouseDown={(e) => { e.preventDefault(); execVisualCmd('italic'); }} className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded"><Italic size={18} /></button>
-                            <button type="button" onMouseDown={(e) => { e.preventDefault(); execVisualCmd('formatBlock', 'blockquote'); }} className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded"><Quote size={18} /></button>
-                            <div className="w-px h-5 bg-white/10 mx-1"></div>
+                            <button type="button" onMouseDown={(e) => { e.preventDefault(); execVisualCmd('bold'); }} className="p-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 rounded"><Bold size={18} /></button>
+                            <button type="button" onMouseDown={(e) => { e.preventDefault(); execVisualCmd('italic'); }} className="p-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 rounded"><Italic size={18} /></button>
+                            <button type="button" onMouseDown={(e) => { e.preventDefault(); execVisualCmd('formatBlock', 'blockquote'); }} className="p-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 rounded"><Quote size={18} /></button>
+                            <div className="w-px h-5 bg-gray-200 dark:bg-white/10 mx-1"></div>
                             
-                            <button type="button" onMouseDown={(e) => { e.preventDefault(); openLinkPopup(); }} className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded"><LinkIcon size={18} /></button>
+                            <button type="button" onMouseDown={(e) => { e.preventDefault(); openLinkPopup(); }} className="p-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 rounded"><LinkIcon size={18} /></button>
                             
                             <div className="relative">
-                                <button type="button" onClick={() => visualImageInputRef.current?.click()} className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded flex items-center gap-1">
+                                <button type="button" onClick={() => visualImageInputRef.current?.click()} className="p-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 rounded flex items-center gap-1">
                                     {isUploading ? <Loader2 size={18} className="animate-spin" /> : <ImageIcon size={18} />} <span className="text-xs">Photo</span>
                                 </button>
                                 <input type="file" ref={visualImageInputRef} className="hidden" accept="image/*" onChange={handleVisualImageUpload} />
                             </div>
 
-                            <button type="button" onMouseDown={(e) => { e.preventDefault(); openDownloadPopup(); }} className="ml-2 px-3 py-1.5 text-indigo-200 bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/20 hover:text-white rounded-lg flex items-center gap-2 font-bold text-xs transition-colors">
+                            <button type="button" onMouseDown={(e) => { e.preventDefault(); openDownloadPopup(); }} className="ml-2 px-3 py-1.5 text-indigo-600 dark:text-indigo-200 bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/20 hover:text-indigo-700 dark:hover:text-white rounded-lg flex items-center gap-2 font-bold text-xs transition-colors">
                                 <Download size={14} /> Download Button
                             </button>
                         </div>
                         
-                        <button type="button" onClick={() => setVisualPreview(!visualPreview)} className={`flex items-center gap-1 px-3 py-1 rounded text-xs font-bold ${visualPreview ? 'bg-indigo-600 text-white' : 'bg-white/5 text-gray-400'}`}>
+                        <button type="button" onClick={() => setVisualPreview(!visualPreview)} className={`flex items-center gap-1 px-3 py-1 rounded text-xs font-bold ${visualPreview ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400'}`}>
                             <Monitor size={14} /> Preview
                         </button>
                     </div>
                 )}
 
                 {/* --- EDITING AREA --- */}
-                <div className="flex-1 relative bg-[#0d1117] overflow-hidden">
+                <div className="flex-1 relative bg-gray-50 dark:bg-[#0d1117] overflow-hidden">
                     {editorMode === 'markdown' ? (
                         activeView === 'preview' ? (
-                            <div className="absolute inset-0 p-8 overflow-y-auto bg-[#0d1117]">
+                            <div className="absolute inset-0 p-8 overflow-y-auto bg-gray-50 dark:bg-[#0d1117]">
                                 <ContentRenderer content={value} />
                             </div>
                         ) : (
                             <textarea
                                 ref={textareaRef}
-                                className="w-full h-full bg-[#0d1117] p-6 text-white focus:outline-none font-mono text-sm leading-relaxed resize-none"
+                                className="w-full h-full bg-gray-50 dark:bg-[#0d1117] p-6 text-gray-900 dark:text-white focus:outline-none font-mono text-sm leading-relaxed resize-none"
                                 placeholder="Write in Markdown..."
                                 value={value}
                                 onChange={(e) => onChange(e.target.value)}
@@ -278,11 +278,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, label 
                                 contentEditable
                                 onInput={handleVisualInput}
                                 onBlur={handleVisualInput}
-                                className="w-full h-full bg-[#0d1117] p-8 text-white focus:outline-none text-lg overflow-y-auto editor-styles"
+                                className="w-full h-full bg-gray-50 dark:bg-[#0d1117] p-8 text-gray-900 dark:text-white focus:outline-none text-lg overflow-y-auto editor-styles"
                                 style={{ minHeight: '100%' }}
                             />
                             {visualPreview && (
-                                <div className="absolute inset-0 p-8 overflow-y-auto bg-[#0d1117] z-20">
+                                <div className="absolute inset-0 p-8 overflow-y-auto bg-gray-50 dark:bg-[#0d1117] z-20">
                                     <ContentRenderer content={value} />
                                 </div>
                             )}
@@ -291,35 +291,35 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, label 
 
                     {/* --- POPUPS --- */}
                     {showLinkInput && (
-                        <div className="absolute top-12 left-4 z-50 bg-gray-900 border border-white/10 p-4 rounded-xl shadow-2xl flex flex-col gap-2 w-80 animate-fade-in">
-                            <h4 className="text-xs font-bold text-gray-400 uppercase">Insert Link</h4>
-                            <input autoFocus placeholder="https://..." className="w-full bg-black/30 border border-white/10 rounded p-2 text-sm text-white" value={tempData.url} onChange={e => setTempData({...tempData, url: e.target.value})} />
+                        <div className="absolute top-12 left-4 z-50 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 p-4 rounded-xl shadow-2xl flex flex-col gap-2 w-80 animate-fade-in">
+                            <h4 className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase">Insert Link</h4>
+                            <input autoFocus placeholder="https://..." className="w-full bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded p-2 text-sm text-gray-900 dark:text-white" value={tempData.url} onChange={e => setTempData({...tempData, url: e.target.value})} />
                             <div className="flex justify-end gap-2 mt-2">
-                                <button type="button" onClick={() => setShowLinkInput(false)} className="px-3 py-1.5 text-xs text-gray-400 hover:text-white">Cancel</button>
+                                <button type="button" onClick={() => setShowLinkInput(false)} className="px-3 py-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Cancel</button>
                                 <button type="button" onClick={insertVisualLink} className="px-4 py-1.5 bg-indigo-600 rounded-lg text-xs text-white font-bold hover:bg-indigo-500">Insert</button>
                             </div>
                         </div>
                     )}
 
                     {showDownloadInput && (
-                        <div className="absolute top-12 left-1/3 z-50 bg-gray-900 border border-white/10 p-4 rounded-xl shadow-2xl flex flex-col gap-3 w-96 animate-fade-in">
+                        <div className="absolute top-12 left-1/3 z-50 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 p-4 rounded-xl shadow-2xl flex flex-col gap-3 w-96 animate-fade-in">
                             <div className="flex justify-between items-center">
                                 <h4 className="text-xs font-bold text-indigo-400 uppercase">New Download Button</h4>
-                                <button onClick={() => setShowDownloadInput(false)}><Upload size={14} className="text-gray-500 hover:text-white"/></button>
+                                <button onClick={() => setShowDownloadInput(false)}><Upload size={14} className="text-gray-500 hover:text-gray-900 dark:hover:text-white"/></button>
                             </div>
                             
                             <div className="space-y-1">
                                 <label className="text-[10px] text-gray-500 font-bold uppercase">Button Label</label>
-                                <input autoFocus placeholder="e.g. Download Annual Report" className="w-full bg-black/30 border border-white/10 rounded p-2 text-sm text-white focus:border-indigo-500 outline-none transition-colors" value={tempData.text} onChange={e => setTempData({...tempData, text: e.target.value})} />
+                                <input autoFocus placeholder="e.g. Download Annual Report" className="w-full bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded p-2 text-sm text-gray-900 dark:text-white focus:border-indigo-500 outline-none transition-colors" value={tempData.text} onChange={e => setTempData({...tempData, text: e.target.value})} />
                             </div>
                             
                             <div className="space-y-1">
                                 <label className="text-[10px] text-gray-500 font-bold uppercase">File URL</label>
-                                <input placeholder="https://drive.google.com/..." className="w-full bg-black/30 border border-white/10 rounded p-2 text-sm text-white focus:border-indigo-500 outline-none transition-colors" value={tempData.url} onChange={e => setTempData({...tempData, url: e.target.value})} />
+                                <input placeholder="https://drive.google.com/..." className="w-full bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded p-2 text-sm text-gray-900 dark:text-white focus:border-indigo-500 outline-none transition-colors" value={tempData.url} onChange={e => setTempData({...tempData, url: e.target.value})} />
                             </div>
 
-                            <div className="flex justify-end gap-2 mt-2 pt-2 border-t border-white/5">
-                                <button type="button" onClick={() => setShowDownloadInput(false)} className="px-3 py-1.5 text-xs text-gray-400 hover:text-white">Cancel</button>
+                            <div className="flex justify-end gap-2 mt-2 pt-2 border-t border-gray-100 dark:border-white/5">
+                                <button type="button" onClick={() => setShowDownloadInput(false)} className="px-3 py-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Cancel</button>
                                 <button type="button" onClick={insertVisualDownload} className="px-4 py-1.5 bg-indigo-600 rounded-lg text-xs text-white font-bold hover:bg-indigo-500 flex items-center gap-1">
                                     <Download size={12} /> Insert Button
                                 </button>

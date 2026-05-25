@@ -123,19 +123,19 @@ const Testimonials: React.FC = () => {
   };
 
   return (
-    <section className="py-24 bg-gray-900 overflow-hidden relative border-y border-white/5">
+    <section className="py-24 bg-gray-50 dark:bg-gray-900 overflow-hidden relative border-y border-gray-100 dark:border-white/5">
       {/* Background Text */}
       <ScrollBackgroundText text="STORIES" className="top-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center relative z-10">
         <RevealOnScroll>
-          <h2 className="text-3xl md:text-4xl font-bold text-white font-khmer mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white font-khmer mb-6">
              {t('Client', 'សក្ខីកម្ម')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{t('Stories', 'អតិថិជន')}</span>
           </h2>
           
           <button 
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-white/30 transition-all font-khmer text-sm font-bold shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)]"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 hover:border-gray-300 dark:hover:border-white/30 transition-all font-khmer text-sm font-bold shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)]"
           >
               <MessageSquare size={16} className="text-purple-400" />
               {t('Share Your Experience', 'ចែករំលែកបទពិសោធន៍របស់អ្នក')}
@@ -146,15 +146,15 @@ const Testimonials: React.FC = () => {
       {/* Infinite Scrolling Marquee */}
       <div className="relative w-full overflow-hidden z-10">
         <RevealOnScroll delay={200}>
-          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-gray-900 to-transparent z-10" />
-          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-gray-900 to-transparent z-10" />
+          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-gray-50 dark:from-gray-900 to-transparent z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-gray-50 dark:from-gray-900 to-transparent z-10" />
           
           <div className="flex animate-scroll gap-6 w-max hover:pause">
             {/* Double map to ensure seamless loop - Using the State 'reviews' instead of constant */}
             {[...reviews, ...reviews].map((tm, idx) => (
               <div 
                 key={`${tm.id}-${idx}`}
-                className="w-[350px] md:w-[450px] bg-white/5 backdrop-blur-sm border border-white/5 p-8 rounded-2xl shrink-0 hover:bg-white/10 transition-colors"
+                className="w-[350px] md:w-[450px] bg-gray-100 dark:bg-white/5 backdrop-blur-sm border border-gray-100 dark:border-white/5 p-8 rounded-2xl shrink-0 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
               >
                 <div className="flex gap-1 mb-4">
                   {[1, 2, 3, 4, 5].map((s) => (
@@ -164,7 +164,7 @@ const Testimonials: React.FC = () => {
                 
                 <div className="mb-6 relative">
                    <Quote className="absolute -top-2 -left-2 text-indigo-500/20 transform scale-150 rotate-180" size={40} />
-                   <p className="text-gray-300 text-lg relative z-10 italic font-khmer line-clamp-4">
+                   <p className="text-gray-700 dark:text-gray-300 text-lg relative z-10 italic font-khmer line-clamp-4">
                       "{t(tm.content, tm.contentKm || tm.content)}"
                    </p>
                 </div>
@@ -173,10 +173,10 @@ const Testimonials: React.FC = () => {
                   <img 
                     src={tm.avatar} 
                     alt={tm.name} 
-                    className="w-12 h-12 rounded-full object-cover border-2 border-indigo-500/30 bg-gray-800" 
+                    className="w-12 h-12 rounded-full object-cover border-2 border-indigo-500/30 bg-gray-100 dark:bg-gray-800" 
                   />
                   <div>
-                    <h4 className="text-white font-bold">{tm.name}</h4>
+                    <h4 className="text-gray-900 dark:text-white font-bold">{tm.name}</h4>
                     <p className="text-indigo-400 text-xs">{tm.role} {tm.company ? `, ${tm.company}` : ''}</p>
                   </div>
                 </div>
@@ -191,17 +191,17 @@ const Testimonials: React.FC = () => {
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
             {/* Backdrop */}
             <div 
-                className="absolute inset-0 bg-gray-950/90 backdrop-blur-md animate-fade-in"
+                className="absolute inset-0 bg-white/90 dark:bg-gray-950/90 backdrop-blur-md animate-fade-in"
                 onClick={resetForm}
             />
 
-            <div className="relative w-full max-w-lg bg-gray-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-scale-up">
+            <div className="relative w-full max-w-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-scale-up">
                 {/* Header */}
-                <div className="flex justify-between items-center p-6 border-b border-white/5 bg-white/5">
-                    <h3 className="text-xl font-bold text-white font-khmer">
+                <div className="flex justify-between items-center p-6 border-b border-gray-100 dark:border-white/5 bg-gray-100 dark:bg-white/5">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white font-khmer">
                         {isSubmitted ? t('Thank You!', 'សូមអរគុណ!') : t('Write a Review', 'សរសេរការវាយតម្លៃ')}
                     </h3>
-                    <button onClick={resetForm} className="text-gray-400 hover:text-white transition-colors">
+                    <button onClick={resetForm} className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <X size={20} />
                     </button>
                 </div>
@@ -212,8 +212,8 @@ const Testimonials: React.FC = () => {
                             <div className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Send size={32} />
                             </div>
-                            <h4 className="text-2xl font-bold text-white mb-2 font-khmer">{t('Feedback Received', 'ទទួលបានមតិយោបល់')}</h4>
-                            <p className="text-gray-400 font-khmer">
+                            <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 font-khmer">{t('Feedback Received', 'ទទួលបានមតិយោបល់')}</h4>
+                            <p className="text-gray-600 dark:text-gray-400 font-khmer">
                                 {t(
                                     'Your review has been submitted successfully. Thank you for sharing your experience with us!', 
                                     'ការវាយតម្លៃរបស់អ្នកត្រូវបានដាក់ស្នើដោយជោគជ័យ។ សូមអរគុណសម្រាប់ការចែករំលែកបទពិសោធន៍របស់អ្នកជាមួយយើង!'
@@ -230,7 +230,7 @@ const Testimonials: React.FC = () => {
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Star Rating */}
                             <div className="flex flex-col items-center gap-2 mb-6">
-                                <span className="text-sm font-bold text-gray-400 uppercase tracking-wider font-khmer">{t('Rate your experience', 'វាយតម្លៃបទពិសោធន៍របស់អ្នក')}</span>
+                                <span className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider font-khmer">{t('Rate your experience', 'វាយតម្លៃបទពិសោធន៍របស់អ្នក')}</span>
                                 <div className="flex gap-2">
                                     {[1, 2, 3, 4, 5].map((star) => (
                                         <button
@@ -256,7 +256,7 @@ const Testimonials: React.FC = () => {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-gray-400 ml-1 font-khmer">{t('Name', 'ឈ្មោះ')}</label>
+                                    <label className="text-xs font-bold text-gray-600 dark:text-gray-400 ml-1 font-khmer">{t('Name', 'ឈ្មោះ')}</label>
                                     <div className="relative">
                                         <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                                         <input 
@@ -264,20 +264,20 @@ const Testimonials: React.FC = () => {
                                             value={formName}
                                             onChange={e => setFormName(e.target.value)}
                                             type="text" 
-                                            className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-gray-600 font-khmer text-sm" 
+                                            className="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-gray-600 font-khmer text-sm" 
                                             placeholder={t('Your Name', 'ឈ្មោះរបស់អ្នក')} 
                                         />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-gray-400 ml-1 font-khmer">{t('Role / Company', 'តួនាទី / ក្រុមហ៊ុន')}</label>
+                                    <label className="text-xs font-bold text-gray-600 dark:text-gray-400 ml-1 font-khmer">{t('Role / Company', 'តួនាទី / ក្រុមហ៊ុន')}</label>
                                     <div className="relative">
                                         <Briefcase size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                                         <input 
                                             value={formRole}
                                             onChange={e => setFormRole(e.target.value)}
                                             type="text" 
-                                            className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-gray-600 font-khmer text-sm" 
+                                            className="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-gray-600 font-khmer text-sm" 
                                             placeholder={t('CEO at Company', 'នាយកប្រតិបត្តិ')} 
                                         />
                                     </div>
@@ -285,13 +285,13 @@ const Testimonials: React.FC = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-gray-400 ml-1 font-khmer">{t('Message', 'សារ')}</label>
+                                <label className="text-xs font-bold text-gray-600 dark:text-gray-400 ml-1 font-khmer">{t('Message', 'សារ')}</label>
                                 <textarea 
                                     required 
                                     value={formMsg}
                                     onChange={e => setFormMsg(e.target.value)}
                                     rows={4} 
-                                    className="w-full p-4 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-gray-600 font-khmer text-sm resize-none" 
+                                    className="w-full p-4 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-gray-600 font-khmer text-sm resize-none" 
                                     placeholder={t('Share your thoughts...', 'ចែករំលែកមតិរបស់អ្នក...')} 
                                 />
                             </div>

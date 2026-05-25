@@ -16,7 +16,7 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({ className = '', count = 1 }
       {Array.from({ length: count }).map((_, index) => (
         <div
           key={index}
-          className={`${className} bg-gray-800 rounded-xl overflow-hidden border border-white/5 animate-pulse`}
+          className={`${className} bg-gray-200 dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-100 dark:border-white/5 animate-pulse`}
         >
           {/* Image Skeleton */}
           <div className="w-full h-48 md:h-64 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer" />

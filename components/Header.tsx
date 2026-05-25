@@ -198,12 +198,12 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
   return (
     <>
       <header className="fixed top-6 left-0 right-0 z-50 transition-all duration-300 flex justify-center px-4">
-        <div className={`flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2.5 md:py-3 rounded-full border transition-all duration-300 w-full max-w-7xl ${isScrolled ? 'bg-gray-950/80 backdrop-blur-xl border-white/10 shadow-2xl shadow-indigo-500/10' : 'bg-white/5 backdrop-blur-md border-white/5'}`}>
+        <div className={`flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2.5 md:py-3 rounded-full border transition-all duration-300 w-full max-w-7xl ${isScrolled ? 'bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-gray-200 dark:border-white/10 shadow-2xl shadow-indigo-500/10' : 'bg-gray-100 dark:bg-white/5 backdrop-blur-md border-gray-100 dark:border-white/5'}`}>
           <a href="#home" onClick={(e) => scrollToSection(e, '#home')} className="flex items-center gap-2 group relative z-50">
             <PonloeLogo size={40} />
             <span className="flex items-center">
               <span
-                className="text-lg md:text-xl font-bold font-khmer tracking-tight text-white group-hover:text-indigo-400 transition-colors"
+                className="text-lg md:text-xl font-bold font-khmer tracking-tight text-gray-900 dark:text-white group-hover:text-indigo-400 transition-colors"
               >p</span>
               <span
                 className="text-gray-500 font-normal text-lg md:text-xl font-khmer"
@@ -213,20 +213,20 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
 
           <nav ref={navRef} className="hidden lg:flex items-center relative">
             {/* Left fade edge */}
-            <div className={`absolute left-0 top-0 bottom-0 w-8 rounded-l-full bg-gradient-to-r from-gray-950/60 to-transparent pointer-events-none z-20 transition-opacity duration-200 ${showLeftFade ? 'opacity-100' : 'opacity-0'}`} />
+            <div className={`absolute left-0 top-0 bottom-0 w-8 rounded-l-full bg-gradient-to-r from-white/60 dark:from-gray-950/60 to-transparent pointer-events-none z-20 transition-opacity duration-200 ${showLeftFade ? 'opacity-100' : 'opacity-0'}`} />
               {/* max-w-[46vw]: caps width on lg so items overflow into scrollable area; xl screens have room for all items */}
             <div
               ref={navScrollRef}
-              className="flex items-center relative bg-white/5 p-1.5 rounded-full border border-white/5 overflow-x-auto scrollbar-hide max-w-[46vw] xl:max-w-none"
+              className="flex items-center relative bg-gray-100 dark:bg-white/5 p-1.5 rounded-full border border-gray-100 dark:border-white/5 overflow-x-auto scrollbar-hide max-w-[46vw] xl:max-w-none"
               style={{ WebkitOverflowScrolling: 'touch' } as React.CSSProperties}
             >
-              <div className="absolute top-1.5 bottom-1.5 rounded-full bg-white/10 transition-all duration-500 ease-out" style={{ left: `${indicatorStyle.left}px`, width: `${indicatorStyle.width}px`, opacity: indicatorStyle.opacity }} />
+              <div className="absolute top-1.5 bottom-1.5 rounded-full bg-gray-200 dark:bg-white/10 transition-all duration-500 ease-out" style={{ left: `${indicatorStyle.left}px`, width: `${indicatorStyle.width}px`, opacity: indicatorStyle.opacity }} />
               {navLinks.map((link, index) => (
-                <a key={link.name} href={link.href} ref={(el) => { itemsRef.current[index] = el }} onClick={(e) => scrollToSection(e, link.href)} className={`relative z-10 px-3 xl:px-4 py-2 rounded-full text-sm font-medium font-khmer transition-colors duration-300 whitespace-nowrap flex-shrink-0 ${activeSection === link.href.substring(1) ? 'text-white' : 'text-gray-400 hover:text-white'}`}>{link.name}</a>
+                <a key={link.name} href={link.href} ref={(el) => { itemsRef.current[index] = el }} onClick={(e) => scrollToSection(e, link.href)} className={`relative z-10 px-3 xl:px-4 py-2 rounded-full text-sm font-medium font-khmer transition-colors duration-300 whitespace-nowrap flex-shrink-0 ${activeSection === link.href.substring(1) ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>{link.name}</a>
               ))}
             </div>
             {/* Right fade edge */}
-            <div className={`absolute right-0 top-0 bottom-0 w-8 rounded-r-full bg-gradient-to-l from-gray-950/60 to-transparent pointer-events-none z-20 transition-opacity duration-200 ${showRightFade ? 'opacity-100' : 'opacity-0'}`} />
+            <div className={`absolute right-0 top-0 bottom-0 w-8 rounded-r-full bg-gradient-to-l from-white/60 dark:from-gray-950/60 to-transparent pointer-events-none z-20 transition-opacity duration-200 ${showRightFade ? 'opacity-100' : 'opacity-0'}`} />
           </nav>
 
           <div className="flex items-center gap-2 md:gap-4 relative z-50">
@@ -236,15 +236,15 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
                      hapticTap();
                      setIsLangMenuOpen(!isLangMenuOpen);
                    }}
-                   className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-xs md:text-sm font-medium text-gray-300 hover:text-white"
+                   className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-2.5 rounded-full bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-100 dark:border-white/5 transition-all text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                  >
                     <img src={currentFlag} alt={language} className="w-4 h-4 md:w-5 md:h-5 rounded-full object-cover" />
                     <span className="uppercase hidden md:inline">{languageName}</span>
                     <ChevronDown size={14} className={`transition-transform ${isLangMenuOpen ? 'rotate-180' : ''}`} />
                  </button>
                  {isLangMenuOpen && (
-                     <div className="absolute top-full right-0 mt-2 w-48 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden p-1.5 animate-scale-up origin-top-right">
-                        <div className="px-3 py-2 border-b border-white/5 mb-1 flex items-center gap-2 text-gray-500">
+                     <div className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-900/95 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden p-1.5 animate-scale-up origin-top-right">
+                        <div className="px-3 py-2 border-b border-gray-100 dark:border-white/5 mb-1 flex items-center gap-2 text-gray-600 dark:text-gray-500">
                           <Globe size={12} />
                           <span className="text-[10px] font-bold uppercase tracking-widest">Select Language</span>
                         </div>
@@ -253,7 +253,7 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
                               <button 
                                 key={lang.code} 
                                 onClick={() => handleLanguageChange(lang.code)}
-                                className={`flex items-center justify-between w-full px-4 py-2 text-xs md:text-sm rounded-xl transition-colors font-khmer ${language === lang.code ? 'bg-indigo-600/20 text-indigo-300' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+                                className={`flex items-center justify-between w-full px-4 py-2 text-xs md:text-sm rounded-xl transition-colors font-khmer ${language === lang.code ? 'bg-indigo-600/20 text-indigo-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}`}
                               >
                                   <span className="flex items-center gap-3"><img src={lang.flag} alt={lang.label} className="w-5 h-5 rounded-full object-cover" /><span>{lang.label}</span></span>
                                   {language === lang.code && <Check size={14} />}
@@ -264,7 +264,7 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
                  )}
              </div>
 
-             <button onClick={() => { hapticTap(); onGetQuote?.(); }} className="hidden sm:flex group px-5 py-2.5 rounded-full bg-white text-gray-950 font-bold text-sm hover:scale-105 transition-all duration-300 items-center gap-2 font-khmer">
+             <button onClick={() => { hapticTap(); onGetQuote?.(); }} className="hidden sm:flex group px-5 py-2.5 rounded-full bg-gray-900 text-white dark:bg-white dark:text-gray-950 font-bold text-sm hover:scale-105 transition-all duration-300 items-center gap-2 font-khmer">
               {t("Get a Quote", "ស្នើសុំតម្លៃ")} <ArrowUpRight size={16} className="group-hover:rotate-45 transition-transform" />
             </button>
 
@@ -274,17 +274,17 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
               <SoundToggle />
             </div>
 
-            <button onClick={toggleMenu} className="lg:hidden text-white p-2">
+            <button onClick={toggleMenu} className="lg:hidden text-gray-900 dark:text-white p-2">
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
       </header>
 
-      <div className={`fixed inset-0 bg-gray-950 z-40 flex items-center justify-center transition-all duration-500 ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+      <div className={`fixed inset-0 bg-white dark:bg-gray-950 z-40 flex items-center justify-center transition-all duration-500 ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
          <div className="flex flex-col items-center gap-8 relative z-10 w-full max-w-sm px-6 overflow-y-auto max-h-[calc(100dvh-6rem)] py-8">
           {mobileNavLinks.map((link, idx) => (
-            <a key={link.name} href={link.href} onClick={(e) => scrollToSection(e, link.href)} className={`text-3xl font-bold font-khmer text-white hover:text-indigo-400 transition-all transform ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: `${idx * 80}ms` }}>{link.name}</a>
+            <a key={link.name} href={link.href} onClick={(e) => scrollToSection(e, link.href)} className={`text-3xl font-bold font-khmer text-gray-900 dark:text-white hover:text-indigo-400 transition-all transform ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: `${idx * 80}ms` }}>{link.name}</a>
           ))}
           <a href="#contact" onClick={(e) => scrollToSection(e, '#contact')} className={`w-full text-center px-8 py-4 rounded-full bg-indigo-600 text-white font-bold text-lg font-khmer shadow-xl transform ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: `${mobileNavLinks.length * 80}ms` }}>{t("Start a Project", "ចាប់ផ្តើមគម្រោង")}</a>
         </div>

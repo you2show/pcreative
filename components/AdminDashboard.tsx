@@ -563,24 +563,24 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   if (!dbConfig) {
       // ... (Rest of setup screen code is identical)
       return (
-          <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center p-6 relative">
+          <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white flex items-center justify-center p-6 relative">
                {/* ... */}
-               <div className="relative z-10 max-w-md w-full bg-gray-900 border border-white/10 rounded-3xl p-8 shadow-2xl">
+               <div className="relative z-10 max-w-md w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-3xl p-8 shadow-2xl">
                    {/* ... */}
                    <form onSubmit={handleConfigSave} className="space-y-4">
                        <div>
                            <label className="block text-xs font-bold text-gray-500 mb-1">Project URL</label>
-                           <input id="dbUrl" type="text" className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="https://xyz.supabase.co" required />
+                           <input id="dbUrl" type="text" className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="https://xyz.supabase.co" required />
                        </div>
                        <div>
                            <label className="block text-xs font-bold text-gray-500 mb-1">Anon / Public Key</label>
-                           <input id="dbKey" type="password" className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="eyJh..." required />
+                           <input id="dbKey" type="password" className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="eyJh..." required />
                        </div>
                        <button type="submit" className="w-full py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl transition-all font-khmer">
                            Connect
                        </button>
                    </form>
-                   <button onClick={onLogout} className="absolute top-6 right-6 text-gray-500 hover:text-white flex items-center gap-2">Exit</button>
+                   <button onClick={onLogout} className="absolute top-6 right-6 text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center gap-2">Exit</button>
                </div>
           </div>
       );
@@ -593,7 +593,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   const MobileNavButton = ({ tab, icon: Icon, label }: { tab: TabType, icon: any, label: string }) => (
       <button 
         onClick={() => setActiveTab(tab)}
-        className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all min-w-[70px] ${activeTab === tab ? 'text-indigo-400 bg-white/5' : 'text-gray-500'}`}
+        className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all min-w-[70px] ${activeTab === tab ? 'text-indigo-400 bg-gray-100 dark:bg-white/5' : 'text-gray-500'}`}
       >
           <Icon size={20} />
           <span className="text-[10px] font-bold">{label}</span>
@@ -621,7 +621,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white flex flex-col">
        <AdminHeader 
           currentUser={currentUser}
           isSuperAdmin={currentUser.role === 'admin'}
@@ -635,7 +635,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
        />
 
        {/* Mobile Navigation Bar */}
-       <div className="md:hidden fixed top-16 left-0 right-0 h-16 bg-gray-900 border-b border-white/10 flex items-center px-4 overflow-x-auto gap-2 z-40 no-scrollbar">
+       <div className="md:hidden fixed top-16 left-0 right-0 h-16 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-white/10 flex items-center px-4 overflow-x-auto gap-2 z-40 no-scrollbar">
            <MobileNavButton tab="team" icon={Users} label={currentUser.role === 'admin' ? "Team" : "Profile"} />
            <MobileNavButton tab="insights" icon={FileText} label="Articles" />
            <MobileNavButton tab="projects" icon={Briefcase} label="Projects" />
@@ -661,7 +661,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
              <div className="flex justify-between items-center mb-6 md:mb-8">
                 <div>
                    <h1 className="text-2xl md:text-3xl font-bold font-khmer capitalize">{activeTab}</h1>
-                   <p className="text-gray-400 text-xs md:text-sm">Manage your {activeTab} content directly.</p>
+                   <p className="text-gray-600 dark:text-gray-400 text-xs md:text-sm">Manage your {activeTab} content directly.</p>
                 </div>
                 
                 {/* Add New Button: Visible for Admins OR if on Projects Tab OR Insights Tab */}
@@ -677,17 +677,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 
              {activeTab === 'settings' ? (
                  <div className="space-y-6 max-w-xl">
-                     <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
+                     <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-2xl p-6">
                          <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><Database size={20} className="text-green-400"/> Database Config</h3>
-                         <p className="text-gray-400 text-sm mb-4">Connected to: <span className="text-green-400">{dbConfig.url}</span></p>
+                         <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">Connected to: <span className="text-green-400">{dbConfig.url}</span></p>
                          <button onClick={clearConfig} className="px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg hover:bg-red-500/20 text-sm font-bold">
                             {localStorage.getItem('supabase_url') ? "Reset to Defaults" : "Reload Connection"}
                          </button>
                      </div>
-                      <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
+                      <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-2xl p-6">
                           <h3 className="text-xl font-bold mb-2 flex items-center gap-2"><Settings size={20} className="text-indigo-400"/> ImgBB Image Upload</h3>
-                          <p className="text-gray-400 text-sm mb-1">ImgBB API Key ត្រូវការដើម្បី upload រូបភាព។ យក key ពី <a href="https://imgbb.com/account/api" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">imgbb.com/account/api</a></p>
-                          <p className="text-gray-500 text-xs mb-4">💡 Vercel environment variable name: <code className="bg-gray-800 px-1 rounded text-indigo-300">VITE_IMGBB_API_KEY</code></p>
+                          <p className="text-gray-600 dark:text-gray-400 text-sm mb-1">ImgBB API Key ត្រូវការដើម្បី upload រូបភាព។ យក key ពី <a href="https://imgbb.com/account/api" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">imgbb.com/account/api</a></p>
+                          <p className="text-gray-500 text-xs mb-4">💡 Vercel environment variable name: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded text-indigo-300">VITE_IMGBB_API_KEY</code></p>
                           {isEnvImgBBConfigured ? (
                               <div className="flex items-center gap-2 rounded-xl border border-green-500/20 bg-green-500/10 p-3 text-sm text-green-400">
                                   <CheckCircle size={16} />
@@ -708,7 +708,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                                           type="password"
                                           defaultValue={localStorage.getItem('imgbb_api_key') || ''}
                                           placeholder="ImgBB API Key..."
-                                          className="flex-1 bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                          className="flex-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                       />
                                       <button type="submit" className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm transition-all">Save</button>
                                   </form>
@@ -723,12 +723,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
 
                       {/* GitHub Configuration — must appear before Telegram so users set it up first */}
                       {isServerGitHubConfigured ? (
-                          <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
-                              <h3 className="text-xl font-bold text-white mb-2">GitHub Configuration</h3>
+                          <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-2xl p-6">
+                              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">GitHub Configuration</h3>
                               <p className="text-sm text-green-400 mb-2 flex items-center gap-2">
                                   <CheckCircle size={15} /> Connected from Vercel environment
                               </p>
-                              <p className="text-xs text-gray-400 mb-4">
+                              <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">
                                   {envConfigStatus?.github?.username}/{envConfigStatus?.github?.repo}@{envConfigStatus?.github?.branch}
                               </p>
                               <button
@@ -753,7 +753,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                                           setIsServerGitHubTesting(false);
                                       }
                                   }}
-                                  className="w-full py-3 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+                                  className="w-full py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 disabled:opacity-50 text-gray-900 dark:text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
                               >
                                   {isServerGitHubTesting ? <Loader2 size={16} className="animate-spin" /> : null}
                                   {isServerGitHubTesting ? 'Testing...' : '🔍 Test Connection'}
@@ -783,9 +783,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                       )}
 
                      {/* Telegram Live Chat Config */}
-                     <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
+                     <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-2xl p-6">
                          <h3 className="text-xl font-bold mb-2 flex items-center gap-2"><Send size={20} className="text-[#229ED9]"/> Telegram Live Chat</h3>
-                         <p className="text-gray-400 text-sm mb-1">
+                         <p className="text-gray-600 dark:text-gray-400 text-sm mb-1">
                              កំណត់ Telegram Bot ដើម្បីបើក Live Chat widget។ <br/>
                              Bot Token ពី <a href="https://t.me/BotFather" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">@BotFather</a> &nbsp;·&nbsp; Chat ID អាចជា Group ID ឬ Channel ID។
                          </p>
@@ -847,7 +847,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                                           type="password"
                                           defaultValue={(() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').botToken || ''; } catch { return ''; } })()}
                                           placeholder="Bot Token (e.g. 123456:ABC-DEF...)"
-                                          className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                          className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                       />
                                       <div className="flex gap-2">
                                           <input
@@ -855,7 +855,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                                               type="text"
                                               defaultValue={(() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').chatId || ''; } catch { return ''; } })()}
                                               placeholder="Chat ID (e.g. -1001234567890)"
-                                              className="flex-1 bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                              className="flex-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                           />
                                           <button type="submit" disabled={isSyncing} className="px-4 py-2 bg-[#229ED9] hover:bg-[#1a8bc7] text-white rounded-xl font-bold text-sm transition-all disabled:opacity-50">
                                               {isSyncing ? '...' : 'Save'}
@@ -866,7 +866,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                                           type="number"
                                           defaultValue={(() => { try { return JSON.parse(localStorage.getItem('telegram_chat_config') || '{}').adminUserId || ''; } catch { return ''; } })()}
                                           placeholder="Admin User ID (optional — ប្រើ @userinfobot)"
-                                          className="w-full bg-gray-800 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm placeholder-gray-500"
+                                          className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm placeholder-gray-500"
                                       />
                                       <p className="text-gray-500 text-xs">
                                           💡 <b>Admin User ID</b>: បញ្ចូល Telegram User ID របស់ Admin ដើម្បីឱ្យ live chat ទទួល reply ត្រឹមត្រូវ ១០០%។ ផ្ញើ <code>/start</code> ទៅ <b>@userinfobot</b> ក្នុង Telegram ដើម្បីរកដឹង ID របស់អ្នក (គ្រាន់តែលេខ ដូចជា <code>123456789</code>)។
@@ -910,7 +910,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout, currentUser, 
                                      setIsTesting(false);
                                  }
                              }}
-                             className="mt-3 px-4 py-2 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white rounded-xl text-sm font-medium transition-all"
+                             className="mt-3 px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 disabled:opacity-50 text-gray-900 dark:text-white rounded-xl text-sm font-medium transition-all"
                          >
                              {isTesting ? 'Testing...' : '🔍 Test Connection'}
                          </button>

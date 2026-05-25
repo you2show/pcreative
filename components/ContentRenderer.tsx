@@ -41,7 +41,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'text' }) => {
     };
 
     return (
-        <div className="my-6 rounded-xl overflow-hidden bg-[#1e1e1e] border border-white/10 shadow-2xl">
+        <div className="my-6 rounded-xl overflow-hidden bg-[#1e1e1e] border border-gray-200 dark:border-white/10 shadow-2xl">
             <div className="flex justify-between items-center px-4 py-3 bg-[#252526] border-b border-white/5">
                 <div className="flex gap-2">
                     <div className="w-3 h-3 rounded-full bg-[#FF5F56]" />
@@ -51,8 +51,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'text' }) => {
                 <div className="text-xs font-mono text-gray-500 uppercase">{language}</div>
                 <button 
                     onClick={handleCopy} 
-                    className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors px-2 py-1 rounded hover:bg-white/10"
-                >
+                    className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors px-2 py-1 rounded hover:bg-white/10"                >
                     {copied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
                     {copied ? 'Copied' : 'Copy'}
                 </button>
@@ -73,7 +72,7 @@ const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
     const parts = content.split(/(```[\s\S]*?```)/g);
 
     return (
-        <div className="text-gray-300 leading-relaxed font-khmer text-lg">
+        <div className="text-gray-600 dark:text-gray-300 leading-relaxed font-khmer text-lg">
             {parts.map((part, index) => {
                 if (part.startsWith('```')) {
                     const lines = part.split('\n');
@@ -101,7 +100,7 @@ const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
                     // Blockquotes
                     if (trimmed.startsWith('> ')) {
                         return (
-                            <blockquote key={key} className="border-l-4 border-indigo-500 pl-6 italic text-gray-400 my-6 bg-indigo-900/10 p-6 rounded-r-2xl border-y border-r border-indigo-500/10 relative">
+                            <blockquote key={key} className="border-l-4 border-indigo-500 pl-6 italic text-gray-500 dark:text-gray-400 my-6 bg-indigo-900/10 p-6 rounded-r-2xl border-y border-r border-indigo-500/10 relative">
                                 <Quote className="absolute top-4 right-4 text-indigo-500/10 rotate-180" size={40}/>
                                 <span className="relative z-10">{trimmed.substring(2)}</span>
                             </blockquote>
@@ -112,9 +111,9 @@ const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
                     if (imgMatch) {
                         const [_, alt, src] = imgMatch;
                         return (
-                            <div key={key} className="my-8 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-gray-900 group">
+                            <div key={key} className="my-8 rounded-2xl overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl bg-gray-50 dark:bg-gray-900 group">
                                 <img src={src} alt={alt} className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
-                                {alt && <p className="text-center text-xs text-gray-500 mt-2 p-3 bg-gray-950/50 italic border-t border-white/5">{alt}</p>}
+                                {alt && <p className="text-center text-xs text-gray-500 mt-2 p-3 bg-gray-100 dark:bg-gray-950/50 italic border-t border-gray-100 dark:border-white/5">{alt}</p>}
                             </div>
                         );
                     }
@@ -129,7 +128,7 @@ const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
                                     href={url} 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className="group relative flex items-center justify-between p-1 rounded-2xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-white/10 hover:border-indigo-500/50 transition-all duration-300 overflow-hidden"
+                                    className="group relative flex items-center justify-between p-1 rounded-2xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-gray-200 dark:border-white/10 hover:border-indigo-500/50 transition-all duration-300 overflow-hidden"
                                 >
                                     {/* Hover Glow */}
                                     <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -139,14 +138,14 @@ const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
                                             <Download size={24} />
                                         </div>
                                         <div>
-                                            <h4 className="text-lg font-bold text-white group-hover:text-indigo-300 transition-colors font-khmer">{label}</h4>
+                                            <h4 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-indigo-300 transition-colors font-khmer">{label}</h4>
                                             <p className="text-xs text-indigo-300/70 uppercase tracking-wider font-bold flex items-center gap-1 mt-1">
                                                 Click to Download
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="pr-6 text-gray-500 group-hover:text-white transition-colors relative z-10 hidden md:block">
+                                    <div className="pr-6 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors relative z-10 hidden md:block">
                                         <ExternalLink size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                                     </div>
                                 </a>
@@ -158,10 +157,10 @@ const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
                         const level = trimmed.match(/^#+/)?.[0].length || 0;
                         const text = trimmed.replace(/^#+\s*/, '');
                         const sizes = {
-                            1: 'text-4xl mt-12 mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400',
-                            2: 'text-3xl mt-10 mb-5 text-white',
-                            3: 'text-2xl mt-8 mb-4 text-indigo-200',
-                            4: 'text-xl mt-6 mb-3 text-white',
+                            1: 'text-4xl mt-12 mb-6 text-transparent bg-clip-text bg-gradient-to-r from-gray-900 dark:from-white to-gray-500 dark:to-gray-400',
+                            2: 'text-3xl mt-10 mb-5 text-gray-900 dark:text-white',
+                            3: 'text-2xl mt-8 mb-4 text-indigo-700 dark:text-indigo-200',
+                            4: 'text-xl mt-6 mb-3 text-gray-900 dark:text-white',
                         };
                         const className = `${sizes[level as 1|2|3|4] || 'text-lg font-bold mt-4 mb-2'} font-bold font-khmer leading-tight`;
                         return <h3 key={key} className={className}>{text}</h3>;
@@ -169,7 +168,7 @@ const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
 
                     if (/^(\d+\.|-)\s/.test(trimmed)) {
                         const content = trimmed.replace(/^(\d+\.|-)\s/, '');
-                        const boldedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>');
+                        const boldedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-900 dark:text-white font-bold">$1</strong>');
                         
                         // Check if link inside list item
                         const linkedContent = boldedContent.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener" class="text-indigo-400 hover:text-indigo-300 underline underline-offset-4 decoration-indigo-500/30 hover:decoration-indigo-500 transition-all">$1</a>');
@@ -177,15 +176,15 @@ const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
                         return (
                             <div key={key} className="flex items-start gap-4 mb-3 ml-2 group">
                                 <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-indigo-500 group-hover:scale-150 transition-transform shrink-0 shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
-                                <span dangerouslySetInnerHTML={{ __html: linkedContent }} className="text-gray-300 group-hover:text-gray-200 transition-colors" />
+                                <span dangerouslySetInnerHTML={{ __html: linkedContent }} className="text-gray-600 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors" />
                             </div>
                         );
                     }
 
-                    let htmlContent = trimmed.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>');
+                    let htmlContent = trimmed.replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-900 dark:text-white font-bold">$1</strong>');
                     htmlContent = htmlContent.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener" class="text-indigo-400 hover:text-indigo-300 underline underline-offset-4 decoration-indigo-500/30 hover:decoration-indigo-500 transition-all font-bold">$1</a>');
                     
-                    return <p key={key} dangerouslySetInnerHTML={{ __html: htmlContent }} className="mb-4 text-lg text-gray-300 leading-8" />;
+                    return <p key={key} dangerouslySetInnerHTML={{ __html: htmlContent }} className="mb-4 text-lg text-gray-600 dark:text-gray-300 leading-8" />;
                 });
             })}
         </div>

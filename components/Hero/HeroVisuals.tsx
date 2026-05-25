@@ -112,7 +112,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
             {particles.map((p, i) => (
                 <div
                     key={i}
-                    className="absolute bg-white/20 rounded-full animate-float-particle"
+                    className="absolute bg-gray-300 dark:bg-white/20 rounded-full animate-float-particle"
                     style={{
                         left: `${p.x}%`,
                         top: `${p.y}%`,
@@ -137,7 +137,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
                 <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/20 rounded-full blur-[60px] transition-all duration-500 ${isCoreHovered || !isOrbiting ? 'scale-125 opacity-80' : 'scale-100 opacity-40 animate-pulse'}`}></div>
                 
                 {/* Physical Core Container - Set to ~22 units (w-20) */}
-                <div className={`relative w-20 h-20 bg-gray-950/90 backdrop-blur-xl border-2 transition-all duration-500 rounded-full flex items-center justify-center z-20 animate-float ${isCoreHovered || !isOrbiting ? 'border-indigo-400 shadow-[0_0_50px_rgba(99,102,241,0.5)] scale-110' : 'border-white/10'}`}>
+                <div className={`relative w-20 h-20 bg-white/90 dark:bg-gray-950/90 backdrop-blur-xl border-2 transition-all duration-500 rounded-full flex items-center justify-center z-20 animate-float ${isCoreHovered || !isOrbiting ? 'border-indigo-400 shadow-[0_0_50px_rgba(99,102,241,0.5)] scale-110' : 'border-gray-200 dark:border-white/10'}`}>
                     
                     {/* SVG LOGO - Increased to ~42 units (w-40) which overflows the core beautifully */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -240,8 +240,8 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
                                 <div className="absolute inset-0 rounded-full border border-indigo-400 opacity-0 ripple-effect" style={{ animationDelay: `${delay + 2.5}s`, animationDuration: isCoreHovered || !isOrbiting ? '1s' : '4s' }}></div>
 
                                 <div className={`
-                                    relative overflow-hidden rounded-full border-2 bg-gray-900
-                                    ${isHovered ? 'border-indigo-400 shadow-[0_0_30px_rgba(99,102,241,0.5)]' : 'border-white/20 shadow-lg'}
+                                    relative overflow-hidden rounded-full border-2 bg-gray-50 dark:bg-gray-900
+                                    ${isHovered ? 'border-indigo-400 shadow-[0_0_30px_rgba(99,102,241,0.5)]' : 'border-gray-300 dark:border-white/20 shadow-lg'}
                                     transition-all duration-500
                                     ${pos.size}
                                 `}>
@@ -259,8 +259,8 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
                                     ${isHovered ? 'opacity-100 translate-y-0 scale-110' : 'opacity-60 translate-y-[-5px] scale-90'}
                                 `}>
                                     <span className={`
-                                        text-[10px] font-bold tracking-wider uppercase whitespace-nowrap px-2 py-1 rounded bg-black/50 backdrop-blur-md border border-white/10
-                                        ${isHovered ? 'text-indigo-300 border-indigo-500/50' : 'text-gray-400'}
+                                        text-[10px] font-bold tracking-wider uppercase whitespace-nowrap px-2 py-1 rounded bg-black/50 backdrop-blur-md border border-gray-200 dark:border-white/10
+                                        ${isHovered ? 'text-indigo-300 border-indigo-500/50' : 'text-gray-600 dark:text-gray-400'}
                                     `}>
                                         {member.name}
                                     </span>

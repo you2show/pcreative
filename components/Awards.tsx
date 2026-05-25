@@ -74,7 +74,7 @@ const Awards: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="py-16 md:py-24 bg-gray-950 relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-white dark:bg-gray-950 relative overflow-hidden">
       {/* Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
 
@@ -83,13 +83,13 @@ const Awards: React.FC = () => {
           <span className="text-indigo-400 font-bold tracking-wider uppercase text-xs md:text-sm font-khmer">
             {t('Recognition', 'ការទទួលស្គាល់')}
           </span>
-          <h2 className="mt-3 text-3xl md:text-5xl font-bold text-white font-khmer">
+          <h2 className="mt-3 text-3xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer">
             {t('Awards &', 'រង្វាន់ &')}{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">
               {t('Certifications', 'វិញ្ញាបនបត្រ')}
             </span>
           </h2>
-          <p className="mt-4 text-gray-400 font-khmer text-sm md:text-base max-w-xl mx-auto">
+          <p className="mt-4 text-gray-600 dark:text-gray-400 font-khmer text-sm md:text-base max-w-xl mx-auto">
             {t(
               'Our work is recognized for quality, creativity, and reliability.',
               'ស្នាដៃរបស់យើងត្រូវបានទទួលស្គាល់ចំពោះគុណភាព ការច្នៃប្រឌិត និងភាពជឿជាក់។'

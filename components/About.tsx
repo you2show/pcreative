@@ -75,7 +75,7 @@ const TeamStack: React.FC<TeamStackProps> = ({ onMemberSelect }) => {
                     <div 
                         key={member.id}
                         onClick={() => handleMemberClick(member.id)}
-                        className="relative w-12 h-12 rounded-full border-2 border-gray-900 overflow-hidden cursor-pointer hover:scale-110 hover:z-20 hover:border-indigo-500 transition-all duration-300 bg-gray-800"
+                        className="relative w-12 h-12 rounded-full border-2 border-gray-200 dark:border-gray-900 overflow-hidden cursor-pointer hover:scale-110 hover:z-20 hover:border-indigo-500 transition-all duration-300 bg-gray-100 dark:bg-gray-800"
                         title={member.name}
                     >
                         <img src={member.image} alt={member.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
@@ -85,7 +85,7 @@ const TeamStack: React.FC<TeamStackProps> = ({ onMemberSelect }) => {
                 {remainingCount > 0 && (
                     <button 
                         onClick={() => setIsOpen(!isOpen)}
-                        className={`relative w-12 h-12 rounded-full border-2 border-gray-900 bg-gray-800 text-white text-xs font-bold flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-400 hover:scale-110 hover:z-20 transition-all duration-300 cursor-pointer ${isOpen ? 'bg-indigo-600 border-indigo-400 z-30' : ''}`}
+                        className={`relative w-12 h-12 rounded-full border-2 border-gray-200 dark:border-gray-900 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-xs font-bold flex items-center justify-center hover:bg-indigo-600 hover:text-white hover:border-indigo-400 hover:scale-110 hover:z-20 transition-all duration-300 cursor-pointer ${isOpen ? 'bg-indigo-600 border-indigo-400 text-white z-30' : ''}`}
                     >
                         +{remainingCount}
                     </button>
@@ -112,7 +112,7 @@ const TeamStack: React.FC<TeamStackProps> = ({ onMemberSelect }) => {
                                     <p className="text-sm font-bold text-gray-800 truncate group-hover:text-indigo-700">{member.name}</p>
                                     <p className="text-[10px] text-gray-500 truncate">{member.role}</p>
                                 </div>
-                                <ChevronRight size={14} className="text-gray-300 group-hover:text-indigo-400" />
+                                <ChevronRight size={14} className="text-gray-700 dark:text-gray-300 group-hover:text-indigo-400" />
                             </button>
                         ))}
                     </div>
@@ -155,12 +155,12 @@ const About: React.FC<AboutProps> = ({ onClose }) => {
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
                     
                     <RevealOnScroll variant="zoom-in" duration={800}>
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-indigo-300 text-sm font-bold tracking-wider mb-6 backdrop-blur-md">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-indigo-300 text-sm font-bold tracking-wider mb-6 backdrop-blur-md">
                             <Sparkles size={14} /> 
                             <span className="font-khmer">{t("Since 2020", "បង្កើតឡើងតាំងពីឆ្នាំ ២០២០")}</span>
                         </div>
                         
-                        <h1 className="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-8 font-khmer">
+                        <h1 className="text-5xl md:text-8xl font-black text-gray-900 dark:text-white leading-[0.9] tracking-tighter mb-8 font-khmer">
                             WE DON'T JUST <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">DESIGN.</span> WE <br />
                             <span className="relative inline-block">
@@ -171,7 +171,7 @@ const About: React.FC<AboutProps> = ({ onClose }) => {
                             </span>
                         </h1>
 
-                        <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-khmer">
+                        <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed font-khmer">
                             {t(
                                 "Ponloe Creative is a digital alchemy lab where code meets art, and imagination becomes infrastructure.",
                                 "Ponloe Creative គឺជាមន្ទីរពិសោធន៍គីមីសាស្ត្រឌីជីថល ដែលកូដជួបជាមួយសិល្បៈ ហើយការស្រមើលស្រមៃក្លាយជាហេដ្ឋារចនាសម្ព័ន្ធពិតប្រាកដ។"
@@ -184,11 +184,11 @@ const About: React.FC<AboutProps> = ({ onClose }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
                     {/* Card 1: Main Story (Large) */}
                     <RevealOnScroll variant="fade-up" delay={100} className="md:col-span-2 row-span-2">
-                        <div className="h-full bg-gray-900/50 backdrop-blur-xl border border-white/10 rounded-[32px] p-8 md:p-12 relative overflow-hidden group hover:border-indigo-500/30 transition-all duration-500">
+                        <div className="h-full bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-[32px] p-8 md:p-12 relative overflow-hidden group hover:border-indigo-500/30 transition-all duration-500">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] group-hover:bg-purple-500/20 transition-all"></div>
-                            <Fingerprint size={48} className="text-white mb-6 relative z-10" />
-                            <h2 className="text-3xl font-bold text-white mb-6 font-khmer">{t("Our Identity", "អត្តសញ្ញាណរបស់យើង")}</h2>
-                            <div className="space-y-6 text-gray-400 text-lg leading-relaxed font-khmer relative z-10">
+                            <Fingerprint size={48} className="text-gray-900 dark:text-white mb-6 relative z-10" />
+                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 font-khmer">{t("Our Identity", "អត្តសញ្ញាណរបស់យើង")}</h2>
+                            <div className="space-y-6 text-gray-600 dark:text-gray-400 text-lg leading-relaxed font-khmer relative z-10">
                                 <p>
                                     {t(
                                         "Born in the vibrant heart of Phnom Penh, we saw a digital landscape waiting to be painted. We aren't just a service provider; we are partners in your legacy.",
@@ -219,13 +219,13 @@ const About: React.FC<AboutProps> = ({ onClose }) => {
 
                     {/* Card 3: Creative Experts (Updated with TeamStack) */}
                     <RevealOnScroll variant="slide-left" delay={300} className="md:col-span-1">
-                        <div className="h-full bg-gray-900/50 backdrop-blur-xl border border-white/10 rounded-[32px] p-8 flex flex-col justify-between group hover:bg-white/5 transition-all">
+                        <div className="h-full bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-[32px] p-8 flex flex-col justify-between group hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <h3 className="text-4xl font-black text-white mb-1"><CountUp end={team.length} duration={2000} suffix="+" /></h3>
-                                    <p className="text-gray-400 font-bold uppercase tracking-wider text-xs font-khmer">{t("Experts", "អ្នកជំនាញ")}</p>
+                                    <h3 className="text-4xl font-black text-gray-900 dark:text-white mb-1"><CountUp end={team.length} duration={2000} suffix="+" /></h3>
+                                    <p className="text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider text-xs font-khmer">{t("Experts", "អ្នកជំនាញ")}</p>
                                 </div>
-                                <div className="p-3 bg-white/5 rounded-full text-pink-400">
+                                <div className="p-3 bg-gray-100 dark:bg-white/5 rounded-full text-pink-400">
                                     <Users size={20} />
                                 </div>
                             </div>
@@ -244,13 +244,13 @@ const About: React.FC<AboutProps> = ({ onClose }) => {
                 {/* 3. The "DNA" Section (Values) */}
                 <div className="mb-24">
                     <RevealOnScroll>
-                        <div className="flex items-end justify-between mb-12 border-b border-white/10 pb-8">
+                        <div className="flex items-end justify-between mb-12 border-b border-gray-200 dark:border-white/10 pb-8">
                             <div>
                                 <span className="text-indigo-400 font-bold tracking-widest uppercase text-xs mb-2 block font-khmer">{t("Our DNA", "DNA របស់យើង")}</span>
-                                <h2 className="text-4xl font-bold text-white font-khmer">{t("Core Values", "គុណតម្លៃស្នូល")}</h2>
+                                <h2 className="text-4xl font-bold text-gray-900 dark:text-white font-khmer">{t("Core Values", "គុណតម្លៃស្នូល")}</h2>
                             </div>
                             <div className="hidden md:block text-right">
-                                <p className="text-gray-400 text-sm max-w-xs">{t("Principles that guide every decision we make.", "គោលការណ៍ដែលដឹកនាំរាល់ការសម្រេចចិត្តរបស់យើង។")}</p>
+                                <p className="text-gray-600 dark:text-gray-400 text-sm max-w-xs">{t("Principles that guide every decision we make.", "គោលការណ៍ដែលដឹកនាំរាល់ការសម្រេចចិត្តរបស់យើង។")}</p>
                             </div>
                         </div>
                     </RevealOnScroll>
@@ -263,16 +263,16 @@ const About: React.FC<AboutProps> = ({ onClose }) => {
                             { icon: <Lightbulb />, title: "Innovation", desc: "Always exploring what's next.", color: "text-blue-400" }
                         ].map((val, idx) => (
                             <RevealOnScroll key={idx} delay={idx * 100} variant="fade-up">
-                                <div className="group h-64 bg-gray-900 border border-white/5 hover:border-white/20 p-6 rounded-2xl flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+                                <div className="group h-64 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/20 p-6 rounded-2xl flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
                                     <div className={`absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-150 duration-500 ${val.color}`}>
                                         {React.cloneElement(val.icon as React.ReactElement<any>, { size: 120 })}
                                     </div>
-                                    <div className={`p-3 bg-white/5 w-fit rounded-xl ${val.color}`}>
+                                    <div className={`p-3 bg-gray-100 dark:bg-white/5 w-fit rounded-xl ${val.color}`}>
                                         {val.icon}
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold text-white mb-2">{val.title}</h3>
-                                        <p className="text-gray-400 text-sm leading-relaxed">{val.desc}</p>
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{val.title}</h3>
+                                        <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{val.desc}</p>
                                     </div>
                                 </div>
                             </RevealOnScroll>
@@ -302,7 +302,7 @@ const About: React.FC<AboutProps> = ({ onClose }) => {
 
                 {/* 5. CTA Footer */}
                 <div className="text-center">
-                    <h2 className="text-3xl font-bold text-white mb-8 font-khmer">{t("Ready to make history?", "ត្រៀមខ្លួនបង្កើតប្រវត្តិសាស្ត្រហើយឬនៅ?")}</h2>
+                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 font-khmer">{t("Ready to make history?", "ត្រៀមខ្លួនបង្កើតប្រវត្តិសាស្ត្រហើយឬនៅ?")}</h2>
                     <button 
                         onClick={() => { onClose(); window.location.hash = '#contact'; }}
                         className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white text-black rounded-full font-bold text-lg hover:bg-gray-200 transition-all overflow-hidden"

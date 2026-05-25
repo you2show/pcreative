@@ -88,16 +88,16 @@ const LivePreviewModal: React.FC<LivePreviewModalProps> = ({ url, title, onClose
     <div className="fixed inset-0 z-[10000] flex items-center justify-center p-2 md:p-6">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-gray-950/90 backdrop-blur-sm animate-fade-in"
+        className="absolute inset-0 bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
         style={{ animationDuration: '200ms' }}
       />
 
       {/* Browser Window */}
-      <div className="relative w-full max-w-7xl h-[95vh] bg-[#1a1a1a] border border-white/10 rounded-2xl shadow-[0_40px_80px_-15px_rgba(0,0,0,0.7)] overflow-hidden flex flex-col animate-scale-up" style={{ animationDuration: '250ms' }}>
+      <div className="relative w-full max-w-7xl h-[95vh] bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-2xl shadow-[0_40px_80px_-15px_rgba(0,0,0,0.7)] overflow-hidden flex flex-col animate-scale-up" style={{ animationDuration: '250ms' }}>
         
         {/* Browser Top Bar */}
-        <div className="h-14 bg-[#2d2d2d] border-b border-black/20 flex items-center px-4 gap-3 shrink-0">
+        <div className="h-14 bg-gray-100 dark:bg-[#2d2d2d] border-b border-gray-200 dark:border-black/20 flex items-center px-4 gap-3 shrink-0">
           {/* Traffic Lights */}
           <div className="flex gap-2 mr-2">
             <button onClick={onClose} className="w-3.5 h-3.5 rounded-full bg-[#ff5f56] hover:brightness-110 transition-all shadow-inner" />
@@ -107,11 +107,11 @@ const LivePreviewModal: React.FC<LivePreviewModalProps> = ({ url, title, onClose
 
           {/* Navigation Buttons */}
           <div className="flex items-center gap-0.5">
-            <button onClick={goBack} className="p-2 text-gray-400 hover:text-white transition-colors" title="Back"><ChevronLeft size={18} /></button>
-            <button onClick={goForward} className="p-2 text-gray-400 hover:text-white transition-colors" title="Forward"><ChevronRight size={18} /></button>
+            <button onClick={goBack} className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Back"><ChevronLeft size={18} /></button>
+            <button onClick={goForward} className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Forward"><ChevronRight size={18} /></button>
             <button 
                 onClick={handleRefresh}
-                className="p-2 text-gray-400 hover:text-white transition-all rounded-lg active:rotate-180 duration-500"
+                className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all rounded-lg active:rotate-180 duration-500"
                 title="Reload"
             >
                 <RotateCcw size={16} className={isLoading ? "animate-spin" : ""} />
@@ -121,7 +121,7 @@ const LivePreviewModal: React.FC<LivePreviewModalProps> = ({ url, title, onClose
           {/* Real-time Address Bar */}
           <form 
             onSubmit={handleNavigate}
-            className="flex-1 bg-black/40 border border-white/5 rounded-xl h-10 flex items-center px-4 gap-3 transition-all focus-within:border-indigo-500/50 focus-within:bg-black/60 group"
+            className="flex-1 bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 rounded-xl h-10 flex items-center px-4 gap-3 transition-all focus-within:border-indigo-500/50 focus-within:bg-gray-100 dark:focus-within:bg-black/60 group"
           >
             <ShieldCheck size={14} className={isLoading ? "text-indigo-400 animate-pulse" : "text-green-500"} />
             <input 
@@ -130,11 +130,11 @@ const LivePreviewModal: React.FC<LivePreviewModalProps> = ({ url, title, onClose
                 onFocus={() => setIsInputFocused(true)}
                 onBlur={() => setIsInputFocused(false)}
                 onChange={(e) => setInputValue(e.target.value)}
-                className="flex-1 bg-transparent text-[13px] text-gray-300 outline-none w-full font-mono tracking-tight selection:bg-indigo-500/30"
+                className="flex-1 bg-transparent text-[13px] text-gray-700 dark:text-gray-300 outline-none w-full font-mono tracking-tight selection:bg-indigo-500/30"
                 spellCheck={false}
             />
             {inputValue !== currentUrl && (
-                <button type="submit" className="text-indigo-400 hover:text-white p-1 animate-fade-in">
+                <button type="submit" className="text-indigo-400 hover:text-gray-900 dark:hover:text-white p-1 animate-fade-in">
                     <ArrowRight size={16} />
                 </button>
             )}
@@ -146,14 +146,14 @@ const LivePreviewModal: React.FC<LivePreviewModalProps> = ({ url, title, onClose
                 href={inputValue} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="p-2.5 text-gray-400 hover:text-indigo-400 hover:bg-white/5 rounded-xl transition-all"
+                className="p-2.5 text-gray-600 dark:text-gray-400 hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-all"
                 title="Open in new tab"
              >
                 <ExternalLink size={18} />
              </a>
              <button 
                 onClick={onClose}
-                className="p-2.5 text-gray-400 hover:text-white md:hidden"
+                className="p-2.5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white md:hidden"
              >
                 <X size={20} />
              </button>
@@ -163,7 +163,7 @@ const LivePreviewModal: React.FC<LivePreviewModalProps> = ({ url, title, onClose
         {/* Content Area */}
         <div className="flex-1 bg-white relative">
           {isLoading && (
-            <div className="absolute inset-0 bg-[#0f1115] z-20 flex flex-col items-center justify-center animate-fade-in">
+            <div className="absolute inset-0 bg-gray-50 dark:bg-[#0f1115] z-20 flex flex-col items-center justify-center animate-fade-in">
                <div className="w-12 h-12 relative">
                   <div className="absolute inset-0 border-4 border-indigo-500/10 rounded-full"></div>
                   <div className="absolute inset-0 border-4 border-t-indigo-500 rounded-full animate-spin"></div>
@@ -184,7 +184,7 @@ const LivePreviewModal: React.FC<LivePreviewModalProps> = ({ url, title, onClose
         </div>
 
         {/* Status Bar */}
-        <div className="h-8 bg-[#2d2d2d] border-t border-black/20 flex items-center px-4 justify-between shrink-0">
+        <div className="h-8 bg-gray-100 dark:bg-[#2d2d2d] border-t border-gray-200 dark:border-black/20 flex items-center px-4 justify-between shrink-0">
             <div className="flex items-center gap-2">
                 <div className={`w-1.5 h-1.5 rounded-full ${isLoading ? 'bg-indigo-500 animate-ping' : 'bg-green-500'}`}></div>
                 <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">
@@ -193,7 +193,7 @@ const LivePreviewModal: React.FC<LivePreviewModalProps> = ({ url, title, onClose
             </div>
             <div className="flex items-center gap-3">
                  <span className="text-[9px] text-gray-600 font-mono">PONLOE RENDER ENGINE V2.6</span>
-                 <div className="w-px h-3 bg-white/5"></div>
+                 <div className="w-px h-3 bg-gray-200 dark:bg-white/5"></div>
                  <span className="text-[9px] text-indigo-500/50 font-bold uppercase tracking-tighter">SECURE STREAM</span>
             </div>
         </div>

@@ -56,7 +56,7 @@ const ProjectGallery: React.FC<ProjectGalleryProps> = ({ images, title }) => {
 
   if (images.length === 0) {
       return (
-        <div className="w-full h-full flex flex-col items-center justify-center text-gray-500 gap-2 bg-gray-900">
+        <div className="w-full h-full flex flex-col items-center justify-center text-gray-500 gap-2 bg-gray-50 dark:bg-gray-900">
             <ImageIcon size={32} />
             <span>No Image Available</span>
         </div>

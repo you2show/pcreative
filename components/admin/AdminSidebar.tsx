@@ -10,10 +10,10 @@ interface AdminSidebarProps {
 }
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, setActiveTab, isSuperAdmin }) => {
-  const btnClass = (tab: string) => `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-white/5'}`;
+  const btnClass = (tab: string) => `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab ? 'bg-indigo-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'}`;
   
   return (
-    <aside className="w-64 bg-gray-900/50 border-r border-white/10 p-4 hidden md:flex flex-col gap-2">
+    <aside className="w-64 bg-gray-50 dark:bg-gray-900/50 border-r border-gray-200 dark:border-white/10 p-4 hidden md:flex flex-col gap-2">
       <button onClick={() => setActiveTab('team')} className={btnClass('team')}>
         <Users size={20} /> {isSuperAdmin ? 'Team Management' : 'My Profile'}
       </button>
@@ -45,7 +45,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeTab, setActiveTab, is
       )}
       <div className="flex-1" />
       {isSuperAdmin && (
-        <button onClick={() => setActiveTab('settings')} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'settings' ? 'bg-gray-800 text-white border border-white/10' : 'text-gray-400 hover:bg-white/5'}`}>
+        <button onClick={() => setActiveTab('settings')} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'settings' ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'}`}>
           <Settings size={20} /> Settings
         </button>
       )}

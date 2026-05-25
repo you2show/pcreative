@@ -71,7 +71,7 @@ const Hero: React.FC = () => {
           {/* Left Content - Typography & CTA */}
           <div className="space-y-8 text-center lg:text-left relative z-20">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md animate-fade-in group hover:bg-white/10 transition-colors cursor-default">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-md animate-fade-in group hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-default">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -83,7 +83,7 @@ const Hero: React.FC = () => {
             
             {/* Main Headline */}
             <div className="space-y-4">
-                <h1 className="text-4xl md:text-5xl font-black leading-[1.1] tracking-tight text-white font-khmer">
+                <h1 className="text-4xl md:text-5xl font-black leading-[1.1] tracking-tight text-gray-900 dark:text-white font-khmer">
                     {t('We Craft', 'យើងបង្កើត')} <br />
                     
                     {/* Simplified: No more complex JS animation, just pure text for stability */}
@@ -94,7 +94,7 @@ const Hero: React.FC = () => {
 
             </div>
             
-            <p className="text-lg text-gray-400 leading-relaxed font-khmer max-w-xl mx-auto lg:mx-0">
+            <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-khmer max-w-xl mx-auto lg:mx-0">
               {t(
                   "Cambodia's digital future, built by architects, developers & artists.",
                   'ក្រុមស្ថាបត្យករ អ្នកអភិវឌ្ឍន៍ និងអ្នករចនា — ដៃគូឌីជីថលនៅកម្ពុជា។'

@@ -50,7 +50,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
   };
 
   return (
-    <section id="team" className="py-24 bg-gray-950 overflow-hidden relative">
+    <section id="team" className="py-24 bg-white dark:bg-gray-950 overflow-hidden relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none z-0" />
       
       {/* Background Text */}
@@ -60,7 +60,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
         <RevealOnScroll>
           <div className="text-center mb-20">
             <span className="text-indigo-400 font-bold tracking-wider uppercase text-sm font-khmer">{t('The Minds', 'អ្នកដឹកនាំ')}</span>
-            <h2 className="mt-4 text-4xl md:text-5xl font-bold text-white font-khmer">
+            <h2 className="mt-4 text-4xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer">
               {t('Meet the', 'ជួបជាមួយ')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">{t('Visionaries', 'ចក្ខុវិស័យ')}</span>
             </h2>
           </div>
@@ -71,7 +71,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
               return (
                 <div 
                   key={member.id} 
-                  className="group relative bg-gray-900 rounded-3xl overflow-hidden border border-white/10 hover:border-indigo-500/50 transition-all duration-500 hover:-translate-y-1 cursor-pointer flex flex-col"
+                  className="group relative bg-gray-50 dark:bg-gray-900 rounded-3xl overflow-hidden border border-gray-200 dark:border-white/10 hover:border-indigo-500/50 transition-all duration-500 hover:-translate-y-1 cursor-pointer flex flex-col"
                   onClick={() => openItem(member.slug || member.id)}
                 >
                   {/* Cover Image Section */}
@@ -102,7 +102,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                     )}
 
                     {/* Info Icon */}
-                    <div className="absolute top-4 right-4 text-gray-400 group-hover:text-indigo-400 transition-colors z-10">
+                    <div className="absolute top-4 right-4 text-gray-600 dark:text-gray-400 group-hover:text-indigo-400 transition-colors z-10">
                       <Info size={20} />
                     </div>
                   </div>
@@ -111,7 +111,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                   <div className="flex gap-4 px-6 pt-2 pb-3 flex-1">
                     {/* Profile Image */}
                     <div className="shrink-0 -mt-10 relative z-20">
-                      <div className="w-24 h-24 rounded-full border-4 border-gray-900 overflow-hidden bg-gray-800 group-hover:border-indigo-500 transition-colors">
+                      <div className="w-24 h-24 rounded-full border-4 border-gray-200 dark:border-gray-900 overflow-hidden bg-gray-100 dark:bg-gray-800 group-hover:border-indigo-500 transition-colors">
                         <img 
                           src={member.image} 
                           alt={member.name}
@@ -129,20 +129,20 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
 
                     {/* Member Info */}
                     <div className="flex-1 flex flex-col justify-start -mt-2.5">
-                      <h3 className="text-lg font-bold text-white group-hover:text-indigo-400 transition-colors mb-1">{member.name}</h3>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-indigo-400 transition-colors mb-1">{member.name}</h3>
                       <p className="text-indigo-400 text-xs font-khmer">{t(member.role, member.roleKm)}</p>
                     </div>
                   </div>
 
                   {/* Social Links */}
-                  <div className="px-6 py-4 border-t border-white/10 flex gap-3" onClick={(e) => e.stopPropagation()}>
+                  <div className="px-6 py-4 border-t border-gray-200 dark:border-white/10 flex gap-3" onClick={(e) => e.stopPropagation()}>
                     {member.socials.facebook && (
-                      <a href={member.socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 text-gray-400 rounded-lg hover:bg-[#1877F2] hover:text-white transition-all">
+                      <a href={member.socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-[#1877F2] hover:text-white transition-all">
                         <Facebook size={18} />
                       </a>
                     )}
                     {member.socials.telegram && (
-                      <a href={member.socials.telegram} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 text-gray-400 rounded-lg hover:bg-[#229ED9] hover:text-white transition-all">
+                      <a href={member.socials.telegram} target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-[#229ED9] hover:text-white transition-all">
                         <Send size={18} />
                       </a>
                     )}

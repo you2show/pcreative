@@ -94,32 +94,32 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ isOpen, onClose }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[9000] flex items-center justify-center p-4 bg-gray-950/90 backdrop-blur-xl"
+        className="fixed inset-0 z-[9000] flex items-center justify-center p-4 bg-white/90 dark:bg-gray-950/90 backdrop-blur-xl"
         onClick={(e) => e.target === e.currentTarget && onClose()}
       >
         <motion.div
           initial={{ scale: 0.9, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 20 }}
-          className="bg-gray-900 border border-white/10 rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl"
+          className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-white/10">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center">
                 <Briefcase className="text-indigo-400" size={20} />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white font-khmer">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white font-khmer">
                   {t('Client Portal', 'ផ្ទាំងគ្រប់គ្រងអតិថិជន')}
                 </h2>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {t('Track your project progress', 'តាមដានវឌ្ឍនភាពគម្រោង')}
                 </p>
               </div>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-xl transition-colors" aria-label="Close">
-              <X size={20} className="text-gray-400" />
+            <button onClick={onClose} className="p-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors" aria-label="Close">
+              <X size={20} className="text-gray-600 dark:text-gray-400" />
             </button>
           </div>
 
@@ -132,10 +132,10 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ isOpen, onClose }) => {
                   <div className="w-20 h-20 bg-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Briefcase className="text-indigo-400" size={32} />
                   </div>
-                  <h3 className="text-xl font-bold text-white font-khmer">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white font-khmer">
                     {t('Access Your Projects', 'ចូលមើលគម្រោងរបស់អ្នក')}
                   </h3>
-                  <p className="text-gray-400 text-sm mt-2">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
                     {t('Enter your project access code', 'បញ្ចូលលេខកូដចូលគម្រោង')}
                   </p>
                 </div>
@@ -145,7 +145,7 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ isOpen, onClose }) => {
                     value={accessCode}
                     onChange={(e) => setAccessCode(e.target.value)}
                     placeholder={t('Access Code', 'លេខកូដ')}
-                    className="w-full bg-gray-800 border border-white/10 rounded-xl px-4 py-3 text-white text-center text-lg tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-gray-900 dark:text-white text-center text-lg tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     autoFocus
                   />
                   {error && <p className="text-red-400 text-sm text-center">{error}</p>}
@@ -167,21 +167,21 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ isOpen, onClose }) => {
               <div>
                 <button 
                   onClick={() => setSelectedProject(null)}
-                  className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors"
+                  className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition-colors"
                 >
                   <ChevronRight size={16} className="rotate-180" />
                   {t('Back to projects', 'ត្រឡប់ទៅគម្រោង')}
                 </button>
                 
-                <h3 className="text-2xl font-bold text-white mb-2">{selectedProject.name}</h3>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{selectedProject.name}</h3>
                 
                 {/* Progress bar */}
                 <div className="mb-8">
                   <div className="flex justify-between text-sm mb-2">
-                    <span className="text-gray-400">{t('Overall Progress', 'វឌ្ឍនភាពសរុប')}</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('Overall Progress', 'វឌ្ឍនភាពសរុប')}</span>
                     <span className="text-indigo-400 font-bold">{selectedProject.progress}%</span>
                   </div>
-                  <div className="h-3 bg-gray-800 rounded-full overflow-hidden">
+                  <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${selectedProject.progress}%` }}
@@ -192,7 +192,7 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* Milestones */}
-                <h4 className="font-semibold text-white mb-4 flex items-center gap-2">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                   <FileText size={16} className="text-indigo-400" />
                   {t('Milestones', 'ដំណាក់កាល')}
                 </h4>
@@ -206,7 +206,7 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ isOpen, onClose }) => {
                       className={`p-4 rounded-xl border ${
                         milestone.status === 'completed' ? 'bg-green-500/5 border-green-500/20' :
                         milestone.status === 'in-progress' ? 'bg-indigo-500/5 border-indigo-500/20' :
-                        'bg-gray-800/50 border-white/5'
+                        'bg-gray-100 dark:bg-gray-800/50 border-gray-100 dark:border-white/5'
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -218,7 +218,7 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ isOpen, onClose }) => {
                           ) : (
                             <AlertCircle className="text-gray-500 shrink-0" size={18} />
                           )}
-                          <span className={`font-medium ${milestone.status === 'pending' ? 'text-gray-400' : 'text-white'}`}>
+                          <span className={`font-medium ${milestone.status === 'pending' ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-white'}`}>
                             {milestone.title}
                           </span>
                         </div>
@@ -236,10 +236,10 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ isOpen, onClose }) => {
                     key={project.id}
                     whileHover={{ scale: 1.01 }}
                     onClick={() => setSelectedProject(project)}
-                    className="p-5 bg-gray-800/50 border border-white/10 rounded-2xl cursor-pointer hover:border-indigo-500/30 transition-colors"
+                    className="p-5 bg-gray-100 dark:bg-gray-800/50 border border-gray-200 dark:border-white/10 rounded-2xl cursor-pointer hover:border-indigo-500/30 transition-colors"
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="font-semibold text-white">{project.name}</h4>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">{project.name}</h4>
                       <span className={`px-3 py-1 rounded-full text-xs font-bold ${
                         project.status === 'active' ? 'bg-indigo-500/20 text-indigo-300' :
                         project.status === 'completed' ? 'bg-green-500/20 text-green-300' :
@@ -248,11 +248,11 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ isOpen, onClose }) => {
                         {project.status}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-gray-400 mb-3">
+                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400 mb-3">
                       <span className="flex items-center gap-1"><Calendar size={12} />{project.startDate}</span>
                       <span className="flex items-center gap-1"><FileText size={12} />{project.milestones.length} milestones</span>
                     </div>
-                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all"
                         style={{ width: `${project.progress}%` }}

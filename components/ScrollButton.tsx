@@ -64,7 +64,7 @@ const ScrollButton: React.FC = () => {
     <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 flex items-center justify-center">
       <button
         onClick={handleClick}
-        className="relative flex items-center justify-center w-[46px] h-[46px] rounded-full bg-white/5 backdrop-blur-md shadow-2xl group transition-transform hover:scale-105 border border-white/5 active:scale-95"
+        className="relative flex items-center justify-center w-[46px] h-[46px] rounded-full bg-gray-100 dark:bg-white/5 backdrop-blur-md shadow-2xl group transition-transform hover:scale-105 border border-gray-100 dark:border-white/5 active:scale-95"
         aria-label={isAtTop ? "Scroll to Bottom" : "Scroll to Top"}
       >
         {/* SVG Circular Progress */}
@@ -82,7 +82,7 @@ const ScrollButton: React.FC = () => {
             fill="none"
             stroke="currentColor"
             strokeWidth={strokeWidth}
-            className="text-white/10"
+            className="text-gray-300 dark:text-white/10"
           />
 
           {/* Progress Circle with Gradient — updated directly via ref, no CSS transition */}
@@ -110,7 +110,7 @@ const ScrollButton: React.FC = () => {
         </svg>
 
         {/* Icons */}
-        <div className="relative w-5 h-5 text-white group-hover:text-indigo-300 transition-colors duration-300 z-10">
+        <div className="relative w-5 h-5 text-gray-900 dark:text-white group-hover:text-indigo-300 transition-colors duration-300 z-10">
           <ArrowDown
             size={20}
             className={`absolute inset-0 transition-all duration-500 transform ${isAtTop ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-180 scale-50'}`}

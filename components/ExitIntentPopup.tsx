@@ -51,11 +51,11 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ onConsultationOpen })
   return createPortal(
     <div className="fixed inset-0 z-[10500] flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-gray-950/80 backdrop-blur-md animate-fade-in"
+        className="absolute inset-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md animate-fade-in"
         onClick={handleClose}
       />
 
-      <div className="relative w-full max-w-md bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10501]">
+      <div className="relative w-full max-w-md bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10501]">
         {/* Decorative gradient top */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
 
@@ -64,7 +64,7 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ onConsultationOpen })
 
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 p-2 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-full transition-colors z-10"
+          className="absolute top-4 right-4 p-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-full transition-colors z-10"
         >
           <X size={18} />
         </button>
@@ -72,11 +72,11 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ onConsultationOpen })
         <div className="p-8 text-center relative z-10">
           <div className="text-5xl mb-4">👋</div>
 
-          <h3 className="text-2xl font-bold text-white font-khmer mb-3 leading-snug">
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-khmer mb-3 leading-snug">
             {t('Wait — Before You Go!', 'ចាំមុន — មុនចេញ!')}
           </h3>
 
-          <p className="text-gray-400 font-khmer text-sm md:text-base leading-relaxed mb-6">
+          <p className="text-gray-600 dark:text-gray-400 font-khmer text-sm md:text-base leading-relaxed mb-6">
             {t(
               "Get a FREE 30-minute consultation with our expert team. No strings attached — just valuable advice for your project.",
               'ទទួល ការពិគ្រោះ ៣០ នាទី ឥតគិតថ្លៃ ជាមួយក្រុមជំនាញរបស់យើង។ គ្មានការចង — គ្រាន់តែដំណឹងល្អសម្រាប់គម្រោងរបស់អ្នក។'
@@ -93,7 +93,7 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ onConsultationOpen })
             </button>
             <button
               onClick={handleClose}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white font-bold rounded-xl transition-all font-khmer border border-white/10"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-bold rounded-xl transition-all font-khmer border border-gray-200 dark:border-white/10"
             >
               {t('Maybe Later', 'ពេលក្រោយ')}
             </button>
