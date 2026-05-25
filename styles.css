@@ -17,6 +17,12 @@ body {
   overscroll-behavior-y: contain;
 }
 
+/* Light mode body styles */
+html.light body {
+  background-color: #ffffff;
+  color: #111827;
+}
+
 a,
 button,
 input,
@@ -49,6 +55,17 @@ textarea,
   background: #6366f1;
 }
 
+/* Light mode scrollbar */
+html.light ::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #6366f1;
+}
+
 .goog-te-banner-frame.skiptranslate,
 .goog-te-gadget-icon,
 #google_translate_element,
@@ -62,6 +79,37 @@ font {
   background-color: transparent !important;
   box-shadow: none !important;
   box-sizing: border-box;
+}
+
+/* Accessibility: Focus styles */
+*:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 @keyframes float {

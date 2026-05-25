@@ -2,6 +2,9 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { DataProvider, useData } from './contexts/DataContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
+import { SoundProvider } from './contexts/SoundContext';
+import { AccessibilityProvider } from './contexts/AccessibilityContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Partners from './components/Partners';
@@ -22,6 +25,10 @@ import FAQ from './components/FAQ';
 import StickyCTA, { ConsultationModal } from './components/StickyCTA';
 import ExitIntentPopup from './components/ExitIntentPopup';
 import VideoShowreel from './components/VideoShowreel';
+import Preloader from './components/Preloader';
+import ChatbotAI from './components/ChatbotAI';
+import SkipToContent from './components/SkipToContent';
+import { SectionTransition } from './components/PageTransition';
 import { Lock, ArrowRight, X } from 'lucide-react';
 import { useAdminRouter } from './hooks/useRouter';
 
@@ -33,6 +40,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 // Lazy Load Heavy Components
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 const CostEstimator = React.lazy(() => import('./components/CostEstimator'));
+const ClientPortal = React.lazy(() => import('./components/ClientPortal'));
 
 const ComponentFallback: React.FC = () => (
   <div className="w-full h-screen flex items-center justify-center bg-gray-950">
@@ -46,6 +54,8 @@ const ComponentFallback: React.FC = () => (
 function AppContent() {
   const [isViewingSite, setIsViewingSite] = useState(false);
   const [activePage, setActivePage] = useState<string | null>(null);
+  const [showPreloader, setShowPreloader] = useState(true);
+  const [isClientPortalOpen, setIsClientPortalOpen] = useState(false);
   
   // Popups state
   const [shouldShowPortfolioPopup, setShouldShowPortfolioPopup] = useState(false);
@@ -60,6 +70,21 @@ function AppContent() {
   const [loginError, setLoginError] = useState(false);
   const { team } = useData();
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const { isDark } = useTheme();
+
+  // Hide preloader after first load
+  useEffect(() => {
+    const hasVisited = sessionStorage.getItem('ponloe_visited');
+    if (hasVisited) {
+      setShowPreloader(false);
+    } else {
+      const timer = setTimeout(() => {
+        setShowPreloader(false);
+        sessionStorage.setItem('ponloe_visited', '1');
+      }, 2800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // --- ROUTING LOGIC ---
   useEffect(() => {
@@ -128,7 +153,9 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden selection:bg-indigo-500 selection:text-white relative">
+    <div className={`min-h-screen ${isDark ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'} overflow-x-hidden selection:bg-indigo-500 selection:text-white relative`}>
+      <SkipToContent />
+      {showPreloader && <Preloader />}
       <OfflinePage />
       <InstallPrompt />
       
@@ -136,52 +163,68 @@ function AppContent() {
       
       <Header onGetQuote={() => setIsConsultationOpen(true)} />
       
-      <main className="relative z-10">
+      <main id="main-content" className="relative z-10" role="main">
         <Hero />
-        <Partners />
-        <Stats />
+        <SectionTransition><Partners /></SectionTransition>
+        <SectionTransition delay={0.1}><Stats /></SectionTransition>
         
-        <Services 
-            showPopupOnMount={shouldShowServicesPopup}
-            usePathRouting={true}
-        />
+        <SectionTransition delay={0.1}>
+          <Services 
+              showPopupOnMount={shouldShowServicesPopup}
+              usePathRouting={true}
+          />
+        </SectionTransition>
 
         <Suspense fallback={<div className="h-96 bg-gray-900/50" />}>
-          <CostEstimator 
-            showPopupOnMount={shouldShowEstimatorPopup}
-            usePathRouting={true}
-          />
+          <SectionTransition>
+            <CostEstimator 
+              showPopupOnMount={shouldShowEstimatorPopup}
+              usePathRouting={true}
+            />
+          </SectionTransition>
         </Suspense>
 
-        <Process />
-        <VideoShowreel />
+        <SectionTransition><Process /></SectionTransition>
+        <SectionTransition><VideoShowreel /></SectionTransition>
         
-        <Portfolio 
-            showPopupOnMount={shouldShowPortfolioPopup} 
-            usePathRouting={true} 
-        />
-        <Testimonials />
+        <SectionTransition>
+          <Portfolio 
+              showPopupOnMount={shouldShowPortfolioPopup} 
+              usePathRouting={true} 
+          />
+        </SectionTransition>
+        <SectionTransition><Testimonials /></SectionTransition>
 
-        <Team 
-            showPopupOnMount={shouldShowTeamPopup}
-            usePathRouting={true}
-        />
+        <SectionTransition>
+          <Team 
+              showPopupOnMount={shouldShowTeamPopup}
+              usePathRouting={true}
+          />
+        </SectionTransition>
 
-        <Insights 
-            showPopupOnMount={shouldShowInsightsPopup}
-            usePathRouting={true}
-        />
+        <SectionTransition>
+          <Insights 
+              showPopupOnMount={shouldShowInsightsPopup}
+              usePathRouting={true}
+          />
+        </SectionTransition>
 
-        <FAQ />
-        <Contact />
+        <SectionTransition><FAQ /></SectionTransition>
+        <SectionTransition><Contact /></SectionTransition>
       </main>
       
       <Footer />
       <FloatingChat />
+      <ChatbotAI />
       <ScrollButton />
       <StickyCTA onConsultationOpen={() => setIsConsultationOpen(true)} />
       <ConsultationModal isOpen={isConsultationOpen} onClose={() => setIsConsultationOpen(false)} />
       <ExitIntentPopup onConsultationOpen={() => setIsConsultationOpen(true)} />
+      
+      {/* Client Portal */}
+      <Suspense fallback={null}>
+        <ClientPortal isOpen={isClientPortalOpen} onClose={() => setIsClientPortalOpen(false)} />
+      </Suspense>
       
       {/* Overlay Pages */}
       {activePage === 'about' && <About onClose={() => { if (window.location.pathname.includes('/about')) { window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); } else { window.location.hash = ''; } }} />}
@@ -210,12 +253,18 @@ function AppContent() {
 
 export default function App() {
   return (
-    <DataProvider>
-      <LanguageProvider>
-        <AuthProvider>
-           <AppContent />
-        </AuthProvider>
-      </LanguageProvider>
-    </DataProvider>
+    <ThemeProvider>
+      <SoundProvider>
+        <AccessibilityProvider>
+          <DataProvider>
+            <LanguageProvider>
+              <AuthProvider>
+                <AppContent />
+              </AuthProvider>
+            </LanguageProvider>
+          </DataProvider>
+        </AccessibilityProvider>
+      </SoundProvider>
+    </ThemeProvider>
   );
 }

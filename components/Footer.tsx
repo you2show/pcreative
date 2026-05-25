@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-gray-950 pt-16 overflow-hidden">
+    <footer className="relative bg-gray-950 pt-16 overflow-hidden" role="contentinfo" aria-label="Site footer">
       {/* Decorative Top Gradient Line */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       

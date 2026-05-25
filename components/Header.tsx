@@ -4,6 +4,8 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { smoothScrollTo } from '../utils/scroll';
 import { hapticLanguageChange, hapticTap } from '../utils/haptic';
 import PonloeLogo from './PonloeLogo';
+import ThemeToggle from './ThemeToggle';
+import SoundToggle from './SoundToggle';
 
 interface HeaderProps {
   onGetQuote?: () => void;
@@ -265,6 +267,12 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
              <button onClick={() => { hapticTap(); onGetQuote?.(); }} className="hidden sm:flex group px-5 py-2.5 rounded-full bg-white text-gray-950 font-bold text-sm hover:scale-105 transition-all duration-300 items-center gap-2 font-khmer">
               {t("Get a Quote", "ស្នើសុំតម្លៃ")} <ArrowUpRight size={16} className="group-hover:rotate-45 transition-transform" />
             </button>
+
+            {/* Theme & Sound Controls */}
+            <div className="hidden sm:flex items-center gap-1">
+              <ThemeToggle />
+              <SoundToggle />
+            </div>
 
             <button onClick={toggleMenu} className="lg:hidden text-white p-2">
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}

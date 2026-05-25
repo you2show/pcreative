@@ -6,6 +6,7 @@ import { MemberDetailModal, AuthorArticlesModal, ArticleDetailModal } from '../T
 import { TeamMember, Post } from '../../types';
 
 import HeroActions from './HeroActions';
+import Hero3DScene from '../Hero3DScene';
 
 const HeroVisuals = React.lazy(() => import('./HeroVisuals'));
 
@@ -49,8 +50,11 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section ref={containerRef} id="home" className="relative min-h-screen flex items-center pt-24 pb-12 md:pt-32 md:pb-20 overflow-hidden perspective-1000">
+    <section ref={containerRef} id="home" aria-label="Hero section" className="relative min-h-screen flex items-center pt-24 pb-12 md:pt-32 md:pb-20 overflow-hidden perspective-1000">
       
+      {/* 3D Background Scene */}
+      <Hero3DScene />
+
       {/* Background Ambience */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
         <div 
