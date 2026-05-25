@@ -3,6 +3,7 @@ import { Phone, Mail, MapPin, Send, Check, Loader2, AlertCircle } from 'lucide-r
 import { useLanguage } from '../contexts/LanguageContext';
 import ScrollBackgroundText from './ScrollBackgroundText';
 import RevealOnScroll from './RevealOnScroll';
+import { sendTelegramMessage } from '../lib/telegram-send';
 
 export default function Contact() {
   const { t } = useLanguage();
@@ -18,9 +19,6 @@ export default function Contact() {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const TELEGRAM_BOT_TOKEN = '8263160608:AAFngJ6_jVXnFYlqs0lKZQplu8wh-UxS2Bo'; 
-  const TELEGRAM_CHAT_ID = '1276188382'; 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -35,19 +33,13 @@ export default function Contact() {
       const text = `🚀 *New Inquiry from Website* 🚀\n\n👤 *Name:* ${name}\n📧 *Email:* ${email}\n🛠 *Service:* ${service}\n\n📝 *Message:*\n${message}`;
       
       try {
-          const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text, parse_mode: 'Markdown' }),
-          });
-
-          const data = await response.json();
-          if (data.ok) {
+          const ok = await sendTelegramMessage(text);
+          if (ok) {
               setSuccessMessage(t('Message sent successfully!', 'សារត្រូវបានផ្ញើដោយជោគជ័យ!'));
               setFormData({ name: '', email: '', service: 'Graphic Design', message: '' });
               setTimeout(() => setSuccessMessage(''), 5000);
           } else {
-              throw new Error(data.description);
+              throw new Error('Failed');
           }
       } catch (err) {
           setErrorMessage(t('Failed to send message.', 'បរាជ័យក្នុងការផ្ញើសារ។'));

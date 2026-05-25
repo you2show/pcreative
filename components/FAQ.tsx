@@ -60,6 +60,36 @@ const FAQS: FAQItem[] = [
     answer: 'Absolutely. All websites we build are fully responsive — they look great and work perfectly on mobile phones, tablets, and desktop computers.',
     answerKm: 'ជាក់ស្ដែង! វេបសាយទាំងអស់ដែលយើងសាងសង់ responsive ពេញលេញ — មើលទៅស្អាត និងដំណើរការល្អឥតខ្ចោះលើទូរស័ព្ទ, tablet, និងកុំព្យូទ័រ។',
   },
+  {
+    question: 'How many revisions are included?',
+    questionKm: 'តើមានការកែប្រែប៉ុន្មានដងរួមបញ្ចូល?',
+    answer: 'Every project includes 2–3 rounds of revisions. We work closely with you at each stage to ensure the final result matches your vision. Additional revisions are available at a small fee.',
+    answerKm: 'គម្រោងនីមួយៗមានការកែប្រែ ២–៣ ដង។ យើងធ្វើការជាមួយអ្នកក្នុងគ្រប់ដំណាក់កាលដើម្បីធានាថាលទ្ធផលចុងក្រោយត្រូវនឹងចក្ខុវិស័យរបស់អ្នក។',
+  },
+  {
+    question: 'Do you offer SEO services?',
+    questionKm: 'តើអ្នកផ្ដល់សេវា SEO ដែរឬទេ?',
+    answer: 'Yes! All our websites are built with SEO best practices. We also offer dedicated SEO packages including keyword research, on-page optimization, and Google ranking strategies tailored for the Cambodian market.',
+    answerKm: 'បាន! វេបសាយទាំងអស់ត្រូវបានសាងសង់ជាមួយ SEO best practices។ យើងក៏ផ្ដល់កញ្ចប់ SEO ដាច់ដោយឡែក រួមទាំង keyword research, on-page optimization, និង Google ranking strategies សម្រាប់ទីផ្សារកម្ពុជា។',
+  },
+  {
+    question: 'Can you redesign my existing website?',
+    questionKm: 'តើអ្នកអាចរចនាវេបសាយដែលមានស្រាប់របស់ខ្ញុំឡើងវិញបានទេ?',
+    answer: 'Absolutely! We specialize in website redesigns. We will analyze your current site, understand your goals, and create a modern, faster, and more effective version that drives results.',
+    answerKm: 'បាន! យើងជំនាញក្នុងការរចនាវេបសាយឡើងវិញ។ យើងនឹងវិភាគគេហទំព័របច្ចុប្បន្នរបស់អ្នក យល់ពីគោលដៅ ហើយបង្កើតកំណែទំនើប លឿនជាង និងមានប្រសិទ្ធភាពជាង។',
+  },
+  {
+    question: 'Do you provide hosting and domain registration?',
+    questionKm: 'តើអ្នកផ្ដល់ hosting និងចុះឈ្មោះ domain ដែរឬទេ?',
+    answer: 'Yes! We can handle hosting setup and domain registration for you. We recommend reliable hosting providers and can manage everything so you don\'t have to worry about the technical side.',
+    answerKm: 'បាន! យើងអាចដំណើរការ hosting និងចុះឈ្មោះ domain សម្រាប់អ្នក។ យើងណែនាំ hosting providers ល្អៗ និងអាចគ្រប់គ្រងអ្វីៗទាំងអស់ដើម្បីអ្នកមិនចាំបាច់ព្រួយបារម្ភពីផ្នែកបច្ចេកទេស។',
+  },
+  {
+    question: 'What technologies do you use?',
+    questionKm: 'តើអ្នកប្រើបច្ចេកវិទ្យាអ្វីខ្លះ?',
+    answer: 'We use modern frameworks like React, Next.js, TypeScript, and Tailwind CSS for web development. For mobile apps, we use React Native and Flutter. Our designs are crafted in Figma and Adobe Creative Suite.',
+    answerKm: 'យើងប្រើ frameworks ទំនើបដូចជា React, Next.js, TypeScript, និង Tailwind CSS សម្រាប់ web development។ សម្រាប់ mobile apps យើងប្រើ React Native និង Flutter។ ការរចនាយើងធ្វើក្នុង Figma និង Adobe Creative Suite។',
+  },
 ];
 
 interface AccordionItemProps {

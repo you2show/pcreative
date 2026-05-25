@@ -103,7 +103,8 @@ function AppContent() {
 
   const handleLoginSubmit = (e: React.FormEvent) => {
       e.preventDefault();
-      if (pin === '1234') {
+      const adminPin = import.meta.env.VITE_ADMIN_PIN || '1234';
+      if (pin === adminPin) {
           login({ role: 'admin', name: 'Super Admin' });
           closeAdmin(); setPin(''); setIsViewingSite(false);
           return;
@@ -138,7 +139,7 @@ function AppContent() {
       <main className="relative z-10">
         <Hero />
         <Partners />
-        {/* <Stats /> */}
+        <Stats />
         
         <Services 
             showPopupOnMount={shouldShowServicesPopup}
@@ -153,13 +154,13 @@ function AppContent() {
         </Suspense>
 
         <Process />
-        {/* <VideoShowreel /> */}
+        <VideoShowreel />
         
         <Portfolio 
             showPopupOnMount={shouldShowPortfolioPopup} 
             usePathRouting={true} 
         />
-        {/* <Testimonials /> */}
+        <Testimonials />
 
         <Team 
             showPopupOnMount={shouldShowTeamPopup}
