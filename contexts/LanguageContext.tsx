@@ -154,8 +154,9 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
         if (GOOGLE_LANGUAGES.includes(path)) {
             void loadGoogleTranslateScript().catch(() => {});
         }
-        // Ensure trailing slash exists if missing
-        if (!window.location.pathname.endsWith('/')) {
+        // Ensure trailing slash exists only when at the language root (e.g. /en → /en/)
+        // Do NOT rewrite sub-paths like /en/about → /en/ which would break deep links
+        if (window.location.pathname === `/${path}`) {
              const hash = window.location.hash;
              window.history.replaceState(null, '', `/${path}/${hash}`);
         }
