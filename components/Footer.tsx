@@ -62,7 +62,7 @@ const NewsletterForm: React.FC = () => {
 };
 
 const Footer: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { isInstallable, installPWA } = usePWA();
   const currentYear = new Date().getFullYear();
 
@@ -161,9 +161,9 @@ const Footer: React.FC = () => {
                 <h4 className="text-white font-bold mb-8 font-khmer text-lg">{t("Company", "ក្រុមហ៊ុន")}</h4>
                 <ul className="space-y-4">
                     {[
-                        { label: t('About Us', 'អំពីយើង'), href: '/about' },
-                        { label: t('Careers', 'ឱកាសការងារ'), href: '/careers' },
-                        { label: t('Insights', 'អត្ថបទ'), href: '/insights' },
+                        { label: t('About Us', 'អំពីយើង'), href: `/${language}/about` },
+                        { label: t('Careers', 'ឱកាសការងារ'), href: `/${language}/careers` },
+                        { label: t('Insights', 'អត្ថបទ'), href: `/${language}/insights` },
                         { label: t('Privacy Policy', 'គោលការណ៍​ភាព​ឯកជន'), href: '#privacy' }
                     ].map((item) => (
                         <li key={item.href}>
