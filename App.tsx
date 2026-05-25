@@ -43,10 +43,10 @@ const CostEstimator = React.lazy(() => import('./components/CostEstimator'));
 const ClientPortal = React.lazy(() => import('./components/ClientPortal'));
 
 const ComponentFallback: React.FC = () => (
-  <div className="w-full h-screen flex items-center justify-center bg-gray-950">
+  <div className="w-full h-screen flex items-center justify-center bg-white dark:bg-gray-950">
     <div className="flex flex-col items-center gap-4">
       <div className="w-12 h-12 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-      <p className="text-gray-400 text-sm font-khmer">Loading...</p>
+      <p className="text-gray-600 dark:text-gray-400 text-sm font-khmer">Loading...</p>
     </div>
   </div>
 );
@@ -175,7 +175,7 @@ function AppContent() {
           />
         </SectionTransition>
 
-        <Suspense fallback={<div className="h-96 bg-gray-900/50" />}>
+        <Suspense fallback={<div className="h-96 bg-gray-50 dark:bg-gray-900/50" />}>
           <SectionTransition>
             <CostEstimator 
               showPopupOnMount={shouldShowEstimatorPopup}
@@ -233,15 +233,15 @@ function AppContent() {
       
       {/* Admin Login Modal */}
       {isAdminOpen && (
-          <div className="fixed inset-0 z-[12000] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md overflow-hidden">
-              <div className="bg-gray-900 border border-white/10 p-8 rounded-3xl shadow-2xl w-full max-w-sm relative z-[12001]">
-                  <button onClick={closeAdmin} className="absolute top-4 right-4 text-gray-500 hover:text-white"><X size={20} /></button>
+          <div className="fixed inset-0 z-[12000] flex items-center justify-center p-4 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md overflow-hidden">
+              <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 p-8 rounded-3xl shadow-2xl w-full max-w-sm relative z-[12001]">
+                  <button onClick={closeAdmin} className="absolute top-4 right-4 text-gray-500 hover:text-gray-900 dark:hover:text-white"><X size={20} /></button>
                   <div className="flex flex-col items-center mb-6">
                       <div className="w-16 h-16 bg-indigo-500/10 rounded-full flex items-center justify-center mb-4 text-indigo-400"><Lock size={32} /></div>
-                      <h3 className="text-2xl font-bold text-white font-khmer">Access Control</h3>
+                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-khmer">Access Control</h3>
                   </div>
                   <form onSubmit={handleLoginSubmit} className="space-y-4">
-                      <input type="password" value={pin} onChange={(e) => setPin(e.target.value)} autoFocus className={`w-full bg-gray-800 border ${loginError ? 'border-red-500 animate-shake' : 'border-white/10'} rounded-xl px-4 py-3 text-center text-xl tracking-[0.5em] text-white focus:outline-none focus:ring-2 focus:ring-indigo-500`} placeholder="••••" maxLength={6} />
+                      <input type="password" value={pin} onChange={(e) => setPin(e.target.value)} autoFocus className={`w-full bg-gray-100 dark:bg-gray-800 border ${loginError ? 'border-red-500 animate-shake' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-center text-xl tracking-[0.5em] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500`} placeholder="••••" maxLength={6} />
                       <button type="submit" className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl flex items-center justify-center gap-2">Verify Identity <ArrowRight size={18} /></button>
                   </form>
               </div>

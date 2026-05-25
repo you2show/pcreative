@@ -19,7 +19,7 @@ const PageOverlay: React.FC<PageOverlayProps> = ({ title, onClose, children, bgT
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[100] bg-gray-950 overflow-y-auto animate-fade-in">
+    <div className="fixed inset-0 z-[100] bg-white dark:bg-gray-950 overflow-y-auto animate-fade-in">
       {/* Background decoration */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-96 bg-indigo-900/10 blur-[100px]" />
@@ -27,14 +27,14 @@ const PageOverlay: React.FC<PageOverlayProps> = ({ title, onClose, children, bgT
       </div>
 
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-6 md:px-12 bg-gray-950/80 backdrop-blur-md border-b border-white/5">
+      <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-6 md:px-12 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-100 dark:border-white/5">
          <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white">P</div>
-            <span className="text-xl font-bold text-white font-khmer">{title}</span>
+            <span className="text-xl font-bold text-gray-900 dark:text-white font-khmer">{title}</span>
          </div>
          <button 
             onClick={onClose}
-            className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-colors group"
+            className="p-3 rounded-full bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 transition-colors group"
          >
             <X size={24} className="group-hover:rotate-90 transition-transform" />
          </button>

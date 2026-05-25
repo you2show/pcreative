@@ -113,7 +113,7 @@ const FloatingChat: React.FC = () => {
         >
           <TelegramSVG size={22} />
         </a>
-        <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-lg bg-gray-900/90 text-white text-[11px] font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-md">
+        <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-lg bg-white/90 dark:bg-gray-900/90 text-gray-900 dark:text-white text-[11px] font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-md">
           Telegram
         </span>
       </div>
@@ -132,7 +132,7 @@ const FloatingChat: React.FC = () => {
               <span className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-75" />
             </span>
           </button>
-          <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-lg bg-gray-900/90 text-white text-[11px] font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-md">
+          <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-lg bg-white/90 dark:bg-gray-900/90 text-gray-900 dark:text-white text-[11px] font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-md">
             {t('Live Chat', 'ជជែកផ្ទាល់')}
           </span>
         </div>
@@ -151,7 +151,7 @@ const FloatingChat: React.FC = () => {
         >
           <WhatsAppSVG size={22} />
         </a>
-        <span className="absolute right-full top-1/2 -translate-y-1/2 mr-2 px-2.5 py-1 rounded-lg bg-gray-900/90 text-white text-[11px] font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-md">
+        <span className="absolute right-full top-1/2 -translate-y-1/2 mr-2 px-2.5 py-1 rounded-lg bg-white/90 dark:bg-gray-900/90 text-gray-900 dark:text-white text-[11px] font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-md">
           WhatsApp
         </span>
       </div>
@@ -167,7 +167,7 @@ const FloatingChat: React.FC = () => {
         >
           <MessengerSVG size={22} />
         </a>
-        <span className="absolute right-full top-1/2 -translate-y-1/2 mr-2 px-2.5 py-1 rounded-lg bg-gray-900/90 text-white text-[11px] font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-md">
+        <span className="absolute right-full top-1/2 -translate-y-1/2 mr-2 px-2.5 py-1 rounded-lg bg-white/90 dark:bg-gray-900/90 text-gray-900 dark:text-white text-[11px] font-medium whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-md">
           Messenger
         </span>
       </div>
@@ -183,7 +183,7 @@ const FloatingChat: React.FC = () => {
         }}
         className={`absolute inset-0 flex items-center justify-center w-12 h-12 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 ${
           isOpen || isLiveChatOpen
-            ? 'bg-gray-800 text-white'
+            ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
             : 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white'
         }`}
         aria-label="Chat with us"

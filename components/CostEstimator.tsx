@@ -164,7 +164,7 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
   const progressPercentage = currentStep === 'service' ? 33 : currentStep === 'features' ? 66 : 100;
 
   return (
-    <section id="estimator" className="py-24 bg-gray-900 relative overflow-hidden border-t border-white/5">
+    <section id="estimator" className="py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden border-t border-gray-100 dark:border-white/5">
       <ScrollBackgroundText text="ESTIMATE" className="top-20" />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -174,10 +174,10 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
                 <Calculator size={20} />
                 <span className="font-bold text-sm font-khmer">{t("Cost Estimator", "ឧបករណ៍គណនាតម្លៃ")}</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold text-white font-khmer">
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer">
               {t("Calculate Your", "គណនា")} <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">{t("Investment", "តម្លៃគម្រោង")}</span>
             </h2>
-            <p className="mt-4 text-gray-400 max-w-2xl mx-auto font-khmer">
+            <p className="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-khmer">
               {t(
                 "Get a quick estimate for your project. Choose a service and customize features to see the approximate cost.",
                 "ទទួលបានតម្លៃប៉ាន់ស្មានសម្រាប់គម្រោងរបស់អ្នក។ ជ្រើសរើសសេវាកម្ម និងមុខងារបន្ថែមដើម្បីមើលតម្លៃប្រហាក់ប្រហែល។"
@@ -202,7 +202,7 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
             </div>
             <span className="text-xs text-gray-500">{progressPercentage}%</span>
           </div>
-          <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
             <div 
               className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500 ease-out"
               style={{ width: `${progressPercentage}%` }}
@@ -211,16 +211,16 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
         </div>
 
         {/* Wizard Container */}
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 min-h-[500px] flex flex-col">
+        <div className="bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-3xl p-8 md:p-12 min-h-[500px] flex flex-col">
           
           {/* STEP 1: Service Selection */}
           {currentStep === 'service' && (
             <div className="animate-fade-in space-y-8 flex-1">
               <div>
-                <h3 className="text-2xl font-bold text-white font-khmer mb-2">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-khmer mb-2">
                   {t("Step 1: Select Your Service", "ជំហាន ១៖ ជ្រើសរើសសេវាកម្ម")}
                 </h3>
-                <p className="text-gray-400 font-khmer">{t("Choose the service that best fits your needs", "ជ្រើសរើសសេវាកម្មដែលសមស្របបំផុត")}</p>
+                <p className="text-gray-600 dark:text-gray-400 font-khmer">{t("Choose the service that best fits your needs", "ជ្រើសរើសសេវាកម្មដែលសមស្របបំផុត")}</p>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -231,18 +231,18 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
                     className={`flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border transition-all duration-300 transform hover:scale-105 ${
                       selectedService === service.id
                         ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/25 scale-105'
-                        : 'bg-gray-800 border-white/5 text-gray-400 hover:bg-gray-700 hover:border-white/10'
+                        : 'bg-gray-100 dark:bg-gray-800 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:border-gray-200 dark:hover:border-white/10'
                     }`}
                   >
                     {service.icon}
                     <span className="font-bold text-sm font-khmer text-center">{t(service.label, service.labelKm)}</span>
-                    <span className="text-xs text-gray-300 font-mono">${service.basePrice}</span>
+                    <span className="text-xs text-gray-700 dark:text-gray-300 font-mono">${service.basePrice}</span>
                   </button>
                 ))}
               </div>
 
               <div className="text-center text-gray-500 text-sm font-khmer">
-                {t("Selected:", "បានជ្រើសរើស:")} <span className="text-white font-bold">{t(currentService.label, currentService.labelKm)}</span>
+                {t("Selected:", "បានជ្រើសរើស:")} <span className="text-gray-900 dark:text-white font-bold">{t(currentService.label, currentService.labelKm)}</span>
               </div>
             </div>
           )}
@@ -251,10 +251,10 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
           {currentStep === 'features' && (
             <div className="animate-fade-in space-y-8 flex-1">
               <div>
-                <h3 className="text-2xl font-bold text-white font-khmer mb-2">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-khmer mb-2">
                   {t("Step 2: Add Features", "ជំហាន ២៖ បន្ថែមមុខងារ")}
                 </h3>
-                <p className="text-gray-400 font-khmer">{t("Customize your project with additional features", "ដាក់ពង្រឹងគម្រោងរបស់អ្នកដោយបន្ថែមលក្ខណៈពិសេស")}</p>
+                <p className="text-gray-600 dark:text-gray-400 font-khmer">{t("Customize your project with additional features", "ដាក់ពង្រឹងគម្រោងរបស់អ្នកដោយបន្ថែមលក្ខណៈពិសេស")}</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -265,7 +265,7 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
                     className={`flex items-center justify-between p-5 rounded-xl border cursor-pointer transition-all duration-200 transform hover:scale-102 ${
                       selectedAddOns.includes(addon.id)
                         ? 'bg-indigo-900/30 border-indigo-500/50 scale-102'
-                        : 'bg-gray-800/50 border-white/5 hover:border-white/20'
+                        : 'bg-gray-100 dark:bg-gray-800/50 border-gray-100 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/20'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -275,7 +275,7 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
                         {selectedAddOns.includes(addon.id) && <Check size={14} className="text-white" />}
                       </div>
                       <div>
-                        <span className={`text-sm font-khmer block ${selectedAddOns.includes(addon.id) ? 'text-white font-bold' : 'text-gray-400'}`}>
+                        <span className={`text-sm font-khmer block ${selectedAddOns.includes(addon.id) ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-600 dark:text-gray-400'}`}>
                           {t(addon.label, addon.labelKm)}
                         </span>
                       </div>
@@ -294,16 +294,16 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
                 <div className="w-16 h-16 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Check size={32} />
                 </div>
-                <h3 className="text-2xl font-bold text-white font-khmer mb-2">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-khmer mb-2">
                   {t("Investment Summary", "សង្ខេបតម្លៃវិនិយោគ")}
                 </h3>
-                <p className="text-gray-400 font-khmer">{t("Here is your estimated project cost", "នេះគឺជាតម្លៃប៉ាន់ស្មានសម្រាប់គម្រោងរបស់អ្នក")}</p>
+                <p className="text-gray-600 dark:text-gray-400 font-khmer">{t("Here is your estimated project cost", "នេះគឺជាតម្លៃប៉ាន់ស្មានសម្រាប់គម្រោងរបស់អ្នក")}</p>
               </div>
 
-              <div className="bg-gray-800/50 rounded-2xl p-6 space-y-4 border border-white/5">
-                <div className="flex justify-between items-center pb-4 border-b border-white/10">
-                  <span className="text-gray-400 font-khmer">{t("Base Service:", "សេវាកម្មមូលដ្ឋាន:")}</span>
-                  <span className="text-white font-bold font-khmer">{t(currentService.label, currentService.labelKm)} (${currentService.basePrice})</span>
+              <div className="bg-gray-100 dark:bg-gray-800/50 rounded-2xl p-6 space-y-4 border border-gray-100 dark:border-white/5">
+                <div className="flex justify-between items-center pb-4 border-b border-gray-200 dark:border-white/10">
+                  <span className="text-gray-600 dark:text-gray-400 font-khmer">{t("Base Service:", "សេវាកម្មមូលដ្ឋាន:")}</span>
+                  <span className="text-gray-900 dark:text-white font-bold font-khmer">{t(currentService.label, currentService.labelKm)} (${currentService.basePrice})</span>
                 </div>
                 
                 {selectedAddOns.length > 0 && (
@@ -313,16 +313,16 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
                       const addon = currentService.addOns.find(a => a.id === id)!;
                       return (
                         <div key={id} className="flex justify-between items-center text-sm">
-                          <span className="text-gray-400 font-khmer">{t(addon.label, addon.labelKm)}</span>
-                          <span className="text-gray-300 font-mono">+${addon.price}</span>
+                          <span className="text-gray-600 dark:text-gray-400 font-khmer">{t(addon.label, addon.labelKm)}</span>
+                          <span className="text-gray-700 dark:text-gray-300 font-mono">+${addon.price}</span>
                         </div>
                       );
                     })}
                   </div>
                 )}
 
-                <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                  <span className="text-xl font-bold text-white font-khmer">{t("Total Estimate:", "តម្លៃសរុប:")}</span>
+                <div className="pt-4 border-t border-gray-200 dark:border-white/10 flex justify-between items-center">
+                  <span className="text-xl font-bold text-gray-900 dark:text-white font-khmer">{t("Total Estimate:", "តម្លៃសរុប:")}</span>
                   <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 font-mono">
                     ${totalCost}
                   </span>
@@ -336,7 +336,7 @@ const CostEstimator: React.FC<CostEstimatorProps> = ({ showPopupOnMount = false,
             {currentStep !== 'service' ? (
               <button
                 onClick={goToPrevStep}
-                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-800 text-white font-bold hover:bg-gray-700 transition-all font-khmer active:scale-95"
+                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-all font-khmer active:scale-95"
               >
                 <ChevronLeft size={20} /> {t("Back", "ថយក្រោយ")}
               </button>

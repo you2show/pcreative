@@ -79,16 +79,16 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
 
   return createPortal(
     <div className="fixed inset-0 z-[11000] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-gray-950/90 backdrop-blur-md" onClick={handleClose} />
+      <div className="absolute inset-0 bg-white/90 dark:bg-gray-950/90 backdrop-blur-md" onClick={handleClose} />
 
-      <div className="relative w-full max-w-lg bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[11001]">
+      <div className="relative w-full max-w-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[11001]">
         {/* Header */}
         <div className="relative bg-gradient-to-r from-indigo-600 to-purple-600 p-6 pb-8">
-          <button onClick={handleClose} className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors">
+          <button onClick={handleClose} className="absolute top-4 right-4 p-2 bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/20 text-gray-900 dark:text-white rounded-full transition-colors">
             <X size={18} />
           </button>
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-white/20 rounded-xl">
+            <div className="p-2 bg-gray-300 dark:bg-white/20 rounded-xl">
               <Calendar size={22} className="text-white" />
             </div>
             <div>
@@ -108,10 +108,10 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
               <div className="w-16 h-16 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Check size={32} />
               </div>
-              <h4 className="text-xl font-bold text-white font-khmer mb-2">
+              <h4 className="text-xl font-bold text-gray-900 dark:text-white font-khmer mb-2">
                 {t('Request Received!', 'ទទួលបានសំណើ!')}
               </h4>
-              <p className="text-gray-400 font-khmer text-sm">
+              <p className="text-gray-600 dark:text-gray-400 font-khmer text-sm">
                 {t("We'll contact you within 24 hours to schedule your free consultation.", 'យើងនឹងទំនាក់ទំនងអ្នកក្នុងរយៈពេល ២៤ ម៉ោង ដើម្បីកំណត់ពេលពិគ្រោះ។')}
               </p>
               <button onClick={handleClose} className="mt-6 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors font-khmer">
@@ -122,7 +122,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wide font-khmer flex items-center gap-1.5">
+                  <label className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide font-khmer flex items-center gap-1.5">
                     <User size={12} /> {t('Name', 'ឈ្មោះ')} *
                   </label>
                   <input
@@ -130,26 +130,26 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
                     value={form.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
                     placeholder={t('Your name', 'ឈ្មោះ')}
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wide font-khmer flex items-center gap-1.5">
+                  <label className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide font-khmer flex items-center gap-1.5">
                     <Smartphone size={12} /> {t('Phone', 'ទូរស័ព្ទ')}
                   </label>
                   <input
                     name="phone"
                     value={form.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
                     placeholder="+855 ..."
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wide font-khmer flex items-center gap-1.5">
+                <label className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide font-khmer flex items-center gap-1.5">
                   <Mail size={12} /> {t('Email', 'អ៊ីមែល')} *
                 </label>
                 <input
@@ -158,53 +158,53 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
                   onChange={handleChange}
                   required
                   type="email"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
+                  className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
                   placeholder="your@email.com"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wide font-khmer">{t('Service', 'សេវាកម្ម')}</label>
+                  <label className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide font-khmer">{t('Service', 'សេវាកម្ម')}</label>
                   <select
                     name="service"
                     value={form.service}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
                   >
-                    <option value="Web Development" className="bg-gray-800 text-white">{t('Web Development', 'ការអភិវឌ្ឍវេប')}</option>
-                    <option value="Mobile App" className="bg-gray-800 text-white">{t('Mobile App', 'កម្មវិធីទូរស័ព្ទ')}</option>
-                    <option value="Graphic Design" className="bg-gray-800 text-white">{t('Graphic Design', 'ក្រាហ្វិករចនា')}</option>
-                    <option value="Architecture" className="bg-gray-800 text-white">{t('Architecture', 'ស្ថាបត្យកម្ម')}</option>
-                    <option value="Other" className="bg-gray-800 text-white">{t('Other', 'ផ្សេងៗ')}</option>
+                    <option value="Web Development" className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">{t('Web Development', 'ការអភិវឌ្ឍវេប')}</option>
+                    <option value="Mobile App" className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">{t('Mobile App', 'កម្មវិធីទូរស័ព្ទ')}</option>
+                    <option value="Graphic Design" className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">{t('Graphic Design', 'ក្រាហ្វិករចនា')}</option>
+                    <option value="Architecture" className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">{t('Architecture', 'ស្ថាបត្យកម្ម')}</option>
+                    <option value="Other" className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">{t('Other', 'ផ្សេងៗ')}</option>
                   </select>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wide font-khmer flex items-center gap-1.5">
+                  <label className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide font-khmer flex items-center gap-1.5">
                     <Clock size={12} /> {t('Best Time', 'ពេលល្អបំផុត')}
                   </label>
                   <select
                     name="preferredTime"
                     value={form.preferredTime}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer"
                   >
-                    <option value="Morning (9am–12pm)" className="bg-gray-800 text-white">{t('Morning (9–12pm)', 'ព្រឹក (9–12)')}</option>
-                    <option value="Afternoon (12pm–5pm)" className="bg-gray-800 text-white">{t('Afternoon (12–5pm)', 'រសៀល (12–5)')}</option>
-                    <option value="Evening (5pm–8pm)" className="bg-gray-800 text-white">{t('Evening (5–8pm)', 'ល្ងាច (5–8)')}</option>
-                    <option value="Anytime" className="bg-gray-800 text-white">{t('Anytime', 'ពេលណាក៏បាន')}</option>
+                    <option value="Morning (9am–12pm)" className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">{t('Morning (9–12pm)', 'ព្រឹក (9–12)')}</option>
+                    <option value="Afternoon (12pm–5pm)" className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">{t('Afternoon (12–5pm)', 'រសៀល (12–5)')}</option>
+                    <option value="Evening (5pm–8pm)" className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">{t('Evening (5–8pm)', 'ល្ងាច (5–8)')}</option>
+                    <option value="Anytime" className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">{t('Anytime', 'ពេលណាក៏បាន')}</option>
                   </select>
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wide font-khmer">{t('Tell us about your project (optional)', 'ប្រាប់យើងអំពីគម្រោង (ស្រេចចិត្ត)')}</label>
+                <label className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide font-khmer">{t('Tell us about your project (optional)', 'ប្រាប់យើងអំពីគម្រោង (ស្រេចចិត្ត)')}</label>
                 <textarea
                   name="message"
                   value={form.message}
                   onChange={handleChange}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer resize-none"
                   placeholder={t('Brief description...', 'ពិពណ៌នាខ្លី...')}
                 />
               </div>

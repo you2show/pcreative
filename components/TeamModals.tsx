@@ -202,12 +202,12 @@ const ArticleDetailPanel: React.FC<{
                 </div>
             </div>
             <div className="flex-1">
-                <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
+                <div className="bg-gray-100 dark:bg-white/5 rounded-2xl p-4 border border-gray-100 dark:border-white/5">
                     <div className="flex justify-between items-center mb-1">
-                        <span className="text-white font-bold text-sm">{comment.user}</span>
+                        <span className="text-gray-900 dark:text-white font-bold text-sm">{comment.user}</span>
                         <span className="text-gray-500 text-[10px]">{new Date(comment.date).toLocaleDateString()}</span>
                     </div>
-                    <p className="text-gray-300 text-sm font-khmer">{comment.content}</p>
+                    <p className="text-gray-700 dark:text-gray-300 text-sm font-khmer">{comment.content}</p>
                 </div>
                 <div className="flex gap-4 mt-2 ml-2">
                     <button
@@ -291,17 +291,17 @@ const ArticleDetailPanel: React.FC<{
                 {/* Article Content */}
                 <div className="px-6 md:px-10 py-10">
                     <div className="max-w-3xl mx-auto">
-                        <div className="prose prose-invert prose-indigo max-w-none">
+                        <div className="prose prose-gray dark:prose-invert prose-indigo max-w-none">
                             <ContentRenderer content={t(post.content, post.contentKm || post.content)} />
                         </div>
 
                         {/* Comments Section */}
-                        <div ref={commentsRef} className="mt-20 pt-10 border-t border-white/10">
+                        <div ref={commentsRef} className="mt-20 pt-10 border-t border-gray-200 dark:border-white/10">
                             <div className="flex items-center justify-between mb-8">
-                                <h3 className="text-2xl font-bold text-white flex items-center gap-3">
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
                                     <MessageCircle size={24} className="text-indigo-400" />
                                     {t('Comments', 'មតិយោបល់')}
-                                    <span className="text-sm bg-white/5 px-2 py-1 rounded-lg text-gray-500">{getTotalCommentCount(comments)}</span>
+                                    <span className="text-sm bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg text-gray-500">{getTotalCommentCount(comments)}</span>
                                 </h3>
                             </div>
 
@@ -317,7 +317,7 @@ const ArticleDetailPanel: React.FC<{
                                             <CommentItem key={comment.id} comment={comment} />
                                         ))
                                     ) : (
-                                        <div className="bg-white/5 rounded-2xl p-10 text-center border border-white/5 border-dashed">
+                                        <div className="bg-gray-100 dark:bg-white/5 rounded-2xl p-10 text-center border border-gray-100 dark:border-white/5 border-dashed">
                                             <p className="text-gray-500 text-sm font-khmer">{t('No comments yet. Be the first to share your thoughts!', 'មិនទាន់មានមតិយោបល់នៅឡើយទេ។ សូមបញ្ចេញមតិយោបល់របស់អ្នកមុនគេ!')}</p>
                                         </div>
                                     )}
@@ -325,7 +325,7 @@ const ArticleDetailPanel: React.FC<{
                             )}
 
                             {/* Comment Form */}
-                            <div className="mt-12 bg-white/5 rounded-3xl p-6 border border-white/5">
+                            <div className="mt-12 bg-gray-100 dark:bg-white/5 rounded-3xl p-6 border border-gray-100 dark:border-white/5">
                                 {commentError && (
                                     <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 text-sm font-khmer">
                                         <AlertCircle size={14} className="shrink-0" />
@@ -337,14 +337,14 @@ const ArticleDetailPanel: React.FC<{
                                         {replyTo && (
                                             <div className="flex items-center justify-between bg-indigo-500/10 px-4 py-2 rounded-xl mb-4 border border-indigo-500/20">
                                                 <p className="text-xs text-indigo-300">Replying to <span className="font-bold">{replyTo.name}</span></p>
-                                                <button type="button" onClick={() => setReplyTo(null)} className="text-gray-500 hover:text-white"><X size={14} /></button>
+                                                <button type="button" onClick={() => setReplyTo(null)} className="text-gray-500 hover:text-gray-900 dark:hover:text-white"><X size={14} /></button>
                                             </div>
                                         )}
                                         <textarea
                                             value={newComment}
                                             onChange={(e) => setNewComment(e.target.value)}
                                             placeholder={t('Write your comment...', 'សរសេរមតិយោបល់របស់អ្នក...')}
-                                            className="w-full bg-transparent border-none focus:ring-0 text-white font-khmer resize-none min-h-[100px]"
+                                            className="w-full bg-transparent border-none focus:ring-0 text-gray-900 dark:text-white font-khmer resize-none min-h-[100px]"
                                         />
                                         <div className="flex justify-end mt-4">
                                             <button
@@ -362,7 +362,7 @@ const ArticleDetailPanel: React.FC<{
                                         {replyTo && (
                                             <div className="flex items-center justify-between bg-indigo-500/10 px-4 py-2 rounded-xl mb-4 border border-indigo-500/20">
                                                 <p className="text-xs text-indigo-300">Replying to <span className="font-bold">{replyTo.name}</span></p>
-                                                <button type="button" onClick={() => setReplyTo(null)} className="text-gray-500 hover:text-white"><X size={14} /></button>
+                                                <button type="button" onClick={() => setReplyTo(null)} className="text-gray-500 hover:text-gray-900 dark:hover:text-white"><X size={14} /></button>
                                             </div>
                                         )}
                                         <div className="flex items-center gap-2 mb-3">
@@ -375,14 +375,14 @@ const ArticleDetailPanel: React.FC<{
                                                 onChange={(e) => setGuestName(e.target.value)}
                                                 placeholder={t('Your name', 'ឈ្មោះរបស់អ្នក')}
                                                 required
-                                                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm font-khmer placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
+                                                className="flex-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-3 py-2 text-gray-900 dark:text-white text-sm font-khmer placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
                                             />
                                         </div>
                                         <textarea
                                             value={newComment}
                                             onChange={(e) => setNewComment(e.target.value)}
                                             placeholder={t('Write your comment...', 'សរសេរមតិយោបល់របស់អ្នក...')}
-                                            className="w-full bg-transparent border-none focus:ring-0 text-white font-khmer resize-none min-h-[80px]"
+                                            className="w-full bg-transparent border-none focus:ring-0 text-gray-900 dark:text-white font-khmer resize-none min-h-[80px]"
                                         />
                                         <div className="flex justify-end mt-3">
                                             <button
@@ -481,14 +481,14 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
     return createPortal(
         <div className={`fixed inset-0 z-[10002] overflow-hidden ${isSplitView ? 'flex' : 'flex items-center justify-center px-4 py-8 md:p-4'}`}>
             <div 
-                className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
+                className="absolute inset-0 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md animate-fade-in"
                 onClick={handleTeamClose}
             />
-            <div className={`relative bg-gray-900 border-white/10 shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col ${isSplitView ? 'w-[440px] xl:w-[480px] shrink-0 h-full border-r' : 'w-full max-w-4xl max-h-full rounded-[2rem]'}`}
+            <div className={`relative bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden animate-scale-up z-[10003] flex flex-col ${isSplitView ? 'w-[440px] xl:w-[480px] shrink-0 h-full border-r' : 'w-full max-w-4xl max-h-full rounded-[2rem]'}`}
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header / Cover */}
-                <div className="h-32 bg-gray-800 relative shrink-0 overflow-hidden">
+                <div className="h-32 bg-gray-100 dark:bg-gray-800 relative shrink-0 overflow-hidden">
                     {member.coverImage ? (
                         <img 
                             src={member.coverImage} 
@@ -513,7 +513,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                         <img 
                             src={member.image} 
                             alt={member.name} 
-                            className="w-24 h-24 rounded-2xl border-4 border-gray-900 object-cover shadow-xl shrink-0"
+                            className="w-24 h-24 rounded-2xl border-4 border-gray-200 dark:border-gray-900 object-cover shadow-xl shrink-0"
                             loading="lazy"
                             decoding="async"
                             onError={(e) => {
@@ -524,18 +524,18 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                         />
                         {/* Name + Role */}
                         <div className="mt-3 md:mt-0 md:mb-1 flex-1 min-w-0">
-                            <h3 className="text-2xl font-bold text-white">{member.name}</h3>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{member.name}</h3>
                             <p className="text-indigo-400 font-medium font-khmer">{t(member.role, member.roleKm)}</p>
                         </div>
                         {/* Social Links — far right on desktop */}
                         <div className="flex gap-3 mt-4 md:mt-0 md:mb-1 md:shrink-0">
                             {socials.facebook && (
-                                <a href={socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5 hover:border-white/20">
+                                <a href={socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-xl transition-all border border-gray-100 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/20">
                                     <Facebook size={18} />
                                 </a>
                             )}
                             {socials.telegram && (
-                                <a href={socials.telegram} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/5 hover:border-white/20">
+                                <a href={socials.telegram} target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-xl transition-all border border-gray-100 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/20">
                                     <Send size={18} />
                                 </a>
                             )}
@@ -547,16 +547,16 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                 <div className="px-8 pb-8 flex-1 overflow-y-auto scrollbar-hide min-h-0">
                     {/* Stats */}
                     <div className="grid grid-cols-2 gap-4 mb-8">
-                        <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
+                        <div className="bg-gray-100 dark:bg-white/5 rounded-2xl p-4 border border-gray-100 dark:border-white/5">
                             <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">{t('Projects', 'គម្រោង')}</p>
-                            <p className="text-xl font-bold text-white">12+</p>
+                            <p className="text-xl font-bold text-gray-900 dark:text-white">12+</p>
                         </div>
                         <button 
                             onClick={() => setShowArticlesView(true)}
-                            className="bg-white/5 rounded-2xl p-4 border border-white/5 text-left hover:bg-white/10 transition-all group"
+                            className="bg-gray-100 dark:bg-white/5 rounded-2xl p-4 border border-gray-100 dark:border-white/5 text-left hover:bg-gray-200 dark:hover:bg-white/10 transition-all group"
                         >
                             <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">{t('Articles', 'អត្ថបទ')}</p>
-                            <p className="text-xl font-bold text-white flex items-center justify-between">
+                            <p className="text-xl font-bold text-gray-900 dark:text-white flex items-center justify-between">
                                 {postCount}
                                 <ArrowRight size={18} className="text-indigo-400 group-hover:translate-x-1 transition-transform" />
                             </p>
@@ -567,13 +567,13 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                         /* Inline Articles View */
                         <div>
                             <div className="flex items-center justify-between mb-4">
-                                <h4 className="text-white font-bold flex items-center gap-2">
+                                <h4 className="text-gray-900 dark:text-white font-bold flex items-center gap-2">
                                     <FileText size={18} className="text-indigo-400" />
                                     {t('Articles', 'អត្ថបទ')}
                                 </h4>
                                 <button
                                     onClick={() => setShowArticlesView(false)}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs border border-white/10 transition-colors"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-xs border border-gray-200 dark:border-white/10 transition-colors"
                                 >
                                     <X size={14} />
                                     {t('Back', 'ត្រឡប់')}
@@ -586,7 +586,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                                     {memberPosts.map((post) => (
                                         <article
                                             key={post.id}
-                                            className="group flex gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer"
+                                            className="group flex gap-3 p-3 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer"
                                             onClick={() => handleArticleClick(post)}
                                         >
                                             <div className="w-16 h-16 shrink-0 rounded-xl overflow-hidden">
@@ -600,7 +600,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                                                         <span>{post.date}</span>
                                                     </div>
                                                 </div>
-                                                <h4 className="text-white font-bold group-hover:text-indigo-400 transition-colors line-clamp-2 font-khmer text-sm">
+                                                <h4 className="text-gray-900 dark:text-white font-bold group-hover:text-indigo-400 transition-colors line-clamp-2 font-khmer text-sm">
                                                     {t(post.title, post.titleKm)}
                                                 </h4>
                                             </div>
@@ -613,7 +613,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                         <>
                     {/* Skills */}
                     <div className="mb-8">
-                        <h4 className="text-white font-bold mb-4 flex items-center gap-2">
+                        <h4 className="text-gray-900 dark:text-white font-bold mb-4 flex items-center gap-2">
                             <Code size={18} className="text-indigo-400" />
                             {t('Expertise', 'ជំនាញ')}
                         </h4>
@@ -632,10 +632,10 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
                                 return (
                                     <div key={i}>
                                         <div className="flex justify-between mb-1">
-                                            <span className="text-gray-300 text-xs font-medium">{skill}</span>
+                                            <span className="text-gray-700 dark:text-gray-300 text-xs font-medium">{skill}</span>
                                             <span className="text-gray-500 text-xs">{level}%</span>
                                         </div>
-                                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                        <div className="h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                                             <div
                                                 className={`h-full bg-gradient-to-r ${color} rounded-full transition-all duration-1000`}
                                                 style={{ width: `${level}%` }}
@@ -649,14 +649,14 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
 
                     {/* Experience */}
                     <div>
-                        <h4 className="text-white font-bold mb-4 flex items-center gap-2">
+                        <h4 className="text-gray-900 dark:text-white font-bold mb-4 flex items-center gap-2">
                             <Briefcase size={18} className="text-indigo-400" />
                             {t('Experience', 'បទពិសោធន៍')}
                         </h4>
                         <div className="space-y-4">
                             {(language === 'km' ? experienceKm : experience).map((exp, i) => (
                                 <div key={i} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:bg-indigo-500 before:rounded-full">
-                                    <p className="text-gray-300 text-sm font-khmer leading-relaxed">{exp}</p>
+                                    <p className="text-gray-700 dark:text-gray-300 text-sm font-khmer leading-relaxed">{exp}</p>
                                 </div>
                             ))}
                         </div>
@@ -668,7 +668,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
             {/* Article panel – visible only in split-view (md+) when an article is selected */}
             {isSplitView && (
                 <div
-                    className="relative flex-1 h-full bg-gray-900 border-l border-white/10 z-[10003] overflow-hidden animate-scale-up"
+                    className="relative flex-1 h-full bg-gray-50 dark:bg-gray-900 border-l border-gray-200 dark:border-white/10 z-[10003] overflow-hidden animate-scale-up"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <ArticleDetailPanel post={selectedPost} onClose={handleArticlePanelClose} />
@@ -693,21 +693,21 @@ export const AuthorArticlesModal: React.FC<AuthorArticlesModalProps> = ({ author
     return createPortal(
         <div className="fixed inset-0 z-[10004] flex items-center justify-center p-4 overflow-hidden">
             <div 
-                className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
+                className="absolute inset-0 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md animate-fade-in"
                 onClick={onClose}
             />
-            <div className="relative w-full max-w-2xl bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10005] flex flex-col max-h-[80vh]">
-                <div className="p-6 border-b border-white/10 flex justify-between items-center bg-gray-900 z-10">
+            <div className="relative w-full max-w-2xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-scale-up z-[10005] flex flex-col max-h-[80vh]">
+                <div className="p-6 border-b border-gray-200 dark:border-white/10 flex justify-between items-center bg-gray-50 dark:bg-gray-900 z-10">
                     <div className="flex items-center gap-4">
                         <img src={author.image} alt={author.name} className="w-10 h-10 rounded-full object-cover"
                             onError={(e) => { const el = e.currentTarget; el.onerror = null; el.src = getAvatarFallbackUrl(author.name, 80); }}
                         />
                         <div>
-                            <h3 className="text-lg font-bold text-white">{author.name}</h3>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{author.name}</h3>
                             <p className="text-xs text-gray-500 font-khmer">{t('All Articles', 'អត្ថបទទាំងអស់')}</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full text-gray-500 hover:text-white transition-colors">
+                    <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <X size={20} />
                     </button>
                 </div>
@@ -717,7 +717,7 @@ export const AuthorArticlesModal: React.FC<AuthorArticlesModalProps> = ({ author
                         {posts.map((post) => (
                             <article 
                                 key={post.id} 
-                                className="group flex gap-4 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer"
+                                className="group flex gap-4 p-3 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer"
                                 onClick={() => onSelectPost(post)}
                             >
                                 <div className="w-24 h-24 shrink-0 rounded-xl overflow-hidden">
@@ -731,10 +731,10 @@ export const AuthorArticlesModal: React.FC<AuthorArticlesModalProps> = ({ author
                                             <span>{post.date}</span>
                                         </div>
                                     </div>
-                                    <h4 className="text-white font-bold group-hover:text-indigo-400 transition-colors line-clamp-2 font-khmer text-sm mb-2">
+                                    <h4 className="text-gray-900 dark:text-white font-bold group-hover:text-indigo-400 transition-colors line-clamp-2 font-khmer text-sm mb-2">
                                         {t(post.title, post.titleKm)}
                                     </h4>
-                                    <p className="text-gray-400 text-[10px] leading-relaxed line-clamp-2 font-khmer">
+                                    <p className="text-gray-600 dark:text-gray-400 text-[10px] leading-relaxed line-clamp-2 font-khmer">
                                         {post.excerpt}
                                     </p>
                                 </div>
@@ -758,7 +758,7 @@ interface ArticleDetailModalProps {
 export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({ post, onClose, onAuthorClick }) => {
     return createPortal(
         <div className="fixed inset-0 z-[10006] overflow-hidden">
-            <div className="relative w-full h-full bg-gray-900 overflow-hidden flex flex-col z-[10007]">
+            <div className="relative w-full h-full bg-gray-50 dark:bg-gray-900 overflow-hidden flex flex-col z-[10007]">
                 <ArticleDetailPanel post={post} onClose={onClose} onAuthorClick={onAuthorClick} />
             </div>
         </div>,

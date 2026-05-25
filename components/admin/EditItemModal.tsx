@@ -122,13 +122,13 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
   const uniqueCategories = Array.from(new Set(projects.map(p => p.category))).sort();
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-5xl max-h-[95vh] overflow-y-auto p-6 shadow-2xl animate-scale-up flex flex-col">
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm animate-fade-in">
+      <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-2xl w-full max-w-5xl max-h-[95vh] overflow-y-auto p-6 shadow-2xl animate-scale-up flex flex-col">
         <div className="flex justify-between items-center mb-6 shrink-0">
-          <h3 className="text-xl font-bold text-white font-khmer">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white font-khmer">
             {isAdding ? 'បន្ថែមថ្មី' : 'កែសម្រួល'} ({activeTab})
           </h3>
-          <button onClick={onCancel} className="text-gray-400 hover:text-white"><X /></button>
+          <button onClick={onCancel} className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"><X /></button>
         </div>
 
         <form onSubmit={onSave} className="space-y-4 flex-1">
@@ -150,7 +150,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                         <input 
                             type="text"
                             maxLength={6}
-                            className="w-full bg-gray-800 border border-indigo-500/30 rounded-lg p-3 text-white font-mono tracking-widest"
+                            className="w-full bg-gray-100 dark:bg-gray-800 border border-indigo-500/30 rounded-lg p-3 text-gray-900 dark:text-white font-mono tracking-widest"
                             value={value || ''} 
                             onChange={(e) => setEditingItem({ ...editingItem, [key]: e.target.value })}
                             placeholder="e.g. 1234"
@@ -161,16 +161,16 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
             if (key === 'socials' && activeTab === 'team') {
                 const socials = value || { facebook: '', telegram: '' };
                 return (
-                    <div key={key} className="mb-4 p-4 bg-gray-800/50 rounded-xl border border-white/10">
-                        <label className="block text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider">Social Media Links</label>
+                    <div key={key} className="mb-4 p-4 bg-gray-100 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-white/10">
+                        <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-3 uppercase tracking-wider">Social Media Links</label>
                         <div className="grid md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-xs text-gray-500 mb-1">Facebook</label>
-                                <input className="w-full bg-gray-900 border border-white/10 rounded-lg p-3 text-white text-sm" value={socials.facebook || ''} onChange={(e) => handleSocialChange('facebook', e.target.value)} />
+                                <input className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white text-sm" value={socials.facebook || ''} onChange={(e) => handleSocialChange('facebook', e.target.value)} />
                             </div>
                             <div>
                                 <label className="block text-xs text-gray-500 mb-1">Telegram</label>
-                                <input className="w-full bg-gray-900 border border-white/10 rounded-lg p-3 text-white text-sm" value={socials.telegram || ''} onChange={(e) => handleSocialChange('telegram', e.target.value)} />
+                                <input className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white text-sm" value={socials.telegram || ''} onChange={(e) => handleSocialChange('telegram', e.target.value)} />
                             </div>
                         </div>
                     </div>
@@ -179,16 +179,16 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
             if (key === 'link' && activeTab === 'projects') {
                 return (
                     <div key={key} className="mb-4">
-                        <label className="block text-xs font-bold text-gray-400 mb-1 flex items-center gap-1"><LinkIcon size={12}/> Live Project Link</label>
-                        <input className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white text-sm" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, [key]: e.target.value })} />
+                        <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1 flex items-center gap-1"><LinkIcon size={12}/> Live Project Link</label>
+                        <input className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white text-sm" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, [key]: e.target.value })} />
                     </div>
                 );
             }
             if (key === 'category' && activeTab === 'projects') {
                 return (
                     <div key={key} className="mb-4">
-                        <label className="block text-xs font-bold text-gray-400 mb-1 flex items-center gap-1"><Tag size={12}/> Category</label>
-                        <input list="category-suggestions" className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white text-sm" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, [key]: e.target.value })} />
+                        <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1 flex items-center gap-1"><Tag size={12}/> Category</label>
+                        <input list="category-suggestions" className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white text-sm" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, [key]: e.target.value })} />
                         <datalist id="category-suggestions">{uniqueCategories.map(cat => <option key={cat} value={cat} />)}</datalist>
                     </div>
                 );
@@ -196,26 +196,26 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
             if (key === 'authorId') {
                 return (
                     <div key={key} className="mb-4">
-                        <label className="block text-xs font-bold text-gray-400 mb-2">Author</label>
+                        <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-2">Author</label>
                         {isSuperAdmin ? (
-                            <select className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, authorId: e.target.value })}>{team.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}</select>
-                        ) : (<div className="p-3 bg-gray-800 rounded-lg text-gray-400 text-sm">Posting as yourself</div>)}
+                            <select className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, authorId: e.target.value })}>{team.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}</select>
+                        ) : (<div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-600 dark:text-gray-400 text-sm">Posting as yourself</div>)}
                     </div>
                 );
             }
             if (key === 'image') {
                 return (
                     <div key={key} className="space-y-2 mb-4">
-                         <label className="block text-xs font-bold text-gray-400">{label}</label>
+                         <label className="block text-xs font-bold text-gray-600 dark:text-gray-400">{label}</label>
                          <div className="flex gap-4">
-                             <div className="w-24 h-24 bg-gray-800 rounded-lg overflow-hidden border border-white/10 flex items-center justify-center shrink-0">
+                             <div className="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-white/10 flex items-center justify-center shrink-0">
                                  {value ? <img src={value} className="w-full h-full object-cover" /> : <ImageIcon className="text-gray-600" />}
                              </div>
                              <div className="flex-1 space-y-2">
-                                 <input type="text" placeholder="Image URL" className="w-full bg-gray-800 border border-white/10 rounded-lg p-2 text-white text-sm" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, image: e.target.value })} />
+                                 <input type="text" placeholder="Image URL" className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white text-sm" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, image: e.target.value })} />
                                  <div className="flex gap-2">
                                      <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleMainImageUpload} />
-                                     <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-xs text-white flex items-center gap-2">{isUploading ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />} Upload New</button>
+                                     <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="px-3 py-2 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg text-xs text-gray-900 dark:text-white flex items-center gap-2">{isUploading ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />} Upload New</button>
                                  </div>
                              </div>
                          </div>
@@ -226,16 +226,16 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
             if (key === 'avatar' && activeTab === 'stories') {
                 return (
                     <div key={key} className="space-y-2 mb-4">
-                         <label className="block text-xs font-bold text-gray-400">Profile Picture</label>
+                         <label className="block text-xs font-bold text-gray-600 dark:text-gray-400">Profile Picture</label>
                          <div className="flex gap-4">
-                             <div className="w-16 h-16 bg-gray-800 rounded-full overflow-hidden border-2 border-indigo-500/30 flex items-center justify-center shrink-0">
+                             <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden border-2 border-indigo-500/30 flex items-center justify-center shrink-0">
                                  {value ? <img src={value} className="w-full h-full object-cover" /> : <ImageIcon className="text-gray-600" />}
                              </div>
                              <div className="flex-1 space-y-2">
-                                 <input type="text" placeholder="Avatar URL (optional - auto-generated if empty)" className="w-full bg-gray-800 border border-white/10 rounded-lg p-2 text-white text-sm" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, avatar: e.target.value })} />
+                                 <input type="text" placeholder="Avatar URL (optional - auto-generated if empty)" className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white text-sm" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, avatar: e.target.value })} />
                                  <div className="flex gap-2">
                                      <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleMainImageUpload} />
-                                     <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-xs text-white flex items-center gap-2">{isUploading ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />} Upload New</button>
+                                     <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="px-3 py-2 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg text-xs text-gray-900 dark:text-white flex items-center gap-2">{isUploading ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />} Upload New</button>
                                  </div>
                              </div>
                          </div>
@@ -248,8 +248,8 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
             if (Array.isArray(value)) {
                  return (
                     <div key={key} className="mb-4">
-                        <label className="block text-xs font-bold text-gray-400 mb-1">{label}</label>
-                        <textarea className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white h-24 font-mono text-sm" placeholder="Item 1, Item 2" value={value.join(', ')} onChange={(e) => setEditingItem({ ...editingItem, [key]: e.target.value.split(',').map((s:string) => s.trim()) })} />
+                        <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">{label}</label>
+                        <textarea className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white h-24 font-mono text-sm" placeholder="Item 1, Item 2" value={value.join(', ')} onChange={(e) => setEditingItem({ ...editingItem, [key]: e.target.value.split(',').map((s:string) => s.trim()) })} />
                     </div>
                  );
             }
@@ -257,15 +257,15 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
 
             return (
               <div key={key}>
-                <label className="block text-xs font-bold text-gray-400 mb-1">{label}</label>
-                <input className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, [key]: e.target.value })} />
+                <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">{label}</label>
+                <input className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white" value={value || ''} onChange={(e) => setEditingItem({ ...editingItem, [key]: e.target.value })} />
               </div>
             );
           })}
 
           {/* --- COVER IMAGE SECTION FOR TEAM MEMBERS --- */}
           {activeTab === 'team' && (
-              <div className="mt-6 pt-6 border-t border-white/10">
+              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-white/10">
                   <label className="block text-xs font-bold text-indigo-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
                       <ImageIcon size={14} /> Cover Image (ផ្ទៃខាងក្រោយ)
                   </label>
@@ -275,7 +275,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
 
                   {/* Cover Image Preview */}
                   {editingItem.coverImage && (
-                      <div className="relative w-full h-40 rounded-xl overflow-hidden border border-white/10 mb-3 group">
+                      <div className="relative w-full h-40 rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 mb-3 group">
                           <img 
                               src={editingItem.coverImage} 
                               alt="Cover Preview" 
@@ -296,7 +296,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                       <input 
                           type="text" 
                           placeholder="ឬ Paste Cover Image URL នៅទីនេះ" 
-                          className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white text-sm" 
+                          className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white text-sm" 
                           value={editingItem.coverImage || ''} 
                           onChange={(e) => setEditingItem({ ...editingItem, coverImage: e.target.value })} 
                       />
@@ -339,7 +339,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
 
           {/* --- COVER IMAGE SECTION FOR INSIGHTS ARTICLES --- */}
           {activeTab === 'insights' && (
-              <div className="mt-6 pt-6 border-t border-white/10">
+              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-white/10">
                   <label className="block text-xs font-bold text-indigo-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
                       <ImageIcon size={14} /> Cover Image (រូបភាពគម្របអត្ថបទ)
                   </label>
@@ -349,7 +349,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
 
                   {/* Cover Image Preview */}
                   {editingItem.coverImage && (
-                      <div className="relative w-full h-40 rounded-xl overflow-hidden border border-white/10 mb-3 group">
+                      <div className="relative w-full h-40 rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 mb-3 group">
                           <img 
                               src={editingItem.coverImage} 
                               alt="Cover Preview" 
@@ -370,7 +370,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                       <input 
                           type="text" 
                           placeholder="ឬ Paste Cover Image URL នៅទីនេះ" 
-                          className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white text-sm" 
+                          className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white text-sm" 
                           value={editingItem.coverImage || ''} 
                           onChange={(e) => setEditingItem({ ...editingItem, coverImage: e.target.value })} 
                       />
@@ -414,12 +414,12 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
           {/* --- GALLERY SECTION FOR PROJECTS --- */}
           {activeTab === 'projects' && (
               <div className="mb-4">
-                  <label className="block text-xs font-bold text-gray-400 mb-2 flex items-center gap-2"><Images size={14}/> Image Gallery</label>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2"><Images size={14}/> Image Gallery</label>
                   
                   {/* Gallery Preview Grid */}
                   <div className="grid grid-cols-4 gap-2 mb-2">
                       {(editingItem.gallery || []).map((imgUrl: string, idx: number) => (
-                          <div key={idx} className="relative aspect-square bg-gray-800 rounded-lg overflow-hidden group border border-white/10">
+                          <div key={idx} className="relative aspect-square bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden group border border-gray-200 dark:border-white/10">
                               <img src={imgUrl} className="w-full h-full object-cover" />
                               <button 
                                   type="button"
@@ -438,7 +438,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                           type="button" 
                           onClick={() => galleryInputRef.current?.click()}
                           disabled={isGalleryUploading}
-                          className="aspect-square bg-white/5 border border-white/10 border-dashed rounded-lg flex flex-col items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+                          className="aspect-square bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 border-dashed rounded-lg flex flex-col items-center justify-center text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
                       >
                           {isGalleryUploading ? <Loader2 size={20} className="animate-spin" /> : <PlusIcon size={20} />}
                           <span className="text-[10px] mt-1">Add Image</span>
@@ -449,7 +449,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                   
                   {/* Manual URL Input fallback */}
                   <textarea 
-                      className="w-full bg-gray-800 border border-white/10 rounded-lg p-2 text-white text-xs font-mono h-20"
+                      className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white text-xs font-mono h-20"
                       placeholder="Paste image URLs here (comma separated) for manual entry..."
                       value={(editingItem.gallery || []).join(', ')}
                       onChange={(e) => setEditingItem({ ...editingItem, gallery: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
@@ -459,8 +459,8 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
 
           {/* --- SPECIAL CASE STUDY SECTION FOR PROJECTS --- */}
           {activeTab === 'projects' && (
-              <div className="mt-8 pt-8 border-t border-white/10">
-                  <h4 className="text-white font-bold mb-4 flex items-center gap-2">
+              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/10">
+                  <h4 className="text-gray-900 dark:text-white font-bold mb-4 flex items-center gap-2">
                       <FileText className="text-indigo-400" size={20}/> Detailed Case Study
                   </h4>
                   <div className="space-y-6">
@@ -469,7 +469,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                           <div className="space-y-2">
                               <label className="text-xs font-bold text-red-400 uppercase tracking-wider flex items-center gap-1"><Target size={14}/> The Challenge (EN)</label>
                               <textarea 
-                                  className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white h-32 focus:ring-2 focus:ring-red-500/50 outline-none text-sm resize-none"
+                                  className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white h-32 focus:ring-2 focus:ring-red-500/50 outline-none text-sm resize-none"
                                   value={editingItem.challenge || ''}
                                   onChange={(e) => setEditingItem({ ...editingItem, challenge: e.target.value })}
                                   placeholder="What was the core problem?"
@@ -478,7 +478,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                           <div className="space-y-2">
                               <label className="text-xs font-bold text-red-400 uppercase tracking-wider font-khmer">បញ្ហាប្រឈម (ខ្មែរ)</label>
                               <textarea 
-                                  className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white h-32 focus:ring-2 focus:ring-red-500/50 outline-none text-sm resize-none font-khmer"
+                                  className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white h-32 focus:ring-2 focus:ring-red-500/50 outline-none text-sm resize-none font-khmer"
                                   value={editingItem.challengeKm || ''}
                                   onChange={(e) => setEditingItem({ ...editingItem, challengeKm: e.target.value })}
                                   placeholder="តើបញ្ហាស្នូលគឺអ្វី?"
@@ -491,7 +491,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                           <div className="space-y-2">
                               <label className="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-1"><Zap size={14}/> The Solution (EN)</label>
                               <textarea 
-                                  className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white h-32 focus:ring-2 focus:ring-blue-500/50 outline-none text-sm resize-none"
+                                  className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white h-32 focus:ring-2 focus:ring-blue-500/50 outline-none text-sm resize-none"
                                   value={editingItem.solution || ''}
                                   onChange={(e) => setEditingItem({ ...editingItem, solution: e.target.value })}
                                   placeholder="How did we solve it?"
@@ -500,7 +500,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                           <div className="space-y-2">
                               <label className="text-xs font-bold text-blue-400 uppercase tracking-wider font-khmer">ដំណោះស្រាយ (ខ្មែរ)</label>
                               <textarea 
-                                  className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white h-32 focus:ring-2 focus:ring-blue-500/50 outline-none text-sm resize-none font-khmer"
+                                  className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white h-32 focus:ring-2 focus:ring-blue-500/50 outline-none text-sm resize-none font-khmer"
                                   value={editingItem.solutionKm || ''}
                                   onChange={(e) => setEditingItem({ ...editingItem, solutionKm: e.target.value })}
                                   placeholder="តើយើងដោះស្រាយវាដោយរបៀបណា?"
@@ -513,7 +513,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                           <div className="space-y-2">
                               <label className="text-xs font-bold text-green-400 uppercase tracking-wider flex items-center gap-1"><TrendingUp size={14}/> The Result (EN)</label>
                               <textarea 
-                                  className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white h-32 focus:ring-2 focus:ring-green-500/50 outline-none text-sm resize-none"
+                                  className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white h-32 focus:ring-2 focus:ring-green-500/50 outline-none text-sm resize-none"
                                   value={editingItem.result || ''}
                                   onChange={(e) => setEditingItem({ ...editingItem, result: e.target.value })}
                                   placeholder="What was the outcome?"
@@ -522,7 +522,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                           <div className="space-y-2">
                               <label className="text-xs font-bold text-green-400 uppercase tracking-wider font-khmer">លទ្ធផល (ខ្មែរ)</label>
                               <textarea 
-                                  className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white h-32 focus:ring-2 focus:ring-green-500/50 outline-none text-sm resize-none font-khmer"
+                                  className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white h-32 focus:ring-2 focus:ring-green-500/50 outline-none text-sm resize-none font-khmer"
                                   value={editingItem.resultKm || ''}
                                   onChange={(e) => setEditingItem({ ...editingItem, resultKm: e.target.value })}
                                   placeholder="តើលទ្ធផលគឺជាអ្វី?"
@@ -533,8 +533,8 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
               </div>
           )}
 
-          <div className="flex gap-3 justify-end mt-8 pt-6 border-t border-white/10">
-            <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-800 border border-white/10 rounded-lg text-white text-sm font-bold hover:bg-gray-700 transition-colors">Cancel</button>
+          <div className="flex gap-3 justify-end mt-8 pt-6 border-t border-gray-200 dark:border-white/10">
+            <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg text-gray-900 dark:text-white text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Cancel</button>
             <button type="submit" disabled={isSaving} className="px-4 py-2 bg-indigo-600 border border-indigo-500 rounded-lg text-white text-sm font-bold hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2 transition-colors">
               {isSaving && <Loader2 size={14} className="animate-spin" />}
               {isSaving ? 'Saving...' : 'Save Changes'}

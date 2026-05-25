@@ -35,18 +35,18 @@ const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose, usePa
 
   return createPortal(
     <div className="fixed inset-0 z-[10002] flex items-center justify-center p-4 overflow-hidden">
-       <div className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in" onClick={handleClose} />
-       <button onClick={handleClose} className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all z-[10004] border border-white/10 active:scale-95">
+       <div className="absolute inset-0 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md animate-fade-in" onClick={handleClose} />
+       <button onClick={handleClose} className="absolute top-6 right-6 p-3 bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/20 text-gray-900 dark:text-white rounded-full transition-all z-[10004] border border-gray-200 dark:border-white/10 active:scale-95">
           <X size={24} />
        </button>
 
-       <div ref={modalRef} className="relative w-full max-w-6xl h-full md:h-[90vh] bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-y-auto md:overflow-hidden animate-scale-up z-[10003] flex flex-col md:flex-row">
+       <div ref={modalRef} className="relative w-full max-w-6xl h-full md:h-[90vh] bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl overflow-y-auto md:overflow-hidden animate-scale-up z-[10003] flex flex-col md:flex-row">
           <div className="w-full md:w-1/2 h-[350px] md:h-auto bg-black relative shrink-0">
               <ProjectGallery images={allImages} title={project.title} />
           </div>
 
-          <div className="w-full md:w-1/2 flex flex-col bg-gray-900">
-            <div className="p-8 md:p-12 pb-6 border-b border-white/5">
+          <div className="w-full md:w-1/2 flex flex-col bg-gray-50 dark:bg-gray-900">
+            <div className="p-8 md:p-12 pb-6 border-b border-gray-100 dark:border-white/5">
                 <div className="flex flex-wrap gap-3 mb-6">
                     <span className="px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-bold tracking-wider uppercase flex items-center gap-2 border border-indigo-500/20">
                         <Tag size={12} /> {project.category}
@@ -57,21 +57,21 @@ const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose, usePa
                         </button>
                     )}
                 </div>
-                <h2 className="text-xl md:text-2xl font-bold text-white mb-4 font-khmer leading-tight">{project.title}</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 font-khmer leading-tight">{project.title}</h2>
                 <div className="flex items-center gap-3 text-gray-500">
                     <span className="text-sm font-khmer">{t('Client', 'អតិថិជន')}:</span>
-                    <span className="text-sm text-gray-300 font-bold">{project.client || 'Creative Agency'}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300 font-bold">{project.client || 'Creative Agency'}</span>
                 </div>
             </div>
 
             <div ref={textContainerRef} className="flex-1 overflow-y-auto p-8 md:p-12 pt-6 scrollbar-hide space-y-12">
                 {/* --- ធានាថាបង្ហាញ OVERVIEW ពី project.description --- */}
                 <section>
-                    <h3 className="text-white font-bold mb-4 flex items-center gap-3">
+                    <h3 className="text-gray-900 dark:text-white font-bold mb-4 flex items-center gap-3">
                         <div className="w-8 h-[2px] bg-indigo-500" />
                         {t('Overview', 'ទិដ្ឋភាពទូទៅ')}
                     </h3>
-                    <div className="text-gray-400 leading-relaxed font-khmer">
+                    <div className="text-gray-600 dark:text-gray-400 leading-relaxed font-khmer">
                         {project.description ? (
                             <ContentRenderer content={project.description} />
                         ) : (
@@ -91,10 +91,10 @@ const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose, usePa
                 />
                 {project.features && project.features.length > 0 && (
                     <section>
-                        <h3 className="text-white font-bold mb-6">{t('Scope of Work', 'វិសាលភាពការងារ')}</h3>
+                        <h3 className="text-gray-900 dark:text-white font-bold mb-6">{t('Scope of Work', 'វិសាលភាពការងារ')}</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {project.features.map((feature, idx) => (
-                                <div key={idx} className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/5 text-gray-300 text-sm font-khmer">
+                                <div key={idx} className="flex items-center gap-3 p-4 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-700 dark:text-gray-300 text-sm font-khmer">
                                     <div className="w-2 h-2 rounded-full bg-indigo-500" /> {feature}
                                 </div>
                             ))}

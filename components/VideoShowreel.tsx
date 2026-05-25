@@ -18,13 +18,13 @@ const VideoModal: React.FC<VideoModalProps> = ({ videoId, onClose }) => {
   return createPortal(
     <div className="fixed inset-0 z-[10300] flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-gray-950/95 backdrop-blur-md animate-fade-in"
+        className="absolute inset-0 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md animate-fade-in"
         onClick={onClose}
       />
       <div className="relative w-full max-w-4xl animate-scale-up z-[10301]">
         <button
           onClick={onClose}
-          className="absolute -top-12 right-0 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
+          className="absolute -top-12 right-0 p-2 bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/20 text-gray-900 dark:text-white rounded-full transition-colors"
         >
           <X size={22} />
         </button>
@@ -57,7 +57,7 @@ const VideoShowreel: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <section className="py-16 md:py-24 bg-gray-950 relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-white dark:bg-gray-950 relative overflow-hidden">
       <ScrollBackgroundText text="SHOWREEL" className="top-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -65,13 +65,13 @@ const VideoShowreel: React.FC = () => {
           <span className="text-indigo-400 font-bold tracking-wider uppercase text-xs md:text-sm font-khmer">
             {t('Our Work', 'ស្នាដៃយើង')}
           </span>
-          <h2 className="mt-3 text-3xl md:text-5xl font-bold text-white font-khmer">
+          <h2 className="mt-3 text-3xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer">
             {t('Watch Our', 'មើល')}{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">
               {t('Showreel', 'ការបង្ហាញ')}
             </span>
           </h2>
-          <p className="mt-4 text-gray-400 font-khmer text-sm md:text-base max-w-xl mx-auto">
+          <p className="mt-4 text-gray-600 dark:text-gray-400 font-khmer text-sm md:text-base max-w-xl mx-auto">
             {t(
               'See our creative process and the results we deliver for clients across Cambodia and beyond.',
               'សូមមើលដំណើរការច្នៃប្រឌិត និងលទ្ធផលដែលយើងផ្ដល់ជូនអតិថិជននៅទូទាំងកម្ពុជា។'
@@ -109,8 +109,8 @@ const VideoShowreel: React.FC = () => {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative">
                 {/* Pulse rings */}
-                <div className="absolute inset-0 rounded-full bg-white/20 animate-ping scale-150" />
-                <div className="absolute inset-0 rounded-full bg-white/10 animate-ping scale-125 animation-delay-300" />
+                <div className="absolute inset-0 rounded-full bg-gray-300 dark:bg-white/20 animate-ping scale-150" />
+                <div className="absolute inset-0 rounded-full bg-gray-200 dark:bg-white/10 animate-ping scale-125 animation-delay-300" />
                 <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white text-gray-950 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300 relative z-10">
                   <Play size={36} className="ml-1 fill-gray-950" />
                 </div>
@@ -127,7 +127,7 @@ const VideoShowreel: React.FC = () => {
                   {t('Web • App • Design • Architecture', 'វេប • App • រចនា • ស្ថាបត្យ')}
                 </p>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white text-sm font-bold">
+              <div className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-white/10 backdrop-blur-md rounded-full border border-gray-300 dark:border-white/20 text-gray-900 dark:text-white text-sm font-bold">
                 <ExternalLink size={14} />
                 YouTube
               </div>

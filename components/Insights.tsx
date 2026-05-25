@@ -110,9 +110,9 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
              <img 
                 src={author.image} 
                 alt={author.name} 
-                className="w-6 h-6 rounded-full object-cover border border-white/20 group-hover/author:border-indigo-400 transition-colors" 
+                className="w-6 h-6 rounded-full object-cover border border-gray-300 dark:border-white/20 group-hover/author:border-indigo-400 transition-colors" 
              />
-             <span className="text-xs text-gray-400 font-bold group-hover/author:text-indigo-300 transition-colors truncate max-w-[100px]">
+             <span className="text-xs text-gray-600 dark:text-gray-400 font-bold group-hover/author:text-indigo-300 transition-colors truncate max-w-[100px]">
                  {author.name}
              </span>
           </div>
@@ -120,7 +120,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
   };
 
   return (
-    <section id="insights" className="py-24 bg-gray-950 relative overflow-hidden">
+    <section id="insights" className="py-24 bg-white dark:bg-gray-950 relative overflow-hidden">
         {/* Background Decorative Blob */}
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
 
@@ -132,17 +132,17 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
              <div className="max-w-2xl">
                 <span className="text-indigo-400 font-bold tracking-wider uppercase text-sm mb-4 block font-khmer">{t('Our Journal', 'អត្ថបទរបស់យើង')}</span>
-                <h2 className="text-4xl md:text-5xl font-bold text-white font-khmer">
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer">
                   {t('Insights &', 'ចំណេះដឹង &')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">{t('Articles', 'អត្ថបទ')}</span>
                 </h2>
-                <p className="mt-4 text-gray-400 text-lg font-khmer">
+                <p className="mt-4 text-gray-600 dark:text-gray-400 text-lg font-khmer">
                     {t('Sharing knowledge, technology, and creative ideas.', 'ចែករំលែកចំណេះដឹង បច្ចេកវិទ្យា និងគំនិតច្នៃប្រឌិត។')}
                 </p>
              </div>
              
              <button 
                onClick={handleViewAllClick}
-               className="hidden md:flex items-center gap-2 text-white hover:text-indigo-400 transition-colors font-bold group font-khmer cursor-pointer"
+               className="hidden md:flex items-center gap-2 text-gray-900 dark:text-white hover:text-indigo-400 transition-colors font-bold group font-khmer cursor-pointer"
              >
                 {t('View All Posts', 'មើលអត្ថបទទាំងអស់')} <ArrowRight className="group-hover:translate-x-1 transition-transform" />
              </button>
@@ -153,7 +153,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
             {(insights || []).slice(0, 3).map((post) => (
               <article 
                 key={post.id} 
-                className="group flex flex-col h-full bg-white/5 border border-white/5 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+                className="group flex flex-col h-full bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-2xl overflow-hidden hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300 hover:-translate-y-2 cursor-pointer"
                 onClick={() => openItem(post.slug || post.id)}
               >
                 {/* Image Container */}
@@ -176,26 +176,26 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
                 {/* Content */}
                 <div className="p-6 flex-1 flex flex-col">
                   {/* Meta Row: Date & Author */}
-                  <div className="flex items-center justify-between mb-3 border-b border-white/5 pb-3">
-                      <div className="flex items-center gap-2 text-gray-400 text-xs font-mono">
+                  <div className="flex items-center justify-between mb-3 border-b border-gray-100 dark:border-white/5 pb-3">
+                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-xs font-mono">
                         <Calendar size={12} />
                         <span>{post.date}</span>
                       </div>
                       <AuthorBadge authorId={post.authorId} />
                   </div>
                   
-                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors line-clamp-2 font-khmer">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-400 transition-colors line-clamp-2 font-khmer">
                     {t(post.title, post.titleKm)}
                   </h3>
                   
-                  <p className="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-3 flex-1 font-khmer">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-6 line-clamp-3 flex-1 font-khmer">
                     {post.excerpt}
                   </p>
 
-                  <div className="pt-4 border-t border-white/5 mt-auto">
+                  <div className="pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
                      <button 
                        onClick={(e) => { e.stopPropagation(); openItem(post.slug || post.id); }}
-                       className="inline-flex items-center gap-2 text-sm font-bold text-white hover:text-indigo-400 transition-colors font-khmer"
+                       className="inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-indigo-400 transition-colors font-khmer"
                      >
                        {t('Read Article', 'អានអត្ថបទ')} <ArrowRight size={16} />
                      </button>
@@ -208,7 +208,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
           <div className="mt-10 md:hidden text-center">
                <button 
                   onClick={handleViewAllClick}
-                  className="inline-flex items-center gap-2 text-white hover:text-indigo-400 transition-colors font-bold font-khmer cursor-pointer"
+                  className="inline-flex items-center gap-2 text-gray-900 dark:text-white hover:text-indigo-400 transition-colors font-bold font-khmer cursor-pointer"
                >
                 {t('View All Posts', 'មើលអត្ថបទទាំងអស់')} <ArrowRight />
              </button>
@@ -218,16 +218,16 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
 
       {/* "View All Posts" Full Screen Overlay */}
       {isViewAllOpen && createPortal(
-         <div className="fixed inset-0 z-[10001] flex flex-col overflow-hidden bg-gray-900">
+         <div className="fixed inset-0 z-[10001] flex flex-col overflow-hidden bg-gray-50 dark:bg-gray-900">
               {/* Header */}
-                <div className="flex justify-between items-center p-6 md:p-8 border-b border-white/10 bg-gray-900 shrink-0">
+                <div className="flex justify-between items-center p-6 md:p-8 border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-gray-900 shrink-0">
                      <div>
-                         <h3 className="text-2xl font-bold text-white font-khmer">{t('All Articles', 'អត្ថបទទាំងអស់')}</h3>
-                         <p className="text-gray-400 text-sm font-khmer">{t('Explore our latest thoughts and updates', 'ស្វែងរកគំនិត និងព័ត៌មានថ្មីៗរបស់យើង')}</p>
+                         <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-khmer">{t('All Articles', 'អត្ថបទទាំងអស់')}</h3>
+                         <p className="text-gray-600 dark:text-gray-400 text-sm font-khmer">{t('Explore our latest thoughts and updates', 'ស្វែងរកគំនិត និងព័ត៌មានថ្មីៗរបស់យើង')}</p>
                      </div>
                      <button 
                          onClick={handleViewAllClose}
-                         className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-full transition-all border border-white/5"
+                         className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-full transition-all border border-gray-100 dark:border-white/5"
                      >
                          <X size={24} />
                      </button>
@@ -239,7 +239,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
                          {(insights || []).map((post) => (
                               <article 
                                  key={post.id} 
-                                 className="group flex flex-col bg-white/5 border border-white/5 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                                 className="group flex flex-col bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl overflow-hidden hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                                  onClick={() => openItem(post.slug || post.id)}
                              >
                                  <div className="relative h-48 overflow-hidden">
@@ -256,17 +256,17 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
                                  </div>
                                  <div className="p-5 flex-1 flex flex-col">
                                       <div className="flex items-center justify-between mb-2">
-                                         <div className="flex items-center gap-2 text-gray-400 text-xs font-mono">
+                                         <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-xs font-mono">
                                              <Calendar size={12} />
                                              <span>{post.date}</span>
                                          </div>
                                          <AuthorBadge authorId={post.authorId} />
                                       </div>
                                      
-                                     <h3 className="text-lg font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors line-clamp-2 font-khmer">
+                                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-400 transition-colors line-clamp-2 font-khmer">
                                          {t(post.title, post.titleKm)}
                                      </h3>
-                                     <p className="text-gray-400 text-xs leading-relaxed line-clamp-2 flex-1 font-khmer">
+                                     <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed line-clamp-2 flex-1 font-khmer">
                                          {post.excerpt}
                                      </p>
                                  </div>

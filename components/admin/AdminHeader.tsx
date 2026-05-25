@@ -21,7 +21,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
   const { isUsingSupabase } = useData();
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-gray-900 border-b border-white/10 flex items-center justify-between px-4 md:px-6 z-50">
+    <header className="fixed top-0 left-0 right-0 h-16 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-white/10 text-gray-900 dark:text-white flex items-center justify-between px-4 md:px-6 z-50">
       <div className="flex items-center gap-3">
         <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${isSuperAdmin ? 'bg-indigo-600' : 'bg-green-600'}`}>
           {isSuperAdmin ? <Shield size={16} /> : <Users size={16} />}
@@ -56,14 +56,14 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
             <button
               onClick={onFetch}
               disabled={isSyncing}
-              className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-sm border border-white/10 disabled:opacity-50"
+              className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 text-sm border border-gray-200 dark:border-white/10 disabled:opacity-50"
             >
               <RefreshCw size={14} className={isSyncing ? "animate-spin" : ""} /> Refresh
             </button>
           </>
         )}
-        <div className="h-6 w-px bg-white/10 mx-1 md:mx-2" />
-        <button onClick={onLogout} className="flex items-center gap-2 text-gray-400 hover:text-white text-sm">
+        <div className="h-6 w-px bg-gray-200 dark:bg-white/10 mx-1 md:mx-2" />
+        <button onClick={onLogout} className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">
           <LogOut size={16} /> <span className="hidden md:inline">Logout</span>
         </button>
       </div>

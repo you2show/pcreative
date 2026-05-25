@@ -364,14 +364,14 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
   if (!config || !isOpen) return null;
 
   return (
-    <div className="absolute bottom-16 right-0 w-[320px] sm:w-[360px] bg-gray-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-scale-up origin-bottom-right font-khmer"
+    <div className="absolute bottom-16 right-0 w-[320px] sm:w-[360px] bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-scale-up origin-bottom-right font-khmer"
       style={{ maxHeight: 'min(580px, calc(100vh - 180px))' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 bg-indigo-600 shrink-0">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full bg-gray-300 dark:bg-white/20 flex items-center justify-center">
               <MessageSquare size={18} className="text-white" />
             </div>
             <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-indigo-600" />
@@ -383,7 +383,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
         </div>
         <button
           onClick={onClose}
-          className="p-1.5 rounded-full text-indigo-200 hover:text-white hover:bg-white/10 transition-all"
+          className="p-1.5 rounded-full text-indigo-200 hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
         >
           <X size={18} />
         </button>
@@ -392,7 +392,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
       {step === 'form' ? (
         /* ── Pre-chat form ── */
         <form onSubmit={handleFormSubmit} className="flex flex-col gap-4 p-5 overflow-y-auto">
-          <p className="text-gray-400 text-sm leading-relaxed">
+          <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
             {t(
               'Please introduce yourself before we start chatting.',
               'សូមណែនាំខ្លួនអ្នកមុនពេលចាប់ផ្ដើមជជែក។'
@@ -407,7 +407,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder={t('Your name', 'ឈ្មោះ')}
-                className="w-full pl-9 pr-4 py-3 bg-gray-800 border border-white/10 rounded-xl text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full pl-9 pr-4 py-3 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
@@ -418,7 +418,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
                 value={contact}
                 onChange={e => setContact(e.target.value)}
                 placeholder={t('Email or phone number', 'អ៊ីម៉ែល ឬ លេខទូរស័ព្ទ')}
-                className="w-full pl-9 pr-4 py-3 bg-gray-800 border border-white/10 rounded-xl text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full pl-9 pr-4 py-3 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
@@ -439,7 +439,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                       active
                         ? 'bg-indigo-600 border-indigo-500 text-white'
-                        : 'bg-gray-800 border-white/10 text-gray-400 hover:border-indigo-500/50 hover:text-gray-200'
+                        : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:border-indigo-500/50 hover:text-gray-900 dark:hover:text-gray-200'
                     }`}
                   >
                     <span aria-hidden="true">{topic.emoji}</span>
@@ -474,7 +474,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
                   className={`max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
                     msg.sender === 'user'
                       ? 'bg-indigo-600 text-white rounded-br-sm'
-                      : 'bg-gray-800 text-gray-100 rounded-bl-sm'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-bl-sm'
                   }`}
                 >
                   <p className="whitespace-pre-wrap break-words">{msg.text}</p>
@@ -496,7 +496,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
           )}
 
           {/* Input */}
-          <div className="flex items-center gap-2 px-4 py-3 border-t border-white/10 bg-gray-900 shrink-0">
+          <div className="flex items-center gap-2 px-4 py-3 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-gray-900 shrink-0">
             <input
               ref={inputRef}
               type="text"
@@ -505,7 +505,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onClose }) => {
               onKeyDown={handleKeyDown}
               placeholder={t('Type a message...', 'វាយសារ...')}
               disabled={isSending}
-              className="flex-1 bg-gray-800 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+              className="flex-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-gray-900 dark:text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
             />
             <button
               onClick={handleSend}

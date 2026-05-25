@@ -57,13 +57,13 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
 
   return (
     <div className="max-w-2xl">
-      <div className="bg-gray-900 border border-white/10 rounded-2xl p-6">
-        <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+      <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-2xl p-6">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
           <Cloud className="text-indigo-400" /> GitHub Configuration
         </h3>
-        <p className="text-gray-400 text-sm mb-4 leading-relaxed">
+        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">
           ភ្ជាប់ GitHub repo ដើម្បីរក្សាទុក Telegram Config នៅក្នុង{' '}
-          <code className="bg-gray-800 px-1 rounded text-indigo-300">site-data.json</code>
+          <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded text-indigo-300">site-data.json</code>
           {' '}ដូច្នេះ visitor ម្នាក់ក្រៅ browser ក៏អាចប្រើ Live Chat បាន។
         </p>
 
@@ -72,7 +72,7 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
           <Lock size={14} className="shrink-0 mt-0.5" />
           <span>
             PAT Token ត្រូវការ scope:{' '}
-            <code className="bg-gray-800 px-1 rounded font-bold">repo</code>{' '}
+            <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded font-bold">repo</code>{' '}
             (contents write) — Token <strong>ត្រូវបានរក្សាតែក្នុង browser localStorage</strong>{' '}
             ប៉ុណ្ណោះ។ មិនបានបញ្ជូនទៅ server ណាមួយឡើយ។
           </span>
@@ -80,11 +80,11 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
 
         {/* Step-by-step PAT guide */}
         <details className="mb-5 group">
-          <summary className="cursor-pointer text-xs font-bold text-gray-400 hover:text-white flex items-center gap-1 select-none">
+          <summary className="cursor-pointer text-xs font-bold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center gap-1 select-none">
             <span className="group-open:rotate-90 transition-transform inline-block">▶</span>
             {' '}របៀបបង្កើត PAT Token (ចុចដើម្បីពង្រីក)
           </summary>
-          <ol className="mt-3 space-y-2 text-xs text-gray-400 pl-1">
+          <ol className="mt-3 space-y-2 text-xs text-gray-600 dark:text-gray-400 pl-1">
             <li className="flex gap-2">
               <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">1</span>
               <span>
@@ -103,7 +103,7 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
             <li className="flex gap-2">
               <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">2</span>
               <span>
-                ដាក់ <strong>Note</strong> ណាមួយ ដូចជា <code className="bg-gray-800 px-1 rounded">pcreative-site-data</code>
+                ដាក់ <strong>Note</strong> ណាមួយ ដូចជា <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">pcreative-site-data</code>
               </span>
             </li>
             <li className="flex gap-2">
@@ -116,7 +116,7 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
               <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">4</span>
               <span>
                 ចុច checkbox{' '}
-                <code className="bg-gray-800 px-1 rounded text-green-400 font-bold">✓ repo</code>{' '}
+                <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded text-green-400 font-bold">✓ repo</code>{' '}
                 (Full control of private repositories) — scope នេះអনុញ្ញាតអាន/សរសេរ contents
               </span>
             </li>
@@ -124,7 +124,7 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
               <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">5</span>
               <span>
                 ចុច <strong>Generate token</strong> ហើយ copy Token{' '}
-                (<code className="bg-gray-800 px-1 rounded">ghp_…</code>)
+                (<code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">ghp_…</code>)
                 ដាក់ field <em>Personal Access Token</em> ខាងក្រោម
               </span>
             </li>
@@ -142,7 +142,7 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
             <div>
               <label className="block text-xs font-bold text-gray-500 mb-1">GitHub Username</label>
               <input
-                className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
                 placeholder="e.g. you2show"
                 value={repoConfig.username}
                 onChange={(e) => setRepoConfig({ ...repoConfig, username: e.target.value })}
@@ -151,7 +151,7 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
             <div>
               <label className="block text-xs font-bold text-gray-500 mb-1">Repository Name</label>
               <input
-                className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
                 placeholder="e.g. pcreative"
                 value={repoConfig.repo}
                 onChange={(e) => setRepoConfig({ ...repoConfig, repo: e.target.value })}
@@ -161,7 +161,7 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
           <div>
             <label className="block text-xs font-bold text-gray-500 mb-1">Branch Name</label>
             <input
-              className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
               placeholder="main"
               value={repoConfig.branch}
               onChange={(e) => setRepoConfig({ ...repoConfig, branch: e.target.value })}
@@ -175,7 +175,7 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
             <div className="relative">
               <input
                 type={showToken ? 'text' : 'password'}
-                className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 pr-10 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 pr-10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
                 placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
                 value={repoConfig.token}
                 onChange={(e) => setRepoConfig({ ...repoConfig, token: e.target.value })}
@@ -183,14 +183,14 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
               <button
                 type="button"
                 onClick={() => setShowToken(v => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-300 transition-colors"
                 title={showToken ? 'Hide token' : 'Show token'}
               >
                 {showToken ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
             <p className="text-[10px] text-gray-600 mt-1">
-              Required scope: <code className="bg-gray-800 px-1 rounded text-indigo-400">repo</code> (contents read + write)
+              Required scope: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded text-indigo-400">repo</code> (contents read + write)
             </p>
           </div>
 
@@ -202,7 +202,7 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
             type="button"
             onClick={handleTest}
             disabled={isTesting}
-            className="w-full py-3 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 disabled:opacity-50 text-gray-900 dark:text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             {isTesting ? <Loader2 size={16} className="animate-spin" /> : null}
             {isTesting ? 'Testing...' : '🔍 Test Connection'}
@@ -220,7 +220,7 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
       </div>
 
       <div className="mt-6">
-        <h4 className="font-bold text-white mb-4">លុប GitHub Config</h4>
+        <h4 className="font-bold text-gray-900 dark:text-white mb-4">លុប GitHub Config</h4>
         <button onClick={onReset} className="flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg hover:bg-red-500/20 w-full justify-center">
           <RotateCcw size={16} /> លុបការភ្ជាប់ GitHub
         </button>
@@ -228,11 +228,11 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
 
       {/* Quick Renew Token — update only the PAT without re-entering all fields */}
       {hasExistingConfig && (
-        <div className="mt-4 bg-gray-900 border border-white/10 rounded-2xl p-5">
-          <h4 className="font-bold text-white mb-1 flex items-center gap-2">
+        <div className="mt-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-2xl p-5">
+          <h4 className="font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
             <RefreshCw size={16} className="text-yellow-400" /> Renew Token Only
           </h4>
-          <p className="text-gray-400 text-xs mb-3 leading-relaxed">
+          <p className="text-gray-600 dark:text-gray-400 text-xs mb-3 leading-relaxed">
             Token ផុតកំណត់? បិទ Token ចាស់ ហើយបង្កើត Token ថ្មី
             (<a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">github.com/settings/tokens</a>)
             ។ Username / Repo / Branch <strong>មិនចាំបាច់បញ្ចូលម្ដងទៀតទេ</strong> — paste token ថ្មី ហើយ save ។
@@ -244,12 +244,12 @@ const GitHubConfigForm: React.FC<GitHubConfigFormProps> = ({ initialConfig, onSa
                 value={renewToken}
                 onChange={(e) => { setRenewToken(e.target.value); setRenewResult(null); }}
                 placeholder="ghp_… (new token)"
-                className="w-full bg-gray-800 border border-white/10 rounded-lg p-3 pr-10 text-white text-sm focus:ring-2 focus:ring-yellow-500 outline-none"
+                className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-lg p-3 pr-10 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-yellow-500 outline-none"
               />
               <button
                 type="button"
                 onClick={() => setShowToken(v => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-300 transition-colors"
               >
                 {showToken ? <EyeOff size={14} /> : <Eye size={14} />}
               </button>

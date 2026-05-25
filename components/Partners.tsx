@@ -13,10 +13,10 @@ const Partners: React.FC = () => {
   if (displayPartners.length === 0) return null;
 
   return (
-    <section className="py-12 bg-gray-950 border-y border-white/5 relative overflow-hidden">
+    <section className="py-12 bg-white dark:bg-gray-950 border-y border-gray-100 dark:border-white/5 relative overflow-hidden">
         {/* Gradient Fades */}
-        <div className="absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-gray-950 to-transparent z-10 pointer-events-none" />
-        <div className="absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-gray-950 to-transparent z-10 pointer-events-none" />
+        <div className="absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
+        <div className="absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 mb-8 text-center">
           <RevealOnScroll>
@@ -49,7 +49,7 @@ const Partners: React.FC = () => {
                                   
                                   {/* Name Display (Only if name exists and isn't just whitespace) */}
                                   {partner.name && partner.name.trim() !== '' && (
-                                      <span className="text-lg font-bold text-gray-500 opacity-50 group-hover:text-white group-hover:opacity-100 transition-all duration-300 font-khmer whitespace-nowrap">
+                                      <span className="text-lg font-bold text-gray-500 opacity-50 group-hover:text-gray-900 dark:group-hover:text-white group-hover:opacity-100 transition-all duration-300 font-khmer whitespace-nowrap">
                                           {partner.name}
                                       </span>
                                   )}
@@ -57,10 +57,10 @@ const Partners: React.FC = () => {
                           ) : (
                               /* CASE 3: No Image -> Fallback to Icon + Name */
                               <div className="flex items-center gap-3 opacity-40 hover:opacity-100 transition-opacity duration-300">
-                                  <div className="text-gray-300 group-hover:text-white transition-colors">
+                                  <div className="text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                                       {partner.icon}
                                   </div>
-                                  <span className="text-lg font-bold text-gray-300 group-hover:text-white font-khmer whitespace-nowrap">
+                                  <span className="text-lg font-bold text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white font-khmer whitespace-nowrap">
                                       {partner.name}
                                   </span>
                               </div>

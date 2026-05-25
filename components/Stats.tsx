@@ -50,14 +50,14 @@ const StatCard: React.FC<StatCardProps> = ({ stat, index, started }) => {
 
   return (
     <RevealOnScroll variant="fade-up" delay={index * 100}>
-      <div className="relative group text-center p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.07] hover:border-white/10 transition-all duration-500 overflow-hidden">
+      <div className="relative group text-center p-8 rounded-3xl bg-gray-100 dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-white/[0.07] hover:border-gray-200 dark:hover:border-white/10 transition-all duration-500 overflow-hidden">
         {/* Glow bg */}
         <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 bg-gradient-to-br ${stat.color} transition-opacity duration-500 rounded-3xl`} />
         
         <div className={`text-5xl md:text-6xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent tabular-nums mb-3 relative z-10`}>
           {count}{stat.suffix}
         </div>
-        <p className="text-gray-400 font-khmer text-sm md:text-base font-medium relative z-10">
+        <p className="text-gray-600 dark:text-gray-400 font-khmer text-sm md:text-base font-medium relative z-10">
           {t(stat.label, stat.labelKm)}
         </p>
       </div>
@@ -85,7 +85,7 @@ const Stats: React.FC = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-16 md:py-24 bg-gray-950 relative overflow-hidden">
+    <section ref={sectionRef} className="py-16 md:py-24 bg-white dark:bg-gray-950 relative overflow-hidden">
       {/* Glow blob */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none" />
 
@@ -94,7 +94,7 @@ const Stats: React.FC = () => {
           <span className="text-indigo-400 font-bold tracking-wider uppercase text-xs md:text-sm font-khmer">
             {t('Our Impact', 'ផលប៉ះពាល់របស់យើង')}
           </span>
-          <h2 className="mt-3 text-3xl md:text-5xl font-bold text-white font-khmer">
+          <h2 className="mt-3 text-3xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer">
             {t('Numbers That', 'ចំនួនដែល')}{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
               {t('Speak', 'និយាយ')}

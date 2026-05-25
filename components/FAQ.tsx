@@ -107,15 +107,15 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ faq, isOpen, onToggle, in
       <div
         className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
           isOpen
-            ? 'border-indigo-500/40 bg-white/[0.06]'
-            : 'border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]'
+            ? 'border-indigo-500/40 bg-gray-100 dark:bg-white/[0.06]'
+            : 'border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] hover:border-gray-200 dark:hover:border-white/10 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
         }`}
       >
         <button
           onClick={onToggle}
           className="w-full flex items-center justify-between gap-4 text-left p-5 md:p-6"
         >
-          <span className="font-bold text-white font-khmer text-sm md:text-base pr-2 leading-snug">
+          <span className="font-bold text-gray-900 dark:text-white font-khmer text-sm md:text-base pr-2 leading-snug">
             {t(faq.question, faq.questionKm)}
           </span>
           <ChevronDown
@@ -127,7 +127,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ faq, isOpen, onToggle, in
         <div
           className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-[400px]' : 'max-h-0'}`}
         >
-          <p className="px-5 md:px-6 pb-5 md:pb-6 text-gray-400 font-khmer text-sm md:text-base leading-relaxed">
+          <p className="px-5 md:px-6 pb-5 md:pb-6 text-gray-600 dark:text-gray-400 font-khmer text-sm md:text-base leading-relaxed">
             {t(faq.answer, faq.answerKm)}
           </p>
         </div>
@@ -145,7 +145,7 @@ const FAQ: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="py-16 md:py-24 bg-gray-900 relative overflow-hidden">
+    <section id="faq" className="py-16 md:py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
       <ScrollBackgroundText text="FAQ" className="top-10" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -154,13 +154,13 @@ const FAQ: React.FC = () => {
             <HelpCircle size={16} />
             <span className="font-khmer">{t('FAQ', 'សំណួរចម្លើយ')}</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-white font-khmer mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer mb-4">
             {t('Frequently Asked', 'សំណួរដែលសួររឿយៗ')}{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
               {t('Questions', 'សំណួរ')}
             </span>
           </h2>
-          <p className="text-gray-400 font-khmer text-base md:text-lg max-w-2xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 font-khmer text-base md:text-lg max-w-2xl mx-auto">
             {t(
               "Can't find the answer you're looking for? Reach out to us directly.",
               'រកមិនឃើញចម្លើយដែលអ្នកត្រូវការ? ទំនាក់ទំនងមកយើងផ្ទាល់។'
