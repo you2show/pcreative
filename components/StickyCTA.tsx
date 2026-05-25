@@ -21,8 +21,7 @@ const INITIAL_FORM: ConsultationFormData = {
   message: '',
 };
 
-const TELEGRAM_BOT_TOKEN = '8263160608:AAFngJ6_jVXnFYlqs0lKZQplu8wh-UxS2Bo';
-const TELEGRAM_CHAT_ID = '1276188382';
+import { sendTelegramMessage } from '../lib/telegram-send';
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -54,16 +53,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
     const text = `📅 *Free Consultation Request* 📅\n\n👤 *Name:* ${form.name}\n📧 *Email:* ${form.email}\n📱 *Phone:* ${form.phone || 'N/A'}\n🛠 *Service:* ${form.service}\n🕐 *Preferred Time:* ${form.preferredTime}\n\n💬 *Message:*\n${form.message || 'N/A'}`;
 
     try {
-      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'Markdown' }),
-      });
-      const data = await response.json();
-      if (data.ok) {
+      const ok = await sendTelegramMessage(text);
+      if (ok) {
         setSubmitted(true);
       } else {
-        throw new Error(data.description);
+        throw new Error('Failed');
       }
     } catch {
       setError(t('Failed to send. Please try again.', 'ការផ្ញើបានបរាជ័យ។ សូមព្យាយាមម្ដងទៀត។'));

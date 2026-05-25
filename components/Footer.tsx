@@ -3,9 +3,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { ArrowUpRight, Facebook, Send, Instagram, Mail, MapPin, Download, ArrowRight, Check, Loader2 } from 'lucide-react';
 import { usePWA } from '../hooks/usePWA';
 import RevealOnScroll from './RevealOnScroll';
-
-const TELEGRAM_BOT_TOKEN = '8263160608:AAFngJ6_jVXnFYlqs0lKZQplu8wh-UxS2Bo';
-const TELEGRAM_CHAT_ID = '1276188382';
+import { sendTelegramMessage } from '../lib/telegram-send';
 
 const NewsletterForm: React.FC = () => {
   const { t } = useLanguage();
@@ -18,13 +16,8 @@ const NewsletterForm: React.FC = () => {
     setStatus('loading');
     const text = `📧 *Newsletter Subscription* 📧\n\nEmail: ${email}`;
     try {
-      const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'Markdown' }),
-      });
-      const data = await res.json();
-      if (data.ok) { setStatus('success'); setEmail(''); }
+      const ok = await sendTelegramMessage(text);
+      if (ok) { setStatus('success'); setEmail(''); }
       else throw new Error();
     } catch {
       setStatus('error');
