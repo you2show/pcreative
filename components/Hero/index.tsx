@@ -4,6 +4,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useData } from '../../contexts/DataContext';
 import { MemberDetailModal, AuthorArticlesModal, ArticleDetailModal } from '../TeamModals';
 import { TeamMember, Post } from '../../types';
+import ScrambleText from '../ScrambleText';
 
 import HeroActions from './HeroActions';
 import Hero3DScene from '../Hero3DScene';
@@ -88,7 +89,11 @@ const Hero: React.FC = () => {
                     
                     {/* Simplified: No more complex JS animation, just pure text for stability */}
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 drop-shadow-lg pb-2 inline-block">
-                        {t('Digital Perfection', 'ភាពល្អឥតខ្ចោះ')}
+                        <ScrambleText
+                          text={t('Digital Perfection', 'ភាពល្អឥតខ្ចោះ')}
+                          delay={600}
+                          duration={1000}
+                        />
                     </span>
                 </h1>
 
