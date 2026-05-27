@@ -33,6 +33,10 @@ import { SectionTransition } from './components/PageTransition';
 import AnimatedBlurBackground from './components/AnimatedBlurBackground';
 import { Lock, ArrowRight, X } from 'lucide-react';
 import { useAdminRouter } from './hooks/useRouter';
+import CinematicIntro from './components/CinematicIntro';
+import CustomCursor from './components/CustomCursor';
+import CelebrationSystem from './components/CelebrationSystem';
+import { useEmotionalColors } from './hooks/useEmotionalColors';
 
 // Pages
 import About from './components/About';
@@ -57,6 +61,7 @@ function AppContent() {
   const [isViewingSite, setIsViewingSite] = useState(false);
   const [activePage, setActivePage] = useState<string | null>(null);
   const [showPreloader, setShowPreloader] = useState(true);
+  const [showCinematicIntro, setShowCinematicIntro] = useState(false);
   const [isClientPortalOpen, setIsClientPortalOpen] = useState(false);
   
   // Popups state
@@ -74,7 +79,10 @@ function AppContent() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const { isDark } = useTheme();
 
-  // Hide preloader after first load
+  // Activate emotional color intelligence
+  useEmotionalColors();
+
+  // Hide preloader after first load, then show cinematic intro once per session
   useEffect(() => {
     const hasVisited = sessionStorage.getItem('ponloe_visited');
     if (hasVisited) {
@@ -82,6 +90,8 @@ function AppContent() {
     } else {
       const timer = setTimeout(() => {
         setShowPreloader(false);
+        // Show cinematic intro right after preloader (first visit this session)
+        setShowCinematicIntro(true);
         sessionStorage.setItem('ponloe_visited', '1');
       }, 2800);
       return () => clearTimeout(timer);
@@ -158,6 +168,12 @@ function AppContent() {
     <div className={`min-h-screen ${isDark ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'} overflow-x-hidden selection:bg-indigo-500 selection:text-white relative`}>
       <SkipToContent />
       {showPreloader && <Preloader />}
+      {/* Cinematic intro — first visit this session only */}
+      {showCinematicIntro && <CinematicIntro onComplete={() => setShowCinematicIntro(false)} />}
+      {/* AI-powered cursor evolution */}
+      <CustomCursor />
+      {/* Celebration system (return visitor greeting + scroll badge) */}
+      <CelebrationSystem />
       <OfflinePage />
       <InstallPrompt />
       <ScrollProgress />

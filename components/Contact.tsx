@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import ScrollBackgroundText from './ScrollBackgroundText';
 import RevealOnScroll from './RevealOnScroll';
 import { sendTelegramMessage } from '../lib/telegram-send';
+import { ConfettiCanvas, CelebrationToast } from './CelebrationSystem';
 
 export default function Contact() {
   const { t } = useLanguage();
@@ -18,6 +19,8 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -37,6 +40,9 @@ export default function Contact() {
           if (ok) {
               setSuccessMessage(t('Message sent successfully!', 'សារត្រូវបានផ្ញើដោយជោគជ័យ!'));
               setFormData({ name: '', email: '', service: 'Graphic Design', message: '' });
+              // Trigger celebrations
+              setShowConfetti(true);
+              setShowToast(true);
               setTimeout(() => setSuccessMessage(''), 5000);
           } else {
               throw new Error('Failed');
@@ -51,6 +57,16 @@ export default function Contact() {
   return (
     <section id="contact" className="py-16 md:py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
       <ScrollBackgroundText text="CONTACT" className="top-10" />
+
+      {/* Confetti & Toast celebrations */}
+      <ConfettiCanvas active={showConfetti} onDone={() => setShowConfetti(false)} />
+      <CelebrationToast
+        visible={showToast}
+        onClose={() => setShowToast(false)}
+        message={t('Your message was sent to the universe! 🚀', 'សារអ្នកត្រូវបានផ្ញើទៅកាន់សកលលោក! 🚀')}
+        emoji="🎉"
+        variant="success"
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 md:gap-16">
