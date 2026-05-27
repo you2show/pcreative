@@ -92,10 +92,10 @@ const FloatingChat: React.FC = () => {
   });
 
   return (
-    /* Positioned directly above the ScrollButton (bottom-6/10 + 46 px button + 8 px gap ≈ bottom-20/24) */
+    /* Positioned at the bottom-right corner; ScrollButton sits above */
     <div
       ref={menuRef}
-      className="fixed bottom-20 right-6 md:bottom-24 md:right-10 z-[9990] font-khmer w-12 h-12"
+      className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[9990] font-khmer w-12 h-12"
     >
       {/* Live Chat widget */}
       <LiveChat isOpen={isLiveChatOpen} onClose={handleLiveChatClose} />

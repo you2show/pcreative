@@ -73,7 +73,7 @@ const LocalScrollButton: React.FC<LocalScrollButtonProps> = ({ containerRef }) =
   };
 
   return (
-    <div className="fixed bottom-8 right-8 z-50 flex items-center justify-center pointer-events-none">
+    <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 flex items-center justify-center pointer-events-none">
       <button
         onClick={handleClick}
         className="relative flex items-center justify-center w-[46px] h-[46px] rounded-full bg-gray-900/80 backdrop-blur-md shadow-2xl group transition-transform hover:scale-105 border border-white/10 active:scale-95 pointer-events-auto"
