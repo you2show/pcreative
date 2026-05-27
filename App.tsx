@@ -30,6 +30,7 @@ import Preloader from './components/Preloader';
 import ChatbotAI from './components/ChatbotAI';
 import SkipToContent from './components/SkipToContent';
 import { SectionTransition } from './components/PageTransition';
+import AnimatedBlurBackground from './components/AnimatedBlurBackground';
 import { Lock, ArrowRight, X } from 'lucide-react';
 import { useAdminRouter } from './hooks/useRouter';
 
@@ -161,6 +162,7 @@ function AppContent() {
       <InstallPrompt />
       <ScrollProgress />
       
+      <AnimatedBlurBackground />
       <div className="pointer-events-none fixed inset-0 z-0 opacity-40 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.16),transparent_45%)]" />
       
       <Header onGetQuote={() => setIsConsultationOpen(true)} />
