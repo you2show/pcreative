@@ -75,9 +75,9 @@ export default function Contact() {
                 <div className="space-y-6 md:space-y-8">
                     <div>
                         <span className="text-indigo-400 font-bold tracking-wider uppercase text-xs md:text-sm font-khmer">{t('Get in Touch', 'ទំនាក់ទំនងយើង')}</span>
-                        <h2 className="mt-2 md:mt-4 text-3xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer leading-tight">
+                        <h2 className="mt-2 md:mt-4 text-4xl md:text-6xl font-black text-gray-900 dark:text-white font-khmer leading-tight">
                             {t("Let's Build Something", "បង្កើតអ្វីមួយ")} <br/>
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">{t("Extraordinary.", "ដែលអស្ចារ្យ")}</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500">{t("Extraordinary.", "ដែលអស្ចារ្យ")}</span>
                         </h2>
                         <p className="mt-4 md:mt-6 text-gray-600 dark:text-gray-400 text-base md:text-lg leading-relaxed font-khmer">
                             {t("Ready to start your project? Contact us today.", "តើអ្នកត្រៀមខ្លួនចាប់ផ្តើមគម្រោងរបស់អ្នកហើយឬនៅ? ទាក់ទងមកយើងថ្ងៃនេះ។")}

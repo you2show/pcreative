@@ -239,6 +239,26 @@ html.light .animated-blob {
   }
 }
 
+@keyframes heroTicker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes shimmerSweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes playRing {
+  0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
+}
+
+@keyframes telemetry-bar {
+  0%, 100% { transform: scaleY(1); opacity: 0.6; }
+  50%       { transform: scaleY(1.8); opacity: 1; }
+}
+
 @layer utilities {
   .font-khmer {
     font-family: 'Kantumruy Pro', sans-serif;
@@ -295,5 +315,41 @@ html.light .animated-blob {
 
   .animate-shake {
     animation: shake 0.3s ease-in-out;
+  }
+
+  /* Hero keyword ticker */
+  .animate-hero-ticker {
+    animation: heroTicker 40s linear infinite;
+  }
+
+  /* Shimmer sweep for cards */
+  .shimmer-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(255,255,255,0.06) 50%,
+      transparent 60%
+    );
+    transform: translateX(-100%);
+    transition: none;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  .shimmer-card:hover::after {
+    animation: shimmerSweep 0.6s ease forwards;
+  }
+
+  /* Glow pulse for play button rings */
+  .play-ring-1 {
+    animation: playRing 2.4s ease-out infinite;
+  }
+  .play-ring-2 {
+    animation: playRing 2.4s ease-out 0.8s infinite;
+  }
+  .play-ring-3 {
+    animation: playRing 2.4s ease-out 1.6s infinite;
   }
 }

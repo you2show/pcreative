@@ -58,6 +58,22 @@ const SortableServiceItem: React.FC<SortableServiceItemProps> = ({ service, inde
     isDragging,
   } = useSortable({ id: service.id });
 
+  const cardRef = React.useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -20;
+    card.style.transform = `perspective(800px) rotateX(${y}deg) rotateY(${x}deg) scale(1.02)`;
+  };
+
+  const handleMouseLeave = () => {
+    const card = cardRef.current;
+    if (card) card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
+  };
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -83,8 +99,14 @@ const SortableServiceItem: React.FC<SortableServiceItemProps> = ({ service, inde
       {/* Rotating Gradient Border Background */}
       <div className={`absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-opacity duration-500 animate-spin-slow blur-lg ${isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
       
-      {/* Inner Card Content */}
-      <div className={`relative h-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-[23px] p-8 border border-gray-200 dark:border-white/10 transition-all duration-300 overflow-hidden ${isDragging ? 'bg-gray-100 dark:bg-gray-800 scale-[1.02] shadow-2xl' : 'hover:bg-white/80 dark:hover:bg-gray-900/80'}`}>
+      {/* Inner Card Content - 3D tilt wrapper */}
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ transition: 'transform 0.15s ease-out', transformStyle: 'preserve-3d' }}
+        className={`relative h-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-[23px] p-8 border border-gray-200 dark:border-white/10 transition-colors duration-300 overflow-hidden ${isDragging ? 'bg-gray-100 dark:bg-gray-800 shadow-2xl' : ''}`}
+      >
           
           {/* Background Image Always Visible with Hover Darkening */}
           {bgImage && (

@@ -108,10 +108,13 @@ const VideoShowreel: React.FC = () => {
             {/* Play Button */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative">
-                {/* Pulse rings */}
-                <div className="absolute inset-0 rounded-full bg-gray-300 dark:bg-white/20 animate-ping scale-150" />
-                <div className="absolute inset-0 rounded-full bg-gray-200 dark:bg-white/10 animate-ping scale-125 animation-delay-300" />
-                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white text-gray-950 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300 relative z-10">
+                {/* Multi-layer concentric rings */}
+                <div className="play-ring-1 absolute top-1/2 left-1/2 w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-white/40 pointer-events-none" />
+                <div className="play-ring-2 absolute top-1/2 left-1/2 w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-indigo-400/40 pointer-events-none" />
+                <div className="play-ring-3 absolute top-1/2 left-1/2 w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-purple-400/30 pointer-events-none" />
+                {/* Subtle glow beneath the button */}
+                <div className="absolute inset-0 rounded-full bg-indigo-500/30 blur-2xl scale-150 group-hover:scale-200 transition-transform duration-700" />
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white text-gray-950 flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:shadow-[0_0_60px_rgba(99,102,241,0.5)] transition-all duration-300 relative z-10 border-4 border-white/20">
                   <Play size={36} className="ml-1 fill-gray-950" />
                 </div>
               </div>
