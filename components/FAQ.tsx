@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { ChevronDown, ChevronsDown, ChevronsUp, HelpCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import ScrollBackgroundText from './ScrollBackgroundText';
 import RevealOnScroll from './RevealOnScroll';
@@ -239,13 +239,26 @@ const FAQIllustration: React.FC = () => (
   </div>
 );
 
+const INITIAL_VISIBLE = 5;
+
 const FAQ: React.FC = () => {
   const { t } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [showAll, setShowAll] = useState(false);
+  const listTopRef = useRef<HTMLDivElement>(null);
 
   const toggle = (index: number) => {
     setOpenIndex(prev => (prev === index ? null : index));
   };
+
+  const handleShowLess = () => {
+    setShowAll(false);
+    // Scroll back to top of the list so user isn't stranded
+    listTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+
+  const visibleFaqs = showAll ? FAQS : FAQS.slice(0, INITIAL_VISIBLE);
+  const hasMore = FAQS.length > INITIAL_VISIBLE;
 
   return (
     <section id="faq" className="py-16 md:py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
@@ -298,29 +311,59 @@ const FAQ: React.FC = () => {
               </p>
             </RevealOnScroll>
 
-            <div className="space-y-3">
-              {FAQS.map((faq, index) => (
-                <AccordionItem
-                  key={index}
-                  faq={faq}
-                  index={index}
-                  isOpen={openIndex === index}
-                  onToggle={() => toggle(index)}
-                />
-              ))}
+            {/* Accordion list with optional fade mask */}
+            <div ref={listTopRef} className="relative">
+              <div className="space-y-3">
+                {visibleFaqs.map((faq, index) => (
+                  <AccordionItem
+                    key={index}
+                    faq={faq}
+                    index={index}
+                    isOpen={openIndex === index}
+                    onToggle={() => toggle(index)}
+                  />
+                ))}
+              </div>
+
+              {/* Fade mask at bottom when collapsed */}
+              {hasMore && !showAll && (
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-gray-50 dark:from-gray-900 to-transparent pointer-events-none rounded-b-2xl" />
+              )}
             </div>
 
-            <RevealOnScroll className="mt-10">
-              <p className="text-gray-500 font-khmer text-sm mb-4">
-                {t('Still have questions?', 'នៅមានសំណួរទៀតឬ?')}
-              </p>
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold font-khmer text-sm transition-all hover:scale-105 shadow-lg shadow-indigo-500/20"
-              >
-                {t('Contact Us', 'ទំនាក់ទំនងយើង')}
-              </a>
-            </RevealOnScroll>
+            {/* Show All / Show Less + Contact row */}
+            <div className="mt-6 flex flex-col sm:flex-row items-center gap-3">
+              {hasMore && (
+                <button
+                  onClick={showAll ? handleShowLess : () => setShowAll(true)}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-indigo-500/30 bg-indigo-500/5 hover:bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 font-bold font-khmer text-sm transition-all hover:scale-105"
+                >
+                  {showAll ? (
+                    <>
+                      <ChevronsUp size={16} />
+                      {t('Show Less', 'បង្រួម')}
+                    </>
+                  ) : (
+                    <>
+                      <ChevronsDown size={16} />
+                      {t(`Show All (${FAQS.length})`, `មើលទាំងអស់ (${FAQS.length})`)}
+                    </>
+                  )}
+                </button>
+              )}
+
+              <div className={`flex flex-col items-center sm:items-start gap-1 ${hasMore ? 'sm:ml-auto' : ''}`}>
+                <p className="text-gray-500 font-khmer text-xs">
+                  {t('Still have questions?', 'នៅមានសំណួរទៀតឬ?')}
+                </p>
+                <a
+                  href="#contact"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold font-khmer text-sm transition-all hover:scale-105 shadow-lg shadow-indigo-500/20"
+                >
+                  {t('Contact Us', 'ទំនាក់ទំនងយើង')}
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
