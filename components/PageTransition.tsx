@@ -52,15 +52,40 @@ interface SectionTransitionProps {
   children: React.ReactNode;
   className?: string;
   delay?: number;
+  variant?: 'fadeUp' | 'fadeScale' | 'fadeBlur' | 'slideLeft' | 'slideRight';
 }
 
-export const SectionTransition: React.FC<SectionTransitionProps> = ({ children, className = '', delay = 0 }) => {
+const sectionVariants = {
+  fadeUp: {
+    initial: { opacity: 0, y: 40 },
+    animate: { opacity: 1, y: 0 },
+  },
+  fadeScale: {
+    initial: { opacity: 0, scale: 0.95, y: 20 },
+    animate: { opacity: 1, scale: 1, y: 0 },
+  },
+  fadeBlur: {
+    initial: { opacity: 0, y: 30, filter: 'blur(8px)' },
+    animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+  },
+  slideLeft: {
+    initial: { opacity: 0, x: -60 },
+    animate: { opacity: 1, x: 0 },
+  },
+  slideRight: {
+    initial: { opacity: 0, x: 60 },
+    animate: { opacity: 1, x: 0 },
+  },
+};
+
+export const SectionTransition: React.FC<SectionTransitionProps> = ({ children, className = '', delay = 0, variant = 'fadeUp' }) => {
+  const v = sectionVariants[variant];
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+      initial={v.initial}
+      whileInView={v.animate}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}

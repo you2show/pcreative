@@ -17,6 +17,7 @@ import Insights from './components/Insights';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ScrollButton from './components/ScrollButton';
+import ScrollProgress from './components/ScrollProgress';
 import FloatingChat from './components/FloatingChat'; 
 import OfflinePage from './components/OfflinePage';
 import InstallPrompt from './components/InstallPrompt';
@@ -158,6 +159,7 @@ function AppContent() {
       {showPreloader && <Preloader />}
       <OfflinePage />
       <InstallPrompt />
+      <ScrollProgress />
       
       <div className="pointer-events-none fixed inset-0 z-0 opacity-40 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.16),transparent_45%)]" />
       
@@ -165,10 +167,10 @@ function AppContent() {
       
       <main id="main-content" className="relative z-10" role="main">
         <Hero />
-        <SectionTransition><Partners /></SectionTransition>
-        <SectionTransition delay={0.1}><Stats /></SectionTransition>
+        <SectionTransition variant="fadeBlur"><Partners /></SectionTransition>
+        <SectionTransition delay={0.1} variant="fadeScale"><Stats /></SectionTransition>
         
-        <SectionTransition delay={0.1}>
+        <SectionTransition delay={0.1} variant="slideLeft">
           <Services 
               showPopupOnMount={shouldShowServicesPopup}
               usePathRouting={true}
@@ -176,7 +178,7 @@ function AppContent() {
         </SectionTransition>
 
         <Suspense fallback={<div className="h-96 bg-gray-50 dark:bg-gray-900/50" />}>
-          <SectionTransition>
+          <SectionTransition variant="fadeScale">
             <CostEstimator 
               showPopupOnMount={shouldShowEstimatorPopup}
               usePathRouting={true}
@@ -184,33 +186,33 @@ function AppContent() {
           </SectionTransition>
         </Suspense>
 
-        <SectionTransition><Process /></SectionTransition>
-        <SectionTransition><VideoShowreel /></SectionTransition>
+        <SectionTransition variant="slideRight"><Process /></SectionTransition>
+        <SectionTransition variant="fadeBlur"><VideoShowreel /></SectionTransition>
         
-        <SectionTransition>
+        <SectionTransition variant="fadeScale">
           <Portfolio 
               showPopupOnMount={shouldShowPortfolioPopup} 
               usePathRouting={true} 
           />
         </SectionTransition>
-        <SectionTransition><Testimonials /></SectionTransition>
+        <SectionTransition variant="slideLeft"><Testimonials /></SectionTransition>
 
-        <SectionTransition>
+        <SectionTransition variant="fadeBlur">
           <Team 
               showPopupOnMount={shouldShowTeamPopup}
               usePathRouting={true}
           />
         </SectionTransition>
 
-        <SectionTransition>
+        <SectionTransition variant="slideRight">
           <Insights 
               showPopupOnMount={shouldShowInsightsPopup}
               usePathRouting={true}
           />
         </SectionTransition>
 
-        <SectionTransition><FAQ /></SectionTransition>
-        <SectionTransition><Contact /></SectionTransition>
+        <SectionTransition variant="fadeScale"><FAQ /></SectionTransition>
+        <SectionTransition variant="fadeUp"><Contact /></SectionTransition>
       </main>
       
       <Footer />
