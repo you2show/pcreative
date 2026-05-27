@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Suspense } from 'react';
-import { LanguageProvider } from './contexts/LanguageContext';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { DataProvider, useData } from './contexts/DataContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
@@ -39,7 +39,6 @@ import CelebrationSystem from './components/CelebrationSystem';
 import { useEmotionalColors } from './hooks/useEmotionalColors';
 
 // Pages
-import About from './components/About';
 import Careers from './components/Careers';
 import PrivacyPolicy from './components/PrivacyPolicy';
 
@@ -47,6 +46,15 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 const CostEstimator = React.lazy(() => import('./components/CostEstimator'));
 const ClientPortal = React.lazy(() => import('./components/ClientPortal'));
+
+const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
+
+const getPathWithoutLanguage = () => {
+  const segments = window.location.pathname.split('/').filter(Boolean);
+  const start = segments[0] && supportedLangs.includes(segments[0]) ? 1 : 0;
+  const path = `/${segments.slice(start).join('/')}`;
+  return path === '/' ? '/' : path.replace(/\/$/, '');
+};
 
 const ComponentFallback: React.FC = () => (
   <div className="w-full h-screen flex items-center justify-center bg-white dark:bg-gray-950">
@@ -64,7 +72,7 @@ function AppContent() {
   const [showCinematicIntro, setShowCinematicIntro] = useState(false);
   const [isClientPortalOpen, setIsClientPortalOpen] = useState(false);
   
-  // Popups state
+  // Popups state for legacy deep links only.
   const [shouldShowPortfolioPopup, setShouldShowPortfolioPopup] = useState(false);
   const [shouldShowServicesPopup, setShouldShowServicesPopup] = useState(false);
   const [shouldShowInsightsPopup, setShouldShowInsightsPopup] = useState(false);
@@ -76,13 +84,12 @@ function AppContent() {
   const [pin, setPin] = useState('');
   const [loginError, setLoginError] = useState(false);
   const { team } = useData();
+  const { t } = useLanguage();
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const { isDark } = useTheme();
 
-  // Activate emotional color intelligence
   useEmotionalColors();
 
-  // Hide preloader after first load, then show cinematic intro once per session
   useEffect(() => {
     const hasVisited = sessionStorage.getItem('ponloe_visited');
     if (hasVisited) {
@@ -90,7 +97,6 @@ function AppContent() {
     } else {
       const timer = setTimeout(() => {
         setShowPreloader(false);
-        // Show cinematic intro right after preloader (first visit this session)
         setShowCinematicIntro(true);
         sessionStorage.setItem('ponloe_visited', '1');
       }, 2800);
@@ -98,27 +104,27 @@ function AppContent() {
     }
   }, []);
 
-  // --- ROUTING LOGIC ---
   useEffect(() => {
     const handleRouteChange = () => {
-        const pathname = window.location.pathname;
+        const pathWithoutLang = getPathWithoutLanguage();
         const hash = window.location.hash;
-        
-        // Language prefix regex
-        const langRegex = /^\/(en|km|fr|ja|ko|de|zh-CN|es|ar)?/;
-        const pathWithoutLang = pathname.replace(langRegex, '');
 
-        // Check for path-based popups (deep-linking support)
-        // We use .startsWith and check for exactly the section or a subpath
-        setShouldShowPortfolioPopup(pathWithoutLang === '/portfolio' || pathWithoutLang.startsWith('/portfolio/'));
-        setShouldShowServicesPopup(pathWithoutLang === '/services' || pathWithoutLang.startsWith('/services/'));
-        setShouldShowInsightsPopup(pathWithoutLang === '/insights' || pathWithoutLang.startsWith('/insights/'));
-        setShouldShowTeamPopup(pathWithoutLang === '/team' || pathWithoutLang.startsWith('/team/'));
-        setShouldShowEstimatorPopup(pathWithoutLang === '/estimator' || pathWithoutLang.startsWith('/estimator/'));
+        setShouldShowPortfolioPopup(pathWithoutLang.startsWith('/portfolio/'));
+        setShouldShowServicesPopup(pathWithoutLang.startsWith('/services/'));
+        setShouldShowInsightsPopup(pathWithoutLang.startsWith('/insights/'));
+        setShouldShowTeamPopup(pathWithoutLang.startsWith('/team/'));
+        setShouldShowEstimatorPopup(pathWithoutLang.startsWith('/estimator/'));
 
-        // Check for hash-based or path-based pages
-        if (hash === '#about' || pathWithoutLang === '/about') {
-            setActivePage('about');
+        if (pathWithoutLang === '/services' || pathWithoutLang.startsWith('/services/')) {
+            setActivePage('services');
+        } else if (pathWithoutLang === '/projects' || pathWithoutLang.startsWith('/projects/') || pathWithoutLang === '/portfolio' || pathWithoutLang.startsWith('/portfolio/')) {
+            setActivePage('projects');
+        } else if (pathWithoutLang === '/company' || pathWithoutLang.startsWith('/company/') || pathWithoutLang === '/about' || pathWithoutLang.startsWith('/about/') || hash === '#about') {
+            setActivePage('company');
+        } else if (pathWithoutLang === '/blog' || pathWithoutLang.startsWith('/blog/') || pathWithoutLang === '/insights' || pathWithoutLang.startsWith('/insights/')) {
+            setActivePage('blog');
+        } else if (pathWithoutLang === '/contact' || pathWithoutLang.startsWith('/contact/') || pathWithoutLang === '/estimator' || pathWithoutLang.startsWith('/estimator/')) {
+            setActivePage('contact');
         } else if (hash === '#careers' || pathWithoutLang === '/careers') {
             setActivePage('careers');
         } else if (hash === '#privacy' || pathWithoutLang === '/privacy') {
@@ -156,6 +162,119 @@ function AppContent() {
       setTimeout(() => setLoginError(false), 500);
   };
 
+  const PageHero = ({ eyebrow, title, accent, description }: { eyebrow: string; title: string; accent: string; description: string }) => (
+    <section className="relative min-h-[72vh] flex items-end overflow-hidden pt-36 pb-16 md:pb-24">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.26),transparent_36%),radial-gradient(circle_at_80%_10%,rgba(236,72,153,0.16),transparent_32%),linear-gradient(135deg,rgba(15,23,42,0.96),rgba(15,23,42,0.58))] dark:opacity-100 opacity-90" />
+      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=1800')] bg-cover bg-center opacity-18 mix-blend-overlay" />
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white dark:from-gray-950 to-transparent" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+        <div className="max-w-4xl">
+          <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-indigo-100 backdrop-blur-md font-khmer">{eyebrow}</span>
+          <h1 className="mt-8 text-5xl md:text-7xl lg:text-8xl font-black leading-[0.92] text-white font-khmer">
+            {title} <span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-cyan-200">{accent}</span>
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg md:text-xl leading-relaxed text-gray-200 font-khmer">{description}</p>
+        </div>
+      </div>
+    </section>
+  );
+
+  const renderHome = () => (
+    <>
+      <Hero />
+      <SectionTransition variant="fadeBlur"><Partners /></SectionTransition>
+      <SectionTransition delay={0.1} variant="fadeScale"><Stats /></SectionTransition>
+      <SectionTransition delay={0.1} variant="slideLeft">
+        <Services showPopupOnMount={false} usePathRouting={true} />
+      </SectionTransition>
+      <SectionTransition variant="fadeScale">
+        <Portfolio showPopupOnMount={false} usePathRouting={true} />
+      </SectionTransition>
+      <SectionTransition variant="slideLeft"><Testimonials /></SectionTransition>
+      <SectionTransition variant="fadeUp"><Contact /></SectionTransition>
+    </>
+  );
+
+  const renderServicesPage = () => (
+    <>
+      <PageHero
+        eyebrow={t('What we build', 'អ្វីដែលយើងបង្កើត')}
+        title={t('Services designed for', 'សេវាកម្មសម្រាប់')}
+        accent={t('serious brands.', 'ម៉ាកយីហោផ្លូវការ')}
+        description={t('Explore the creative, digital, architecture, and communication services that turn ideas into polished business systems.', 'ស្វែងយល់ពីសេវាកម្មឌីជីថល ច្នៃប្រឌិត ស្ថាបត្យកម្ម និងទំនាក់ទំនង ដែលបំលែងគំនិតទៅជាប្រព័ន្ធអាជីវកម្មមានគុណភាព។')}
+      />
+      <SectionTransition variant="slideLeft"><Services showPopupOnMount={shouldShowServicesPopup} usePathRouting={true} /></SectionTransition>
+      <SectionTransition variant="slideRight"><Process /></SectionTransition>
+      <SectionTransition variant="fadeScale"><FAQ /></SectionTransition>
+    </>
+  );
+
+  const renderProjectsPage = () => (
+    <>
+      <PageHero
+        eyebrow={t('Proof in motion', 'ភស្តុតាងក្នុងស្នាដៃ')}
+        title={t('Projects that make', 'គម្រោងដែលធ្វើឲ្យ')}
+        accent={t('people stop.', 'មនុស្សឈប់មើល')}
+        description={t('A curated gallery of websites, brand systems, visuals, and digital products crafted for clarity, emotion, and measurable impact.', 'បណ្តុំស្នាដៃ website, brand, visual និង digital product ដែលរចនាឡើងសម្រាប់ភាពច្បាស់ អារម្មណ៍ និងលទ្ធផលពិត។')}
+      />
+      <SectionTransition variant="fadeBlur"><VideoShowreel /></SectionTransition>
+      <SectionTransition variant="fadeScale"><Portfolio showPopupOnMount={shouldShowPortfolioPopup} usePathRouting={true} /></SectionTransition>
+      <SectionTransition variant="slideLeft"><Testimonials /></SectionTransition>
+    </>
+  );
+
+  const renderCompanyPage = () => (
+    <>
+      <PageHero
+        eyebrow={t('The studio', 'ស្ទូឌីយោ')}
+        title={t('A creative company with', 'ក្រុមហ៊ុនច្នៃប្រឌិតដែលមាន')}
+        accent={t('real discipline.', 'វិន័យពិតប្រាកដ')}
+        description={t('Meet the people, process, and principles behind Ponloe Creative, a Phnom Penh studio built for thoughtful digital work.', 'ស្គាល់មនុស្ស ដំណើរការ និងគោលការណ៍នៅពីក្រោយ Ponloe Creative ស្ទូឌីយោភ្នំពេញសម្រាប់ការងារឌីជីថលដែលគិតល្អិតល្អន់។')}
+      />
+      <SectionTransition variant="fadeScale"><Stats /></SectionTransition>
+      <SectionTransition variant="fadeBlur"><Partners /></SectionTransition>
+      <SectionTransition variant="slideRight"><Process /></SectionTransition>
+      <SectionTransition variant="fadeBlur"><Team showPopupOnMount={shouldShowTeamPopup} usePathRouting={true} /></SectionTransition>
+    </>
+  );
+
+  const renderBlogPage = () => (
+    <>
+      <PageHero
+        eyebrow={t('Studio journal', 'ទស្សនាវដ្តីស្ទូឌីយោ')}
+        title={t('Ideas worth', 'គំនិតដែលគួរ')}
+        accent={t('bookmarking.', 'រក្សាទុក')}
+        description={t('Insights, guides, and creative notes from the team, written to help clients make smarter digital decisions.', 'អត្ថបទ ចំណេះដឹង និងកំណត់ចំណាំច្នៃប្រឌិតពីក្រុមការងារ ដើម្បីជួយអតិថិជនសម្រេចចិត្តឌីជីថលឲ្យឆ្លាតជាងមុន។')}
+      />
+      <SectionTransition variant="slideRight"><Insights showPopupOnMount={shouldShowInsightsPopup} usePathRouting={true} /></SectionTransition>
+    </>
+  );
+
+  const renderContactPage = () => (
+    <>
+      <PageHero
+        eyebrow={t('Start the conversation', 'ចាប់ផ្តើមការពិភាក្សា')}
+        title={t('Tell us what you want', 'ប្រាប់យើងអ្វីដែលអ្នកចង់')}
+        accent={t('to build.', 'បង្កើត')}
+        description={t('Use the estimator, send a project brief, or contact the team directly. This is where ideas become a real plan.', 'ប្រើឧបករណ៍ប៉ាន់តម្លៃ ផ្ញើ brief គម្រោង ឬទាក់ទងក្រុមការងារដោយផ្ទាល់។ ទីនេះគឺជាកន្លែងដែលគំនិតក្លាយជាផែនការពិត។')}
+      />
+      <Suspense fallback={<div className="h-96 bg-gray-50 dark:bg-gray-900/50" />}>
+        <SectionTransition variant="fadeScale"><CostEstimator showPopupOnMount={shouldShowEstimatorPopup} usePathRouting={true} /></SectionTransition>
+      </Suspense>
+      <SectionTransition variant="fadeUp"><Contact /></SectionTransition>
+      <SectionTransition variant="fadeScale"><FAQ /></SectionTransition>
+    </>
+  );
+
+  const renderMainContent = () => {
+    if (activePage === 'services') return renderServicesPage();
+    if (activePage === 'projects') return renderProjectsPage();
+    if (activePage === 'company') return renderCompanyPage();
+    if (activePage === 'blog') return renderBlogPage();
+    if (activePage === 'contact') return renderContactPage();
+    return renderHome();
+  };
+
   if (currentUser && !isViewingSite) {
       return (
         <Suspense fallback={<ComponentFallback />}>
@@ -168,11 +287,8 @@ function AppContent() {
     <div className={`min-h-screen ${isDark ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'} overflow-x-hidden selection:bg-indigo-500 selection:text-white relative`}>
       <SkipToContent />
       {showPreloader && <Preloader />}
-      {/* Cinematic intro — first visit this session only */}
       {showCinematicIntro && <CinematicIntro onComplete={() => setShowCinematicIntro(false)} />}
-      {/* AI-powered cursor evolution */}
       <CustomCursor />
-      {/* Celebration system (return visitor greeting + scroll badge) */}
       <CelebrationSystem />
       <OfflinePage />
       <InstallPrompt />
@@ -184,53 +300,7 @@ function AppContent() {
       <Header onGetQuote={() => setIsConsultationOpen(true)} />
       
       <main id="main-content" className="relative z-10" role="main">
-        <Hero />
-        <SectionTransition variant="fadeBlur"><Partners /></SectionTransition>
-        <SectionTransition delay={0.1} variant="fadeScale"><Stats /></SectionTransition>
-        
-        <SectionTransition delay={0.1} variant="slideLeft">
-          <Services 
-              showPopupOnMount={shouldShowServicesPopup}
-              usePathRouting={true}
-          />
-        </SectionTransition>
-
-        <Suspense fallback={<div className="h-96 bg-gray-50 dark:bg-gray-900/50" />}>
-          <SectionTransition variant="fadeScale">
-            <CostEstimator 
-              showPopupOnMount={shouldShowEstimatorPopup}
-              usePathRouting={true}
-            />
-          </SectionTransition>
-        </Suspense>
-
-        <SectionTransition variant="slideRight"><Process /></SectionTransition>
-        <SectionTransition variant="fadeBlur"><VideoShowreel /></SectionTransition>
-        
-        <SectionTransition variant="fadeScale">
-          <Portfolio 
-              showPopupOnMount={shouldShowPortfolioPopup} 
-              usePathRouting={true} 
-          />
-        </SectionTransition>
-        <SectionTransition variant="slideLeft"><Testimonials /></SectionTransition>
-
-        <SectionTransition variant="fadeBlur">
-          <Team 
-              showPopupOnMount={shouldShowTeamPopup}
-              usePathRouting={true}
-          />
-        </SectionTransition>
-
-        <SectionTransition variant="slideRight">
-          <Insights 
-              showPopupOnMount={shouldShowInsightsPopup}
-              usePathRouting={true}
-          />
-        </SectionTransition>
-
-        <SectionTransition variant="fadeScale"><FAQ /></SectionTransition>
-        <SectionTransition variant="fadeUp"><Contact /></SectionTransition>
+        {renderMainContent()}
       </main>
       
       <Footer />
@@ -241,17 +311,13 @@ function AppContent() {
       <ConsultationModal isOpen={isConsultationOpen} onClose={() => setIsConsultationOpen(false)} />
       <ExitIntentPopup onConsultationOpen={() => setIsConsultationOpen(true)} />
       
-      {/* Client Portal */}
       <Suspense fallback={null}>
         <ClientPortal isOpen={isClientPortalOpen} onClose={() => setIsClientPortalOpen(false)} />
       </Suspense>
       
-      {/* Overlay Pages */}
-      {activePage === 'about' && <About onClose={() => { if (window.location.pathname.includes('/about')) { window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); } else { window.location.hash = ''; } }} />}
       {activePage === 'careers' && <Careers onClose={() => { if (window.location.pathname.includes('/careers')) { window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); } else { window.location.hash = ''; } }} />}
       {activePage === 'privacy' && <PrivacyPolicy onClose={() => window.location.hash = ''} />}
       
-      {/* Admin Login Modal */}
       {isAdminOpen && (
           <div className="fixed inset-0 z-[12000] flex items-center justify-center p-4 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md overflow-hidden">
               <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 p-8 rounded-3xl shadow-2xl w-full max-w-sm relative z-[12001]">
