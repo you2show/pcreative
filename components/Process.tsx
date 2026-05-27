@@ -5,28 +5,28 @@ import { useLanguage } from '../contexts/LanguageContext';
 import ScrambleText from './ScrambleText';
 
 // Animated SVG beam connecting two step nodes (desktop only)
-const ConnectorBeam: React.FC<{ active: boolean; delay: number }> = ({ active, delay }) => (
+const ConnectorBeam: React.FC<{ active: boolean; delay: number; gradId: string }> = ({ active, delay, gradId }) => (
   <div className="hidden lg:flex items-center flex-1 relative mx-2" aria-hidden="true">
     <svg className="w-full h-6 overflow-visible" viewBox="0 0 100 24" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#6366f1" stopOpacity="0" />
+          <stop offset="50%" stopColor="#a855f7" stopOpacity="1" />
+          <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.6" />
+        </linearGradient>
+      </defs>
       {/* Track line */}
       <line x1="0" y1="12" x2="100" y2="12" stroke="rgba(99,102,241,0.15)" strokeWidth="1.5" strokeDasharray="4 3" />
       {/* Animated signal */}
       <line
         x1="0" y1="12" x2="100" y2="12"
-        stroke="url(#beamGrad)"
+        stroke={`url(#${gradId})`}
         strokeWidth="2"
         strokeLinecap="round"
         strokeDasharray="100"
         strokeDashoffset={active ? '0' : '100'}
         style={{ transition: `stroke-dashoffset 0.7s ease ${delay}ms` }}
       />
-      <defs>
-        <linearGradient id="beamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#6366f1" stopOpacity="0" />
-          <stop offset="50%" stopColor="#a855f7" stopOpacity="1" />
-          <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.6" />
-        </linearGradient>
-      </defs>
     </svg>
     {/* Travelling dot */}
     {active && (
@@ -38,6 +38,21 @@ const ConnectorBeam: React.FC<{ active: boolean; delay: number }> = ({ active, d
         }}
       />
     )}
+  </div>
+);
+
+// Mobile vertical connector between steps
+const MobileConnector: React.FC<{ active: boolean; delay: number }> = ({ active, delay }) => (
+  <div className="flex lg:hidden justify-center items-center h-10 relative" aria-hidden="true">
+    <div className="w-px h-full bg-gray-200 dark:bg-white/10 absolute" />
+    <div
+      className="w-px absolute top-0 bg-gradient-to-b from-indigo-400 to-purple-400"
+      style={{
+        height: active ? '100%' : '0%',
+        transition: `height 0.5s ease ${delay}ms`,
+        boxShadow: active ? '0 0 6px 1px rgba(99,102,241,0.5)' : 'none',
+      }}
+    />
   </div>
 );
 
@@ -58,13 +73,15 @@ const Process: React.FC = () => {
     const section = sectionRef.current;
     if (!section) return;
 
+    const stepTimers: ReturnType<typeof setTimeout>[] = [];
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setHeaderTriggered(true);
-          // Sequentially activate each step
+          // Sequentially activate each step; store timers for cleanup
           PROCESS_STEPS.forEach((_, i) => {
-            setTimeout(() => setActiveStep(i), i * 350 + 200);
+            stepTimers.push(setTimeout(() => setActiveStep(i), i * 350 + 200));
           });
           observer.disconnect();
         }
@@ -72,7 +89,10 @@ const Process: React.FC = () => {
       { threshold: 0.2 }
     );
     observer.observe(section);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      stepTimers.forEach(clearTimeout);
+    };
   }, []);
 
   return (
@@ -209,7 +229,14 @@ const Process: React.FC = () => {
 
                   {/* Connector beam between steps (not after last) */}
                   {index < PROCESS_STEPS.length - 1 && (
-                    <ConnectorBeam active={activeStep > index} delay={index * 350 + 500} />
+                    <>
+                      <ConnectorBeam
+                        active={activeStep > index}
+                        delay={index * 350 + 500}
+                        gradId={`beamGrad-${index}`}
+                      />
+                      <MobileConnector active={activeStep > index} delay={index * 350 + 500} />
+                    </>
                   )}
                 </React.Fragment>
               );
