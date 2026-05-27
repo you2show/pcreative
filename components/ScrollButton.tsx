@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { smoothScrollTo } from '../utils/scroll';
 
-const ScrollButton: React.FC = () => {
+const ScrollButton: React.FC<{ floatingChatVisible?: boolean }> = ({ floatingChatVisible = true }) => {
   const [isAtTop, setIsAtTop] = useState(true);
   const progressCircleRef = useRef<SVGCircleElement>(null);
   const rafRef = useRef<number | null>(null);
@@ -61,7 +61,7 @@ const ScrollButton: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-20 right-6 md:bottom-24 md:right-10 z-[9999] flex items-center justify-center">
+    <div className={`fixed right-6 md:right-10 z-[9999] flex items-center justify-center transition-all duration-300 ${floatingChatVisible ? 'bottom-20 md:bottom-24' : 'bottom-6 md:bottom-10'}`}>
       <button
         onClick={handleClick}
         className="relative flex items-center justify-center w-[46px] h-[46px] rounded-full bg-gray-100 dark:bg-white/5 backdrop-blur-md shadow-2xl group transition-transform hover:scale-105 border border-gray-100 dark:border-white/5 active:scale-95"

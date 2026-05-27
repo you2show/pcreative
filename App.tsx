@@ -216,7 +216,7 @@ function AppContent() {
       <Footer />
       <FloatingChat />
       <ChatbotAI />
-      <ScrollButton />
+      <ScrollButton floatingChatVisible={!activePage} />
       <StickyCTA onConsultationOpen={() => setIsConsultationOpen(true)} />
       <ConsultationModal isOpen={isConsultationOpen} onClose={() => setIsConsultationOpen(false)} />
       <ExitIntentPopup onConsultationOpen={() => setIsConsultationOpen(true)} />
