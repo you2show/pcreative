@@ -70,20 +70,20 @@ const Footer: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Top Section: Big CTA - hidden
-        <div className="flex flex-col items-center text-center mb-24 relative">
+        {/* Top Section: Big CTA */}
+        <div className="flex flex-col items-center text-center mb-16 relative border-b border-gray-100 dark:border-white/5 pb-16">
             <RevealOnScroll>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-indigo-300 text-sm font-bold tracking-wider mb-8 backdrop-blur-md animate-fade-in">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-sm font-bold tracking-wider mb-8 backdrop-blur-md">
                     <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"/>
                     <span className="font-khmer">{t("Available for new projects", "ទទួលគម្រោងថ្មីៗ")}</span>
                 </div>
             </RevealOnScroll>
 
             <RevealOnScroll delay={100}>
-                <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-white font-khmer leading-[1.1] tracking-tight max-w-5xl mx-auto mb-10">
+                <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 dark:text-white font-khmer leading-[1.1] tracking-tight max-w-5xl mx-auto mb-10">
                     {t("Let's create something", "តោះបង្កើតអ្វីមួយ")} <br />
                     <span className="relative inline-block">
-                        <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 blur-2xl opacity-30"></span>
+                        <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 blur-2xl opacity-30 pointer-events-none"></span>
                         <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
                             {t("extraordinary together.", "ដែលអស្ចារ្យទាំងអស់គ្នា។")}
                         </span>
@@ -92,24 +92,19 @@ const Footer: React.FC = () => {
             </RevealOnScroll>
             
             <RevealOnScroll delay={200} className="flex flex-col items-center">
-                <p className="text-gray-400 text-lg md:text-xl font-khmer mb-10 max-w-2xl mx-auto leading-relaxed">
-                    {t("Have an idea? We'd love to hear about it. Let's turn your vision into a digital reality.", "មានគំនិតទេ? យើងចង់ស្តាប់ពីវា។ តោះប្រែក្លាយចក្ខុវិស័យរបស់អ្នកឱ្យក្លាយជាការពិត។")}
-                </p>
-
                 <a 
                     href="#contact" 
-                    className="group relative inline-flex items-center gap-4 px-10 py-5 bg-white text-gray-950 rounded-full font-bold text-xl hover:bg-gray-100 transition-all duration-300 shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_rgba(255,255,255,0.5)] hover:-translate-y-1"
+                    className="group relative inline-flex items-center gap-4 px-10 py-5 bg-gray-900 dark:bg-white text-white dark:text-gray-950 rounded-full font-bold text-xl hover:bg-indigo-600 dark:hover:bg-indigo-600 dark:hover:text-white transition-all duration-300 shadow-lg hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] hover:-translate-y-1"
                 >
                     <span className="font-khmer">{t("Start a Project", "ចាប់ផ្តើមគម្រោង")}</span>
-                    <div className="w-10 h-10 rounded-full bg-gray-950 text-white flex items-center justify-center group-hover:bg-indigo-600 transition-colors group-hover:rotate-45 duration-500">
+                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:rotate-45 duration-500 transition-transform">
                         <ArrowUpRight size={20} />
                     </div>
                 </a>
             </RevealOnScroll>
         </div>
-        */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-24 border-t border-gray-100 dark:border-white/5 pt-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-24 pt-4">
             {/* Brand Column */}
             <div className="lg:col-span-4 space-y-8">
                 <a href="#" className="flex items-center gap-3 group w-fit">

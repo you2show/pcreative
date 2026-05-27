@@ -76,7 +76,7 @@ const OscilloscopeWave: React.FC<{ color: string; active: boolean }> = ({ color,
   return (
     <svg
       viewBox="0 0 100 100"
-      className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-20 transition-opacity duration-500"
+      className="absolute inset-0 w-full h-full opacity-[0.07] group-hover:opacity-20 transition-opacity duration-500"
       preserveAspectRatio="none"
     >
       <polyline
@@ -177,8 +177,8 @@ const StatCard: React.FC<StatCardProps> = ({ stat, index, started }) => {
 
         {/* Number - odometer style */}
         <div
-          className={`text-5xl md:text-6xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent tabular-nums mb-1 relative z-10 tracking-tight`}
-          style={{ textShadow: `0 0 40px ${stat.glowColor}40` }}
+          className={`text-6xl md:text-7xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent tabular-nums mb-1 relative z-10 tracking-tight`}
+          style={{ filter: `drop-shadow(0 0 16px ${stat.glowColor}60)` }}
         >
           {count}{stat.suffix}
         </div>

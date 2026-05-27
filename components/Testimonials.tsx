@@ -129,8 +129,9 @@ const Testimonials: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center relative z-10">
         <RevealOnScroll>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white font-khmer mb-6">
-             {t('Client', 'សក្ខីកម្ម')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{t('Stories', 'អតិថិជន')}</span>
+          <h2 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white font-khmer mb-6 leading-tight">
+             {t('Client', 'សក្ខីកម្ម')}{' '}
+             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400">{t('Stories', 'អតិថិជន')}</span>
           </h2>
           
           <button 
@@ -154,7 +155,7 @@ const Testimonials: React.FC = () => {
             {[...reviews, ...reviews].map((tm, idx) => (
               <div 
                 key={`${tm.id}-${idx}`}
-                className="w-[350px] md:w-[450px] bg-gray-100 dark:bg-white/5 backdrop-blur-sm border border-gray-100 dark:border-white/5 p-8 rounded-2xl shrink-0 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                className="shimmer-card relative w-[350px] md:w-[450px] bg-gray-100 dark:bg-white/5 backdrop-blur-sm border border-gray-100 dark:border-white/5 p-8 rounded-2xl shrink-0 hover:border-indigo-500/40 hover:shadow-[0_0_30px_rgba(99,102,241,0.12)] dark:hover:shadow-[0_0_30px_rgba(99,102,241,0.15)] transition-all duration-500 overflow-hidden"
               >
                 <div className="flex gap-1 mb-4">
                   {[1, 2, 3, 4, 5].map((s) => (

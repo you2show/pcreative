@@ -9,7 +9,68 @@ import ScrambleText from '../ScrambleText';
 import HeroActions from './HeroActions';
 import Hero3DScene from '../Hero3DScene';
 
+// Rotating words that cycle in the hero headline
+const ROTATING_WORDS_EN = ['Experiences', 'Websites', 'Brands', 'Solutions', 'Products'];
+const ROTATING_WORDS_KM = ['បទពិសោធន៍', 'វេបសាយ', 'ម៉ាក', 'ដំណោះស្រាយ', 'ផលិតផល'];
+
+const RotatingWord: React.FC<{ t: (en: string, km?: string) => string }> = ({ t }) => {
+  const [index, setIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const cycle = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setIndex(i => (i + 1) % ROTATING_WORDS_EN.length);
+        setVisible(true);
+      }, 350);
+    }, 2500);
+    return () => clearInterval(cycle);
+  }, []);
+
+  return (
+    <span
+      className="inline-block transition-all duration-350"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(-12px)',
+      }}
+    >
+      {t(ROTATING_WORDS_EN[index], ROTATING_WORDS_KM[index])}
+    </span>
+  );
+};
+
 const HeroVisuals = React.lazy(() => import('./HeroVisuals'));
+
+// Horizontal marquee ticker of keywords shown at the bottom of the hero
+const TICKER_ITEMS = [
+  'GRAPHIC DESIGN', '✦', 'WEB DEVELOPMENT', '✦', 'ARCHITECTURE', '✦',
+  'BRANDING', '✦', 'MOBILE APPS', '✦', 'TRANSLATION', '✦',
+  'MVAC SYSTEMS', '✦', 'CALLIGRAPHY', '✦', 'DIGITAL MARKETING', '✦',
+  'UI / UX', '✦', 'INTERIOR DESIGN', '✦',
+];
+
+const HeroTicker: React.FC = () => (
+  <div className="relative w-full overflow-hidden border-y border-gray-100 dark:border-white/5 py-3 bg-gray-50/60 dark:bg-white/[0.02] backdrop-blur-sm">
+    <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-gray-50 dark:from-gray-950 to-transparent z-10 pointer-events-none" />
+    <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-gray-50 dark:from-gray-950 to-transparent z-10 pointer-events-none" />
+    <div className="flex w-max animate-hero-ticker">
+      {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+        <span
+          key={i}
+          className={`shrink-0 mx-4 text-[11px] font-black tracking-[0.2em] uppercase ${
+            item === '✦'
+              ? 'text-indigo-400 dark:text-indigo-500'
+              : 'text-gray-400 dark:text-gray-600'
+          }`}
+        >
+          {item}
+        </span>
+      ))}
+    </div>
+  </div>
+);
 
 const Hero: React.FC = () => {
   const { t } = useLanguage();
@@ -51,6 +112,7 @@ const Hero: React.FC = () => {
   };
 
   return (
+    <>
     <section ref={containerRef} id="home" aria-label="Hero section" className="relative min-h-screen flex items-center pt-24 pb-12 md:pt-32 md:pb-20 overflow-hidden perspective-1000">
       
       {/* 3D Background Scene */}
@@ -83,14 +145,19 @@ const Hero: React.FC = () => {
             </div>
             
             {/* Main Headline */}
-            <div className="space-y-4">
-                <h1 className="text-4xl md:text-5xl font-black leading-[1.1] tracking-tight text-gray-900 dark:text-white font-khmer">
-                    {t('We Craft', 'យើងបង្កើត')} <br />
-                    
-                    {/* Simplified: No more complex JS animation, just pure text for stability */}
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 drop-shadow-lg pb-2 inline-block">
+            <div className="space-y-2">
+                <h1 className="text-5xl sm:text-6xl md:text-7xl font-black leading-[1.05] tracking-tight text-gray-900 dark:text-white font-khmer">
+                    {t('We Craft', 'យើងបង្កើត')}{' '}
+                    <br className="hidden sm:block" />
+                    {/* Animated rotating word */}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 drop-shadow-lg pb-2 inline-block min-w-0">
+                        <RotatingWord t={t} />
+                    </span>
+                    <br />
+                    {/* Subtitle word with scramble */}
+                    <span className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-500 dark:text-gray-400 tracking-normal">
                         <ScrambleText
-                          text={t('Digital Perfection', 'ភាពល្អឥតខ្ចោះ')}
+                          text={t('With Digital Perfection', 'ដោយភាពល្អឥតខ្ចោះ')}
                           delay={600}
                           duration={1000}
                         />
@@ -147,6 +214,10 @@ const Hero: React.FC = () => {
       )}
 
     </section>
+
+      {/* Keyword ticker below hero */}
+      <HeroTicker />
+    </>
   );
 };
 
