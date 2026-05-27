@@ -136,6 +136,109 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ faq, isOpen, onToggle, in
   );
 };
 
+const FAQIllustration: React.FC = () => (
+  <div className="relative w-full flex items-center justify-center select-none">
+    {/* Glow backdrop */}
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="w-72 h-72 rounded-full bg-indigo-500/10 blur-3xl" />
+    </div>
+
+    {/* Main floating card */}
+    <div className="relative animate-float">
+      <svg
+        viewBox="0 0 420 460"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full max-w-sm drop-shadow-2xl"
+        aria-hidden="true"
+      >
+        {/* Background card */}
+        <rect x="30" y="40" width="360" height="380" rx="32" fill="url(#cardGrad)" opacity="0.12" />
+        <rect x="30" y="40" width="360" height="380" rx="32" stroke="url(#borderGrad)" strokeWidth="1.5" fill="none" />
+
+        {/* Central question mark circle */}
+        <circle cx="210" cy="210" r="90" fill="url(#circleGrad)" opacity="0.18" />
+        <circle cx="210" cy="210" r="72" fill="url(#circleGrad2)" opacity="0.25" />
+
+        {/* Big ? */}
+        <text
+          x="210"
+          y="248"
+          textAnchor="middle"
+          fontSize="120"
+          fontWeight="900"
+          fontFamily="system-ui, sans-serif"
+          fill="url(#textGrad)"
+          opacity="0.9"
+        >?</text>
+
+        {/* Floating chat bubble — top left */}
+        <g className="animate-float-delayed">
+          <rect x="42" y="58" width="120" height="52" rx="14" fill="#6366f1" opacity="0.9" />
+          <polygon points="58,110 72,110 65,126" fill="#6366f1" opacity="0.9" />
+          <rect x="56" y="72" width="52" height="8" rx="4" fill="white" opacity="0.8" />
+          <rect x="56" y="86" width="36" height="8" rx="4" fill="white" opacity="0.5" />
+        </g>
+
+        {/* Floating chat bubble — bottom right */}
+        <g style={{ animationDelay: '0.8s' }} className="animate-float">
+          <rect x="248" y="318" width="130" height="52" rx="14" fill="#a855f7" opacity="0.85" />
+          <polygon points="360,318 374,318 367,302" fill="#a855f7" opacity="0.85" />
+          <rect x="262" y="332" width="60" height="8" rx="4" fill="white" opacity="0.8" />
+          <rect x="262" y="346" width="42" height="8" rx="4" fill="white" opacity="0.5" />
+        </g>
+
+        {/* Small decorative dots */}
+        <circle cx="88" cy="330" r="10" fill="#6366f1" opacity="0.5" />
+        <circle cx="110" cy="310" r="6" fill="#a855f7" opacity="0.4" />
+        <circle cx="338" cy="90" r="8" fill="#818cf8" opacity="0.45" />
+        <circle cx="360" cy="112" r="5" fill="#c084fc" opacity="0.35" />
+
+        {/* Star / sparkle top-right */}
+        <g opacity="0.7">
+          <line x1="356" y1="62" x2="356" y2="78" stroke="#c084fc" strokeWidth="2.5" strokeLinecap="round" />
+          <line x1="348" y1="70" x2="364" y2="70" stroke="#c084fc" strokeWidth="2.5" strokeLinecap="round" />
+          <line x1="350" y1="64" x2="362" y2="76" stroke="#c084fc" strokeWidth="1.5" strokeLinecap="round" />
+          <line x1="362" y1="64" x2="350" y2="76" stroke="#c084fc" strokeWidth="1.5" strokeLinecap="round" />
+        </g>
+
+        {/* Star / sparkle bottom-left */}
+        <g opacity="0.5">
+          <line x1="68" y1="370" x2="68" y2="382" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" />
+          <line x1="62" y1="376" x2="74" y2="376" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" />
+        </g>
+
+        <defs>
+          <linearGradient id="cardGrad" x1="30" y1="40" x2="390" y2="420" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#6366f1" />
+            <stop offset="1" stopColor="#a855f7" />
+          </linearGradient>
+          <linearGradient id="borderGrad" x1="30" y1="40" x2="390" y2="420" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#6366f1" stopOpacity="0.6" />
+            <stop offset="1" stopColor="#a855f7" stopOpacity="0.3" />
+          </linearGradient>
+          <radialGradient id="circleGrad" cx="50%" cy="50%" r="50%">
+            <stop stopColor="#6366f1" />
+            <stop offset="1" stopColor="#a855f7" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="circleGrad2" cx="50%" cy="50%" r="50%">
+            <stop stopColor="#818cf8" />
+            <stop offset="1" stopColor="#c084fc" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop stopColor="#818cf8" />
+            <stop offset="1" stopColor="#c084fc" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    {/* Orbiting small dots */}
+    <div className="absolute top-8 right-8 w-3 h-3 rounded-full bg-indigo-400/60 animate-ping-slow" />
+    <div className="absolute bottom-12 left-8 w-2 h-2 rounded-full bg-purple-400/50 animate-ping-slow" style={{ animationDelay: '1.2s' }} />
+  </div>
+);
+
 const FAQ: React.FC = () => {
   const { t } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -148,49 +251,78 @@ const FAQ: React.FC = () => {
     <section id="faq" className="py-16 md:py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
       <ScrollBackgroundText text="FAQ" className="top-10" />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <RevealOnScroll className="text-center mb-12 md:mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-bold mb-5">
-            <HelpCircle size={16} />
-            <span className="font-khmer">{t('FAQ', 'សំណួរចម្លើយ')}</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Two-column layout on large screens */}
+        <div className="flex flex-col lg:flex-row lg:items-start lg:gap-16 xl:gap-24">
+
+          {/* Left column — illustration */}
+          <RevealOnScroll variant="slide-right" className="lg:w-5/12 xl:w-2/5 lg:sticky lg:top-28 mb-10 lg:mb-0 flex-shrink-0">
+            <FAQIllustration />
+            {/* Stats row below illustration */}
+            <div className="mt-6 grid grid-cols-2 gap-4 px-4">
+              {[
+                { value: '13+', label: t('FAQ Topics', 'ប្រធានបទ FAQ') },
+                { value: '24/7', label: t('Support', 'ការគាំទ្រ') },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 dark:bg-white/[0.03] p-4 text-center"
+                >
+                  <p className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-khmer mt-1">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </RevealOnScroll>
+
+          {/* Right column — heading + accordion */}
+          <div className="lg:w-7/12 xl:w-3/5">
+            <RevealOnScroll className="mb-10 md:mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-bold mb-5">
+                <HelpCircle size={16} />
+                <span className="font-khmer">{t('FAQ', 'សំណួរចម្លើយ')}</span>
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer mb-4">
+                {t('Frequently Asked', 'សំណួរដែលសួររឿយៗ')}{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+                  {t('Questions', 'សំណួរ')}
+                </span>
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 font-khmer text-base md:text-lg">
+                {t(
+                  "Can't find the answer you're looking for? Reach out to us directly.",
+                  'រកមិនឃើញចម្លើយដែលអ្នកត្រូវការ? ទំនាក់ទំនងមកយើងផ្ទាល់។'
+                )}
+              </p>
+            </RevealOnScroll>
+
+            <div className="space-y-3">
+              {FAQS.map((faq, index) => (
+                <AccordionItem
+                  key={index}
+                  faq={faq}
+                  index={index}
+                  isOpen={openIndex === index}
+                  onToggle={() => toggle(index)}
+                />
+              ))}
+            </div>
+
+            <RevealOnScroll className="mt-10">
+              <p className="text-gray-500 font-khmer text-sm mb-4">
+                {t('Still have questions?', 'នៅមានសំណួរទៀតឬ?')}
+              </p>
+              <a
+                href="#contact"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold font-khmer text-sm transition-all hover:scale-105 shadow-lg shadow-indigo-500/20"
+              >
+                {t('Contact Us', 'ទំនាក់ទំនងយើង')}
+              </a>
+            </RevealOnScroll>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer mb-4">
-            {t('Frequently Asked', 'សំណួរដែលសួររឿយៗ')}{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-              {t('Questions', 'សំណួរ')}
-            </span>
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 font-khmer text-base md:text-lg max-w-2xl mx-auto">
-            {t(
-              "Can't find the answer you're looking for? Reach out to us directly.",
-              'រកមិនឃើញចម្លើយដែលអ្នកត្រូវការ? ទំនាក់ទំនងមកយើងផ្ទាល់។'
-            )}
-          </p>
-        </RevealOnScroll>
-
-        <div className="space-y-3">
-          {FAQS.map((faq, index) => (
-            <AccordionItem
-              key={index}
-              faq={faq}
-              index={index}
-              isOpen={openIndex === index}
-              onToggle={() => toggle(index)}
-            />
-          ))}
         </div>
-
-        <RevealOnScroll className="mt-10 text-center">
-          <p className="text-gray-500 font-khmer text-sm mb-4">
-            {t('Still have questions?', 'នៅមានសំណួរទៀតឬ?')}
-          </p>
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold font-khmer text-sm transition-all hover:scale-105 shadow-lg shadow-indigo-500/20"
-          >
-            {t('Contact Us', 'ទំនាក់ទំនងយើង')}
-          </a>
-        </RevealOnScroll>
       </div>
     </section>
   );
