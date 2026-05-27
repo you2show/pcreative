@@ -61,7 +61,7 @@ const ScrollButton: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 flex items-center justify-center">
+    <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[9999] flex items-center justify-center">
       <button
         onClick={handleClick}
         className="relative flex items-center justify-center w-[46px] h-[46px] rounded-full bg-gray-100 dark:bg-white/5 backdrop-blur-md shadow-2xl group transition-transform hover:scale-105 border border-gray-100 dark:border-white/5 active:scale-95"
