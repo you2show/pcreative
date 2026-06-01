@@ -63,7 +63,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
       const currentLang = parts[1];
       const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
       const langPrefix = currentLang && supportedLangs.includes(currentLang) ? `/${currentLang}` : '';
-      window.history.pushState({ section: 'team', id: slug }, '', `${langPrefix}/team/${slug}`);
+      window.history.pushState({ section: 'team', id: slug }, '', `${langPrefix}/company/${slug}`);
       window.dispatchEvent(new Event('popstate'));
     }
   };
@@ -74,7 +74,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
       const currentLang = window.location.pathname.split('/')[1];
       const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
       const langPrefix = currentLang && supportedLangs.includes(currentLang) ? `/${currentLang}` : '';
-      window.history.pushState({ insightsOpen: true }, '', `${langPrefix}/insights`);
+      window.history.pushState({ insightsOpen: true }, '', `${langPrefix}/blog`);
       window.dispatchEvent(new Event('popstate'));
     } else {
       window.location.hash = 'insights';
@@ -87,18 +87,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
   };
 
   const handleArticleDetailClose = () => {
-    // When the article was promoted from a team split-view context (fromTeam flag),
-    // going back would land on /team/.../insights/... and reopen both the team
-    // modal and the article. Instead, navigate to the clean base URL so nothing shows.
-    if (window.history.state?.fromTeam) {
-      const lang = window.location.pathname.split('/')[1];
-      const supported = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
-      const langPrefix = lang && supported.includes(lang) ? `/${lang}` : '';
-      window.history.pushState(null, '', `${langPrefix || '/'}`);
-      window.dispatchEvent(new Event('popstate'));
-    } else {
-      window.history.back();
-    }
+    closeItem();
   };
 
   // Helper component to render Author Info on Card

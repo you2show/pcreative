@@ -22,6 +22,13 @@ const CountUp: React.FC<{ end: number, duration: number, suffix?: string }> = ({
   return <span>{count}{suffix}</span>;
 };
 
+const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
+
+const getLanguagePrefix = () => {
+  const firstSegment = window.location.pathname.split('/').filter(Boolean)[0];
+  return firstSegment && supportedLangs.includes(firstSegment) ? `/${firstSegment}` : '';
+};
+
 // --- Magnetic Button Component ---
 const MagneticButton: React.FC<{ children: React.ReactNode, className?: string, href?: string }> = ({ children, className, href }) => {
   const ref = useRef<HTMLAnchorElement>(null);
@@ -40,10 +47,19 @@ const MagneticButton: React.FC<{ children: React.ReactNode, className?: string, 
     setPosition({ x: 0, y: 0 });
   };
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!href || !href.startsWith('/')) return;
+    e.preventDefault();
+    window.history.pushState(null, '', `${getLanguagePrefix()}${href}` || '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <a
       href={href}
       ref={ref}
+      onClick={handleClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ transform: `translate(${position.x}px, ${position.y}px)` }}
@@ -64,13 +80,13 @@ const HeroActions: React.FC<HeroActionsProps> = ({ t }) => {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
             <MagneticButton 
-            href="#portfolio"
+            href="/projects"
             className="group px-8 py-4 rounded-full bg-gray-900 text-white dark:bg-white dark:text-gray-950 font-bold text-lg shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] flex items-center justify-center gap-2 font-khmer w-full sm:w-auto"
             >
             {t('View Our Work', 'មើលស្នាដៃ')} <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </MagneticButton>
             <MagneticButton 
-            href="#contact"
+            href="/contact"
             className="px-8 py-4 rounded-full bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white font-bold text-lg border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 hover:border-gray-300 dark:hover:border-white/20 flex items-center justify-center gap-2 backdrop-blur-sm font-khmer w-full sm:w-auto"
             >
             {t('Contact Us', 'ទាក់ទងយើង')} <ChevronRight size={20} className="opacity-50" />

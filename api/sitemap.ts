@@ -68,10 +68,10 @@ const urlEntry = (
 const staticPages = (lastmod: string): string => [
   urlEntry(`${BASE_URL}/`, lastmod, 'weekly', '1.0'),
   urlEntry(`${BASE_URL}/services`, lastmod, 'monthly', '0.9'),
-  urlEntry(`${BASE_URL}/portfolio`, lastmod, 'weekly', '0.9'),
-  urlEntry(`${BASE_URL}/team`, lastmod, 'monthly', '0.8'),
-  urlEntry(`${BASE_URL}/estimator`, lastmod, 'monthly', '0.8'),
-  urlEntry(`${BASE_URL}/insights`, lastmod, 'weekly', '0.9'),
+  urlEntry(`${BASE_URL}/projects`, lastmod, 'weekly', '0.9'),
+  urlEntry(`${BASE_URL}/company`, lastmod, 'monthly', '0.8'),
+  urlEntry(`${BASE_URL}/contact`, lastmod, 'monthly', '0.8'),
+  urlEntry(`${BASE_URL}/blog`, lastmod, 'weekly', '0.9'),
 ].join('\n');
 
 const buildSitemap = (siteData: SiteData | null): string => {
@@ -91,7 +91,7 @@ const buildSitemap = (siteData: SiteData | null): string => {
           lastmod = parsed.toISOString().split('T')[0];
         }
       }
-      sections.push(urlEntry(`${BASE_URL}/insights/${escXml(slug)}`, lastmod, 'monthly', '0.8', false));
+      sections.push(urlEntry(`${BASE_URL}/blog/${escXml(slug)}`, lastmod, 'monthly', '0.8', false));
     }
   }
 
@@ -100,7 +100,7 @@ const buildSitemap = (siteData: SiteData | null): string => {
     for (const project of siteData.projects) {
       const slug = project.slug || project.id;
       if (!slug) continue;
-      sections.push(urlEntry(`${BASE_URL}/portfolio/${escXml(slug)}`, now, 'monthly', '0.7', false));
+      sections.push(urlEntry(`${BASE_URL}/projects/${escXml(slug)}`, now, 'monthly', '0.7', false));
     }
   }
 

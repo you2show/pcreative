@@ -6,7 +6,12 @@ import { motion } from 'framer-motion';
  */
 
 // Animated button with hover/tap states
-interface AnimatedButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+type MotionSafeButtonProps = Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart'
+>;
+
+interface AnimatedButtonProps extends MotionSafeButtonProps {
   variant?: 'primary' | 'secondary' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;

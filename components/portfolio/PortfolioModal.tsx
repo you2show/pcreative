@@ -11,10 +11,9 @@ import LivePreviewModal from './LivePreviewModal';
 interface PortfolioModalProps {
   project: Project;
   onClose: () => void;
-  usePathRouting?: boolean;
 }
 
-const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose, usePathRouting = false }) => {
+const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose }) => {
   const { t } = useLanguage();
   const textContainerRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -23,13 +22,6 @@ const PortfolioModal: React.FC<PortfolioModalProps> = ({ project, onClose, usePa
   const allImages = [project.image, ...(project.gallery || [])].filter(Boolean);
 
   const handleClose = () => {
-    if (usePathRouting) {
-      const currentLang = window.location.pathname.split('/')[1];
-      const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
-      const langPrefix = currentLang && supportedLangs.includes(currentLang) ? `/${currentLang}` : '';
-      window.history.replaceState(null, '', `${langPrefix}/portfolio`);
-      window.dispatchEvent(new Event('popstate'));
-    }
     onClose();
   };
 

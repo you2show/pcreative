@@ -218,6 +218,14 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
     };
   }, [selectedService]);
 
+  const navigateToContact = () => {
+    const currentLang = window.location.pathname.split('/')[1];
+    const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
+    const langPrefix = currentLang && supportedLangs.includes(currentLang) ? `/${currentLang}` : '';
+    window.history.pushState(null, '', `${langPrefix}/contact`);
+    window.dispatchEvent(new Event('popstate'));
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -366,7 +374,7 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
                 {/* CTA */}
                 <div className="mt-8 pt-6 border-t border-gray-200 dark:border-white/10">
                   <button
-                    onClick={() => { closeItem(); window.location.hash = '#contact'; }}
+                    onClick={navigateToContact}
                     className="group w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-base transition-all duration-300 hover:scale-[1.02] font-khmer"
                   >
                     <span>{t('Get in Touch', 'ទំនាក់ទំនងយើង')}</span>

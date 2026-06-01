@@ -93,7 +93,7 @@ const Footer: React.FC = () => {
             
             <RevealOnScroll delay={200} className="flex flex-col items-center">
                 <a 
-                    href="#contact" 
+                    href={`/${language}/contact`} 
                     className="group relative inline-flex items-center gap-4 px-10 py-5 bg-gray-900 dark:bg-white text-white dark:text-gray-950 rounded-full font-bold text-xl hover:bg-indigo-600 dark:hover:bg-indigo-600 dark:hover:text-white transition-all duration-300 shadow-lg hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] hover:-translate-y-1"
                 >
                     <span className="font-khmer">{t("Start a Project", "ចាប់ផ្តើមគម្រោង")}</span>
@@ -136,7 +136,7 @@ const Footer: React.FC = () => {
                 <ul className="space-y-4">
                     {['Web Development', 'App Development', 'Graphic Design', 'Architecture', 'MVAC System'].map((item) => (
                         <li key={item}>
-                            <a href="#services" className="text-gray-500 hover:text-indigo-400 transition-colors text-sm md:text-base font-khmer block hover:translate-x-2 duration-300 flex items-center gap-2 group">
+                            <a href={`/${language}/services`} className="text-gray-500 hover:text-indigo-400 transition-colors text-sm md:text-base font-khmer block hover:translate-x-2 duration-300 flex items-center gap-2 group">
                                 <span className="w-1 h-1 rounded-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity box-shadow-[0_0_10px_#6366f1]"></span>
                                 {item}
                             </a>
@@ -149,9 +149,9 @@ const Footer: React.FC = () => {
                 <h4 className="text-gray-900 dark:text-white font-bold mb-8 font-khmer text-lg">{t("Company", "ក្រុមហ៊ុន")}</h4>
                 <ul className="space-y-4">
                     {[
-                        { label: t('About Us', 'អំពីយើង'), href: `/${language}/about` },
+                        { label: t('About Us', 'អំពីយើង'), href: `/${language}/company` },
                         { label: t('Careers', 'ឱកាសការងារ'), href: `/${language}/careers` },
-                        { label: t('Insights', 'អត្ថបទ'), href: `/${language}/insights` },
+                        { label: t('Insights', 'អត្ថបទ'), href: `/${language}/blog` },
                         { label: t('Privacy Policy', 'គោលការណ៍​ភាព​ឯកជន'), href: '#privacy' }
                     ].map((item) => (
                         <li key={item.href}>

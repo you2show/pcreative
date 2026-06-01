@@ -130,7 +130,7 @@ const TeamStack: React.FC<TeamStackProps> = ({ onMemberSelect }) => {
 
 
 const About: React.FC<AboutProps> = ({ onClose }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { team = [], insights = [] } = useData();
 
   // Local State for Modals (nested within About)
@@ -304,7 +304,7 @@ const About: React.FC<AboutProps> = ({ onClose }) => {
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 font-khmer">{t("Ready to make history?", "ត្រៀមខ្លួនបង្កើតប្រវត្តិសាស្ត្រហើយឬនៅ?")}</h2>
                     <button 
-                        onClick={() => { onClose(); window.location.hash = '#contact'; }}
+                        onClick={() => { onClose(); window.history.pushState(null, '', `/${language}/contact`); window.dispatchEvent(new Event('popstate')); }}
                         className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white text-black rounded-full font-bold text-lg hover:bg-gray-200 transition-all overflow-hidden"
                     >
                         <span className="relative z-10 font-khmer">{t("Start Your Project", "ចាប់ផ្តើមគម្រោងរបស់អ្នក")}</span>
