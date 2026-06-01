@@ -80,16 +80,16 @@ const HeroActions: React.FC<HeroActionsProps> = ({ t }) => {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
             <MagneticButton 
-            href="/projects"
+            href="/contact"
             className="group px-8 py-4 rounded-full bg-gray-900 text-white dark:bg-white dark:text-gray-950 font-bold text-lg shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] flex items-center justify-center gap-2 font-khmer w-full sm:w-auto"
             >
-            {t('See Web & App Work', 'មើលស្នាដៃ Web & App')} <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            {t('Start a Project', 'ចាប់ផ្តើមគម្រោង')} <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </MagneticButton>
             <MagneticButton 
-            href="/contact"
+            href="/projects"
             className="px-8 py-4 rounded-full bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white font-bold text-lg border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 hover:border-gray-300 dark:hover:border-white/20 flex items-center justify-center gap-2 backdrop-blur-sm font-khmer w-full sm:w-auto"
             >
-            {t('Free Strategy Call', 'ប្រឹក្សាយុទ្ធសាស្ត្រឥតគិតថ្លៃ')} <ChevronRight size={20} className="opacity-50" />
+            {t('View Portfolio', 'មើល Portfolio')} <ChevronRight size={20} className="opacity-50" />
             </MagneticButton>
         </div>
 
