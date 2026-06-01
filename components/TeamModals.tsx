@@ -71,7 +71,7 @@ const ArticleDetailPanel: React.FC<{
     };
 
     const articleSlug = post.slug || post.id;
-    const articleUrl = `https://creative.ponloe.app/insights/${articleSlug}`;
+    const articleUrl = `https://creative.ponloe.app/blog/${articleSlug}`;
     const articleTitle = `${language === 'km' && post.titleKm ? post.titleKm : post.title} | Ponloe Creative`;
     const rawContent = language === 'km' && post.contentKm ? post.contentKm : post.content || '';
     const strippedContent = (() => {
@@ -102,7 +102,7 @@ const ArticleDetailPanel: React.FC<{
             url: articleUrl,
             datePublished: post.date,
             author: author
-                ? { '@type': 'Person', name: author.name, url: `https://creative.ponloe.app/team/${author.slug || author.id}` }
+                ? { '@type': 'Person', name: author.name, url: `https://creative.ponloe.app/company/${author.slug || author.id}` }
                 : { '@type': 'Organization', name: 'Ponloe Creative', url: 'https://creative.ponloe.app' },
             publisher: {
                 '@type': 'Organization',
@@ -440,13 +440,13 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
     const handleArticleClick = (post: Post) => {
         if (window.innerWidth >= 768) {
             setSelectedPost(post);
-            // Update URL to include team + article context so Share copies the right link
+            // Update URL to the canonical article route so Share copies a reload-safe link
             const langPrefix = getSupportedLangPrefix();
             const articleSlug = post.slug || post.id;
             window.history.pushState(
-                { section: 'team', id: memberSlug, article: articleSlug },
+                { section: 'insights', id: articleSlug, fromTeam: true },
                 '',
-                `${langPrefix}/team/${memberSlug}/insights/${articleSlug}`
+                `${langPrefix}/blog/${articleSlug}`
             );
         } else {
             onClose();
@@ -461,7 +461,7 @@ export const MemberDetailModal: React.FC<MemberDetailModalProps> = ({ member, on
         window.history.pushState(
             { section: 'team', id: memberSlug },
             '',
-            `${langPrefix}/team/${memberSlug}`
+            `${langPrefix}/company/${memberSlug}`
         );
     };
 

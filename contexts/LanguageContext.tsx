@@ -13,8 +13,16 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+
 const SUPPORTED_LANGUAGES: Language[] = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
 const GOOGLE_LANGUAGES: Language[] = ['fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
+const getLocalizedPath = (lang: Language) => {
+  const segments = window.location.pathname.split('/').filter(Boolean);
+  const start = segments[0] && SUPPORTED_LANGUAGES.includes(segments[0] as Language) ? 1 : 0;
+  const rest = segments.slice(start).join('/');
+  const suffix = rest ? `/${rest}` : '/';
+  return `/${lang}${suffix}${window.location.search}${window.location.hash}`;
+};
 const GOOGLE_TRANSLATE_ELEMENT_ID = 'google_translate_element';
 const GOOGLE_TRANSLATE_SCRIPT_ID = 'google-translate-script';
 
@@ -157,8 +165,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
         // Ensure trailing slash exists only when at the language root (e.g. /en → /en/)
         // Do NOT rewrite sub-paths like /en/about → /en/ which would break deep links
         if (window.location.pathname === `/${path}`) {
-             const hash = window.location.hash;
-             window.history.replaceState(null, '', `/${path}/${hash}`);
+             window.history.replaceState(null, '', getLocalizedPath(path));
         }
     } else {
         // If root "/" or invalid, default to 'en' or saved pref, then rewrite URL
@@ -166,9 +173,8 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
         setLanguageState(savedLang);
         updateSEOMetadata(savedLang); // Update Title on Load
         
-        // Rewrite URL to include lang with trailing slash without reloading
-        const hash = window.location.hash;
-        window.history.replaceState(null, '', `/${savedLang}/${hash}`);
+        // Rewrite URL to include the language prefix without dropping deep links.
+        window.history.replaceState(null, '', getLocalizedPath(savedLang));
         setGoogleCookie(savedLang);
     }
   }, []);
@@ -179,10 +185,8 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     localStorage.setItem('app_lang', newLang);
     updateSEOMetadata(newLang); // Update Title Immediately
 
-    // Update URL with trailing slash
-    const hash = window.location.hash;
-    // Always format as /lang/#hash to maintain cleanliness
-    window.history.pushState(null, '', `/${newLang}/${hash}`);
+    // Update only the language segment and preserve the current page, query, and hash.
+    window.history.pushState(null, '', getLocalizedPath(newLang));
 
     const isPrevGoogle = GOOGLE_LANGUAGES.includes(prevLang);
     const isNewGoogle = GOOGLE_LANGUAGES.includes(newLang);

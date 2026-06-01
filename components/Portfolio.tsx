@@ -75,7 +75,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ showPopupOnMount = false, onPopup
       const currentLang = window.location.pathname.split('/')[1];
       const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
       const langPrefix = currentLang && supportedLangs.includes(currentLang) ? `/${currentLang}` : '';
-      window.history.pushState({ portfolioOpen: true }, '', `${langPrefix}/portfolio`);
+      window.history.pushState({ portfolioOpen: true }, '', `${langPrefix}/projects`);
       window.dispatchEvent(new Event('popstate'));
     } else {
       window.location.hash = 'portfolio';
@@ -89,11 +89,9 @@ const Portfolio: React.FC<PortfolioProps> = ({ showPopupOnMount = false, onPopup
     closeItem(); // Use the hook's closeItem to handle URL restoration
   };
 
-  // Custom close handler for project detail that uses history.back()
   const handleProjectDetailClose = () => {
     hapticTap();
-    // Use browser history to go back to previous state (either homepage or View All)
-    window.history.back();
+    closeItem();
   };
 
   const filteredProjects = (projects || []).filter(p => filter === 'all' || p.category === filter);
@@ -164,7 +162,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ showPopupOnMount = false, onPopup
          </div>, document.body
       )}
 
-      {selectedProject && <PortfolioModal project={selectedProject} onClose={handleProjectDetailClose} usePathRouting={usePathRouting} />}
+      {selectedProject && <PortfolioModal project={selectedProject} onClose={handleProjectDetailClose} />}
     </section>
   );
 };

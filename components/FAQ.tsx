@@ -242,7 +242,7 @@ const FAQIllustration: React.FC = () => (
 const INITIAL_VISIBLE = 5;
 
 const FAQ: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [showAll, setShowAll] = useState(false);
   const listTopRef = useRef<HTMLDivElement>(null);
@@ -357,7 +357,7 @@ const FAQ: React.FC = () => {
                   {t('Still have questions?', 'នៅមានសំណួរទៀតឬ?')}
                 </p>
                 <a
-                  href="#contact"
+                  href={`/${language}/contact`}
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold font-khmer text-sm transition-all hover:scale-105 shadow-lg shadow-indigo-500/20"
                 >
                   {t('Contact Us', 'ទំនាក់ទំនងយើង')}

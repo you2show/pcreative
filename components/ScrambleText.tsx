@@ -11,7 +11,7 @@ interface ScrambleTextProps {
   trigger?: boolean;          // external trigger (defaults to IntersectionObserver)
   delay?: number;             // ms before animation starts
   duration?: number;          // total scramble duration in ms
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
 }
 
 const ScrambleText: React.FC<ScrambleTextProps> = ({

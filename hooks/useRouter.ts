@@ -1,5 +1,40 @@
 import { useState, useEffect, useCallback } from 'react';
 
+const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
+
+const sectionPageRoutes: Record<string, string> = {
+  portfolio: 'projects',
+  insights: 'blog',
+  team: 'company',
+  estimator: 'contact',
+};
+
+const sectionRouteAliases: Record<string, string[]> = {
+  portfolio: ['projects'],
+  insights: ['blog'],
+  team: ['company', 'about'],
+  estimator: ['contact'],
+};
+
+const getLanguagePrefix = () => {
+  const currentLang = window.location.pathname.split('/').filter(Boolean)[0];
+  return currentLang && supportedLangs.includes(currentLang) ? `/${currentLang}` : '';
+};
+
+const getRouteSections = (section: string) => [section, ...(sectionRouteAliases[section] || [])];
+
+const getPageRoute = (section: string) => sectionPageRoutes[section] || section;
+
+const safeDecodeURIComponent = (value: string) => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
+const toPath = (langPrefix: string, path: string) => `${langPrefix}${path}` || '/';
+
 /**
  * Custom Hook សម្រាប់គ្រប់គ្រង Routing
  * 
@@ -22,13 +57,14 @@ export const useRouter = (section: string, idPrefix: string = '', usePathRouting
       const hash = window.location.hash;
 
       if (usePathRouting) {
-        // ១. Path-based routing: /section/slug ឬ /lang/section/slug
-        // Regex ស្វែងរក slug បន្ទាប់ពី /section/
-        const regex = new RegExp(`\\/${section}\\/([^/]+)`);
+        // ១. Path-based routing: /section/slug, /lang/section/slug, or a page alias.
+        const routeSections = getRouteSections(section);
+        const escapedSections = routeSections.map(route => route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+        const regex = new RegExp(`\\/(?:${escapedSections.join('|')})\\/([^/]+)`);
         const match = regex.exec(pathname);
         
         if (match && match[1]) {
-          setActiveId(match[1]);
+          setActiveId(safeDecodeURIComponent(match[1]));
         } else {
           setActiveId(null);
         }
@@ -38,7 +74,7 @@ export const useRouter = (section: string, idPrefix: string = '', usePathRouting
 
         if (hash.startsWith(prefix)) {
           const urlId = hash.replace(prefix, '');
-          setActiveId(urlId || null);
+          setActiveId(urlId ? safeDecodeURIComponent(urlId) : null);
         } else {
           setActiveId(null);
         }
@@ -56,16 +92,12 @@ export const useRouter = (section: string, idPrefix: string = '', usePathRouting
   }, [section, usePathRouting]);
 
   const openItem = useCallback((dataId: string) => {
-    const urlId = toUrlId(dataId);
-    const currentPath = window.location.pathname;
-    const parts = currentPath.split('/');
-    const currentLang = parts[1];
-    const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
-    const langPrefix = currentLang && supportedLangs.includes(currentLang) ? `/${currentLang}` : '';
+    const urlId = encodeURIComponent(toUrlId(dataId));
+    const langPrefix = getLanguagePrefix();
 
     if (usePathRouting) {
-      // ប្តូរទៅជា Clean Path URL: /section/slug
-      const newPath = `${langPrefix}/${section}/${urlId}`;
+      // ប្តូរទៅជា Clean Path URL: /page/slug
+      const newPath = toPath(langPrefix, `/${getPageRoute(section)}/${urlId}`);
       window.history.pushState({ section, id: urlId }, '', newPath);
       window.dispatchEvent(new Event('popstate'));
     } else {
@@ -75,22 +107,18 @@ export const useRouter = (section: string, idPrefix: string = '', usePathRouting
   }, [section, toUrlId, usePathRouting]);
 
   const closeItem = useCallback(() => {
-    const currentPath = window.location.pathname;
-    const parts = currentPath.split('/');
-    const currentLang = parts[1];
-    const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
-    const langPrefix = currentLang && supportedLangs.includes(currentLang) ? `/${currentLang}` : '';
+    const langPrefix = getLanguagePrefix();
 
     try {
         if (usePathRouting) {
-          // ពេលបិទ ឱ្យត្រឡប់មក /#section វិញភ្លាមៗ
-          const newUrl = `${langPrefix || '/'}/#${section}`;
+          // ពេលបិទ ឱ្យត្រឡប់ទៅ page route វិញភ្លាមៗ
+          const newUrl = toPath(langPrefix, `/${getPageRoute(section)}`);
           window.history.pushState(null, '', newUrl);
           window.dispatchEvent(new Event('popstate'));
           window.dispatchEvent(new Event('hashchange'));
         } else {
           // សម្រាប់ Hash ឱ្យត្រឡប់មក #section វិញ
-          window.history.pushState(null, '', `${langPrefix || '/'}/#${section}`);
+          window.history.pushState(null, '', toPath(langPrefix, `/#${section}`));
           window.dispatchEvent(new Event('hashchange'));
         }
     } catch (e) {
