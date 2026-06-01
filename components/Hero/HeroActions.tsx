@@ -113,12 +113,6 @@ const HeroActions: React.FC<HeroActionsProps> = ({ t }) => {
                 </div>
             </div>
         </div>
-
-        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-xs font-bold text-gray-500 dark:text-gray-400 font-khmer">
-            <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500">{t('Free first advice', 'ណែនាំដំបូងឥតគិតថ្លៃ')}</span>
-            <span className="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-500">{t('Transparent estimate', 'ប៉ាន់តម្លៃច្បាស់')}</span>
-            <span className="px-3 py-1 rounded-full bg-pink-500/10 text-pink-500">{t('Khmer / English support', 'គាំទ្រ ខ្មែរ / English')}</span>
-        </div>
     </div>
   );
 };

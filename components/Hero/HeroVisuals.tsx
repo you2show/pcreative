@@ -17,6 +17,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
   const [isCoreHovered, setIsCoreHovered] = useState(false);
   const [isOrbitHovered, setIsOrbitHovered] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
+  const [scrollRotation, setScrollRotation] = useState(0);
   const [hoveredMemberId, setHoveredMemberId] = useState<string | null>(null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
@@ -68,6 +69,30 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
       cancelAnimationFrame(animationRef.current);
     };
   }, [isOrbiting, isCoreHovered, isOrbitHovered, hoveredMemberId, prefersReducedMotion]);
+
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+
+    let frame = 0;
+    const updateScrollRotation = () => {
+      frame = 0;
+      setScrollRotation(window.scrollY * 0.0045);
+    };
+
+    const handleScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(updateScrollRotation);
+    };
+
+    updateScrollRotation();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [prefersReducedMotion]);
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -240,7 +265,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
               </filter>
             </defs>
             {team.map((member, index) => {
-              const pos = getDynamicPosition(index, team.length, rotationAngle);
+              const pos = getDynamicPosition(index, team.length, rotationAngle + scrollRotation);
               const isHovered = hoveredMemberId === member.id;
               const isActive = isHovered || isCoreHovered || !isOrbiting;
 
@@ -262,7 +287,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
           </svg>
 
           {team.map((member, index) => {
-            const pos = getDynamicPosition(index, team.length, rotationAngle);
+            const pos = getDynamicPosition(index, team.length, rotationAngle + scrollRotation);
             const isHovered = hoveredMemberId === member.id;
 
             return (
