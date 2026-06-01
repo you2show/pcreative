@@ -5,7 +5,7 @@ import { useData } from '../../contexts/DataContext';
 import { MemberDetailModal, AuthorArticlesModal, ArticleDetailModal } from '../TeamModals';
 import { TeamMember, Post } from '../../types';
 import ScrambleText from '../ScrambleText';
-import { CheckCircle2 } from 'lucide-react';
+import { Image, MousePointer2, Sparkles } from 'lucide-react';
 
 import HeroActions from './HeroActions';
 import Hero3DScene from '../Hero3DScene';
@@ -160,22 +160,25 @@ const Hero: React.FC = () => {
                 </h1>
             </div>
 
-            <p className="hero-copy text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-khmer max-w-lg mx-auto lg:mx-0">
+            <p className="hero-copy text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-khmer max-w-md mx-auto lg:mx-0">
               {t(
-                  'Creative websites, apps, branding, and visual systems that make your business look trusted—and easier to contact.',
-                  'យើងបង្កើត website, app, branding និង visual system ឲ្យអាជីវកម្មមើលទៅគួរឱ្យទុកចិត្ត និងងាយស្រួលឲ្យអតិថិជនទាក់ទង។'
+                  'Bold digital visuals that make people stop, trust, and contact you.',
+                  'រូបភាពឌីជីថលខ្លាំងៗ ឲ្យមនុស្សឈប់មើល ទុកចិត្ត និងទាក់ទងអ្នក។'
               )}
             </p>
 
-            <div className="hero-proof-strip grid gap-3 sm:grid-cols-3 max-w-2xl mx-auto lg:mx-0">
+            <div className="hero-proof-strip grid max-w-2xl grid-cols-3 gap-3 mx-auto lg:mx-0">
               {[
-                t('Clear service paths', 'ផ្លូវសេវាកម្មច្បាស់'),
-                t('Premium creative direction', 'ទិសដៅ Creative កម្រិតខ្ពស់'),
-                t('Fast contact flow', 'ផ្លូវទំនាក់ទំនងលឿន'),
-              ].map((item) => (
-                <div key={item} className="flex items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white/75 px-3 py-3 text-xs font-black text-gray-700 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-200 lg:justify-start font-khmer">
-                  <CheckCircle2 size={16} className="shrink-0 text-emerald-500" />
-                  {item}
+                { icon: Image, label: t('Big visuals', 'រូបធំ') },
+                { icon: Sparkles, label: t('Premium mood', 'Mood ស្អាត') },
+                { icon: MousePointer2, label: t('Clear CTA', 'CTA ច្បាស់') },
+              ].map(({ icon: Icon, label }) => (
+                <div key={label} className="group relative min-h-24 overflow-hidden rounded-3xl border border-gray-200 bg-white/75 p-3 shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10 dark:border-white/10 dark:bg-white/[0.05]">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(99,102,241,0.22),transparent_42%)] opacity-0 transition-opacity group-hover:opacity-100" />
+                  <div className="relative flex h-full flex-col justify-between">
+                    <Icon size={22} className="text-indigo-500 dark:text-indigo-300" />
+                    <span className="text-sm font-black text-gray-800 dark:text-white font-khmer">{label}</span>
+                  </div>
                 </div>
               ))}
             </div>
