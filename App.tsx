@@ -26,6 +26,9 @@ import FAQ from './components/FAQ';
 import StickyCTA, { ConsultationModal } from './components/StickyCTA';
 import ExitIntentPopup from './components/ExitIntentPopup';
 import VideoShowreel from './components/VideoShowreel';
+import ExperienceLab from './components/ExperienceLab';
+import HomepageStrategy from './components/HomepageStrategy';
+import OutcomePaths from './components/OutcomePaths';
 import Preloader from './components/Preloader';
 import ChatbotAI from './components/ChatbotAI';
 import SkipToContent from './components/SkipToContent';
@@ -233,10 +236,10 @@ function AppContent() {
           <div className="max-w-3xl mb-12">
             <span className="text-indigo-400 font-bold tracking-wider uppercase text-sm font-khmer">{t('Choose a path', 'ជ្រើសរើសទិសដៅ')}</span>
             <h2 className="mt-4 text-4xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer">
-              {t('Homepage is now a gateway, not a repeated long page.', 'Homepage ឥឡូវជាច្រកចូល មិនមែនជាទំព័រវែងស្ទួនទេ។')}
+              {t('Choose what you want to build next.', 'ជ្រើសរើសអ្វីដែលអ្នកចង់បង្កើតបន្ទាប់។')}
             </h2>
             <p className="mt-5 text-gray-600 dark:text-gray-400 leading-relaxed font-khmer">
-              {t('We moved detailed content into focused pages so every route loads the right section once and visitors can jump straight to what they need.', 'យើងបានផ្លាស់មាតិកាលម្អិតទៅទំព័រផ្តោត ដើម្បីឲ្យ route នីមួយៗបង្ហាញផ្នែកត្រឹមត្រូវម្តងតែប៉ុណ្ណោះ និងឲ្យភ្ញៀវចូលទៅអ្វីដែលត្រូវការបានភ្លាមៗ។')}
+              {t('After the first impression builds confidence, clear pathways help visitors quickly explore services, proof, company trust, ideas, or contact options.', 'បន្ទាប់ពីចំណាប់អារម្មណ៍ដំបូងបង្កើតទំនុកចិត្ត ផ្លូវច្បាស់ៗជួយឲ្យភ្ញៀវចូលមើលសេវាកម្ម ភស្តុតាង ក្រុមហ៊ុន អត្ថបទ ឬជម្រើសទំនាក់ទំនងបានលឿន។')}
             </p>
           </div>
 
@@ -270,6 +273,9 @@ function AppContent() {
   const renderHome = () => (
     <>
       <Hero />
+      <SectionTransition variant="fadeBlur"><ExperienceLab /></SectionTransition>
+      <SectionTransition delay={0.1} variant="fadeScale"><HomepageStrategy /></SectionTransition>
+      <SectionTransition delay={0.1} variant="slideRight"><OutcomePaths /></SectionTransition>
       <SectionTransition delay={0.1} variant="slideLeft">{renderPageDirectory()}</SectionTransition>
     </>
   );
