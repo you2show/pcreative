@@ -15,28 +15,32 @@ const ROTATING_WORDS_KM = ['បទពិសោធន៍', 'វេបសាយ', 
 
 const RotatingWord: React.FC<{ t: (en: string, km?: string) => string }> = ({ t }) => {
   const [index, setIndex] = useState(0);
-  const [visible, setVisible] = useState(true);
+  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    const cycle = setInterval(() => {
-      setVisible(false);
-      setTimeout(() => {
-        setIndex(i => (i + 1) % ROTATING_WORDS_EN.length);
-        setVisible(true);
-      }, 350);
-    }, 2500);
-    return () => clearInterval(cycle);
+    const cycle = window.setInterval(() => {
+      setIndex(current => {
+        setPreviousIndex(current);
+        return (current + 1) % ROTATING_WORDS_EN.length;
+      });
+    }, 2600);
+
+    return () => window.clearInterval(cycle);
   }, []);
 
+  const currentWord = t(ROTATING_WORDS_EN[index], ROTATING_WORDS_KM[index]);
+  const previousWord = previousIndex === null ? null : t(ROTATING_WORDS_EN[previousIndex], ROTATING_WORDS_KM[previousIndex]);
+
   return (
-    <span
-      className="inline-block transition-all duration-350"
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(-12px)',
-      }}
-    >
-      {t(ROTATING_WORDS_EN[index], ROTATING_WORDS_KM[index])}
+    <span className="hero-word-stack" aria-live="polite" aria-label={currentWord}>
+      {previousWord && (
+        <span key={`prev-${previousIndex}-${index}`} className="hero-word-prev" aria-hidden="true">
+          {previousWord}
+        </span>
+      )}
+      <span key={`current-${index}`} className="hero-word-current">
+        {currentWord}
+      </span>
     </span>
   );
 };
@@ -80,7 +84,6 @@ const Hero: React.FC = () => {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [authorPosts, setAuthorPosts] = useState<Post[] | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [shouldRenderVisuals, setShouldRenderVisuals] = useState(false);
 
   // Parallax Refs for Background
   const containerRef = useRef<HTMLDivElement>(null);
@@ -96,14 +99,6 @@ const Hero: React.FC = () => {
       document.body.style.overflow = 'unset';
     };
   }, [selectedMember, authorPosts, selectedPost]);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 1024px)');
-    const update = () => setShouldRenderVisuals(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener('change', update);
-    return () => mediaQuery.removeEventListener('change', update);
-  }, []);
 
   const handleShowArticles = (member: TeamMember) => {
       if (!insights) return;
@@ -145,31 +140,39 @@ const Hero: React.FC = () => {
             </div>
             
             {/* Main Headline */}
-            <div className="space-y-2">
-                <h1 className="text-5xl sm:text-6xl md:text-7xl font-black leading-[1.05] tracking-tight text-gray-900 dark:text-white font-khmer">
-                    {t('We Craft', 'យើងបង្កើត')}{' '}
-                    <br className="hidden sm:block" />
-                    {/* Animated rotating word */}
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 drop-shadow-lg pb-2 inline-block min-w-0">
+            <div className="relative space-y-4">
+                <div className="absolute -left-6 top-4 hidden h-28 w-28 rounded-full bg-indigo-500/15 blur-3xl dark:block" aria-hidden="true" />
+                <h1 className="hero-headline relative text-5xl sm:text-6xl md:text-7xl font-black leading-[1.02] tracking-[-0.045em] text-gray-950 dark:text-white font-khmer">
+                    <span className="hero-line-reveal block">
+                      {t('We Craft', 'យើងបង្កើត')}
+                    </span>
+                    <span className="hero-gradient-text relative inline-block pb-3 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 drop-shadow-lg">
                         <RotatingWord t={t} />
                     </span>
-                    <br />
-                    {/* Subtitle word with scramble */}
-                    <span className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-500 dark:text-gray-400 tracking-normal">
+                    <span className="hero-subline block text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-500 dark:text-gray-300 tracking-[-0.01em]">
                         <ScrambleText
                           text={t('With Digital Perfection', 'ដោយភាពល្អឥតខ្ចោះ')}
-                          delay={600}
-                          duration={1000}
+                          delay={450}
+                          duration={900}
                         />
                     </span>
                 </h1>
 
+                <div className="hero-proof-strip mx-auto lg:mx-0 flex max-w-xl flex-wrap items-center justify-center lg:justify-start gap-2 text-xs font-black uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">
+                  <span>{t('Strategy', 'យុទ្ធសាស្ត្រ')}</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                  <span>{t('UI/UX', 'UI/UX')}</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />
+                  <span>{t('Build', 'អភិវឌ្ឍ')}</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-pink-400" />
+                  <span>{t('Launch', 'បើកដំណើរការ')}</span>
+                </div>
             </div>
             
-            <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-khmer max-w-xl mx-auto lg:mx-0">
+            <p className="hero-copy text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-khmer max-w-xl mx-auto lg:mx-0">
               {t(
-                  "Cambodia's digital future, built by architects, developers & artists.",
-                  'ក្រុមស្ថាបត្យករ អ្នកអភិវឌ្ឍន៍ និងអ្នករចនា — ដៃគូឌីជីថលនៅកម្ពុជា។'
+                  "Websites, mobile apps, and digital experiences shaped to look premium, feel effortless, and win trust from the first visit.",
+                  'វេបសាយ Mobile App និងបទពិសោធន៍ឌីជីថលដែលមើលទៅ premium ប្រើងាយ និងបង្កើតទំនុកចិត្តចាប់ពីការចូលមើលដំបូង។'
               )}
             </p>
             
@@ -178,13 +181,9 @@ const Hero: React.FC = () => {
           </div>
           
           {/* Right Content - Visuals */}
-          {shouldRenderVisuals ? (
-            <Suspense fallback={<div className="hidden lg:block h-[600px] w-full" />}>
-              <HeroVisuals team={team} onMemberClick={setSelectedMember} />
-            </Suspense>
-          ) : (
-            <div className="hidden lg:block h-[600px] w-full" />
-          )}
+          <Suspense fallback={<div className="min-h-[220px] lg:h-[600px] w-full" />}>
+            <HeroVisuals team={team} onMemberClick={setSelectedMember} />
+          </Suspense>
         </div>
       </div>
 

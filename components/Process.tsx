@@ -166,7 +166,7 @@ const Process: React.FC = () => {
                       <div
                         className={`w-16 h-16 rounded-full border-2 flex items-center justify-center font-black text-lg font-mono transition-all duration-500 ${
                           isActive
-                            ? `${color.bg} text-white border-transparent shadow-[0_0_24px_4px_${color.glow}50]`
+                            ? `${color.bg} text-white border-transparent`
                             : 'border-gray-200 dark:border-white/10 text-gray-400 dark:text-gray-600 bg-gray-50 dark:bg-gray-900'
                         }`}
                         style={isActive ? { boxShadow: `0 0 24px 4px ${color.glow}50` } : {}}
