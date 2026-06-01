@@ -40,6 +40,9 @@ const paths = [
     secondaryLabel: 'See related work',
     secondaryLabelKm: 'មើលស្នាដៃពាក់ព័ន្ធ',
     accent: 'from-indigo-500 to-cyan-400',
+    image: 'https://images.unsplash.com/photo-1559028006-448665bd7c7f?auto=format&fit=crop&q=85&w=1200',
+    imageAlt: 'Website and app interface design preview',
+    imageAltKm: 'រូបភាព preview រចនា website និង app',
   },
   {
     icon: Palette,
@@ -56,6 +59,9 @@ const paths = [
     secondaryLabel: 'View visual proof',
     secondaryLabelKm: 'មើលភស្តុតាងរូបភាព',
     accent: 'from-fuchsia-500 to-pink-400',
+    image: 'https://images.unsplash.com/photo-1613909207039-6b173b755cc1?auto=format&fit=crop&q=85&w=1200',
+    imageAlt: 'Brand identity and creative visuals preview',
+    imageAltKm: 'រូបភាព preview អត្តសញ្ញាណម៉ាក និង creative visual',
   },
   {
     icon: Building2,
@@ -72,6 +78,9 @@ const paths = [
     secondaryLabel: 'Meet the studio',
     secondaryLabelKm: 'ស្គាល់ស្ទូឌីយោ',
     accent: 'from-emerald-500 to-teal-400',
+    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=85&w=1200',
+    imageAlt: 'Interior and architecture concept preview',
+    imageAltKm: 'រូបភាព preview interior និង architecture concept',
   },
   {
     icon: Languages,
@@ -88,6 +97,9 @@ const paths = [
     secondaryLabel: 'Compare services',
     secondaryLabelKm: 'ប្រៀបធៀបសេវាកម្ម',
     accent: 'from-amber-500 to-orange-400',
+    image: 'https://images.unsplash.com/photo-1492724441997-5dc865305da7?auto=format&fit=crop&q=85&w=1200',
+    imageAlt: 'Photo video and localized content preview',
+    imageAltKm: 'រូបភាព preview រូបថត វីដេអូ និងមាតិកាបកប្រែ',
   },
 ];
 
@@ -98,6 +110,7 @@ const quickChoices = [
     answer: 'Start with digital services',
     answerKm: 'ចាប់ផ្តើមពីសេវាកម្មឌីជីថល',
     href: '/services',
+    image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&q=80&w=500',
   },
   {
     question: 'Need a stronger brand look?',
@@ -105,6 +118,7 @@ const quickChoices = [
     answer: 'Review creative offers',
     answerKm: 'ពិនិត្យសេវាកម្មច្នៃប្រឌិត',
     href: '/services',
+    image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&q=80&w=500',
   },
   {
     question: 'Need proof before deciding?',
@@ -112,6 +126,7 @@ const quickChoices = [
     answer: 'Browse project examples',
     answerKm: 'មើលឧទាហរណ៍គម្រោង',
     href: '/projects',
+    image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&q=80&w=500',
   },
 ];
 
@@ -154,17 +169,19 @@ const OutcomePaths: React.FC = () => {
         <RevealOnScroll delay={120}>
           <div className="mb-8 grid gap-3 rounded-[2rem] border border-indigo-100 bg-white/90 p-3 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-gray-950/65 md:grid-cols-3">
             {quickChoices.map((choice, index) => (
-              <a key={choice.question} href={choice.href} onClick={(event) => navigateToPage(event, choice.href)} className="group flex items-center justify-between gap-4 rounded-3xl bg-gray-50 p-4 transition-all hover:-translate-y-1 hover:bg-indigo-50 dark:bg-white/[0.04] dark:hover:bg-white/[0.08]">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/10 text-sm font-black text-indigo-600 transition-colors group-hover:bg-indigo-600 group-hover:text-white dark:text-indigo-200">
+              <a key={choice.question} href={choice.href} onClick={(event) => navigateToPage(event, choice.href)} className="group relative flex min-h-32 items-end justify-between gap-4 overflow-hidden rounded-3xl bg-gray-950 p-4 text-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/15">
+                <img src={choice.image} alt={t(choice.question, choice.questionKm)} className="absolute inset-0 h-full w-full object-cover opacity-70 transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/35 to-transparent" />
+                <div className="relative flex items-end gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-sm font-black text-white backdrop-blur-md transition-colors group-hover:bg-white group-hover:text-gray-950">
                     0{index + 1}
                   </span>
                   <div>
-                    <p className="text-sm font-black text-gray-950 dark:text-white font-khmer">{t(choice.question, choice.questionKm)}</p>
-                    <p className="mt-1 text-xs font-bold text-gray-500 dark:text-gray-400 font-khmer">{t(choice.answer, choice.answerKm)}</p>
+                    <p className="text-sm font-black font-khmer">{t(choice.question, choice.questionKm)}</p>
+                    <p className="mt-1 text-xs font-bold text-gray-200 font-khmer">{t(choice.answer, choice.answerKm)}</p>
                   </div>
                 </div>
-                <ArrowRight size={16} className="shrink-0 text-gray-400 transition-transform group-hover:translate-x-1 group-hover:text-indigo-600" />
+                <ArrowRight size={16} className="relative shrink-0 text-white transition-transform group-hover:translate-x-1" />
               </a>
             ))}
           </div>
@@ -175,39 +192,49 @@ const OutcomePaths: React.FC = () => {
             const Icon = path.icon;
             return (
               <RevealOnScroll key={path.title} delay={index * 90}>
-                <article className="group relative h-full overflow-hidden rounded-[2rem] border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-indigo-300 hover:shadow-2xl hover:shadow-indigo-500/10 dark:border-white/10 dark:bg-gray-950/80 dark:hover:border-white/20 md:p-7">
-                  <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${path.accent}`} />
-                  <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-indigo-500/10 blur-3xl transition-transform duration-500 group-hover:scale-125" />
-
-                  <div className="relative mb-6 flex items-start justify-between gap-5">
-                    <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${path.accent} text-white shadow-lg shadow-indigo-500/20`}>
-                      <Icon size={25} />
-                    </div>
-                    <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-gray-500 dark:bg-white/10 dark:text-gray-300">
-                      {t('Best fit', 'សាកសមបំផុត')}
-                    </span>
-                  </div>
-
-                  <h3 className="relative text-2xl font-black text-gray-950 dark:text-white font-khmer">{t(path.title, path.titleKm)}</h3>
-                  <p className="relative mt-4 text-sm leading-7 text-gray-600 dark:text-gray-400 font-khmer">{t(path.audience, path.audienceKm)}</p>
-
-                  <div className="relative mt-6 grid gap-3 sm:grid-cols-3">
-                    {path.deliverables.map((deliverable, deliverableIndex) => (
-                      <div key={deliverable} className="flex items-start gap-2 rounded-2xl bg-gray-50 p-3 text-sm font-bold leading-6 text-gray-700 dark:bg-white/[0.04] dark:text-gray-300 font-khmer">
-                        <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-500" />
-                        {t(deliverable, path.deliverablesKm[deliverableIndex])}
+                <article className="group relative h-full overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-indigo-300 hover:shadow-2xl hover:shadow-indigo-500/10 dark:border-white/10 dark:bg-gray-950/80 dark:hover:border-white/20">
+                  <div className="relative h-64 overflow-hidden bg-gray-950">
+                    <img
+                      src={path.image}
+                      alt={t(path.imageAlt, path.imageAltKm)}
+                      className="h-full w-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/25 to-transparent" />
+                    <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${path.accent}`} />
+                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 p-5">
+                      <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${path.accent} text-white shadow-lg shadow-indigo-500/20`}>
+                        <Icon size={25} />
                       </div>
-                    ))}
+                      <span className="rounded-full border border-white/15 bg-white/15 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-white backdrop-blur-xl">
+                        {t('Best fit', 'សាកសមបំផុត')}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="relative mt-7 flex flex-wrap gap-3">
-                    <a href={path.primaryHref} onClick={(event) => navigateToPage(event, path.primaryHref)} className="inline-flex items-center gap-2 rounded-full bg-gray-950 px-5 py-3 text-sm font-black text-white transition-all hover:-translate-y-0.5 hover:bg-indigo-600 dark:bg-white dark:text-gray-950 dark:hover:bg-indigo-200 font-khmer">
-                      {t(path.primaryLabel, path.primaryLabelKm)}
-                      <ArrowRight size={17} />
-                    </a>
-                    <a href={path.secondaryHref} onClick={(event) => navigateToPage(event, path.secondaryHref)} className="inline-flex items-center gap-2 rounded-full border border-gray-200 px-5 py-3 text-sm font-black text-gray-700 transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:text-indigo-600 dark:border-white/10 dark:text-gray-200 dark:hover:border-white/25 font-khmer">
-                      {t(path.secondaryLabel, path.secondaryLabelKm)}
-                    </a>
+                  <div className="relative p-6 md:p-7">
+                    <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-indigo-500/10 blur-3xl transition-transform duration-500 group-hover:scale-125" />
+                    <h3 className="relative text-2xl font-black text-gray-950 dark:text-white font-khmer">{t(path.title, path.titleKm)}</h3>
+                    <p className="relative mt-4 text-sm leading-7 text-gray-600 dark:text-gray-400 font-khmer">{t(path.audience, path.audienceKm)}</p>
+
+                    <div className="relative mt-6 grid gap-3 sm:grid-cols-3">
+                      {path.deliverables.map((deliverable, deliverableIndex) => (
+                        <div key={deliverable} className="flex items-start gap-2 rounded-2xl bg-gray-50 p-3 text-sm font-bold leading-6 text-gray-700 dark:bg-white/[0.04] dark:text-gray-300 font-khmer">
+                          <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-500" />
+                          {t(deliverable, path.deliverablesKm[deliverableIndex])}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="relative mt-7 flex flex-wrap gap-3">
+                      <a href={path.primaryHref} onClick={(event) => navigateToPage(event, path.primaryHref)} className="inline-flex items-center gap-2 rounded-full bg-gray-950 px-5 py-3 text-sm font-black text-white transition-all hover:-translate-y-0.5 hover:bg-indigo-600 dark:bg-white dark:text-gray-950 dark:hover:bg-indigo-200 font-khmer">
+                        {t(path.primaryLabel, path.primaryLabelKm)}
+                        <ArrowRight size={17} />
+                      </a>
+                      <a href={path.secondaryHref} onClick={(event) => navigateToPage(event, path.secondaryHref)} className="inline-flex items-center gap-2 rounded-full border border-gray-200 px-5 py-3 text-sm font-black text-gray-700 transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:text-indigo-600 dark:border-white/10 dark:text-gray-200 dark:hover:border-white/25 font-khmer">
+                        {t(path.secondaryLabel, path.secondaryLabelKm)}
+                      </a>
+                    </div>
                   </div>
                 </article>
               </RevealOnScroll>

@@ -26,9 +26,9 @@ import FAQ from './components/FAQ';
 import StickyCTA, { ConsultationModal } from './components/StickyCTA';
 import ExitIntentPopup from './components/ExitIntentPopup';
 import VideoShowreel from './components/VideoShowreel';
-import ExperienceLab from './components/ExperienceLab';
-import OutcomePaths from './components/OutcomePaths';
 import HomeConversion from './components/HomeConversion';
+import OutcomePaths from './components/OutcomePaths';
+import HomeVisualGateway from './components/HomeVisualGateway';
 import Preloader from './components/Preloader';
 import ChatbotAI from './components/ChatbotAI';
 import SkipToContent from './components/SkipToContent';
@@ -187,14 +187,9 @@ function AppContent() {
   const renderHome = () => (
     <>
       <Hero />
-      <SectionTransition variant="fadeBlur"><ExperienceLab /></SectionTransition>
+      <SectionTransition variant="fadeScale"><HomeConversion /></SectionTransition>
       <SectionTransition delay={0.1} variant="slideRight"><OutcomePaths /></SectionTransition>
-      <SectionTransition delay={0.15} variant="fadeScale"><HomeConversion /></SectionTransition>
-      <SectionTransition delay={0.2} variant="slideLeft"><Services usePathRouting={true} /></SectionTransition>
-      <SectionTransition delay={0.25} variant="fadeUp"><Portfolio usePathRouting={true} /></SectionTransition>
-      <SectionTransition delay={0.3} variant="slideRight"><Testimonials /></SectionTransition>
-      <SectionTransition delay={0.35} variant="fadeScale"><Contact /></SectionTransition>
-
+      <SectionTransition delay={0.2} variant="fadeUp"><HomeVisualGateway /></SectionTransition>
     </>
   );
 

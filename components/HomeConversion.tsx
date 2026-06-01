@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, CheckCircle2, Compass, MessageCircle, Sparkles, Target, TimerReset, TrendingUp } from 'lucide-react';
+import { ArrowRight, Camera, LayoutDashboard, MousePointerClick, Sparkles } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import RevealOnScroll from './RevealOnScroll';
 
@@ -18,140 +18,129 @@ const navigateToPage = (event: React.MouseEvent<HTMLAnchorElement>, href: string
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-const conversionCards = [
+const visualFrames = [
   {
-    icon: Target,
-    title: 'Clear offer above the fold',
-    titleKm: 'សារសំខាន់ច្បាស់តាំងពីផ្នែកខាងលើ',
-    description: 'Visitors immediately see what we build, who it helps, and the next action to take.',
-    descriptionKm: 'ភ្ញៀវឃើញភ្លាមៗថាយើងបង្កើតអ្វី ជួយអ្នកណា និងត្រូវធ្វើអ្វីបន្ទាប់។',
+    image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&q=85&w=1200',
+    icon: Camera,
+    label: 'Hero image first',
+    labelKm: 'រូបធំមុនគេ',
+    stat: '01',
   },
   {
-    icon: TrendingUp,
-    title: 'Proof before pitch',
-    titleKm: 'បង្ហាញភស្តុតាងមុនពេលលក់',
-    description: 'Project outcomes, trust signals, and process clarity reduce hesitation before inquiry.',
-    descriptionKm: 'លទ្ធផលគម្រោង សញ្ញាទុកចិត្ត និងដំណើរការច្បាស់ ជួយកាត់បន្ថយការស្ទាក់ស្ទើរមុនទាក់ទង។',
+    image: 'https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&q=85&w=1200',
+    icon: LayoutDashboard,
+    label: 'Visual proof wall',
+    labelKm: 'បង្ហាញស្នាដៃជារូប',
+    stat: '02',
   },
   {
-    icon: MessageCircle,
-    title: 'Low-friction contact path',
-    titleKm: 'ផ្លូវទំនាក់ទំនងងាយស្រួល',
-    description: 'Every section points to a short brief, consultation, or portfolio path without forcing a hard sell.',
-    descriptionKm: 'គ្រប់ section នាំទៅកាន់ brief ខ្លី ការប្រឹក្សា ឬ portfolio ដោយមិនបង្ខំការលក់ខ្លាំង។',
+    image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=85&w=1200',
+    icon: MousePointerClick,
+    label: 'One clear action',
+    labelKm: 'ប៊ូតុងតែមួយច្បាស់',
+    stat: '03',
   },
 ];
 
-const sprintSteps = [
-  '15-min discovery call',
-  'Homepage + offer audit',
-  'Visual direction board',
-  'Launch-ready action plan',
-];
-
-const sprintStepsKm = [
-  'ពិភាក្សា 15 នាទី',
-  'វាយតម្លៃ homepage និង offer',
-  'បង្កើតទិសដៅរូបភាព',
-  'ផែនការបើកដំណើរការរួចរាល់',
+const designMoves = [
+  { label: 'Less copy', labelKm: 'អក្សរតិច' },
+  { label: 'Bigger images', labelKm: 'រូបធំ' },
+  { label: 'Stronger contrast', labelKm: 'Contrast ខ្លាំង' },
 ];
 
 const HomeConversion: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="relative overflow-hidden py-24 md:py-32" aria-labelledby="home-conversion-title">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(99,102,241,0.18),transparent_32%),radial-gradient(circle_at_82%_22%,rgba(236,72,153,0.14),transparent_30%),linear-gradient(180deg,transparent,rgba(99,102,241,0.06),transparent)]" />
-      <div className="absolute left-1/2 top-12 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-400/10 blur-[100px]" />
+    <section className="relative overflow-hidden py-20 md:py-28" aria-labelledby="home-conversion-title">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_12%,rgba(99,102,241,0.22),transparent_34%),radial-gradient(circle_at_86%_28%,rgba(236,72,153,0.16),transparent_32%),linear-gradient(180deg,transparent,rgba(15,23,42,0.05),transparent)]" />
+      <div className="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-indigo-300/40 to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid items-end gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-          <RevealOnScroll>
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/80 px-4 py-2 text-xs font-black uppercase tracking-[0.24em] text-indigo-600 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.06] dark:text-indigo-200 font-khmer">
-                <Sparkles size={15} />
-                {t('Homepage conversion upgrade', 'ការកែលម្អ Homepage ឲ្យមាន Conversion')}
-              </div>
-              <h2 id="home-conversion-title" className="mt-6 text-4xl font-black leading-tight tracking-[-0.04em] text-gray-950 dark:text-white md:text-6xl font-khmer">
-                {t('Make every scroll feel like a reason to contact us.', 'ធ្វើឲ្យរាល់ការរមូរមានហេតុផលឲ្យភ្ញៀវចង់ទាក់ទង។')}
-              </h2>
-              <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400 font-khmer">
-                {t(
-                  'The homepage is already visually strong. To make it sell better, we added a clearer visitor journey: promise, proof, service paths, and a fast consultation route.',
-                  'Homepage មានរូបរាងល្អរួចហើយ។ ដើម្បីឲ្យវាជួយលក់សេវាកម្មកាន់តែខ្លាំង យើងបន្ថែមដំណើរភ្ញៀវឲ្យច្បាស់៖ សន្យា ភស្តុតាង ផ្លូវសេវាកម្ម និងផ្លូវប្រឹក្សាលឿន។'
-                )}
-              </p>
+        <RevealOnScroll>
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/80 px-4 py-2 text-xs font-black uppercase tracking-[0.24em] text-indigo-600 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.06] dark:text-indigo-200 font-khmer">
+              <Sparkles size={15} />
+              {t('Visual-first homepage', 'Homepage ផ្តោតលើរូបភាព')}
             </div>
-          </RevealOnScroll>
+            <h2 id="home-conversion-title" className="mt-6 text-4xl font-black leading-tight tracking-[-0.04em] text-gray-950 dark:text-white md:text-6xl font-khmer">
+              {t('Show the work. Say less.', 'បង្ហាញស្នាដៃ។ សរសេរឲ្យតិច។')}
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-600 dark:text-gray-400 font-khmer">
+              {t('A stronger homepage can feel like a gallery: big visuals, short labels, one obvious next step.', 'Homepage គួរមានអារម្មណ៍ដូច gallery៖ រូបធំៗ label ខ្លីៗ និងជំហានបន្ទាប់ច្បាស់មួយ។')}
+            </p>
+          </div>
+        </RevealOnScroll>
 
-          <RevealOnScroll delay={120}>
-            <div className="rounded-[2rem] border border-gray-200 bg-white/85 p-4 shadow-2xl shadow-indigo-500/10 backdrop-blur-2xl dark:border-white/10 dark:bg-gray-950/70">
-              <div className="rounded-[1.6rem] bg-gray-950 p-5 text-white dark:bg-white/[0.05]">
-                <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-[0.24em] text-indigo-200">Creative Sprint</p>
-                    <h3 className="mt-2 text-2xl font-black font-khmer">{t('From visitor to lead', 'ពីភ្ញៀវទៅជា Lead')}</h3>
-                  </div>
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-gray-950">
-                    <Compass size={24} />
+        <div className="mt-12 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+          <RevealOnScroll delay={80}>
+            <article className="group relative min-h-[520px] overflow-hidden rounded-[2.5rem] border border-white/20 bg-gray-950 shadow-2xl shadow-indigo-500/15">
+              <img
+                src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=85&w=1600"
+                alt={t('Large creative workspace preview', 'រូបភាព workspace ធំ')}
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/30 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+                <div className="max-w-xl rounded-[2rem] border border-white/15 bg-white/10 p-5 text-white shadow-2xl backdrop-blur-2xl md:p-6">
+                  <p className="text-xs font-black uppercase tracking-[0.28em] text-indigo-100">Featured direction</p>
+                  <h3 className="mt-3 text-3xl font-black leading-tight md:text-5xl font-khmer">
+                    {t('Make the first screen cinematic.', 'ធ្វើឲ្យអេក្រង់ដំបូងស្អាតដូចភាពយន្ត។')}
+                  </h3>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {designMoves.map((move) => (
+                      <span key={move.label} className="rounded-full bg-white/15 px-4 py-2 text-xs font-black backdrop-blur-md font-khmer">
+                        {t(move.label, move.labelKm)}
+                      </span>
+                    ))}
                   </div>
                 </div>
+              </div>
+            </article>
+          </RevealOnScroll>
 
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                  {sprintSteps.map((step, index) => (
-                    <div key={step} className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
-                      <div className="mb-3 flex items-center justify-between">
-                        <span className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">0{index + 1}</span>
-                        <CheckCircle2 size={17} className="text-emerald-300" />
+          <div className="grid gap-5">
+            {visualFrames.map((frame, index) => {
+              const Icon = frame.icon;
+              return (
+                <RevealOnScroll key={frame.label} delay={index * 90 + 120}>
+                  <article className="group relative min-h-[160px] overflow-hidden rounded-[2rem] border border-gray-200 bg-gray-950 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/10 dark:border-white/10">
+                    <img
+                      src={frame.image}
+                      alt={t(frame.label, frame.labelKm)}
+                      className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-950/92 via-gray-950/42 to-transparent" />
+                    <div className="relative flex h-full min-h-[160px] items-center justify-between gap-5 p-5 text-white">
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-md">
+                          <Icon size={25} />
+                        </div>
+                        <div>
+                          <span className="text-xs font-black uppercase tracking-[0.24em] text-indigo-100">{frame.stat}</span>
+                          <h3 className="mt-1 text-2xl font-black font-khmer">{t(frame.label, frame.labelKm)}</h3>
+                        </div>
                       </div>
-                      <p className="text-sm font-bold leading-6 text-gray-100 font-khmer">{t(step, sprintStepsKm[index])}</p>
+                      <ArrowRight className="shrink-0 opacity-70 transition-transform group-hover:translate-x-1" size={22} />
                     </div>
-                  ))}
-                </div>
-
-                <div className="mt-5 flex items-center gap-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 p-4">
-                  <TimerReset className="shrink-0 text-white" size={22} />
-                  <p className="text-sm font-bold leading-6 text-white font-khmer">
-                    {t('Best for brands that need a polished first impression and more qualified inquiries.', 'សាកសមសម្រាប់ម៉ាកដែលចង់បាន first impression ស្អាត និង inquiry មានគុណភាពច្រើនជាងមុន។')}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </RevealOnScroll>
+                  </article>
+                </RevealOnScroll>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {conversionCards.map((card, index) => {
-            const Icon = card.icon;
-            return (
-              <RevealOnScroll key={card.title} delay={index * 90}>
-                <article className="group h-full rounded-[2rem] border border-gray-200 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:border-indigo-300 hover:shadow-2xl hover:shadow-indigo-500/10 dark:border-white/10 dark:bg-white/[0.045] dark:hover:border-white/20">
-                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 transition-colors group-hover:bg-indigo-600 group-hover:text-white dark:text-indigo-200">
-                    <Icon size={24} />
-                  </div>
-                  <h3 className="text-xl font-black text-gray-950 dark:text-white font-khmer">{t(card.title, card.titleKm)}</h3>
-                  <p className="mt-3 text-sm leading-7 text-gray-600 dark:text-gray-400 font-khmer">{t(card.description, card.descriptionKm)}</p>
-                </article>
-              </RevealOnScroll>
-            );
-          })}
-        </div>
-
-        <RevealOnScroll delay={260}>
-          <div className="mt-12 flex flex-col items-center justify-between gap-5 rounded-[2rem] border border-gray-200 bg-white p-5 shadow-xl shadow-indigo-500/10 dark:border-white/10 dark:bg-gray-950/80 md:flex-row md:p-6">
-            <div>
-              <p className="text-xl font-black text-gray-950 dark:text-white font-khmer">{t('Want this direction for your brand?', 'ចង់បានទិសដៅបែបនេះសម្រាប់ម៉ាករបស់អ្នកទេ?')}</p>
-              <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400 font-khmer">{t('Send us a short brief and we will suggest the best service path for your budget and timeline.', 'ផ្ញើ brief ខ្លីមកយើង ហើយយើងនឹងណែនាំផ្លូវសេវាកម្មដែលសមនឹងថវិកា និងពេលវេលារបស់អ្នក។')}</p>
-            </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-              <a href="/contact" onClick={(event) => navigateToPage(event, '/contact')} className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-950 px-6 py-3 text-sm font-black text-white transition-all hover:-translate-y-1 hover:bg-indigo-600 dark:bg-white dark:text-gray-950 dark:hover:bg-indigo-100 font-khmer">
-                {t('Start a brief', 'ចាប់ផ្តើម Brief')}
-                <ArrowRight size={17} />
-              </a>
-              <a href="/services" onClick={(event) => navigateToPage(event, '/services')} className="inline-flex items-center justify-center gap-2 rounded-full border border-gray-200 px-6 py-3 text-sm font-black text-gray-700 transition-all hover:-translate-y-1 hover:border-indigo-300 hover:text-indigo-600 dark:border-white/10 dark:text-gray-200 dark:hover:border-white/25 font-khmer">
-                {t('Explore services', 'មើលសេវាកម្ម')}
-              </a>
-            </div>
+        <RevealOnScroll delay={320}>
+          <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-[2rem] border border-gray-200 bg-white/85 p-5 shadow-xl shadow-indigo-500/10 backdrop-blur-xl dark:border-white/10 dark:bg-gray-950/75 sm:flex-row">
+            <p className="text-lg font-black text-gray-950 dark:text-white font-khmer">
+              {t('Ready for a bolder first impression?', 'ត្រៀមធ្វើ first impression ឲ្យកាន់តែខ្លាំងទេ?')}
+            </p>
+            <a href="/contact" onClick={(event) => navigateToPage(event, '/contact')} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gray-950 px-6 py-3 text-sm font-black text-white transition-all hover:-translate-y-1 hover:bg-indigo-600 dark:bg-white dark:text-gray-950 dark:hover:bg-indigo-100 sm:w-auto font-khmer">
+              {t('Start visual brief', 'ចាប់ផ្តើម Brief រូបភាព')}
+              <ArrowRight size={17} />
+            </a>
           </div>
         </RevealOnScroll>
       </div>
