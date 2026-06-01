@@ -5,13 +5,14 @@ import { useData } from '../../contexts/DataContext';
 import { MemberDetailModal, AuthorArticlesModal, ArticleDetailModal } from '../TeamModals';
 import { TeamMember, Post } from '../../types';
 import ScrambleText from '../ScrambleText';
+import { CheckCircle2 } from 'lucide-react';
 
 import HeroActions from './HeroActions';
 import Hero3DScene from '../Hero3DScene';
 
 // Rotating words that cycle in the hero headline
-const ROTATING_WORDS_EN = ['Experiences', 'Websites', 'Brands', 'Solutions', 'Products'];
-const ROTATING_WORDS_KM = ['បទពិសោធន៍', 'វេបសាយ', 'ម៉ាក', 'ដំណោះស្រាយ', 'ផលិតផល'];
+const ROTATING_WORDS_EN = ['Websites', 'Brands', 'Apps', 'Campaigns', 'Experiences'];
+const ROTATING_WORDS_KM = ['វេបសាយ', 'ម៉ាក', 'Apps', 'យុទ្ធនាការ', 'បទពិសោធន៍'];
 
 const RotatingWord: React.FC<{ t: (en: string, km?: string) => string }> = ({ t }) => {
   const [index, setIndex] = useState(0);
@@ -161,10 +162,23 @@ const Hero: React.FC = () => {
 
             <p className="hero-copy text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-khmer max-w-lg mx-auto lg:mx-0">
               {t(
-                  'Premium digital products that feel simple, fast, and trustworthy.',
-                  'ផលិតផលឌីជីថល premium ដែលសាមញ្ញ លឿន និងគួរឱ្យទុកចិត្ត។'
+                  'Creative websites, apps, branding, and visual systems that make your business look trusted—and easier to contact.',
+                  'យើងបង្កើត website, app, branding និង visual system ឲ្យអាជីវកម្មមើលទៅគួរឱ្យទុកចិត្ត និងងាយស្រួលឲ្យអតិថិជនទាក់ទង។'
               )}
             </p>
+
+            <div className="hero-proof-strip grid gap-3 sm:grid-cols-3 max-w-2xl mx-auto lg:mx-0">
+              {[
+                t('Clear service paths', 'ផ្លូវសេវាកម្មច្បាស់'),
+                t('Premium creative direction', 'ទិសដៅ Creative កម្រិតខ្ពស់'),
+                t('Fast contact flow', 'ផ្លូវទំនាក់ទំនងលឿន'),
+              ].map((item) => (
+                <div key={item} className="flex items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white/75 px-3 py-3 text-xs font-black text-gray-700 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05] dark:text-gray-200 lg:justify-start font-khmer">
+                  <CheckCircle2 size={16} className="shrink-0 text-emerald-500" />
+                  {item}
+                </div>
+              ))}
+            </div>
 
             {/* Actions Component (Buttons & Stats) */}
             <HeroActions t={t} />
