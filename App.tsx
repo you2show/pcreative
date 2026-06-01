@@ -183,12 +183,101 @@ function AppContent() {
   );
 
 
+<<<<<<< HEAD
+=======
+  const navigateToPage = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    e.preventDefault();
+    window.history.pushState(null, '', `${getLanguagePrefix()}${path}` || '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const renderPageDirectory = () => {
+    const pages = [
+      {
+        href: '/services',
+        icon: Sparkles,
+        label: t('Services', 'សេវាកម្ម'),
+        description: t('Creative, digital, architecture, and communication offers in one focused page.', 'សេវាកម្មច្នៃប្រឌិត ឌីជីថល ស្ថាបត្យកម្ម និងទំនាក់ទំនង នៅក្នុងទំព័រតែមួយ។'),
+      },
+      {
+        href: '/projects',
+        icon: Briefcase,
+        label: t('Projects', 'គម្រោង'),
+        description: t('A cleaner portfolio page for case studies, visuals, and proof of work.', 'ទំព័រផលប័ត្រដែលស្អាតសម្រាប់ case study រូបភាព និងស្នាដៃពិត។'),
+      },
+      {
+        href: '/company',
+        icon: Building2,
+        label: t('Company', 'ក្រុមហ៊ុន'),
+        description: t('Meet the studio, team, partners, and the trust signals behind the work.', 'ស្គាល់ស្ទូឌីយោ ក្រុមការងារ ដៃគូ និងសញ្ញាទំនុកចិត្តនៅពីក្រោយការងារ។'),
+      },
+      {
+        href: '/blog',
+        icon: BookOpen,
+        label: t('Blog', 'អត្ថបទ'),
+        description: t('Read guides, announcements, and insight from the Ponloe Creative team.', 'អានមគ្គុទ្ទេសក៍ ព័ត៌មាន និងចំណេះដឹងពីក្រុម Ponloe Creative។'),
+      },
+      {
+        href: '/contact',
+        icon: MessageCircle,
+        label: t('Contact', 'ទំនាក់ទំនង'),
+        description: t('Estimate a budget, send a project brief, or talk directly with the team.', 'ប៉ាន់តម្លៃ ផ្ញើ brief គម្រោង ឬនិយាយដោយផ្ទាល់ជាមួយក្រុមការងារ។'),
+      },
+    ];
+
+    return (
+      <section id="explore" className="py-24 bg-white dark:bg-gray-950 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.10),transparent_34%),radial-gradient(circle_at_80%_30%,rgba(236,72,153,0.08),transparent_30%)]" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-3xl mb-12">
+            <span className="text-indigo-400 font-bold tracking-wider uppercase text-sm font-khmer">{t('Choose a path', 'ជ្រើសរើសទិសដៅ')}</span>
+            <h2 className="mt-4 text-4xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer">
+              {t('Choose what you want to build next.', 'ជ្រើសរើសអ្វីដែលអ្នកចង់បង្កើតបន្ទាប់។')}
+            </h2>
+            <p className="mt-5 text-gray-600 dark:text-gray-400 leading-relaxed font-khmer">
+              {t('After the first impression builds confidence, clear pathways help visitors quickly explore services, proof, company trust, ideas, or contact options.', 'បន្ទាប់ពីចំណាប់អារម្មណ៍ដំបូងបង្កើតទំនុកចិត្ត ផ្លូវច្បាស់ៗជួយឲ្យភ្ញៀវចូលមើលសេវាកម្ម ភស្តុតាង ក្រុមហ៊ុន អត្ថបទ ឬជម្រើសទំនាក់ទំនងបានលឿន។')}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5">
+            {pages.map((page) => {
+              const Icon = page.icon;
+              return (
+                <a
+                  key={page.href}
+                  href={page.href}
+                  onClick={(e) => navigateToPage(e, page.href)}
+                  className="group rounded-3xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.03] p-6 hover:-translate-y-1 hover:border-indigo-400/60 hover:bg-white dark:hover:bg-white/[0.06] transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <Icon size={22} />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white font-khmer mb-3">{page.label}</h3>
+                  <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400 font-khmer">{page.description}</p>
+                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-indigo-500 dark:text-indigo-300 font-khmer">
+                    {t('Open page', 'បើកទំព័រ')} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    );
+  };
+
+>>>>>>> origin/main
   const renderHome = () => (
     <>
       <Hero />
       <SectionTransition variant="fadeBlur"><ExperienceLab /></SectionTransition>
       <SectionTransition delay={0.1} variant="fadeScale"><HomepageStrategy /></SectionTransition>
       <SectionTransition delay={0.1} variant="slideRight"><OutcomePaths /></SectionTransition>
+<<<<<<< HEAD
+=======
+      <SectionTransition delay={0.1} variant="slideLeft">{renderPageDirectory()}</SectionTransition>
+>>>>>>> origin/main
     </>
   );
 

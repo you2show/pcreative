@@ -68,8 +68,13 @@ const ExperienceLab: React.FC = () => {
             </h2>
             <p className="max-w-2xl text-lg leading-relaxed text-gray-300 font-khmer">
               {t(
+<<<<<<< HEAD
                 'Clean UI, clear UX, fast build — made to look premium and feel easy.',
                 'UI ស្អាត UX ច្បាស់ និង build លឿន — មើលទៅ premium ហើយប្រើងាយ។'
+=======
+                'We combine clean UI, clear UX flow, fast development, and launch-ready strategy so your website or app looks impressive and feels easy to use.',
+                'យើងបញ្ចូល UI ស្អាត UX ច្បាស់ ការអភិវឌ្ឍលឿន និងយុទ្ធសាស្ត្រ launch-ready ដើម្បីឲ្យវេបសាយ ឬ app របស់អ្នកមើលទៅទាក់ទាញ និងប្រើងាយ។'
+>>>>>>> origin/main
               )}
             </p>
           </div>
