@@ -83,13 +83,13 @@ const HeroActions: React.FC<HeroActionsProps> = ({ t }) => {
             href="/projects"
             className="group px-8 py-4 rounded-full bg-gray-900 text-white dark:bg-white dark:text-gray-950 font-bold text-lg shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] flex items-center justify-center gap-2 font-khmer w-full sm:w-auto"
             >
-            {t('View Our Work', 'មើលស្នាដៃ')} <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            {t('See Web & App Work', 'មើលស្នាដៃ Web & App')} <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </MagneticButton>
             <MagneticButton 
             href="/contact"
             className="px-8 py-4 rounded-full bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white font-bold text-lg border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 hover:border-gray-300 dark:hover:border-white/20 flex items-center justify-center gap-2 backdrop-blur-sm font-khmer w-full sm:w-auto"
             >
-            {t('Contact Us', 'ទាក់ទងយើង')} <ChevronRight size={20} className="opacity-50" />
+            {t('Free Strategy Call', 'ប្រឹក្សាយុទ្ធសាស្ត្រឥតគិតថ្លៃ')} <ChevronRight size={20} className="opacity-50" />
             </MagneticButton>
         </div>
 
@@ -109,9 +109,15 @@ const HeroActions: React.FC<HeroActionsProps> = ({ t }) => {
                 </div>
                 <div className="ml-3">
                     <div className="flex text-yellow-400"><Star size={12} fill="currentColor" /><Star size={12} fill="currentColor" /><Star size={12} fill="currentColor" /><Star size={12} fill="currentColor" /><Star size={12} fill="currentColor" /></div>
-                    <span className="text-[10px] text-gray-600 dark:text-gray-400 font-bold">Trust by Partners</span>
+                    <span className="text-[10px] text-gray-600 dark:text-gray-400 font-bold font-khmer">{t('Trusted by partners', 'ដៃគូទុកចិត្ត')}</span>
                 </div>
             </div>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-xs font-bold text-gray-500 dark:text-gray-400 font-khmer">
+            <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500">{t('Free first advice', 'ណែនាំដំបូងឥតគិតថ្លៃ')}</span>
+            <span className="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-500">{t('Transparent estimate', 'ប៉ាន់តម្លៃច្បាស់')}</span>
+            <span className="px-3 py-1 rounded-full bg-pink-500/10 text-pink-500">{t('Khmer / English support', 'គាំទ្រ ខ្មែរ / English')}</span>
         </div>
     </div>
   );
