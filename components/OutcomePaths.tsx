@@ -8,13 +8,8 @@ const paths = [
     icon: LayoutTemplate,
     title: 'Launch a premium website',
     titleKm: 'បើកដំណើរការវេបសាយ premium',
-<<<<<<< HEAD
-    pain: 'Premium first impression, clear services, and more leads.',
-    painKm: 'ចំណាប់អារម្មណ៍ល្អ សេវាកម្មច្បាស់ និង lead ច្រើនជាងមុន។',
-=======
     pain: 'For businesses that need a polished first impression, clear service pages, and lead-focused contact flow.',
     painKm: 'សម្រាប់អាជីវកម្មដែលត្រូវការចំណាប់អារម្មណ៍ដំបូងល្អ ទំព័រសេវាកម្មច្បាស់ និងលំហូរទំនាក់ទំនងដែលបង្កើត lead។',
->>>>>>> origin/main
     deliverables: ['Landing page', 'Service structure', 'SEO-ready content', 'Contact funnel'],
     deliverablesKm: ['Landing page', 'រចនាសម្ព័ន្ធសេវាកម្ម', 'មាតិកា SEO-ready', 'Contact funnel'],
     timeline: '2–4 weeks',
@@ -24,13 +19,8 @@ const paths = [
     icon: RefreshCw,
     title: 'Upgrade an existing brand',
     titleKm: 'កែលម្អម៉ាក/វេបសាយដែលមានស្រាប់',
-<<<<<<< HEAD
-    pain: 'Modern look, faster pages, clearer trust.',
-    painKm: 'រូបរាងថ្មី ទំព័រលឿន និងទំនុកចិត្តច្បាស់។',
-=======
     pain: 'For teams whose current website looks outdated, loads slowly, or does not communicate quality clearly.',
     painKm: 'សម្រាប់ក្រុមដែលវេបសាយបច្ចុប្បន្នមើលទៅចាស់ ដំណើរការយឺត ឬមិនបង្ហាញគុណភាពបានច្បាស់។',
->>>>>>> origin/main
     deliverables: ['UX audit', 'Visual refresh', 'Performance cleanup', 'Conversion fixes'],
     deliverablesKm: ['UX audit', 'កែលម្អរូបរាង', 'កែលម្អ performance', 'កែ conversion'],
     timeline: '1–3 weeks',
@@ -40,13 +30,8 @@ const paths = [
     icon: Smartphone,
     title: 'Prototype a mobile app',
     titleKm: 'ធ្វើ prototype សម្រាប់ Mobile App',
-<<<<<<< HEAD
-    pain: 'Screens, user flow, and prototype before full build.',
-    painKm: 'Screen, user flow និង prototype មុន build ពេញលេញ។',
-=======
     pain: 'For founders who need app screens, user flows, and a clickable prototype before investing in full development.',
     painKm: 'សម្រាប់ម្ចាស់គំនិតដែលត្រូវការ screen, user flow និង clickable prototype មុនវិនិយោគអភិវឌ្ឍពេញលេញ។',
->>>>>>> origin/main
     deliverables: ['App UX flow', 'UI screens', 'Clickable prototype', 'Build roadmap'],
     deliverablesKm: ['App UX flow', 'UI screens', 'Clickable prototype', 'ផែនការ build'],
     timeline: '2–5 weeks',
@@ -69,17 +54,6 @@ const OutcomePaths: React.FC = () => {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <RevealOnScroll className="mx-auto mb-14 max-w-3xl text-center">
           <span className="font-khmer text-sm font-black uppercase tracking-[0.24em] text-indigo-500 dark:text-indigo-300">
-<<<<<<< HEAD
-            {t('Start here', 'ចាប់ផ្តើមទីនេះ')}
-          </span>
-          <h2 className="mt-4 text-4xl font-black leading-tight tracking-tight text-gray-950 dark:text-white md:text-6xl font-khmer">
-            {t('Pick the right', 'ជ្រើសផ្លូវដែលត្រឹមត្រូវ')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-emerald-400">{t('next step.', 'សម្រាប់ជំហានបន្ទាប់។')}</span>
-          </h2>
-          <p className="mt-5 text-lg leading-8 text-gray-600 dark:text-gray-400 font-khmer">
-            {t(
-              'Website, redesign, or app prototype — choose one and start clearly.',
-              'Website, redesign ឬ app prototype — ជ្រើសមួយ ហើយចាប់ផ្តើមឲ្យច្បាស់។'
-=======
             {t('Choose your project path', 'ជ្រើសផ្លូវគម្រោងរបស់អ្នក')}
           </span>
           <h2 className="mt-4 text-4xl font-black leading-tight tracking-tight text-gray-950 dark:text-white md:text-6xl font-khmer">
@@ -89,7 +63,6 @@ const OutcomePaths: React.FC = () => {
             {t(
               'A strong service homepage should not make people guess. These outcome paths turn “I need something digital” into a clear starting point with scope, value, and timing.',
               'Homepage សេវាកម្មល្អមិនគួរឲ្យអតិថិជនស្មានទេ។ ផ្លូវគម្រោងទាំងនេះបំលែង “ខ្ញុំត្រូវការអ្វីមួយ digital” ទៅជាចំណុចចាប់ផ្តើមច្បាស់ មាន scope តម្លៃ និងពេលវេលា។'
->>>>>>> origin/main
             )}
           </p>
         </RevealOnScroll>
@@ -123,11 +96,7 @@ const OutcomePaths: React.FC = () => {
                   </div>
 
                   <a href="/contact" className="mt-7 inline-flex items-center gap-2 text-sm font-black text-indigo-500 transition-colors group-hover:text-indigo-600 dark:text-indigo-300 font-khmer">
-<<<<<<< HEAD
-                    {t('Start this', 'ចាប់ផ្តើម')}
-=======
                     {t('Discuss this path', 'ពិភាក្សាផ្លូវនេះ')}
->>>>>>> origin/main
                     <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
                   </a>
                 </article>
