@@ -29,10 +29,10 @@ const paths = [
     icon: LayoutTemplate,
     title: 'Launch a website or app',
     titleKm: 'ចាប់ផ្តើមវេបសាយ ឬ App',
-    audience: 'For founders and teams who need a clear online presence, polished UI, and a path from visitor to lead.',
-    audienceKm: 'សម្រាប់ម្ចាស់អាជីវកម្ម និងក្រុមការងារដែលត្រូវការវត្តមានអនឡាញច្បាស់ UI ស្អាត និងលំហូរពីអ្នកទស្សនាទៅជា lead។',
-    deliverables: ['Website / app prototype', 'Service page structure', 'SEO + conversion flow'],
-    deliverablesKm: ['Prototype វេបសាយ / App', 'រចនាសម្ព័ន្ធទំព័រសេវាកម្ម', 'SEO + លំហូរ conversion'],
+    audience: 'Build a clear online home that guides visitors from first impression to inquiry.',
+    audienceKm: 'បង្កើតវត្តមានអនឡាញច្បាស់ ដែលនាំអ្នកទស្សនាពីចំណាប់អារម្មណ៍ដំបូងទៅកាន់ការសាកសួរ។',
+    deliverables: ['Website / app prototype', 'Service page structure', 'SEO + lead flow'],
+    deliverablesKm: ['Prototype វេបសាយ / App', 'រចនាសម្ព័ន្ធទំព័រសេវាកម្ម', 'SEO + លំហូរ lead'],
     primaryHref: '/services',
     primaryLabel: 'Explore digital services',
     primaryLabelKm: 'មើលសេវាកម្មឌីជីថល',
@@ -45,8 +45,8 @@ const paths = [
     icon: Palette,
     title: 'Refresh a brand identity',
     titleKm: 'កែលម្អអត្តសញ្ញាណម៉ាក',
-    audience: 'For brands that need stronger visuals, social content, packaging, or campaign assets that feel consistent.',
-    audienceKm: 'សម្រាប់ម៉ាកដែលត្រូវការរូបភាពខ្លាំងជាងមុន មាតិកា social packaging ឬ asset ផ្សព្វផ្សាយដែលស្ថិតស្ថេរ។',
+    audience: 'Make your logo, social visuals, and campaign assets feel consistent and premium.',
+    audienceKm: 'ធ្វើឲ្យ logo, រូបភាព social និង asset ផ្សព្វផ្សាយរបស់អ្នកមើលទៅស្ថិតស្ថេរ និង premium។',
     deliverables: ['Logo + visual system', 'Social media templates', 'Marketing assets'],
     deliverablesKm: ['Logo + visual system', 'Template សម្រាប់ social media', 'សម្ភារៈទីផ្សារ'],
     primaryHref: '/services',
@@ -61,8 +61,8 @@ const paths = [
     icon: Building2,
     title: 'Plan a space or interior',
     titleKm: 'រៀបចំទីធ្លា ឬ Interior',
-    audience: 'For home and business owners who need architecture concepts, 3D direction, or build-ready planning.',
-    audienceKm: 'សម្រាប់ម្ចាស់ផ្ទះ និងអាជីវកម្មដែលត្រូវការ concept ស្ថាបត្យកម្ម ទិសដៅ 3D ឬផែនការសម្រាប់សាងសង់។',
+    audience: 'Turn a home, office, or shop idea into a visual plan your team can discuss.',
+    audienceKm: 'បំលែងគំនិតផ្ទះ ការិយាល័យ ឬហាង ទៅជាផែនការរូបភាពដែលក្រុមអាចពិភាក្សាបាន។',
     deliverables: ['Concept + floor plan', '3D modeling direction', 'Interior / landscape scope'],
     deliverablesKm: ['Concept + ប្លង់ជាន់', 'ទិសដៅម៉ូដែល 3D', 'Scope interior / សួនច្បារ'],
     primaryHref: '/services',
@@ -77,8 +77,8 @@ const paths = [
     icon: Languages,
     title: 'Localize content or media',
     titleKm: 'បកប្រែ ឬផលិតមាតិកា Media',
-    audience: 'For teams that need Khmer, English, and Arabic communication, photography, video, or launch content.',
-    audienceKm: 'សម្រាប់ក្រុមដែលត្រូវការទំនាក់ទំនងខ្មែរ អង់គ្លេស អារ៉ាប់ ថតរូប វីដេអូ ឬមាតិកាបើកដំណើរការ។',
+    audience: 'Prepare Khmer, English, Arabic, photo, and video content for a smooth launch.',
+    audienceKm: 'រៀបចំមាតិកាខ្មែរ អង់គ្លេស អារ៉ាប់ រូបថត និងវីដេអូ សម្រាប់ការបើកដំណើរការរលូន។',
     deliverables: ['Translation + localization', 'Photo / video production', 'Launch-ready content'],
     deliverablesKm: ['បកប្រែ + localization', 'ផលិតរូបថត / វីដេអូ', 'មាតិកាសម្រាប់បើកដំណើរការ'],
     primaryHref: '/contact',
@@ -88,6 +88,30 @@ const paths = [
     secondaryLabel: 'Compare services',
     secondaryLabelKm: 'ប្រៀបធៀបសេវាកម្ម',
     accent: 'from-amber-500 to-orange-400',
+  },
+];
+
+const quickChoices = [
+  {
+    question: 'Need a website or app?',
+    questionKm: 'ត្រូវការ Website ឬ App?',
+    answer: 'Start with digital services',
+    answerKm: 'ចាប់ផ្តើមពីសេវាកម្មឌីជីថល',
+    href: '/services',
+  },
+  {
+    question: 'Need a stronger brand look?',
+    questionKm: 'ត្រូវការ brand look ខ្លាំងជាងមុន?',
+    answer: 'Review creative offers',
+    answerKm: 'ពិនិត្យសេវាកម្មច្នៃប្រឌិត',
+    href: '/services',
+  },
+  {
+    question: 'Need proof before deciding?',
+    questionKm: 'ចង់មើលភស្តុតាងមុនសម្រេច?',
+    answer: 'Browse project examples',
+    answerKm: 'មើលឧទាហរណ៍គម្រោង',
+    href: '/projects',
   },
 ];
 
@@ -117,14 +141,33 @@ const OutcomePaths: React.FC = () => {
             <Route size={15} /> {t('Find the right next step', 'រកជំហានបន្ទាប់ដែលត្រឹមត្រូវ')}
           </span>
           <h2 className="mt-5 text-4xl font-black leading-tight tracking-tight text-gray-950 dark:text-white md:text-6xl font-khmer">
-            {t('Help visitors choose', 'ជួយឲ្យអតិថិជនជ្រើសរើស')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-emerald-400">{t('with confidence.', 'ដោយមានទំនុកចិត្ត។')}</span>
+            {t('Choose your', 'ជ្រើសរើស')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-emerald-400">{t('best service path.', 'ផ្លូវសេវាកម្មដែលសាកសម។')}</span>
           </h2>
           <p className="mt-5 text-lg leading-8 text-gray-600 dark:text-gray-400 font-khmer">
             {t(
-              'The homepage now works like a guided intake: visitors can recognize their situation, jump to the most relevant page, and understand what Ponloe Creative can deliver before they contact you.',
-              'Homepage ឥឡូវដំណើរការដូចជា guided intake៖ អ្នកទស្សនាអាចស្គាល់ស្ថានភាពរបស់ខ្លួន ចូលទៅទំព័រដែលពាក់ព័ន្ធបំផុត ហើយយល់ថា Ponloe Creative អាចប្រគល់អ្វីបាន មុនពេលទាក់ទង។'
+              'Pick the result you need, compare the right offer, and contact Ponloe Creative with a clearer brief.',
+              'ជ្រើសលទ្ធផលដែលអ្នកត្រូវការ ប្រៀបធៀបសេវាកម្មត្រឹមត្រូវ ហើយទាក់ទង Ponloe Creative ជាមួយ brief កាន់តែច្បាស់។'
             )}
           </p>
+        </RevealOnScroll>
+
+        <RevealOnScroll delay={120}>
+          <div className="mb-8 grid gap-3 rounded-[2rem] border border-indigo-100 bg-white/90 p-3 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-gray-950/65 md:grid-cols-3">
+            {quickChoices.map((choice, index) => (
+              <a key={choice.question} href={choice.href} onClick={(event) => navigateToPage(event, choice.href)} className="group flex items-center justify-between gap-4 rounded-3xl bg-gray-50 p-4 transition-all hover:-translate-y-1 hover:bg-indigo-50 dark:bg-white/[0.04] dark:hover:bg-white/[0.08]">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/10 text-sm font-black text-indigo-600 transition-colors group-hover:bg-indigo-600 group-hover:text-white dark:text-indigo-200">
+                    0{index + 1}
+                  </span>
+                  <div>
+                    <p className="text-sm font-black text-gray-950 dark:text-white font-khmer">{t(choice.question, choice.questionKm)}</p>
+                    <p className="mt-1 text-xs font-bold text-gray-500 dark:text-gray-400 font-khmer">{t(choice.answer, choice.answerKm)}</p>
+                  </div>
+                </div>
+                <ArrowRight size={16} className="shrink-0 text-gray-400 transition-transform group-hover:translate-x-1 group-hover:text-indigo-600" />
+              </a>
+            ))}
+          </div>
         </RevealOnScroll>
 
         <div className="grid gap-6 lg:grid-cols-2">
