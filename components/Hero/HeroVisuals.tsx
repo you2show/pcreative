@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Sparkles, UsersRound } from 'lucide-react';
+import { UsersRound } from 'lucide-react';
 import { TeamMember } from '../../types';
 import PonloeLogo from '../PonloeLogo';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -9,12 +9,13 @@ interface HeroVisualsProps {
   onMemberClick: (member: TeamMember) => void;
 }
 
-const NODE_SIZES = ['w-14 h-14', 'w-16 h-16', 'w-[4.5rem] h-[4.5rem]'];
+const NODE_SIZE = 'h-20 w-20';
 
 const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
   const { t } = useLanguage();
   const [isOrbiting, setIsOrbiting] = useState(true);
   const [isCoreHovered, setIsCoreHovered] = useState(false);
+  const [isOrbitHovered, setIsOrbitHovered] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
   const [hoveredMemberId, setHoveredMemberId] = useState<string | null>(null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -46,7 +47,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
   }, []);
 
   useEffect(() => {
-    if (!isOrbiting || prefersReducedMotion) {
+    if (!isOrbiting || isOrbitHovered || hoveredMemberId || prefersReducedMotion) {
       cancelAnimationFrame(animationRef.current);
       return;
     }
@@ -55,7 +56,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
       if (!lastFrame.current) lastFrame.current = timestamp;
       const delta = Math.min(timestamp - lastFrame.current, 32);
       lastFrame.current = timestamp;
-      const speed = isCoreHovered ? 0.00022 : 0.000075;
+      const speed = isCoreHovered ? 0.00012 : 0.000075;
       setRotationAngle(prev => prev + delta * speed);
       animationRef.current = requestAnimationFrame(animateRotation);
     };
@@ -66,7 +67,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
       lastFrame.current = 0;
       cancelAnimationFrame(animationRef.current);
     };
-  }, [isOrbiting, isCoreHovered, prefersReducedMotion]);
+  }, [isOrbiting, isCoreHovered, isOrbitHovered, hoveredMemberId, prefersReducedMotion]);
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -109,18 +110,16 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
     const radius = radiusBase + radiusVar;
     const left = 50 + radius * Math.cos(angle);
     const top = 50 + radius * Math.sin(angle);
-    const size = NODE_SIZES[index % NODE_SIZES.length];
     const depth = 18 + (index % 4) * 9;
 
     return {
       left: `${left}%`,
       top: `${top}%`,
-      size,
       depth,
     };
   };
 
-  const activeMember = team.find(member => member.id === hoveredMemberId) || team[0];
+  const isPaused = !isOrbiting || isOrbitHovered || Boolean(hoveredMemberId) || prefersReducedMotion;
 
   return (
     <>
@@ -170,9 +169,18 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
         </div>
       </div>
 
-      <div className="relative hidden lg:block h-[620px] w-full" style={{ perspective: '1100px' }}>
-        <div className="absolute inset-6 rounded-[3rem] border border-white/10 bg-white/[0.025] shadow-[0_30px_120px_rgba(79,70,229,0.18)] backdrop-blur-sm dark:bg-white/[0.02]" />
+      <div
+        className="hero-orbit-shell relative hidden h-[620px] w-full lg:block"
+        data-paused={isPaused ? 'true' : 'false'}
+        onMouseEnter={() => setIsOrbitHovered(true)}
+        onMouseLeave={() => {
+          setIsOrbitHovered(false);
+          setHoveredMemberId(null);
+        }}
+        style={{ perspective: '1100px' }}
+      >
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.16),transparent_42%),radial-gradient(circle_at_70%_20%,rgba(236,72,153,0.10),transparent_26%)]" />
+        <div className="hero-signal-ring pointer-events-none absolute left-1/2 top-1/2 h-[34rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-70" />
 
         <div
           ref={constellationRef}
@@ -209,8 +217,8 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
             onClick={() => setIsOrbiting(!isOrbiting)}
             aria-label={isOrbiting ? 'Pause team orbit' : 'Resume team orbit'}
           >
-            <div className={`absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/20 blur-[70px] transition-all duration-700 ${isCoreHovered || !isOrbiting ? 'scale-125 opacity-90' : 'scale-100 opacity-50'}`} />
-            <div className={`relative flex h-24 w-24 items-center justify-center rounded-full border bg-white/90 shadow-2xl backdrop-blur-2xl transition-all duration-700 dark:bg-gray-950/90 ${isCoreHovered || !isOrbiting ? 'scale-110 border-indigo-300 shadow-indigo-500/30' : 'border-white/20 shadow-indigo-950/30'}`}>
+            <div className={`absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/20 blur-[70px] transition-all duration-700 ${isCoreHovered || isPaused ? 'scale-125 opacity-90' : 'scale-100 opacity-50'}`} />
+            <div className={`relative flex h-24 w-24 items-center justify-center rounded-full border bg-white/90 shadow-2xl backdrop-blur-2xl transition-all duration-700 dark:bg-gray-950/90 ${isCoreHovered || isPaused ? 'scale-110 border-indigo-300 shadow-indigo-500/30' : 'border-white/20 shadow-indigo-950/30'}`}>
               <div className="absolute inset-[-10px] rounded-full border border-indigo-400/30 hero-core-ring" />
               <PonloeLogo size={138} className="scale-125" />
             </div>
@@ -276,7 +284,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
                 <span className={`relative block rounded-full p-[3px] transition-all duration-500 ${isHovered ? 'scale-125 z-50' : 'scale-100 hover:scale-110'}`}>
                   <span className={`absolute inset-[-9px] rounded-full border transition-all duration-500 ${isHovered ? 'border-indigo-300/80 opacity-100 hero-node-ring' : 'border-white/0 opacity-0'}`} />
                   <span className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 opacity-80 blur-sm" />
-                  <span className={`relative block overflow-hidden rounded-full border-2 bg-gray-100 shadow-xl transition-all duration-500 dark:bg-gray-900 ${isHovered ? 'border-white shadow-indigo-500/40' : 'border-white/70 dark:border-white/20 shadow-black/20'} ${pos.size}`}>
+                  <span className={`relative block ${NODE_SIZE} overflow-hidden rounded-full border-2 bg-gray-100 shadow-xl transition-all duration-500 dark:bg-gray-900 ${isHovered ? 'border-white shadow-indigo-500/40' : 'border-white/70 dark:border-white/20 shadow-black/20'}`}>
                     <img
                       src={member.image}
                       alt={member.name}
@@ -286,23 +294,14 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
                     <span className="absolute inset-0 bg-gradient-to-t from-gray-950/45 via-transparent to-white/10" />
                   </span>
 
-                  <span className={`absolute left-1/2 top-full mt-3 -translate-x-1/2 whitespace-nowrap rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] backdrop-blur-xl transition-all duration-300 ${isHovered ? 'translate-y-0 border-indigo-300/50 bg-gray-950/80 text-white opacity-100' : '-translate-y-2 border-white/10 bg-white/70 text-gray-600 opacity-70 dark:bg-gray-950/60 dark:text-gray-400'}`}>
-                    {member.name}
+                  <span className={`pointer-events-none absolute left-1/2 top-full mt-3 -translate-x-1/2 whitespace-nowrap rounded-2xl border px-3 py-2 text-center backdrop-blur-xl transition-all duration-300 ${isHovered ? 'translate-y-0 border-indigo-300/50 bg-gray-950/85 text-white opacity-100 shadow-2xl shadow-indigo-500/20' : '-translate-y-2 border-white/10 bg-white/70 text-gray-600 opacity-0 dark:bg-gray-950/60 dark:text-gray-400'}`}>
+                    <span className="block text-[10px] font-black uppercase tracking-[0.16em]">{member.name}</span>
+                    <span className="mt-1 block max-w-[11rem] truncate text-[10px] font-bold normal-case tracking-normal text-indigo-100/80">{member.role}</span>
                   </span>
                 </span>
               </button>
             );
           })}
-
-          {activeMember && (
-            <div className="absolute bottom-8 left-1/2 z-30 w-[19rem] -translate-x-1/2 rounded-3xl border border-white/10 bg-white/80 p-4 text-center shadow-2xl shadow-indigo-500/10 backdrop-blur-2xl dark:bg-gray-950/70">
-              <div className="mb-2 flex items-center justify-center gap-2 text-xs font-black uppercase tracking-[0.22em] text-indigo-500 dark:text-indigo-300">
-                <Sparkles size={14} /> {t('Creative team', 'ក្រុមច្នៃប្រឌិត')}
-              </div>
-              <p className="truncate text-sm font-black text-gray-950 dark:text-white">{activeMember.name}</p>
-              <p className="mt-1 truncate text-xs font-bold text-gray-500 dark:text-gray-400">{activeMember.role}</p>
-            </div>
-          )}
         </div>
 
         <style>{`
@@ -319,6 +318,18 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
           @keyframes heroNodeRing {
             0%, 100% { transform: scale(1); opacity: 0.4; }
             50% { transform: scale(1.16); opacity: 1; }
+          }
+
+          @keyframes heroSignalSweep {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+          }
+
+          .hero-signal-ring {
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(129, 140, 248, 0.32) 36deg, transparent 78deg, transparent 360deg);
+            -webkit-mask: radial-gradient(circle, transparent 64%, #000 65%, #000 66%, transparent 67%);
+            mask: radial-gradient(circle, transparent 64%, #000 65%, #000 66%, transparent 67%);
+            animation: heroSignalSweep 18s linear infinite;
           }
 
           .hero-visual-particle {
@@ -338,7 +349,14 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
             animation: heroNodeRing 1.8s ease-in-out infinite;
           }
 
+          .hero-orbit-shell[data-paused="true"] .hero-signal-ring,
+          .hero-orbit-shell[data-paused="true"] .hero-orbit-ring,
+          .hero-orbit-shell[data-paused="true"] .hero-core-ring {
+            animation-play-state: paused;
+          }
+
           @media (prefers-reduced-motion: reduce) {
+            .hero-signal-ring,
             .hero-visual-particle,
             .hero-orbit-ring,
             .hero-core-ring,
