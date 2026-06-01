@@ -66,21 +66,13 @@ const HomepageStrategy: React.FC = () => {
             </h2>
             <p className="max-w-2xl text-lg leading-8 text-gray-600 dark:text-gray-400 font-khmer">
               {t(
-<<<<<<< HEAD
-                'Clear message. Strong trust. One simple next step.',
-                'សារច្បាស់ ទំនុកចិត្តខ្លាំង និងជំហានបន្ទាប់ងាយៗ។'
-              )}
-            </p>
-            <a href="/contact" className="group inline-flex items-center gap-3 rounded-full bg-gray-950 px-7 py-4 font-bold text-white transition-all hover:-translate-y-1 hover:bg-indigo-600 dark:bg-white dark:text-gray-950 dark:hover:bg-indigo-100 font-khmer">
-              {t('Get a quick audit', 'ពិនិត្យរហ័ស')}
-=======
                 'We shape the first impression around clarity, emotion, proof, and a simple next step — so visitors feel safe to start a conversation about their website or app.',
                 'យើងរៀបចំចំណាប់អារម្មណ៍ដំបូងដោយផ្អែកលើភាពច្បាស់ អារម្មណ៍ ភស្តុតាង និងជំហានបន្ទាប់ងាយៗ ដើម្បីឲ្យអ្នកទស្សនាមានអារម្មណ៍សុវត្ថិភាពក្នុងការចាប់ផ្តើមនិយាយអំពីវេបសាយ ឬ app របស់ពួកគេ។'
               )}
             </p>
             <a href="/contact" className="group inline-flex items-center gap-3 rounded-full bg-gray-950 px-7 py-4 font-bold text-white transition-all hover:-translate-y-1 hover:bg-indigo-600 dark:bg-white dark:text-gray-950 dark:hover:bg-indigo-100 font-khmer">
               {t('Request a homepage audit', 'ស្នើពិនិត្យ Homepage')}
->>>>>>> origin/main
+
               <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
             </a>
           </RevealOnScroll>

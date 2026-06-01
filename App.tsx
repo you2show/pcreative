@@ -18,7 +18,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ScrollButton from './components/ScrollButton';
 import ScrollProgress from './components/ScrollProgress';
-import FloatingChat from './components/FloatingChat'; 
+import FloatingChat from './components/FloatingChat';
 import OfflinePage from './components/OfflinePage';
 import InstallPrompt from './components/InstallPrompt';
 import Stats from './components/Stats';
@@ -34,7 +34,7 @@ import ChatbotAI from './components/ChatbotAI';
 import SkipToContent from './components/SkipToContent';
 import { SectionTransition } from './components/PageTransition';
 import AnimatedBlurBackground from './components/AnimatedBlurBackground';
-import { Lock, ArrowRight, X } from 'lucide-react';
+import { Lock, ArrowRight, X, Sparkles, Briefcase, Building2, BookOpen, MessageCircle } from 'lucide-react';
 import { useAdminRouter } from './hooks/useRouter';
 import CinematicIntro from './components/CinematicIntro';
 import CustomCursor from './components/CustomCursor';
@@ -59,6 +59,11 @@ const getPathWithoutLanguage = () => {
   return path === '/' ? '/' : path.replace(/\/$/, '');
 };
 
+const getLanguagePrefix = () => {
+  const firstSegment = window.location.pathname.split('/').filter(Boolean)[0];
+  return firstSegment && supportedLangs.includes(firstSegment) ? `/${firstSegment}` : '';
+};
+
 const ComponentFallback: React.FC = () => (
   <div className="w-full h-screen flex items-center justify-center bg-white dark:bg-gray-950">
     <div className="flex flex-col items-center gap-4">
@@ -74,14 +79,14 @@ function AppContent() {
   const [showPreloader, setShowPreloader] = useState(true);
   const [showCinematicIntro, setShowCinematicIntro] = useState(false);
   const [isClientPortalOpen, setIsClientPortalOpen] = useState(false);
-  
+
   // Popups state for legacy deep links only.
   const [shouldShowPortfolioPopup, setShouldShowPortfolioPopup] = useState(false);
   const [shouldShowServicesPopup, setShouldShowServicesPopup] = useState(false);
   const [shouldShowInsightsPopup, setShouldShowInsightsPopup] = useState(false);
   const [shouldShowTeamPopup, setShouldShowTeamPopup] = useState(false);
   const [shouldShowEstimatorPopup, setShouldShowEstimatorPopup] = useState(false);
-  
+
   const { currentUser, logout, login } = useAuth();
   const { isAdminOpen, closeAdmin } = useAdminRouter();
   const [pin, setPin] = useState('');
@@ -136,11 +141,11 @@ function AppContent() {
             setActivePage(null);
         }
     };
-    
+
     handleRouteChange();
     window.addEventListener('hashchange', handleRouteChange);
     window.addEventListener('popstate', handleRouteChange);
-    
+
     return () => {
         window.removeEventListener('hashchange', handleRouteChange);
         window.removeEventListener('popstate', handleRouteChange);
@@ -154,7 +159,7 @@ function AppContent() {
           login({ role: 'admin', name: 'Super Admin' });
           closeAdmin(); setPin(''); setIsViewingSite(false);
           return;
-      } 
+      }
       const foundMember = team.find(m => m.pinCode === pin);
       if (foundMember) {
           login({ role: 'member', id: foundMember.id, name: foundMember.name });
@@ -182,9 +187,6 @@ function AppContent() {
     </section>
   );
 
-
-<<<<<<< HEAD
-=======
   const navigateToPage = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
     e.preventDefault();
     window.history.pushState(null, '', `${getLanguagePrefix()}${path}` || '/');
@@ -267,17 +269,15 @@ function AppContent() {
     );
   };
 
->>>>>>> origin/main
   const renderHome = () => (
     <>
       <Hero />
       <SectionTransition variant="fadeBlur"><ExperienceLab /></SectionTransition>
       <SectionTransition delay={0.1} variant="fadeScale"><HomepageStrategy /></SectionTransition>
       <SectionTransition delay={0.1} variant="slideRight"><OutcomePaths /></SectionTransition>
-<<<<<<< HEAD
-=======
+
       <SectionTransition delay={0.1} variant="slideLeft">{renderPageDirectory()}</SectionTransition>
->>>>>>> origin/main
+
     </>
   );
 
@@ -377,16 +377,16 @@ function AppContent() {
       <OfflinePage />
       <InstallPrompt />
       <ScrollProgress />
-      
+
       <AnimatedBlurBackground />
       <div className="pointer-events-none fixed inset-0 z-0 opacity-40 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.16),transparent_45%)]" />
-      
+
       <Header onGetQuote={() => setIsConsultationOpen(true)} />
-      
+
       <main id="main-content" className="relative z-10" role="main">
         {renderMainContent()}
       </main>
-      
+
       <Footer />
       <FloatingChat />
       <ChatbotAI />
@@ -394,14 +394,14 @@ function AppContent() {
       <StickyCTA onConsultationOpen={() => setIsConsultationOpen(true)} />
       <ConsultationModal isOpen={isConsultationOpen} onClose={() => setIsConsultationOpen(false)} />
       <ExitIntentPopup onConsultationOpen={() => setIsConsultationOpen(true)} />
-      
+
       <Suspense fallback={null}>
         <ClientPortal isOpen={isClientPortalOpen} onClose={() => setIsClientPortalOpen(false)} />
       </Suspense>
-      
+
       {activePage === 'careers' && <Careers onClose={() => { if (window.location.pathname.includes('/careers')) { window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); } else { window.location.hash = ''; } }} />}
       {activePage === 'privacy' && <PrivacyPolicy onClose={() => window.location.hash = ''} />}
-      
+
       {isAdminOpen && (
           <div className="fixed inset-0 z-[12000] flex items-center justify-center p-4 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md overflow-hidden">
               <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 p-8 rounded-3xl shadow-2xl w-full max-w-sm relative z-[12001]">
