@@ -6,7 +6,7 @@ import ScrambleText from './ScrambleText';
 
 // Animated SVG beam connecting two step nodes (desktop only)
 const ConnectorBeam: React.FC<{ active: boolean; delay: number; gradId: string }> = ({ active, delay, gradId }) => (
-  <div className="hidden lg:flex items-center flex-1 relative mx-2" aria-hidden="true">
+  <div className="hidden lg:flex items-center lg:flex-none lg:w-10 xl:w-16 relative mx-1 lg:mt-5" aria-hidden="true">
     <svg className="w-full h-6 overflow-visible" viewBox="0 0 100 24" preserveAspectRatio="none">
       <defs>
         <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
@@ -136,7 +136,7 @@ const Process: React.FC = () => {
         {/* Pipeline */}
         <div className="relative">
           {/* Desktop: horizontal flex with beams; mobile: vertical stack */}
-          <div className="flex flex-col lg:flex-row lg:items-start gap-0 lg:gap-0 relative z-10">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-center gap-0 relative z-10">
             {PROCESS_STEPS.map((step, index) => {
               const color = STEP_COLORS[index];
               const isActive = activeStep >= index;
@@ -144,7 +144,7 @@ const Process: React.FC = () => {
                 <React.Fragment key={step.id}>
                   {/* Step card */}
                   <div
-                    className="flex flex-col items-center lg:flex-1 group"
+                    className="flex flex-col items-center lg:flex-1 lg:max-w-[300px] group"
                     style={{
                       opacity: isActive ? 1 : 0,
                       transform: isActive ? 'translateY(0)' : 'translateY(24px)',
@@ -177,7 +177,7 @@ const Process: React.FC = () => {
 
                     {/* Card body */}
                     <div
-                      className={`w-full max-w-[260px] bg-gray-50/80 dark:bg-gray-900/60 backdrop-blur-sm border rounded-2xl p-6 text-center transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-xl ${
+                      className={`w-full max-w-[320px] min-h-[260px] bg-gray-50/80 dark:bg-gray-900/60 backdrop-blur-sm border rounded-3xl p-7 md:p-8 text-center transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-xl ${
                         isActive
                           ? 'border-white/20 dark:border-white/10 group-hover:border-indigo-500/30'
                           : 'border-gray-100 dark:border-white/5'
@@ -197,7 +197,7 @@ const Process: React.FC = () => {
                         {step.icon}
                       </div>
 
-                      <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2 font-khmer">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 font-khmer">
                         {isActive ? (
                           <ScrambleText text={t(step.title, step.titleKm)} trigger={isActive} delay={index * 120} duration={500} />
                         ) : (
@@ -205,13 +205,13 @@ const Process: React.FC = () => {
                         )}
                       </h3>
 
-                      <p className="text-gray-500 dark:text-gray-400 text-xs leading-relaxed font-khmer">
+                      <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed font-khmer">
                         {t(step.description, step.descriptionKm || step.description)}
                       </p>
 
                       {/* Status badge */}
                       <div
-                        className={`mt-4 inline-flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-widest uppercase px-2 py-1 rounded-full transition-all duration-500 ${
+                        className={`mt-5 inline-flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-widest uppercase px-3 py-1.5 rounded-full transition-all duration-500 ${
                           isActive
                             ? `${color.text} bg-current/10`
                             : 'text-gray-400 dark:text-gray-600 bg-gray-100 dark:bg-white/5'
