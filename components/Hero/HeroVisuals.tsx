@@ -1,344 +1,354 @@
-
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Sparkles, UsersRound } from 'lucide-react';
 import { TeamMember } from '../../types';
+import PonloeLogo from '../PonloeLogo';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface HeroVisualsProps {
-    team: TeamMember[];
-    onMemberClick: (member: TeamMember) => void;
+  team: TeamMember[];
+  onMemberClick: (member: TeamMember) => void;
 }
 
+const NODE_SIZES = ['w-14 h-14', 'w-16 h-16', 'w-[4.5rem] h-[4.5rem]'];
+
 const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
+  const { t } = useLanguage();
   const [isOrbiting, setIsOrbiting] = useState(true);
   const [isCoreHovered, setIsCoreHovered] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
   const [hoveredMemberId, setHoveredMemberId] = useState<string | null>(null);
-  
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
   const animationRef = useRef<number>(0);
   const constellationRef = useRef<HTMLDivElement>(null);
   const requestRef = useRef<number>(0);
+  const lastFrame = useRef<number>(0);
   const mouse = useRef({ x: 0, y: 0 });
   const smoothMouse = useRef({ x: 0, y: 0 });
 
   const particles = useMemo(() => {
-      return Array.from({ length: 30 }).map((_, i) => ({
-          x: Math.random() * 100,
-          y: Math.random() * 100,
-          z: Math.random() * 100 - 50,
-          size: Math.random() * 3 + 1,
-          duration: Math.random() * 10 + 10
-      }));
+    return Array.from({ length: 18 }).map((_, i) => ({
+      x: (13 + i * 29) % 100,
+      y: (19 + i * 37) % 100,
+      z: ((i * 17) % 90) - 45,
+      size: 1.2 + (i % 4) * 0.55,
+      duration: 9 + (i % 6) * 1.6,
+      delay: (i % 7) * 0.35,
+    }));
   }, []);
 
   useEffect(() => {
-    const animateRotation = () => {
-        if (isOrbiting) {
-            const speed = isCoreHovered ? 0.01 : 0.002;
-            setRotationAngle(prev => prev + speed); 
-            animationRef.current = requestAnimationFrame(animateRotation);
-        }
-    };
-
-    if (isOrbiting) {
-        animationRef.current = requestAnimationFrame(animateRotation);
-    } else {
-        cancelAnimationFrame(animationRef.current);
-    }
-
-    return () => cancelAnimationFrame(animationRef.current);
-  }, [isOrbiting, isCoreHovered]);
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setPrefersReducedMotion(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener('change', update);
+    return () => mediaQuery.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-        mouse.current = {
-            x: (e.clientX / window.innerWidth) * 2 - 1,
-            y: (e.clientY / window.innerHeight) * 2 - 1
-        };
+    if (!isOrbiting || prefersReducedMotion) {
+      cancelAnimationFrame(animationRef.current);
+      return;
+    }
+
+    const animateRotation = (timestamp: number) => {
+      if (!lastFrame.current) lastFrame.current = timestamp;
+      const delta = Math.min(timestamp - lastFrame.current, 32);
+      lastFrame.current = timestamp;
+      const speed = isCoreHovered ? 0.00022 : 0.000075;
+      setRotationAngle(prev => prev + delta * speed);
+      animationRef.current = requestAnimationFrame(animateRotation);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    animationRef.current = requestAnimationFrame(animateRotation);
+
+    return () => {
+      lastFrame.current = 0;
+      cancelAnimationFrame(animationRef.current);
+    };
+  }, [isOrbiting, isCoreHovered, prefersReducedMotion]);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.current = {
+        x: (e.clientX / window.innerWidth) * 2 - 1,
+        y: (e.clientY / window.innerHeight) * 2 - 1,
+      };
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     const animate = () => {
-        smoothMouse.current.x += (mouse.current.x - smoothMouse.current.x) * 0.05;
-        smoothMouse.current.y += (mouse.current.y - smoothMouse.current.y) * 0.05;
+      smoothMouse.current.x += (mouse.current.x - smoothMouse.current.x) * 0.045;
+      smoothMouse.current.y += (mouse.current.y - smoothMouse.current.y) * 0.045;
 
-        if (constellationRef.current) {
-            const x = smoothMouse.current.x;
-            const y = smoothMouse.current.y;
+      if (constellationRef.current) {
+        const x = smoothMouse.current.x;
+        const y = smoothMouse.current.y;
+        constellationRef.current.style.transform = `perspective(1100px) rotateY(${x * 4.5}deg) rotateX(${-y * 4.5}deg) translate3d(${x * 8}px, ${y * 8}px, 0)`;
+      }
 
-            constellationRef.current.style.transform = `
-                perspective(1000px)
-                rotateY(${x * 5}deg)
-                rotateX(${-y * 5}deg)
-                translateX(${x * 10}px)
-                translateY(${y * 10}px)
-            `;
-        }
-
-        requestRef.current = requestAnimationFrame(animate);
+      requestRef.current = requestAnimationFrame(animate);
     };
 
     requestRef.current = requestAnimationFrame(animate);
 
     return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-        cancelAnimationFrame(requestRef.current);
+      window.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(requestRef.current);
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   const getDynamicPosition = (index: number, total: number, currentRotation: number) => {
-      const angle = (index / total) * 2 * Math.PI - (Math.PI / 2) + currentRotation;
-      // Updated Radius to 38 as requested
-      const radiusBase = 38; 
-      const radiusVar = (index % 2 === 0 ? 3 : -3);
-      const radius = radiusBase + radiusVar;
+    const safeTotal = Math.max(total, 1);
+    const angle = (index / safeTotal) * 2 * Math.PI - (Math.PI / 2) + currentRotation;
+    const radiusBase = safeTotal > 7 ? 40 : 37;
+    const radiusVar = index % 2 === 0 ? 3 : -2.5;
+    const radius = radiusBase + radiusVar;
+    const left = 50 + radius * Math.cos(angle);
+    const top = 50 + radius * Math.sin(angle);
+    const size = NODE_SIZES[index % NODE_SIZES.length];
+    const depth = 18 + (index % 4) * 9;
 
-      const left = 50 + radius * Math.cos(angle);
-      const top = 50 + radius * Math.sin(angle);
-
-      const sizes = ['w-14 h-14', 'w-16 h-16', 'w-20 h-20'];
-      const size = sizes[index % 3];
-      const speed = 1 + (index % 3) * 0.5;
-
-      return { left: `${left}%`, top: `${top}%`, size, speed };
+    return {
+      left: `${left}%`,
+      top: `${top}%`,
+      size,
+      depth,
+    };
   };
 
+  const activeMember = team.find(member => member.id === hoveredMemberId) || team[0];
+
   return (
-    <div className="relative hidden lg:block h-[600px] w-full" style={{ perspective: '1000px' }}>
-        <div 
-            ref={constellationRef}
-            className="relative w-full h-full flex items-center justify-center transition-transform duration-100 ease-out preserve-3d"
-            style={{ transformStyle: 'preserve-3d' }}
-        >
-            {particles.map((p, i) => (
-                <div
-                    key={i}
-                    className="absolute bg-gray-300 dark:bg-white/20 rounded-full animate-float-particle"
-                    style={{
-                        left: `${p.x}%`,
-                        top: `${p.y}%`,
-                        width: `${p.size}px`,
-                        height: `${p.size}px`,
-                        transform: `translateZ(${p.z}px)`,
-                        animationDuration: `${p.duration}s`,
-                        boxShadow: `0 0 ${p.size * 2}px rgba(255,255,255,0.3)`
-                    }}
-                />
-            ))}
-
-            {/* --- 1. CENTER CORE (RESIZED) --- */}
-            <div 
-                className="absolute z-10 cursor-pointer group/core"
-                style={{ transform: 'translateZ(40px)' }}
-                onMouseEnter={() => setIsCoreHovered(true)}
-                onMouseLeave={() => setIsCoreHovered(false)}
-                onClick={() => setIsOrbiting(!isOrbiting)}
-            >
-                {/* Core Ambient Glow */}
-                <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/20 rounded-full blur-[60px] transition-all duration-500 ${isCoreHovered || !isOrbiting ? 'scale-125 opacity-80' : 'scale-100 opacity-40 animate-pulse'}`}></div>
-                
-                {/* Physical Core Container - Set to ~22 units (w-20) */}
-                <div className={`relative w-20 h-20 bg-white/90 dark:bg-gray-950/90 backdrop-blur-xl border-2 transition-all duration-500 rounded-full flex items-center justify-center z-20 animate-float ${isCoreHovered || !isOrbiting ? 'border-indigo-400 shadow-[0_0_50px_rgba(99,102,241,0.5)] scale-110' : 'border-gray-200 dark:border-white/10'}`}>
-                    
-                    {/* SVG LOGO - Increased to ~42 units (w-40) which overflows the core beautifully */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <svg viewBox="0 0 2160 2160" className={`w-40 h-40 transition-all duration-500 shrink-0 ${isCoreHovered || !isOrbiting ? 'scale-105 filter drop-shadow-[0_0_20px_rgba(255,255,255,0.8)]' : 'opacity-90'}`}>
-                            <defs>
-                                <linearGradient id="final_core_gradient" gradientUnits="userSpaceOnUse" x1="1269.9144" y1="1075.2654" x2="892.25574" y2="1103.478">
-                                    <stop offset="0" stopColor="#5555F9"/><stop offset="1" stopColor="#2D86FF"/>
-                                </linearGradient>
-                            </defs>
-                            <path fill="url(#final_core_gradient)" d="M1059.04 933.134C1062.61 919.977 1067.51 888.023 1076.25 880.968C1092.44 877.391 1098.51 929.642 1102.9 942.387C1114.81 976.95 1123.86 1005.88 1154.09 1030.14C1186.56 1056.2 1230.43 1067.48 1270.71 1075.99C1276.06 1077.13 1285.53 1079.41 1285.89 1086.01C1287.02 1097.14 1264.91 1099.6 1256.56 1101.5C1211.8 1111.73 1159.49 1124.78 1131.88 1164.55C1106.07 1201.74 1100.82 1241.65 1089.83 1283.86C1088.16 1290.25 1079.56 1296.05 1074.16 1289.14C1069.17 1282.31 1068.01 1269.09 1065.53 1261.18C1051.09 1201.97 1038.59 1153.13 979.073 1125.88C958.148 1115.76 937.804 1109.87 915.413 1104.41C905.678 1102.04 880.128 1098.46 874.5 1090.95C873.607 1087.93 873.481 1088.28 874.045 1085.21C874.468 1082.92 877.832 1078.88 879.831 1078.27C889.391 1075.35 900.543 1073.06 910.179 1070.54C937.237 1063.49 961.511 1056.04 986.191 1042.59C1032.25 1017.49 1045.4 980.701 1059.04 933.134ZM879.378 1088.75C879.819 1088.87 883.698 1089.61 883.798 1089.57C900.292 1083.02 917.27 1078.43 934.024 1072.79C937.349 1071.67 936.82 1071.39 937.72 1069.09C927.333 1072.15 885.541 1083.41 879.378 1088.75ZM1072.86 910.995C1074.28 905.7 1080.69 888.634 1080.67 886.444C1079.73 884.986 1079.69 884.58 1078.42 883.515C1075.68 887.219 1069.81 907.215 1071.53 911.103L1072.86 910.995Z"/>
-                        </svg>
-                    </div>
-                    
-                    {/* Spin Ring */}
-                    <div className={`absolute inset-0 rounded-full border-t-2 border-indigo-400 w-full h-full ${isCoreHovered || !isOrbiting ? 'animate-spin-super-fast opacity-100' : 'opacity-0'}`}></div>
-                </div>
+    <>
+      <div className="lg:hidden w-full max-w-xl mx-auto mt-4">
+        <div className="relative overflow-hidden rounded-[2rem] border border-gray-200 bg-white/80 p-4 shadow-2xl shadow-indigo-500/10 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05]">
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_10%,rgba(99,102,241,0.18),transparent_34%),radial-gradient(circle_at_90%_80%,rgba(236,72,153,0.14),transparent_30%)]" />
+          <div className="relative z-10 flex items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.22em] text-indigo-500 dark:text-indigo-300">
+                <UsersRound size={15} /> {t('Team constellation', 'ក្រុមការងារ')}
+              </div>
+              <p className="mt-2 text-sm font-bold leading-6 text-gray-700 dark:text-gray-300 font-khmer">
+                {t('Tap a creative mind behind the build.', 'ចុចមើលសមាជិកដែលនៅពីក្រោយការងារ។')}
+              </p>
             </div>
+            <div className="flex -space-x-3">
+              {team.slice(0, 5).map(member => (
+                <button
+                  key={member.id}
+                  type="button"
+                  onClick={() => onMemberClick(member)}
+                  className="h-11 w-11 overflow-hidden rounded-full border-2 border-white bg-gray-100 shadow-lg transition-transform active:scale-95 dark:border-gray-950 dark:bg-gray-800"
+                  aria-label={`View ${member.name}`}
+                >
+                  <img src={member.image} alt={member.name} className="h-full w-full object-cover" loading="lazy" />
+                </button>
+              ))}
+            </div>
+          </div>
 
-            {/* --- 2. BACKGROUND ORBITS & NETWORK --- */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" style={{ transform: 'translateZ(10px)' }}>
-                <defs>
-                    <linearGradient id="beamGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="rgba(99, 102, 241, 0.8)" />
-                        <stop offset="100%" stopColor="rgba(99, 102, 241, 0)" />
-                    </linearGradient>
-                    <filter id="glow">
-                        <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
-                        <feMerge>
-                            <feMergeNode in="coloredBlur"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                </defs>
+          <div className="relative z-10 mt-5 flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
+            {team.map(member => (
+              <button
+                key={member.id}
+                type="button"
+                onClick={() => onMemberClick(member)}
+                className="group flex min-w-[9.5rem] items-center gap-3 rounded-2xl border border-gray-200 bg-white/80 p-3 text-left transition-all active:scale-95 dark:border-white/10 dark:bg-gray-950/70"
+              >
+                <img src={member.image} alt={member.name} className="h-10 w-10 rounded-full object-cover ring-2 ring-indigo-500/20" loading="lazy" />
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-black text-gray-950 dark:text-white">{member.name}</span>
+                  <span className="block truncate text-[11px] font-bold text-gray-500 dark:text-gray-400">{member.role}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
-                <circle cx="50%" cy="50%" r="30%" stroke="rgba(255,255,255,0.03)" strokeWidth="1" fill="none" className={isOrbiting ? "animate-spin-slow" : ""} style={{ animationDuration: isCoreHovered ? '5s' : '20s' }} />
-                <circle cx="50%" cy="50%" r="45%" stroke="rgba(255,255,255,0.03)" strokeWidth="1" fill="none" />
-                <circle cx="50%" cy="50%" r="58%" stroke="rgba(99, 102, 241, 0.08)" strokeWidth="1" strokeDasharray="4 8" fill="none" className="animate-spin-slow" style={{ animationDuration: isCoreHovered ? '10s' : '60s' }} />
+      <div className="relative hidden lg:block h-[620px] w-full" style={{ perspective: '1100px' }}>
+        <div className="absolute inset-6 rounded-[3rem] border border-white/10 bg-white/[0.025] shadow-[0_30px_120px_rgba(79,70,229,0.18)] backdrop-blur-sm dark:bg-white/[0.02]" />
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.16),transparent_42%),radial-gradient(circle_at_70%_20%,rgba(236,72,153,0.10),transparent_26%)]" />
 
-                {team.map((member, index) => {
-                    const pos = getDynamicPosition(index, team.length, rotationAngle);
-                    const isHovered = hoveredMemberId === member.id;
-                    const isCoreActive = isCoreHovered || !isOrbiting;
-                    
-                    return (
-                        <line 
-                            key={`line-${member.id}`}
-                            x1="50%" y1="50%" 
-                            x2={pos.left} y2={pos.top} 
-                            stroke={isHovered || isCoreActive ? "url(#beamGradient)" : "rgba(255, 255, 255, 0.05)"}
-                            strokeWidth={isHovered || isCoreActive ? "2" : "1"}
-                            className="transition-all duration-300"
-                            style={{ filter: isHovered || isCoreActive ? 'url(#glow)' : 'none' }}
-                        />
-                    );
-                })}
-            </svg>
+        <div
+          ref={constellationRef}
+          className="relative w-full h-full flex items-center justify-center transition-transform duration-150 ease-out preserve-3d"
+          style={{ transformStyle: 'preserve-3d' }}
+        >
+          {particles.map((p, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full bg-indigo-300/50 dark:bg-white/25 hero-visual-particle"
+              style={{
+                left: `${p.x}%`,
+                top: `${p.y}%`,
+                width: `${p.size}px`,
+                height: `${p.size}px`,
+                transform: `translateZ(${p.z}px)`,
+                animationDuration: `${p.duration}s`,
+                animationDelay: `${p.delay}s`,
+                boxShadow: `0 0 ${p.size * 5}px rgba(129,140,248,0.45)`,
+              }}
+            />
+          ))}
 
-            {/* --- 3. TEAM NODES & ENERGY PACKETS --- */}
+          <div className="absolute left-1/2 top-1/2 h-[30rem] w-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-indigo-400/10" />
+          <div className="absolute left-1/2 top-1/2 h-[23rem] w-[23rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" />
+          <div className="absolute left-1/2 top-1/2 h-[16rem] w-[16rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-purple-400/20 hero-orbit-ring" />
+
+          <button
+            type="button"
+            className="absolute z-30 group/core rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-4 focus-visible:ring-offset-gray-950"
+            style={{ transform: 'translateZ(56px)' }}
+            onMouseEnter={() => setIsCoreHovered(true)}
+            onMouseLeave={() => setIsCoreHovered(false)}
+            onClick={() => setIsOrbiting(!isOrbiting)}
+            aria-label={isOrbiting ? 'Pause team orbit' : 'Resume team orbit'}
+          >
+            <div className={`absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/20 blur-[70px] transition-all duration-700 ${isCoreHovered || !isOrbiting ? 'scale-125 opacity-90' : 'scale-100 opacity-50'}`} />
+            <div className={`relative flex h-24 w-24 items-center justify-center rounded-full border bg-white/90 shadow-2xl backdrop-blur-2xl transition-all duration-700 dark:bg-gray-950/90 ${isCoreHovered || !isOrbiting ? 'scale-110 border-indigo-300 shadow-indigo-500/30' : 'border-white/20 shadow-indigo-950/30'}`}>
+              <div className="absolute inset-[-10px] rounded-full border border-indigo-400/30 hero-core-ring" />
+              <PonloeLogo size={138} className="scale-125" />
+            </div>
+          </button>
+
+          <svg className="absolute inset-0 z-10 h-full w-full pointer-events-none" style={{ transform: 'translateZ(8px)' }}>
+            <defs>
+              <linearGradient id="heroBeamGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="rgba(129, 140, 248, 0.84)" />
+                <stop offset="55%" stopColor="rgba(168, 85, 247, 0.34)" />
+                <stop offset="100%" stopColor="rgba(236, 72, 153, 0)" />
+              </linearGradient>
+              <filter id="heroVisualGlow">
+                <feGaussianBlur stdDeviation="2.4" result="coloredBlur" />
+                <feMerge>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
             {team.map((member, index) => {
-                const pos = getDynamicPosition(index, team.length, rotationAngle);
-                const delay = index * 0.8; 
-                const isHovered = hoveredMemberId === member.id;
-                const tiltX = (smoothMouse.current.y * 15);
-                const tiltY = -(smoothMouse.current.x * 15);
+              const pos = getDynamicPosition(index, team.length, rotationAngle);
+              const isHovered = hoveredMemberId === member.id;
+              const isActive = isHovered || isCoreHovered || !isOrbiting;
 
-                return (
-                    <React.Fragment key={member.id}>
-                        <div 
-                            className="packet-container"
-                            style={{
-                                '--target-left': pos.left,
-                                '--target-top': pos.top,
-                                animationDuration: isCoreHovered || !isOrbiting ? '1s' : '4s',
-                                animationDelay: `${delay}s`
-                            } as React.CSSProperties}
-                        >
-                            <div className="packet-head" style={{ boxShadow: isCoreHovered || !isOrbiting ? '0 0 15px #fff, 0 0 30px cyan' : '' }}></div>
-                            <div className="packet-tail"></div>
-                        </div>
-
-                        <div
-                            className="absolute z-20 cursor-pointer"
-                            style={{ 
-                                top: pos.top,
-                                left: pos.left,
-                                transform: `translate(-50%, -50%) translateZ(${pos.speed * 20}px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`,
-                                transition: 'transform 0.1s ease-out'
-                            }}
-                            onMouseEnter={() => setHoveredMemberId(member.id)}
-                            onMouseLeave={() => setHoveredMemberId(null)}
-                            onClick={() => onMemberClick(member)}
-                        >
-                            <div className={`
-                                relative rounded-full p-[2px] transition-all duration-500 group
-                                ${isHovered ? 'scale-125 z-50' : 'scale-100'}
-                            `}>
-                                <div className={`absolute -inset-4 rounded-full border-t-2 border-l-2 border-indigo-400/0 transition-all duration-500 ${isHovered ? 'border-indigo-400/80 opacity-100 animate-spin' : 'opacity-0'}`} style={{ animationDuration: '3s' }}></div>
-                                <div className={`absolute -inset-2 rounded-full border-b-2 border-r-2 border-purple-400/0 transition-all duration-500 ${isHovered ? 'border-purple-400/80 opacity-100 animate-spin reverse' : 'opacity-0'}`} style={{ animationDuration: '5s' }}></div>
-
-                                <div className="absolute inset-0 rounded-full border border-indigo-400 opacity-0 ripple-effect" style={{ animationDelay: `${delay + 2.5}s`, animationDuration: isCoreHovered || !isOrbiting ? '1s' : '4s' }}></div>
-
-                                <div className={`
-                                    relative overflow-hidden rounded-full border-2 bg-gray-50 dark:bg-gray-900
-                                    ${isHovered ? 'border-indigo-400 shadow-[0_0_30px_rgba(99,102,241,0.5)]' : 'border-gray-300 dark:border-white/20 shadow-lg'}
-                                    transition-all duration-500
-                                    ${pos.size}
-                                `}>
-                                    <img 
-                                        src={member.image} 
-                                        alt={member.name} 
-                                        className={`w-full h-full object-cover transition-all duration-500 ${isHovered ? 'grayscale-0 scale-110' : 'grayscale scale-100'}`} 
-                                    />
-                                    <div className="absolute inset-0 bg-indigo-500/0 mix-blend-overlay flash-effect" style={{ animationDelay: `${delay + 2.5}s`, animationDuration: isCoreHovered || !isOrbiting ? '1s' : '4s' }}></div>
-                                </div>
-
-                                <div className={`
-                                    absolute left-1/2 -translate-x-1/2 -bottom-8 
-                                    transition-all duration-300 transform
-                                    ${isHovered ? 'opacity-100 translate-y-0 scale-110' : 'opacity-60 translate-y-[-5px] scale-90'}
-                                `}>
-                                    <span className={`
-                                        text-[10px] font-bold tracking-wider uppercase whitespace-nowrap px-2 py-1 rounded bg-black/50 backdrop-blur-md border border-gray-200 dark:border-white/10
-                                        ${isHovered ? 'text-indigo-300 border-indigo-500/50' : 'text-gray-600 dark:text-gray-400'}
-                                    `}>
-                                        {member.name}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </React.Fragment>
-                );
+              return (
+                <line
+                  key={`line-${member.id}`}
+                  x1="50%"
+                  y1="50%"
+                  x2={pos.left}
+                  y2={pos.top}
+                  stroke={isActive ? 'url(#heroBeamGradient)' : 'rgba(148, 163, 184, 0.14)'}
+                  strokeWidth={isActive ? 2 : 1}
+                  strokeDasharray={isActive ? '0' : '4 10'}
+                  className="transition-all duration-500"
+                  style={{ filter: isActive ? 'url(#heroVisualGlow)' : 'none' }}
+                />
+              );
             })}
+          </svg>
+
+          {team.map((member, index) => {
+            const pos = getDynamicPosition(index, team.length, rotationAngle);
+            const isHovered = hoveredMemberId === member.id;
+
+            return (
+              <button
+                key={member.id}
+                type="button"
+                className="absolute z-20 cursor-pointer rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-4 focus-visible:ring-offset-gray-950"
+                style={{
+                  top: pos.top,
+                  left: pos.left,
+                  transform: `translate(-50%, -50%) translateZ(${pos.depth}px)`,
+                  transition: 'top 520ms cubic-bezier(0.16, 1, 0.3, 1), left 520ms cubic-bezier(0.16, 1, 0.3, 1), transform 420ms cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
+                onMouseEnter={() => setHoveredMemberId(member.id)}
+                onMouseLeave={() => setHoveredMemberId(null)}
+                onClick={() => onMemberClick(member)}
+                aria-label={`View ${member.name}`}
+              >
+                <span className={`relative block rounded-full p-[3px] transition-all duration-500 ${isHovered ? 'scale-125 z-50' : 'scale-100 hover:scale-110'}`}>
+                  <span className={`absolute inset-[-9px] rounded-full border transition-all duration-500 ${isHovered ? 'border-indigo-300/80 opacity-100 hero-node-ring' : 'border-white/0 opacity-0'}`} />
+                  <span className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 opacity-80 blur-sm" />
+                  <span className={`relative block overflow-hidden rounded-full border-2 bg-gray-100 shadow-xl transition-all duration-500 dark:bg-gray-900 ${isHovered ? 'border-white shadow-indigo-500/40' : 'border-white/70 dark:border-white/20 shadow-black/20'} ${pos.size}`}>
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className={`h-full w-full object-cover transition-all duration-700 ${isHovered ? 'scale-110 saturate-125' : 'scale-100 saturate-90'}`}
+                      loading="lazy"
+                    />
+                    <span className="absolute inset-0 bg-gradient-to-t from-gray-950/45 via-transparent to-white/10" />
+                  </span>
+
+                  <span className={`absolute left-1/2 top-full mt-3 -translate-x-1/2 whitespace-nowrap rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] backdrop-blur-xl transition-all duration-300 ${isHovered ? 'translate-y-0 border-indigo-300/50 bg-gray-950/80 text-white opacity-100' : '-translate-y-2 border-white/10 bg-white/70 text-gray-600 opacity-70 dark:bg-gray-950/60 dark:text-gray-400'}`}>
+                    {member.name}
+                  </span>
+                </span>
+              </button>
+            );
+          })}
+
+          {activeMember && (
+            <div className="absolute bottom-8 left-1/2 z-30 w-[19rem] -translate-x-1/2 rounded-3xl border border-white/10 bg-white/80 p-4 text-center shadow-2xl shadow-indigo-500/10 backdrop-blur-2xl dark:bg-gray-950/70">
+              <div className="mb-2 flex items-center justify-center gap-2 text-xs font-black uppercase tracking-[0.22em] text-indigo-500 dark:text-indigo-300">
+                <Sparkles size={14} /> {t('Creative team', 'ក្រុមច្នៃប្រឌិត')}
+              </div>
+              <p className="truncate text-sm font-black text-gray-950 dark:text-white">{activeMember.name}</p>
+              <p className="mt-1 truncate text-xs font-bold text-gray-500 dark:text-gray-400">{activeMember.role}</p>
+            </div>
+          )}
         </div>
 
         <style>{`
-            @keyframes travel {
-                0% { left: 50%; top: 50%; opacity: 0; transform: rotate(var(--angle)) translateX(0) scale(0.5); }
-                10% { opacity: 1; transform: rotate(var(--angle)) translateX(20px) scale(1); }
-                80% { opacity: 1; transform: scale(1); }
-                90% { opacity: 1; }
-                100% { left: var(--target-left); top: var(--target-top); opacity: 0; transform: scale(0.2); }
+          @keyframes heroVisualParticle {
+            0%, 100% { opacity: 0.22; transform: translate3d(0, 0, 0) scale(1); }
+            50% { opacity: 0.72; transform: translate3d(0, -18px, 24px) scale(1.35); }
+          }
+
+          @keyframes heroOrbitSpin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+          }
+
+          @keyframes heroNodeRing {
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.16); opacity: 1; }
+          }
+
+          .hero-visual-particle {
+            animation: heroVisualParticle 12s ease-in-out infinite;
+            will-change: opacity, transform;
+          }
+
+          .hero-orbit-ring {
+            animation: heroOrbitSpin 28s linear infinite;
+          }
+
+          .hero-core-ring {
+            animation: heroOrbitSpin 9s linear infinite;
+          }
+
+          .hero-node-ring {
+            animation: heroNodeRing 1.8s ease-in-out infinite;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .hero-visual-particle,
+            .hero-orbit-ring,
+            .hero-core-ring,
+            .hero-node-ring {
+              animation: none !important;
             }
-            .packet-container {
-                position: absolute;
-                width: 4px; 
-                height: 4px;
-                animation: travel 4s infinite ease-in-out;
-                pointer-events: none;
-                z-index: 15;
-            }
-            .packet-head {
-                width: 6px;
-                height: 6px;
-                background: white;
-                border-radius: 50%;
-                box-shadow: 0 0 10px #fff, 0 0 20px #6366f1, 0 0 30px #a855f7;
-                position: absolute;
-                top: 0; left: 0;
-            }
-            .packet-tail {
-                position: absolute;
-                top: 2px; left: 2px;
-                width: 40px; 
-                height: 2px;
-                background: linear-gradient(to left, rgba(99, 102, 241, 0.8), transparent);
-                transform-origin: left center;
-                transform: rotate(calc(atan2(var(--target-top) - 50%, var(--target-left) - 50%) * 1rad + 180deg));
-                opacity: 0.6;
-            }
-            @keyframes ripple {
-                0% { transform: scale(1); opacity: 0; border-width: 0px; }
-                10% { opacity: 1; border-width: 2px; border-color: #fff; }
-                100% { transform: scale(1.5); opacity: 0; border-width: 0px; border-color: #6366f1; }
-            }
-            .ripple-effect {
-                animation: ripple 4s infinite ease-out;
-            }
-            @keyframes flash {
-                0%, 90% { background-color: rgba(99, 102, 241, 0); }
-                95% { background-color: rgba(255, 255, 255, 0.5); }
-                100% { background-color: rgba(99, 102, 241, 0); }
-            }
-            .flash-effect {
-                animation: flash 4s infinite ease-in-out;
-            }
-            @keyframes spin-super-fast {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-            .animate-spin-super-fast {
-                animation: spin-super-fast 0.4s linear infinite;
-            }
-            @keyframes float-particle {
-                0%, 100% { transform: translateY(0) translateZ(0); opacity: 0.2; }
-                50% { transform: translateY(-20px) translateZ(20px); opacity: 0.5; }
-            }
-            .animate-float-particle {
-                animation: float-particle 10s ease-in-out infinite;
-            }
+          }
         `}</style>
-    </div>
+      </div>
+    </>
   );
 };
 

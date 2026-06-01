@@ -34,7 +34,7 @@ import ChatbotAI from './components/ChatbotAI';
 import SkipToContent from './components/SkipToContent';
 import { SectionTransition } from './components/PageTransition';
 import AnimatedBlurBackground from './components/AnimatedBlurBackground';
-import { Lock, ArrowRight, X, Sparkles, Briefcase, Building2, BookOpen, MessageCircle } from 'lucide-react';
+import { Lock, ArrowRight, X } from 'lucide-react';
 import { useAdminRouter } from './hooks/useRouter';
 import CinematicIntro from './components/CinematicIntro';
 import CustomCursor from './components/CustomCursor';
@@ -51,11 +51,6 @@ const CostEstimator = React.lazy(() => import('./components/CostEstimator'));
 const ClientPortal = React.lazy(() => import('./components/ClientPortal'));
 
 const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
-
-const getLanguagePrefix = () => {
-  const firstSegment = window.location.pathname.split('/').filter(Boolean)[0];
-  return firstSegment && supportedLangs.includes(firstSegment) ? `/${firstSegment}` : '';
-};
 
 const getPathWithoutLanguage = () => {
   const segments = window.location.pathname.split('/').filter(Boolean);
@@ -188,6 +183,8 @@ function AppContent() {
   );
 
 
+<<<<<<< HEAD
+=======
   const navigateToPage = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
     e.preventDefault();
     window.history.pushState(null, '', `${getLanguagePrefix()}${path}` || '/');
@@ -270,13 +267,17 @@ function AppContent() {
     );
   };
 
+>>>>>>> origin/main
   const renderHome = () => (
     <>
       <Hero />
       <SectionTransition variant="fadeBlur"><ExperienceLab /></SectionTransition>
       <SectionTransition delay={0.1} variant="fadeScale"><HomepageStrategy /></SectionTransition>
       <SectionTransition delay={0.1} variant="slideRight"><OutcomePaths /></SectionTransition>
+<<<<<<< HEAD
+=======
       <SectionTransition delay={0.1} variant="slideLeft">{renderPageDirectory()}</SectionTransition>
+>>>>>>> origin/main
     </>
   );
 
