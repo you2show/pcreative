@@ -127,7 +127,7 @@ const Hero: React.FC = () => {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           
           {/* Left Content - Typography & CTA */}
-          <div className="space-y-8 text-center lg:text-left relative z-20">
+          <div className="space-y-6 text-center lg:text-left relative z-20">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-md animate-fade-in group hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-default">
               <span className="relative flex h-2 w-2">
@@ -140,7 +140,7 @@ const Hero: React.FC = () => {
             </div>
             
             {/* Main Headline */}
-            <div className="relative space-y-4">
+            <div className="relative space-y-3">
                 <div className="absolute -left-6 top-4 hidden h-28 w-28 rounded-full bg-indigo-500/15 blur-3xl dark:block" aria-hidden="true" />
                 <h1 className="hero-headline relative text-5xl sm:text-6xl md:text-7xl font-black leading-[1.02] tracking-[-0.045em] text-gray-950 dark:text-white font-khmer">
                     <span className="hero-line-reveal block">
@@ -157,22 +157,12 @@ const Hero: React.FC = () => {
                         />
                     </span>
                 </h1>
-
-                <div className="hero-proof-strip mx-auto lg:mx-0 flex max-w-xl flex-wrap items-center justify-center lg:justify-start gap-2 text-xs font-black uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">
-                  <span>{t('Strategy', 'យុទ្ធសាស្ត្រ')}</span>
-                  <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
-                  <span>{t('UI/UX', 'UI/UX')}</span>
-                  <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />
-                  <span>{t('Build', 'អភិវឌ្ឍ')}</span>
-                  <span className="h-1.5 w-1.5 rounded-full bg-pink-400" />
-                  <span>{t('Launch', 'បើកដំណើរការ')}</span>
-                </div>
             </div>
             
-            <p className="hero-copy text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-khmer max-w-xl mx-auto lg:mx-0">
+            <p className="hero-copy text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-khmer max-w-lg mx-auto lg:mx-0">
               {t(
-                  "Websites, mobile apps, and digital experiences shaped to look premium, feel effortless, and win trust from the first visit.",
-                  'វេបសាយ Mobile App និងបទពិសោធន៍ឌីជីថលដែលមើលទៅ premium ប្រើងាយ និងបង្កើតទំនុកចិត្តចាប់ពីការចូលមើលដំបូង។'
+                  'Premium digital products that feel simple, fast, and trustworthy.',
+                  'ផលិតផលឌីជីថល premium ដែលសាមញ្ញ លឿន និងគួរឱ្យទុកចិត្ត។'
               )}
             </p>
             
