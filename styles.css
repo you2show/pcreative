@@ -448,6 +448,10 @@ html.light .animated-blob {
 .hero-word-current,
 .hero-word-prev {
   grid-area: 1 / 1;
+  background: inherit;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
   transform-origin: 50% 65%;
   will-change: opacity, transform, filter;
 }
