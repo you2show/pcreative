@@ -149,7 +149,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
   return (
     <>
       <div className="lg:hidden w-full max-w-xl mx-auto mt-4">
-        <div className="relative overflow-hidden rounded-[2rem] border border-gray-200 bg-white/80 p-4 shadow-2xl shadow-indigo-500/10 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05]">
+        <div className="relative overflow-hidden rounded-[2rem] border border-gray-200 bg-white/80 p-4 shadow-2xl shadow-indigo-500/10 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05] ring-1 ring-inset ring-white/60 dark:ring-white/5">
           <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_10%,rgba(99,102,241,0.18),transparent_34%),radial-gradient(circle_at_90%_80%,rgba(236,72,153,0.14),transparent_30%)]" />
           <div className="relative z-10 flex items-center justify-between gap-4">
             <div>

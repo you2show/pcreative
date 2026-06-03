@@ -59,7 +59,7 @@ const HomeConversion: React.FC = () => {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <RevealOnScroll>
           <div className="mx-auto max-w-3xl text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/80 px-4 py-2 text-xs font-black uppercase tracking-[0.24em] text-indigo-600 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.06] dark:text-indigo-200 font-khmer">
+            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/80 px-4 py-2 text-xs font-black uppercase tracking-[0.24em] text-indigo-600 shadow-md shadow-indigo-500/15 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.06] dark:text-indigo-200 dark:shadow-indigo-500/10 font-khmer">
               <Sparkles size={15} />
               {t('Visual-first homepage', 'Homepage ផ្តោតលើរូបភាព')}
             </div>
@@ -74,7 +74,7 @@ const HomeConversion: React.FC = () => {
 
         <div className="mt-12 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
           <RevealOnScroll delay={80}>
-            <article className="group relative min-h-[520px] overflow-hidden rounded-[2.5rem] border border-white/20 bg-gray-950 shadow-2xl shadow-indigo-500/15">
+            <article className="group relative min-h-[520px] overflow-hidden rounded-[2.5rem] border border-white/20 bg-gray-950 shadow-2xl shadow-indigo-500/20 ring-1 ring-inset ring-white/5">
               <img
                 src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=85&w=1600"
                 alt={t('Large creative workspace preview', 'រូបភាព workspace ធំ')}
@@ -83,7 +83,7 @@ const HomeConversion: React.FC = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
-                <div className="max-w-xl rounded-[2rem] border border-white/15 bg-white/10 p-5 text-white shadow-2xl backdrop-blur-2xl md:p-6">
+                <div className="max-w-xl rounded-[2rem] border border-white/15 bg-white/10 p-5 text-white shadow-2xl shadow-black/40 backdrop-blur-2xl md:p-6 ring-1 ring-inset ring-white/10">
                   <p className="text-xs font-black uppercase tracking-[0.28em] text-indigo-100">Featured direction</p>
                   <h3 className="mt-3 text-3xl font-black leading-tight md:text-5xl font-khmer">
                     {t('Make the first screen cinematic.', 'ធ្វើឲ្យអេក្រង់ដំបូងស្អាតដូចភាពយន្ត។')}
@@ -105,7 +105,7 @@ const HomeConversion: React.FC = () => {
               const Icon = frame.icon;
               return (
                 <RevealOnScroll key={frame.label} delay={index * 90 + 120}>
-                  <article className="group relative min-h-[160px] overflow-hidden rounded-[2rem] border border-gray-200 bg-gray-950 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/10 dark:border-white/10">
+                  <article className="group relative min-h-[160px] overflow-hidden rounded-[2rem] border border-gray-200 bg-gray-950 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/20 dark:border-white/10">
                     <img
                       src={frame.image}
                       alt={t(frame.label, frame.labelKm)}
@@ -133,7 +133,7 @@ const HomeConversion: React.FC = () => {
         </div>
 
         <RevealOnScroll delay={320}>
-          <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-[2rem] border border-gray-200 bg-white/85 p-5 shadow-xl shadow-indigo-500/10 backdrop-blur-xl dark:border-white/10 dark:bg-gray-950/75 sm:flex-row">
+          <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-[2rem] border border-gray-200 bg-white/85 p-5 shadow-xl shadow-indigo-500/15 backdrop-blur-xl dark:border-white/10 dark:bg-gray-950/75 sm:flex-row ring-1 ring-inset ring-gray-100/80 dark:ring-white/5">
             <p className="text-lg font-black text-gray-950 dark:text-white font-khmer">
               {t('Ready for a bolder first impression?', 'ត្រៀមធ្វើ first impression ឲ្យកាន់តែខ្លាំងទេ?')}
             </p>

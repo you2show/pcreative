@@ -98,7 +98,7 @@ const HomeVisualGateway: React.FC = () => {
                 <a
                   href={gateway.href}
                   onClick={(event) => navigateToPage(event, gateway.href)}
-                  className={`group relative block overflow-hidden rounded-[2.4rem] border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/20 outline-none transition-all duration-500 hover:-translate-y-1 hover:border-indigo-300/50 focus-visible:ring-2 focus-visible:ring-indigo-300 ${gateway.className}`}
+                  className={`group relative block overflow-hidden rounded-[2.4rem] border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/30 outline-none transition-all duration-500 hover:-translate-y-1 hover:border-indigo-300/50 hover:shadow-2xl hover:shadow-indigo-500/25 focus-visible:ring-2 focus-visible:ring-indigo-300 ${gateway.className}`}
                 >
                   <img
                     src={gateway.image}
@@ -113,7 +113,7 @@ const HomeVisualGateway: React.FC = () => {
                       <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] backdrop-blur-xl">
                         {gateway.eyebrow}
                       </span>
-                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-gray-950 shadow-xl transition-transform group-hover:rotate-6 group-hover:scale-110">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-gray-950 shadow-xl shadow-black/25 transition-transform group-hover:rotate-6 group-hover:scale-110">
                         <Icon size={23} />
                       </span>
                     </div>
