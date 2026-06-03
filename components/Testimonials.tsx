@@ -155,16 +155,16 @@ const Testimonials: React.FC = () => {
             {[...reviews, ...reviews].map((tm, idx) => (
               <div 
                 key={`${tm.id}-${idx}`}
-                className="shimmer-card relative w-[350px] md:w-[450px] bg-gray-100 dark:bg-white/5 backdrop-blur-sm border border-gray-100 dark:border-white/5 p-8 rounded-2xl shrink-0 hover:border-indigo-500/40 hover:shadow-[0_0_30px_rgba(99,102,241,0.12)] dark:hover:shadow-[0_0_30px_rgba(99,102,241,0.15)] transition-all duration-500 overflow-hidden"
+                className="shimmer-card creative-card group relative w-[350px] md:w-[450px] bg-gray-100 dark:bg-white/5 backdrop-blur-sm border border-gray-100 dark:border-white/5 p-8 rounded-2xl shrink-0 hover:border-indigo-500/40 hover:shadow-[0_0_30px_rgba(99,102,241,0.18)] dark:hover:shadow-[0_0_30px_rgba(99,102,241,0.20)] hover:-translate-y-1.5 transition-all duration-500 overflow-hidden"
               >
                 <div className="flex gap-1 mb-4">
                   {[1, 2, 3, 4, 5].map((s) => (
-                    <Star key={s} size={16} className="text-yellow-500 fill-yellow-500" />
+                    <Star key={s} size={16} className="text-yellow-500 fill-yellow-500 transition-transform duration-150 group-hover:scale-110" style={{ transitionDelay: `${s * 30}ms` }} />
                   ))}
                 </div>
                 
                 <div className="mb-6 relative">
-                   <Quote className="absolute -top-2 -left-2 text-indigo-500/20 transform scale-150 rotate-180" size={40} />
+                   <Quote className="absolute -top-2 -left-2 text-indigo-500/20 transform scale-150 rotate-180 transition-colors duration-300 group-hover:text-indigo-500/35" size={40} />
                    <p className="text-gray-700 dark:text-gray-300 text-lg relative z-10 italic font-khmer line-clamp-4">
                       "{t(tm.content, tm.contentKm || tm.content)}"
                    </p>
@@ -174,7 +174,7 @@ const Testimonials: React.FC = () => {
                   <img 
                     src={tm.avatar} 
                     alt={tm.name} 
-                    className="w-12 h-12 rounded-full object-cover border-2 border-indigo-500/30 bg-gray-100 dark:bg-gray-800" 
+                    className="w-12 h-12 rounded-full object-cover border-2 border-indigo-500/30 bg-gray-100 dark:bg-gray-800 transition-transform duration-300 group-hover:scale-105 group-hover:border-indigo-500/60" 
                   />
                   <div>
                     <h4 className="text-gray-900 dark:text-white font-bold">{tm.name}</h4>

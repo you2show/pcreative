@@ -1,0 +1,216 @@
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ArrowLeftRight, CheckCircle } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
+import RevealOnScroll from './RevealOnScroll';
+
+const COMPARISONS = [
+  {
+    before: 'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?auto=format&fit=crop&q=80&w=1200',
+    after: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=1200',
+    label: 'Brand Identity',
+    labelKm: 'អត្តសញ្ញាណម៉ាក',
+    beforeTag: 'Generic · No personality',
+    beforeTagKm: 'ទូទៅ · គ្មានចរិតម៉ាក',
+    afterTag: 'Ponloe Creative result',
+    afterTagKm: 'លទ្ធផលពី Ponloe Creative',
+  },
+  {
+    before: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&q=80&w=1200',
+    after: 'https://images.unsplash.com/photo-1559028006-448665bd7c7f?auto=format&fit=crop&q=80&w=1200',
+    label: 'Website Redesign',
+    labelKm: 'ការរចនា Website ឡើងវិញ',
+    beforeTag: 'Outdated · Low conversion',
+    beforeTagKm: 'ចាស់ · Conversion ទាប',
+    afterTag: 'Ponloe Creative result',
+    afterTagKm: 'លទ្ធផលពី Ponloe Creative',
+  },
+];
+
+interface SliderProps {
+  before: string;
+  after: string;
+  beforeTag: string;
+  afterTag: string;
+  t: (en: string, km?: string) => string;
+}
+
+const ComparisonSlider: React.FC<SliderProps> = ({ before, after, beforeTag, afterTag, t }) => {
+  const [position, setPosition] = useState(50);
+  const [isDragging, setIsDragging] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const updatePosition = useCallback((clientX: number) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    setPosition((x / rect.width) * 100);
+  }, []);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+    updatePosition(e.clientX);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    updatePosition(e.touches[0].clientX);
+  };
+
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => { if (isDragging) updatePosition(e.clientX); };
+    const onTouchMove = (e: TouchEvent) => { if (isDragging) updatePosition(e.touches[0].clientX); };
+    const onEnd = () => setIsDragging(false);
+
+    if (isDragging) {
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onEnd);
+      window.addEventListener('touchmove', onTouchMove, { passive: true });
+      window.addEventListener('touchend', onEnd);
+    }
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onEnd);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onEnd);
+    };
+  }, [isDragging, updatePosition]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full h-[340px] md:h-[420px] overflow-hidden rounded-3xl border border-gray-200 dark:border-white/10 shadow-2xl shadow-black/20 select-none cursor-col-resize"
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+      aria-label="Before and after comparison slider"
+    >
+      {/* After (base layer) */}
+      <img
+        src={after}
+        alt={t('After — Ponloe Creative result', 'បន្ទាប់ — លទ្ធផល Ponloe')}
+        className="absolute inset-0 w-full h-full object-cover"
+        loading="lazy"
+        draggable="false"
+      />
+
+      {/* After label */}
+      <div className="absolute top-4 right-4 z-10">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-600/90 px-3 py-1.5 text-[11px] font-black uppercase tracking-widest text-white backdrop-blur-md shadow-lg">
+          <CheckCircle size={11} /> {t('After', 'បន្ទាប់')}
+        </span>
+        <p className="mt-1 text-right text-[10px] font-bold text-indigo-200/80 font-khmer">{t(afterTag)}</p>
+      </div>
+
+      {/* Before (clip-path reveal) */}
+      <div
+        className="absolute inset-0"
+        style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
+      >
+        <img
+          src={before}
+          alt={t('Before — generic design', 'មុន — ការរចនាទូទៅ')}
+          className="w-full h-full object-cover grayscale"
+          loading="lazy"
+          draggable="false"
+        />
+        <div className="absolute inset-0 bg-gray-950/25" />
+      </div>
+
+      {/* Before label */}
+      <div className="absolute top-4 left-4 z-10">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-800/90 px-3 py-1.5 text-[11px] font-black uppercase tracking-widest text-white/80 backdrop-blur-md shadow-lg">
+          {t('Before', 'មុន')}
+        </span>
+        <p className="mt-1 text-[10px] font-bold text-white/60 font-khmer">{t(beforeTag)}</p>
+      </div>
+
+      {/* Divider line */}
+      <div
+        className="absolute top-0 bottom-0 z-20 w-0.5 bg-white shadow-[0_0_16px_rgba(255,255,255,0.8)]"
+        style={{ left: `${position}%`, transform: 'translateX(-50%)' }}
+      />
+
+      {/* Drag handle */}
+      <div
+        className={`absolute top-1/2 z-30 -translate-y-1/2 -translate-x-1/2 flex items-center justify-center w-11 h-11 rounded-full bg-white shadow-2xl border-2 border-indigo-200 transition-transform duration-100 ${isDragging ? 'scale-110' : 'scale-100'}`}
+        style={{ left: `${position}%` }}
+      >
+        <ArrowLeftRight size={18} className="text-indigo-600" />
+      </div>
+    </div>
+  );
+};
+
+const BeforeAfterSlider: React.FC = () => {
+  const { t } = useLanguage();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const active = COMPARISONS[activeIndex];
+
+  return (
+    <section className="relative py-20 md:py-28 overflow-hidden" aria-labelledby="before-after-title">
+      {/* Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(99,102,241,0.12),transparent_46%),radial-gradient(circle_at_80%_20%,rgba(236,72,153,0.08),transparent_38%)]" />
+
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <RevealOnScroll>
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 dark:border-indigo-500/30 bg-white/80 dark:bg-indigo-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.24em] text-indigo-600 dark:text-indigo-300 shadow-md shadow-indigo-500/10 backdrop-blur-xl mb-6 font-khmer">
+              <ArrowLeftRight size={14} />
+              {t('Visual Proof', 'ភស្តុតាងរូបភាព')}
+            </div>
+            <h2 id="before-after-title" className="text-4xl md:text-5xl font-black leading-tight tracking-[-0.04em] text-gray-950 dark:text-white font-khmer">
+              {t('See the difference.', 'ឃើញភាពខុសគ្នា។')}
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500">
+                {t('Drag to reveal.', 'អូសសើ ដើម្បីបំភ្លឺ។')}
+              </span>
+            </h2>
+            <p className="mt-4 text-base text-gray-600 dark:text-gray-400 font-khmer max-w-xl mx-auto">
+              {t(
+                'Every project starts somewhere. See how we transform generic work into premium creative.',
+                'គម្រោងគ្រប់ប្រភេទចាប់ផ្ដើមពីណាសែហើយ។ មើលពីរបៀបដែលយើងបំលែងការងារទូទៅទៅជា creative ដ៏ premium។'
+              )}
+            </p>
+          </div>
+        </RevealOnScroll>
+
+        {/* Tab selector */}
+        <RevealOnScroll delay={100}>
+          <div className="flex justify-center gap-3 mb-8">
+            {COMPARISONS.map((c, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveIndex(i)}
+                className={`px-5 py-2 rounded-full text-sm font-black transition-all font-khmer ${
+                  activeIndex === i
+                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
+                    : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
+                }`}
+              >
+                {t(c.label, c.labelKm)}
+              </button>
+            ))}
+          </div>
+        </RevealOnScroll>
+
+        <RevealOnScroll delay={160} variant="zoom-in">
+          <ComparisonSlider
+            key={activeIndex}
+            before={active.before}
+            after={active.after}
+            beforeTag={active.beforeTag}
+            afterTag={active.afterTag}
+            t={t}
+          />
+        </RevealOnScroll>
+
+        <RevealOnScroll delay={220}>
+          <p className="mt-4 text-center text-xs text-gray-400 dark:text-gray-600 font-khmer">
+            ← {t('Drag the handle to compare', 'អូសសើ ដើម្បីប្រៀបធៀប')} →
+          </p>
+        </RevealOnScroll>
+      </div>
+    </section>
+  );
+};
+
+export default BeforeAfterSlider;

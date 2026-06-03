@@ -40,6 +40,15 @@ import CustomCursor from './components/CustomCursor';
 import CelebrationSystem from './components/CelebrationSystem';
 import { useEmotionalColors } from './hooks/useEmotionalColors';
 
+// New homepage creative components
+import WorkMarquee from './components/WorkMarquee';
+import LiveStudioBar from './components/LiveStudioBar';
+import BeforeAfterSlider from './components/BeforeAfterSlider';
+import CursorGallery from './components/CursorGallery';
+import ClientWins from './components/ClientWins';
+import SkillBars from './components/SkillBars';
+import StudioLocation from './components/StudioLocation';
+
 // Pages
 import Careers from './components/Careers';
 import PrivacyPolicy from './components/PrivacyPolicy';
@@ -186,11 +195,25 @@ function AppContent() {
   const renderHome = () => (
     <>
       <Hero />
+      {/* Live studio status bar — just below hero */}
+      <LiveStudioBar />
+      {/* Full-bleed work marquee strip */}
+      <WorkMarquee />
       <SectionTransition variant="fadeScale"><HomeConversion /></SectionTransition>
       <SectionTransition delay={0.1} variant="slideRight"><OutcomePaths /></SectionTransition>
+      {/* Before / After creative slider */}
+      <SectionTransition delay={0.12} variant="fadeBlur"><BeforeAfterSlider /></SectionTransition>
       <SectionTransition delay={0.15} variant="fadeUp"><Stats /></SectionTransition>
+      {/* Animated skill bars */}
+      <SectionTransition delay={0.17} variant="fadeScale"><SkillBars /></SectionTransition>
       <SectionTransition delay={0.2} variant="fadeBlur"><VideoShowreel /></SectionTransition>
+      {/* Cursor-driven gallery */}
+      <SectionTransition delay={0.22} variant="fadeUp"><CursorGallery /></SectionTransition>
+      {/* Client wins floating cards */}
+      <SectionTransition delay={0.23} variant="fadeScale"><ClientWins /></SectionTransition>
       <SectionTransition delay={0.25} variant="fadeScale"><Testimonials /></SectionTransition>
+      {/* Studio location card */}
+      <SectionTransition delay={0.27} variant="fadeUp"><StudioLocation /></SectionTransition>
     </>
   );
 

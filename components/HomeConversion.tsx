@@ -74,7 +74,7 @@ const HomeConversion: React.FC = () => {
 
         <div className="mt-12 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
           <RevealOnScroll delay={80}>
-            <article className="group relative min-h-[520px] overflow-hidden rounded-[2.5rem] border border-white/20 bg-gray-950 shadow-2xl shadow-indigo-500/20 ring-1 ring-inset ring-white/5">
+            <article className="group relative min-h-[520px] overflow-hidden rounded-[2.5rem] border border-white/20 bg-gray-950 shadow-2xl shadow-indigo-500/20 ring-1 ring-inset ring-white/5 creative-card spotlight-hover">
               <img
                 src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=85&w=1600"
                 alt={t('Large creative workspace preview', 'រូបភាព workspace ធំ')}
@@ -82,6 +82,8 @@ const HomeConversion: React.FC = () => {
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/30 to-transparent" />
+              {/* Colour overlay that brightens on hover */}
+              <div className="absolute inset-0 bg-indigo-600/0 group-hover:bg-indigo-600/10 transition-colors duration-700 pointer-events-none z-[1]" />
               <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
                 <div className="max-w-xl rounded-[2rem] border border-white/15 bg-white/10 p-5 text-white shadow-2xl shadow-black/40 backdrop-blur-2xl md:p-6 ring-1 ring-inset ring-white/10">
                   <p className="text-xs font-black uppercase tracking-[0.28em] text-indigo-100">Featured direction</p>
@@ -105,17 +107,19 @@ const HomeConversion: React.FC = () => {
               const Icon = frame.icon;
               return (
                 <RevealOnScroll key={frame.label} delay={index * 90 + 120}>
-                  <article className="group relative min-h-[160px] overflow-hidden rounded-[2rem] border border-gray-200 bg-gray-950 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/20 dark:border-white/10">
+                  <article className="group relative min-h-[160px] overflow-hidden rounded-[2rem] border border-gray-200 bg-gray-950 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/20 dark:border-white/10 creative-card spotlight-hover">
                     <img
                       src={frame.image}
                       alt={t(frame.label, frame.labelKm)}
-                      className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-110"
+                      className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-95"
                       loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-gray-950/92 via-gray-950/42 to-transparent" />
+                    {/* Accent glow on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/0 to-purple-600/0 group-hover:from-indigo-600/15 group-hover:to-purple-600/10 transition-all duration-500 pointer-events-none" />
                     <div className="relative flex h-full min-h-[160px] items-center justify-between gap-5 p-5 text-white">
                       <div className="flex items-center gap-4">
-                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-md">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-md transition-all duration-300 group-hover:bg-indigo-500/60 group-hover:scale-110">
                           <Icon size={25} />
                         </div>
                         <div>
