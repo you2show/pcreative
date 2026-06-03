@@ -152,7 +152,7 @@ const OutcomePaths: React.FC = () => {
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_15%_15%,rgba(99,102,241,0.14),transparent_32%),radial-gradient(circle_at_85%_75%,rgba(16,185,129,0.12),transparent_30%),linear-gradient(135deg,rgba(255,255,255,0.9),rgba(238,242,255,0.45))] dark:bg-[radial-gradient(circle_at_15%_15%,rgba(99,102,241,0.16),transparent_32%),radial-gradient(circle_at_85%_75%,rgba(16,185,129,0.12),transparent_30%)]" />
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <RevealOnScroll className="mx-auto mb-14 max-w-4xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/80 px-4 py-2 font-khmer text-xs font-black uppercase tracking-[0.22em] text-indigo-600 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/[0.06] dark:text-indigo-200">
+          <span className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/80 px-4 py-2 font-khmer text-xs font-black uppercase tracking-[0.22em] text-indigo-600 shadow-md shadow-indigo-500/15 backdrop-blur dark:border-white/10 dark:bg-white/[0.06] dark:text-indigo-200 dark:shadow-indigo-500/10">
             <Route size={15} /> {t('Find the right next step', 'រកជំហានបន្ទាប់ដែលត្រឹមត្រូវ')}
           </span>
           <h2 className="mt-5 text-4xl font-black leading-tight tracking-tight text-gray-950 dark:text-white md:text-6xl font-khmer">
@@ -167,7 +167,7 @@ const OutcomePaths: React.FC = () => {
         </RevealOnScroll>
 
         <RevealOnScroll delay={120}>
-          <div className="mb-8 grid gap-3 rounded-[2rem] border border-indigo-100 bg-white/90 p-3 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-gray-950/65 md:grid-cols-3">
+          <div className="mb-8 grid gap-3 rounded-[2rem] border border-indigo-100 bg-white/90 p-3 shadow-lg shadow-indigo-500/10 backdrop-blur-xl dark:border-white/10 dark:bg-gray-950/65 md:grid-cols-3">
             {quickChoices.map((choice, index) => (
               <a key={choice.question} href={choice.href} onClick={(event) => navigateToPage(event, choice.href)} className="group relative flex min-h-32 items-end justify-between gap-4 overflow-hidden rounded-3xl bg-gray-950 p-4 text-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/15">
                 <img src={choice.image} alt={t(choice.question, choice.questionKm)} className="absolute inset-0 h-full w-full object-cover opacity-70 transition-transform duration-700 group-hover:scale-110" loading="lazy" />
@@ -192,7 +192,7 @@ const OutcomePaths: React.FC = () => {
             const Icon = path.icon;
             return (
               <RevealOnScroll key={path.title} delay={index * 90}>
-                <article className="group relative h-full overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-indigo-300 hover:shadow-2xl hover:shadow-indigo-500/10 dark:border-white/10 dark:bg-gray-950/80 dark:hover:border-white/20">
+                <article className="group relative h-full overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-md shadow-indigo-500/5 transition-all duration-300 hover:-translate-y-2 hover:border-indigo-300 hover:shadow-2xl hover:shadow-indigo-500/15 dark:border-white/10 dark:bg-gray-950/80 dark:shadow-black/30 dark:hover:border-white/20">
                   <div className="relative h-64 overflow-hidden bg-gray-950">
                     <img
                       src={path.image}
@@ -203,7 +203,7 @@ const OutcomePaths: React.FC = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/25 to-transparent" />
                     <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${path.accent}`} />
                     <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 p-5">
-                      <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${path.accent} text-white shadow-lg shadow-indigo-500/20`}>
+                      <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${path.accent} text-white shadow-xl shadow-black/20`}>
                         <Icon size={25} />
                       </div>
                       <span className="rounded-full border border-white/15 bg-white/15 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-white backdrop-blur-xl">
@@ -243,7 +243,7 @@ const OutcomePaths: React.FC = () => {
         </div>
 
         <RevealOnScroll delay={260}>
-          <div className="mt-10 overflow-hidden rounded-[2rem] border border-gray-200 bg-white/85 p-4 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.04]">
+          <div className="mt-10 overflow-hidden rounded-[2rem] border border-gray-200 bg-white/85 p-4 shadow-lg shadow-black/5 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.04] dark:shadow-black/30">
             <div className="grid gap-3 md:grid-cols-4">
               {pageConnections.map((connection) => {
                 const Icon = connection.icon;
@@ -264,7 +264,7 @@ const OutcomePaths: React.FC = () => {
         </RevealOnScroll>
 
         <RevealOnScroll delay={320}>
-          <div className="mt-10 flex flex-col items-center justify-between gap-5 rounded-[2rem] bg-gray-950 p-6 text-white shadow-2xl shadow-indigo-500/10 dark:bg-white/[0.06] md:flex-row">
+          <div className="mt-10 flex flex-col items-center justify-between gap-5 rounded-[2rem] bg-gray-950 p-6 text-white shadow-2xl shadow-indigo-500/20 ring-1 ring-inset ring-white/5 dark:bg-white/[0.06] md:flex-row">
             <div className="flex items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-emerald-300">
                 <Sparkles size={22} />
