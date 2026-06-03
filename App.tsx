@@ -28,7 +28,6 @@ import ExitIntentPopup from './components/ExitIntentPopup';
 import VideoShowreel from './components/VideoShowreel';
 import HomeConversion from './components/HomeConversion';
 import OutcomePaths from './components/OutcomePaths';
-import HomeVisualGateway from './components/HomeVisualGateway';
 import Preloader from './components/Preloader';
 import ChatbotAI from './components/ChatbotAI';
 import SkipToContent from './components/SkipToContent';
@@ -189,7 +188,9 @@ function AppContent() {
       <Hero />
       <SectionTransition variant="fadeScale"><HomeConversion /></SectionTransition>
       <SectionTransition delay={0.1} variant="slideRight"><OutcomePaths /></SectionTransition>
-      <SectionTransition delay={0.2} variant="fadeUp"><HomeVisualGateway /></SectionTransition>
+      <SectionTransition delay={0.15} variant="fadeUp"><Stats /></SectionTransition>
+      <SectionTransition delay={0.2} variant="fadeBlur"><VideoShowreel /></SectionTransition>
+      <SectionTransition delay={0.25} variant="fadeScale"><Testimonials /></SectionTransition>
     </>
   );
 
