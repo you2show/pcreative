@@ -173,10 +173,10 @@ const Hero: React.FC = () => {
                 { icon: Sparkles, label: t('Premium mood', 'Mood ស្អាត') },
                 { icon: MousePointer2, label: t('Clear CTA', 'CTA ច្បាស់') },
               ].map(({ icon: Icon, label }) => (
-                <div key={label} className="group relative min-h-24 overflow-hidden rounded-3xl border border-gray-200 bg-white/75 p-3 shadow-md backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/20 dark:border-white/10 dark:bg-white/[0.05] dark:shadow-black/30">
+                <div key={label} className="group relative min-h-24 overflow-hidden rounded-3xl border border-gray-200 bg-white/75 p-3 shadow-md backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-indigo-500/20 hover:border-indigo-200/50 dark:border-white/10 dark:bg-white/[0.05] dark:shadow-black/30 dark:hover:border-indigo-400/20 creative-card">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(99,102,241,0.32),transparent_42%)] opacity-0 transition-opacity group-hover:opacity-100" />
                   <div className="relative flex h-full flex-col justify-between">
-                    <Icon size={22} className="text-indigo-500 dark:text-indigo-300" />
+                    <Icon size={22} className="text-indigo-500 dark:text-indigo-300 transition-transform duration-300 group-hover:scale-110" />
                     <span className="text-sm font-black text-gray-800 dark:text-white font-khmer">{label}</span>
                   </div>
                 </div>

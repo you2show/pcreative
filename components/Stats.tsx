@@ -76,7 +76,7 @@ const OscilloscopeWave: React.FC<{ color: string; active: boolean }> = ({ color,
   return (
     <svg
       viewBox="0 0 100 100"
-      className="absolute inset-0 w-full h-full opacity-[0.07] group-hover:opacity-20 transition-opacity duration-500"
+      className="absolute inset-0 w-full h-full opacity-[0.07] group-hover:opacity-30 transition-opacity duration-500"
       preserveAspectRatio="none"
     >
       <polyline
@@ -147,14 +147,14 @@ const StatCard: React.FC<StatCardProps> = ({ stat, index, started }) => {
 
   return (
     <RevealOnScroll variant="fade-up" delay={index * 120}>
-      <div className="relative group text-center p-6 md:p-8 rounded-3xl bg-gray-100 dark:bg-gray-950/80 border border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/10 transition-all duration-500 overflow-hidden cursor-default">
+      <div className="relative group text-center p-6 md:p-8 rounded-3xl bg-gray-100 dark:bg-gray-950/80 border border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/20 transition-all duration-500 overflow-hidden cursor-default hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/10 dark:hover:shadow-black/40 creative-card gradient-outline-hover">
         {/* Oscilloscope background wave */}
         <OscilloscopeWave color={stat.glowColor} active={started} />
 
         {/* Ambient glow */}
         <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-8 rounded-3xl transition-opacity duration-500"
-          style={{ background: `radial-gradient(circle at center, ${stat.glowColor}30, transparent 70%)` }}
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500"
+          style={{ background: `radial-gradient(circle at center, ${stat.glowColor}22, transparent 70%)` }}
         />
 
         {/* Mission unit badge */}

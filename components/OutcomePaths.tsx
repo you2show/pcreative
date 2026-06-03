@@ -206,17 +206,17 @@ const OutcomePaths: React.FC = () => {
                 key={choice.question}
                 href={choice.href}
                 onClick={(event) => navigateToPage(event, choice.href)}
-                className="group relative flex min-h-[9.5rem] flex-col justify-end overflow-hidden rounded-[1.4rem] bg-gray-950 p-5 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/20"
+                className="group relative flex min-h-[9.5rem] flex-col justify-end overflow-hidden rounded-[1.4rem] bg-gray-950 p-5 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/25 creative-card spotlight-hover"
               >
                 <img
                   src={choice.image}
                   alt={t(choice.question, choice.questionKm)}
-                  className="absolute inset-0 h-full w-full object-cover opacity-60 transition-transform duration-700 group-hover:scale-110"
+                  className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-110 group-hover:opacity-75"
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-950/95 via-gray-950/40 to-transparent" />
                 <div className="relative">
-                  <span className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-lg bg-white/15 text-xs font-black backdrop-blur-md transition-colors group-hover:bg-white group-hover:text-gray-950">
+                  <span className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-lg bg-white/15 text-xs font-black backdrop-blur-md transition-all duration-300 group-hover:bg-indigo-500 group-hover:text-white group-hover:scale-110">
                     {index + 1}
                   </span>
                   <p className="text-sm font-black leading-snug font-khmer">{t(choice.question, choice.questionKm)}</p>
@@ -236,9 +236,13 @@ const OutcomePaths: React.FC = () => {
             const Icon = path.icon;
             return (
               <RevealOnScroll key={path.title} delay={index * 80}>
-                <article className={`group relative overflow-hidden rounded-[1.8rem] border bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:bg-gray-950/80 dark:shadow-black/30 ${path.accentBorder} hover:border-opacity-100 dark:border-white/10 dark:hover:border-white/20`}>
-                  {/* Accent top bar */}
-                  <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${path.accent}`} />
+                <article className={`group relative overflow-hidden rounded-[1.8rem] border bg-white shadow-md transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl dark:bg-gray-950/80 dark:shadow-black/30 ${path.accentBorder} hover:border-opacity-100 dark:border-white/10 dark:hover:border-white/20 creative-card gradient-outline-hover`}>
+                  {/* Accent top bar — thickens on hover */}
+                  <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${path.accent} transition-all duration-500 group-hover:h-1.5`} />
+                  {/* Ambient glow reveal on hover */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-600 pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse 60% 40% at 10% 0%, rgba(99,102,241,0.06) 0%, transparent 70%)' }}
+                  />
 
                   <div className="flex flex-col gap-0 md:flex-row">
 
@@ -254,7 +258,7 @@ const OutcomePaths: React.FC = () => {
                           {t(path.tag, path.tagKm)}
                         </span>
                         <div className="ml-auto hidden md:block">
-                          <div className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${path.accent} text-white shadow-lg`}>
+                          <div className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${path.accent} text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl`}>
                             <Icon size={21} />
                           </div>
                         </div>
@@ -332,9 +336,9 @@ const OutcomePaths: React.FC = () => {
                     key={connection.href}
                     href={connection.href}
                     onClick={(event) => navigateToPage(event, connection.href)}
-                    className="group flex items-start gap-3 rounded-[1.1rem] bg-gray-50 p-4 transition-all hover:-translate-y-1 hover:bg-indigo-50 dark:bg-gray-950/70 dark:hover:bg-white/[0.07]"
+                    className="group flex items-start gap-3 rounded-[1.1rem] bg-gray-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-50 hover:shadow-md hover:shadow-indigo-500/10 dark:bg-gray-950/70 dark:hover:bg-white/[0.07] creative-card"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-500 transition-colors group-hover:bg-indigo-500 group-hover:text-white">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-500 transition-all duration-300 group-hover:bg-indigo-500 group-hover:text-white group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-indigo-500/25">
                       <Icon size={19} />
                     </div>
                     <div>

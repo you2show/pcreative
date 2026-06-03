@@ -352,6 +352,133 @@ html.light .animated-blob {
   .play-ring-3 {
     animation: playRing 2.4s ease-out 1.6s infinite;
   }
+
+  /* Pause animated marquees on hover */
+  .hover\:pause:hover {
+    animation-play-state: paused;
+  }
+
+  /* ── Spotlight hover ─────────────────────────────────────────
+     A soft radial light drifts from the top-right into the card
+     center when the user hovers — no JS required.             */
+  .spotlight-hover {
+    position: relative;
+    overflow: hidden;
+  }
+  .spotlight-hover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 80% 60% at 80% 10%,
+      rgba(255, 255, 255, 0.09) 0%,
+      rgba(99, 102, 241, 0.06) 40%,
+      transparent 70%
+    );
+    opacity: 0;
+    transform: translateY(-12px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .spotlight-hover:hover::before {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Coloured glow box-shadow on hover */
+  .glow-hover-indigo {
+    transition: box-shadow 0.35s ease, transform 0.35s ease;
+  }
+  .glow-hover-indigo:hover {
+    box-shadow: 0 0 0 1px rgba(99,102,241,0.35),
+                0 8px 32px rgba(99,102,241,0.22),
+                0 0 60px rgba(99,102,241,0.10);
+    transform: translateY(-3px);
+  }
+
+  .glow-hover-fuchsia {
+    transition: box-shadow 0.35s ease, transform 0.35s ease;
+  }
+  .glow-hover-fuchsia:hover {
+    box-shadow: 0 0 0 1px rgba(168,85,247,0.35),
+                0 8px 32px rgba(168,85,247,0.22),
+                0 0 60px rgba(168,85,247,0.10);
+    transform: translateY(-3px);
+  }
+
+  .glow-hover-emerald {
+    transition: box-shadow 0.35s ease, transform 0.35s ease;
+  }
+  .glow-hover-emerald:hover {
+    box-shadow: 0 0 0 1px rgba(16,185,129,0.35),
+                0 8px 32px rgba(16,185,129,0.22),
+                0 0 60px rgba(16,185,129,0.10);
+    transform: translateY(-3px);
+  }
+
+  .glow-hover-amber {
+    transition: box-shadow 0.35s ease, transform 0.35s ease;
+  }
+  .glow-hover-amber:hover {
+    box-shadow: 0 0 0 1px rgba(245,158,11,0.35),
+                0 8px 32px rgba(245,158,11,0.22),
+                0 0 60px rgba(245,158,11,0.10);
+    transform: translateY(-3px);
+  }
+
+  /* Creative card — shimmer sweep + subtle gradient border flash */
+  .creative-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .creative-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 35%,
+      rgba(255, 255, 255, 0.07) 48%,
+      rgba(99, 102, 241, 0.06) 52%,
+      transparent 65%
+    );
+    transform: translateX(-110%);
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 2;
+  }
+  .creative-card:hover::after {
+    animation: shimmerSweep 0.65s ease forwards;
+  }
+
+  /* Gradient outline flash on hover (overlay technique) */
+  .gradient-outline-hover {
+    position: relative;
+  }
+  .gradient-outline-hover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1.5px solid transparent;
+    background: linear-gradient(135deg, rgba(99,102,241,0.6), rgba(168,85,247,0.5), rgba(236,72,153,0.4)) border-box;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .gradient-outline-hover:hover::before {
+    opacity: 1;
+  }
 }
 
 /* Smooth premium hero headline motion */
