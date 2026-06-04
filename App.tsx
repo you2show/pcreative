@@ -58,6 +58,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 const CostEstimator = React.lazy(() => import('./components/CostEstimator'));
 const ClientPortal = React.lazy(() => import('./components/ClientPortal'));
+const TeamPage = React.lazy(() => import('./components/TeamPage'));
 
 const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
 
@@ -136,6 +137,8 @@ function AppContent() {
             setActivePage('company');
         } else if (pathWithoutLang === '/about' || pathWithoutLang.startsWith('/about/')) {
             setActivePage('about');
+        } else if (pathWithoutLang === '/team' || pathWithoutLang.startsWith('/team/')) {
+            setActivePage('team');
         } else if (pathWithoutLang === '/blog' || pathWithoutLang.startsWith('/blog/') || pathWithoutLang === '/insights' || pathWithoutLang.startsWith('/insights/')) {
             setActivePage('blog');
         } else if (pathWithoutLang === '/contact' || pathWithoutLang.startsWith('/contact/') || pathWithoutLang === '/estimator' || pathWithoutLang.startsWith('/estimator/')) {
@@ -323,6 +326,11 @@ function AppContent() {
     if (activePage === 'projects') return renderProjectsPage();
     if (activePage === 'company') return renderCompanyPage();
     if (activePage === 'about') return renderAboutPage();
+    if (activePage === 'team') return (
+      <Suspense fallback={<ComponentFallback />}>
+        <TeamPage />
+      </Suspense>
+    );
     if (activePage === 'blog') return renderBlogPage();
     if (activePage === 'contact') return renderContactPage();
     if (activePage === 'careers') return renderCareersPage();

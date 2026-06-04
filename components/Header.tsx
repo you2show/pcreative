@@ -49,6 +49,7 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
     { key: 'services', name: t('Services', 'សេវាកម្ម'), href: '/services' },
     { key: 'projects', name: t('Projects', 'គម្រោង'), href: '/projects' },
     { key: 'about', name: t('About', 'អំពីយើង'), href: '/about' },
+    { key: 'team', name: t('Team', 'ក្រុម'), href: '/team' },
     { key: 'blog', name: t('Blog', 'អត្ថបទ'), href: '/blog' },
     { key: 'careers', name: t('Careers', 'ការងារ'), href: '/careers' },
     { key: 'contact', name: t('Contact', 'ទំនាក់ទំនង'), href: '/contact' },
@@ -74,6 +75,7 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
     else if (path === '/projects' || path.startsWith('/projects/') || path === '/portfolio' || path.startsWith('/portfolio/')) setActiveSection('projects');
     else if (path === '/company' || path.startsWith('/company/')) setActiveSection('company');
     else if (path === '/about' || path.startsWith('/about/')) setActiveSection('about');
+    else if (path === '/team' || path.startsWith('/team/')) setActiveSection('team');
     else if (path === '/blog' || path.startsWith('/blog/') || path === '/insights' || path.startsWith('/insights/')) setActiveSection('blog');
     else if (path === '/contact' || path.startsWith('/contact/') || path === '/estimator' || path.startsWith('/estimator/')) setActiveSection('contact');
     else if (path === '/careers' || path.startsWith('/careers/')) setActiveSection('careers');
