@@ -26,7 +26,6 @@ import FAQ from './components/FAQ';
 import StickyCTA, { ConsultationModal } from './components/StickyCTA';
 import ExitIntentPopup from './components/ExitIntentPopup';
 import VideoShowreel from './components/VideoShowreel';
-import HomeConversion from './components/HomeConversion';
 import Preloader from './components/Preloader';
 import ChatbotAI from './components/ChatbotAI';
 import SkipToContent from './components/SkipToContent';
@@ -47,6 +46,8 @@ import CursorGallery from './components/CursorGallery';
 import ClientWins from './components/ClientWins';
 import StudioLocation from './components/StudioLocation';
 import ClosingCTA from './components/ClosingCTA';
+import HomeVisualGateway from './components/HomeVisualGateway';
+import HomeEssentials from './components/HomeEssentials';
 
 // Pages
 import Careers from './components/Careers';
@@ -202,14 +203,18 @@ function AppContent() {
       <LiveStudioBar />
       {/* 3. Work Marquee — dual-row proof in motion */}
       <WorkMarquee />
-      {/* 4. Why We're Different */}
-      <SectionTransition variant="fadeScale"><HomeConversion /></SectionTransition>
-      {/* 5. Transformation Gallery — Before/After with category filters */}
-      <SectionTransition delay={0.1} variant="fadeBlur"><BeforeAfterSlider /></SectionTransition>
-      {/* 6. Client Wins — compact teaser (3 quotes) */}
-      <SectionTransition delay={0.15} variant="fadeScale"><ClientWins compact /></SectionTransition>
-      {/* 7. Bold Closing CTA */}
-      <SectionTransition delay={0.2} variant="fadeScale"><ClosingCTA /></SectionTransition>
+      {/* 4. Visual Gateway — reuse hidden page-entry section as an interactive homepage menu */}
+      <SectionTransition delay={0.05} variant="revealMask"><HomeVisualGateway /></SectionTransition>
+      {/* 5. Essentials — visual-only choices with almost no copy */}
+      <SectionTransition delay={0.1} variant="cinematicRise"><HomeEssentials /></SectionTransition>
+      {/* 6. Cursor Gallery — hover-preview portfolio effect */}
+      <SectionTransition delay={0.15} variant="parallaxRight"><CursorGallery /></SectionTransition>
+      {/* 7. Transformation Gallery — Before/After with category filters */}
+      <SectionTransition delay={0.1} variant="revealMask"><BeforeAfterSlider /></SectionTransition>
+      {/* 8. Client Wins — compact teaser (3 quotes) */}
+      <SectionTransition delay={0.15} variant="cinematicRise"><ClientWins compact /></SectionTransition>
+      {/* 9. Bold Closing CTA */}
+      <SectionTransition delay={0.2} variant="depthPop"><ClosingCTA /></SectionTransition>
     </>
   );
 

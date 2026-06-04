@@ -206,7 +206,7 @@ const OutcomePaths: React.FC = () => {
                 key={choice.question}
                 href={choice.href}
                 onClick={(event) => navigateToPage(event, choice.href)}
-                className="group relative flex min-h-[9.5rem] flex-col justify-end overflow-hidden rounded-[1.4rem] bg-gray-950 p-5 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/25 creative-card spotlight-hover"
+                className="group relative flex min-h-[9.5rem] flex-col justify-end overflow-hidden rounded-[1.4rem] bg-gray-950 p-5 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/25 creative-card spotlight-hover tilt-hover"
               >
                 <img
                   src={choice.image}
@@ -236,7 +236,7 @@ const OutcomePaths: React.FC = () => {
             const Icon = path.icon;
             return (
               <RevealOnScroll key={path.title} delay={index * 80}>
-                <article className={`group relative overflow-hidden rounded-[1.8rem] border bg-white shadow-md transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl dark:bg-gray-950/80 dark:shadow-black/30 ${path.accentBorder} hover:border-opacity-100 dark:border-white/10 dark:hover:border-white/20 creative-card gradient-outline-hover`}>
+                <article className={`group relative overflow-hidden rounded-[1.8rem] border bg-white shadow-md transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl dark:bg-gray-950/80 dark:shadow-black/30 ${path.accentBorder} hover:border-opacity-100 dark:border-white/10 dark:hover:border-white/20 creative-card gradient-outline-hover tilt-hover`}>
                   {/* Accent top bar — thickens on hover */}
                   <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${path.accent} transition-all duration-500 group-hover:h-1.5`} />
                   {/* Ambient glow reveal on hover */}
