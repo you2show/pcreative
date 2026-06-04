@@ -280,18 +280,29 @@ function AppContent() {
     </>
   );
 
+  const renderCareersPage = () => (
+    <>
+      <PageHero
+        eyebrow={t('Join our team', 'ចូលរួមក្រុមការងារ')}
+        title={t('Work on things that', 'ធ្វើការលើអ្វីដែល')}
+        accent={t('matter.', 'មានន័យ')}
+        description={t('We are always looking for talented individuals passionate about design, technology, and innovation. Help us build the future of Cambodia\'s digital landscape.', 'យើងតែងតែស្វែងរកបុគ្គលដែលមានទេពកោសល្យ និងចំណង់ចំណូលចិត្តលើការរចនា បច្ចេកវិទ្យា និងការច្នៃប្រឌិត។')}
+      />
+      <SectionTransition variant="fadeScale">
+        <div className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          <Careers />
+        </div>
+      </SectionTransition>
+    </>
+  );
+
   const renderMainContent = () => {
     if (activePage === 'services') return renderServicesPage();
     if (activePage === 'projects') return renderProjectsPage();
     if (activePage === 'company') return renderCompanyPage();
     if (activePage === 'blog') return renderBlogPage();
     if (activePage === 'contact') return renderContactPage();
-    if (activePage === 'careers') return (
-      <Careers onClose={() => {
-        window.history.pushState({}, '', '/');
-        window.dispatchEvent(new PopStateEvent('popstate'));
-      }} />
-    );
+    if (activePage === 'careers') return renderCareersPage();
     return renderHome();
   };
 

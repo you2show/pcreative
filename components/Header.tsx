@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
   const navLinks = [
     { key: 'services', name: t('Services', 'សេវាកម្ម'), href: '/services' },
     { key: 'projects', name: t('Projects', 'គម្រោង'), href: '/projects' },
-    { key: 'company', name: t('About', 'អំពីយើង'), href: '/company' },
+    { key: 'company', name: t('About', 'អំពីយើង'), href: '/about' },
     { key: 'blog', name: t('Blog', 'អត្ថបទ'), href: '/blog' },
     { key: 'careers', name: t('Careers', 'ការងារ'), href: '/careers' },
     { key: 'contact', name: t('Contact', 'ទំនាក់ទំនង'), href: '/contact' },
