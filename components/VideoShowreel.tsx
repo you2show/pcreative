@@ -68,13 +68,13 @@ const VideoShowreel: React.FC = () => {
           <h2 className="mt-3 text-3xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer">
             {t('60 Seconds.', '60 វិនាទី។')}{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">
-              {t('See What We Build.', 'មើលអ្វីដែលយើងបង្កើត។')}
+              {t('See What We Build.', 'មើលអ្វីដែលយើងបង្កើត')}
             </span>
           </h2>
           <p className="mt-4 text-gray-600 dark:text-gray-400 font-khmer text-sm md:text-base max-w-xl mx-auto">
             {t(
               'Brands. Websites. Architecture. Media. One minute shows it all.',
-              'Brand។ វេបសាយ។ ស្ថាបត្យ។ Media។ មួយនាទីបង្ហាញទាំងអស់។'
+              'Brand, វេបសាយ, ស្ថាបត្យ, Media, មួយនាទីបង្ហាញទាំងអស់'
             )}
           </p>
         </RevealOnScroll>

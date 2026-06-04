@@ -187,7 +187,7 @@ const Hero: React.FC = () => {
                     </span>
                     <span className="hero-subline block text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-500 dark:text-gray-300 tracking-[-0.01em]">
                         <ScrambleText
-                          text={t('Seen & trusted — in days, not months.', 'ឃើញ & ទុកចិត្ត — ក្នុងថ្ងៃ មិនមែនខែ។')}
+                          text={t('Seen & trusted — in days, not months.', 'ឃើញ & ទុកចិត្ត — ក្នុងថ្ងៃ មិនមែនខែ')}
                           delay={450}
                           duration={900}
                         />
