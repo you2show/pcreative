@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
   const navLinks = [
     { key: 'services', name: t('Services', 'សេវាកម្ម'), href: '/services' },
     { key: 'projects', name: t('Projects', 'គម្រោង'), href: '/projects' },
-    { key: 'company', name: t('About', 'អំពីយើង'), href: '/company' },
+    { key: 'about', name: t('About', 'អំពីយើង'), href: '/about' },
     { key: 'blog', name: t('Blog', 'អត្ថបទ'), href: '/blog' },
     { key: 'careers', name: t('Careers', 'ការងារ'), href: '/careers' },
     { key: 'contact', name: t('Contact', 'ទំនាក់ទំនង'), href: '/contact' },
@@ -72,7 +72,8 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
     const path = getPathWithoutLanguage();
     if (path === '/services' || path.startsWith('/services/')) setActiveSection('services');
     else if (path === '/projects' || path.startsWith('/projects/') || path === '/portfolio' || path.startsWith('/portfolio/')) setActiveSection('projects');
-    else if (path === '/company' || path.startsWith('/company/') || path === '/about' || path.startsWith('/about/')) setActiveSection('company');
+    else if (path === '/company' || path.startsWith('/company/')) setActiveSection('company');
+    else if (path === '/about' || path.startsWith('/about/')) setActiveSection('about');
     else if (path === '/blog' || path.startsWith('/blog/') || path === '/insights' || path.startsWith('/insights/')) setActiveSection('blog');
     else if (path === '/contact' || path.startsWith('/contact/') || path === '/estimator' || path.startsWith('/estimator/')) setActiveSection('contact');
     else if (path === '/careers' || path.startsWith('/careers/')) setActiveSection('careers');
