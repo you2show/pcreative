@@ -289,11 +289,11 @@ const ClientWins: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
                 {t('80+ verified clients', 'អតិថិជនជាង 80+ បានផ្ទៀងផ្ទាត់')}
               </p>
               <a
-                href="/projects"
-                onClick={e => { e.preventDefault(); window.history.pushState({}, '', '/projects'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                onClick={e => { e.preventDefault(); window.history.pushState({}, '', '/company'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                href="/company"
                 className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black transition-colors font-khmer"
               >
-                {t('See all work →', 'មើលស្នាដៃទាំងអស់ →')}
+                {t('Meet our clients →', 'ស្គាល់អតិថិជន →')}
               </a>
             </div>
           </RevealOnScroll>

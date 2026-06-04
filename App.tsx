@@ -286,6 +286,12 @@ function AppContent() {
     if (activePage === 'company') return renderCompanyPage();
     if (activePage === 'blog') return renderBlogPage();
     if (activePage === 'contact') return renderContactPage();
+    if (activePage === 'careers') return (
+      <Careers onClose={() => {
+        window.history.pushState({}, '', '/');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }} />
+    );
     return renderHome();
   };
 
@@ -329,7 +335,6 @@ function AppContent() {
         <ClientPortal isOpen={isClientPortalOpen} onClose={() => setIsClientPortalOpen(false)} />
       </Suspense>
 
-      {activePage === 'careers' && <Careers onClose={() => { if (window.location.pathname.includes('/careers')) { window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); } else { window.location.hash = ''; } }} />}
       {activePage === 'privacy' && <PrivacyPolicy onClose={() => window.location.hash = ''} />}
 
       {isAdminOpen && (
