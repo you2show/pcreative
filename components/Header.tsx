@@ -208,7 +208,7 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
   return (
     <>
       <header className="fixed top-6 left-0 right-0 z-50 transition-all duration-300 flex justify-center px-4">
-        <div className={`flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2.5 md:py-3 rounded-full border transition-all duration-300 w-full max-w-7xl ${isScrolled ? 'bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-gray-200 dark:border-white/10 shadow-2xl shadow-indigo-500/10' : 'bg-gray-100 dark:bg-white/5 backdrop-blur-md border-gray-100 dark:border-white/5'}`}>
+        <div className={`flex items-center justify-between px-4 sm:px-6 lg:px-8 py-1.5 md:py-2 rounded-full border transition-all duration-300 w-full max-w-7xl ${isScrolled ? 'bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-gray-200 dark:border-white/10 shadow-2xl shadow-indigo-500/10' : 'bg-gray-100 dark:bg-white/5 backdrop-blur-md border-gray-100 dark:border-white/5'}`}>
           <a href="/" onClick={(e) => navigateTo(e, '/')} className="flex items-center gap-2 group relative z-50">
             <PonloeLogo size={40} />
             <span className="flex items-center">

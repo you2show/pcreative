@@ -9,7 +9,7 @@ interface HeroVisualsProps {
   onMemberClick: (member: TeamMember) => void;
 }
 
-const NODE_SIZE = 'h-20 w-20';
+const NODE_SIZE = 'h-14 w-14';
 
 const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
   const { t } = useLanguage();
@@ -130,7 +130,7 @@ const HeroVisuals: React.FC<HeroVisualsProps> = ({ team, onMemberClick }) => {
   const getDynamicPosition = (index: number, total: number, currentRotation: number) => {
     const safeTotal = Math.max(total, 1);
     const angle = (index / safeTotal) * 2 * Math.PI - (Math.PI / 2) + currentRotation;
-    const radiusBase = safeTotal > 7 ? 40 : 37;
+    const radiusBase = safeTotal > 7 ? 34 : 31;
     const radiusVar = index % 2 === 0 ? 3 : -2.5;
     const radius = radiusBase + radiusVar;
     const left = 50 + radius * Math.cos(angle);

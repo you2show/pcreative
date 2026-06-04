@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
 
-// Returns true if the string only contains ASCII printable characters
-const isLatinOnly = (str: string) => /^[\x00-\x7F]*$/.test(str);
+// Returns true if the string only contains ASCII printable characters or common typographic punctuation
+const isLatinOnly = (str: string) => /^[\x00-\x7F\u2013\u2014\u2018\u2019\u201C\u201D\u2026]*$/.test(str);
 
 interface ScrambleTextProps {
   text: string;
