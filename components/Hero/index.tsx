@@ -1,14 +1,12 @@
 
-import React, { useRef, useState, useEffect, Suspense } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useData } from '../../contexts/DataContext';
-import { MemberDetailModal, AuthorArticlesModal, ArticleDetailModal } from '../TeamModals';
-import { TeamMember, Post } from '../../types';
 import ScrambleText from '../ScrambleText';
 import { Palette, Globe, Building2, PenTool, Camera, Wind, Languages, Layout, Video } from 'lucide-react';
 
 import HeroActions from './HeroActions';
 import Hero3DScene from '../Hero3DScene';
+import HeroLaunchPanel from './HeroLaunchPanel';
 
 // Rotating words that cycle in the hero headline
 const ROTATING_WORDS_EN = ['Websites', 'Brands', 'Apps', 'Campaigns', 'Experiences'];
@@ -46,7 +44,6 @@ const RotatingWord: React.FC<{ t: (en: string, km?: string) => string }> = ({ t 
   );
 };
 
-const HeroVisuals = React.lazy(() => import('./HeroVisuals'));
 
 // Brand Reel Ticker: interactive pill-shaped service cards with icons and tooltips
 const BRAND_REEL_SERVICES = [
@@ -114,33 +111,9 @@ const HeroTicker: React.FC = () => {
 
 const Hero: React.FC = () => {
   const { t } = useLanguage();
-  const { team = [], insights = [] } = useData();
-
-  // Modal States
-  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
-  const [authorPosts, setAuthorPosts] = useState<Post[] | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   // Parallax Refs for Background
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Lock body scroll
-  useEffect(() => {
-    if (selectedMember || authorPosts || selectedPost) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [selectedMember, authorPosts, selectedPost]);
-
-  const handleShowArticles = (member: TeamMember) => {
-      if (!insights) return;
-      const posts = insights.filter(p => p.authorId === member.id);
-      setAuthorPosts(posts);
-  };
 
   return (
     <>
@@ -207,37 +180,11 @@ const Hero: React.FC = () => {
             <HeroActions t={t} />
           </div>
 
-          {/* Right Content - Visuals */}
-          <Suspense fallback={<div className="min-h-[220px] lg:h-[600px] w-full" />}>
-            <HeroVisuals team={team} onMemberClick={setSelectedMember} />
-          </Suspense>
+          {/* Right Content - Interactive launch system. Team constellation moved to the dedicated Team page. */}
+          <HeroLaunchPanel />
         </div>
       </div>
 
-      {/* Modals */}
-      {selectedMember && (
-          <MemberDetailModal
-            member={selectedMember}
-            onClose={() => setSelectedMember(null)}
-            onShowArticles={handleShowArticles}
-          />
-      )}
-
-      {authorPosts && selectedMember && (
-          <AuthorArticlesModal
-             author={selectedMember}
-             posts={authorPosts}
-             onClose={() => setAuthorPosts(null)}
-             onSelectPost={setSelectedPost}
-          />
-      )}
-
-      {selectedPost && (
-          <ArticleDetailModal
-            post={selectedPost}
-            onClose={() => setSelectedPost(null)}
-          />
-      )}
 
     </section>
 

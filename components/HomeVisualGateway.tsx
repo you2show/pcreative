@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ArrowRight, BriefcaseBusiness, Images, MessageCircle } from 'lucide-react';
+import { ArrowRight, BriefcaseBusiness, Images, MessageCircle, UsersRound } from 'lucide-react';
 import { useData } from '../contexts/DataContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import RevealOnScroll from './RevealOnScroll';
@@ -23,14 +23,16 @@ const fallbackImages = [
   'https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=85&w=1400',
   'https://images.unsplash.com/photo-1559028006-448665bd7c7f?auto=format&fit=crop&q=85&w=1400',
   'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=85&w=1400',
+  'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=85&w=1400',
 ];
 
 const HomeVisualGateway: React.FC = () => {
   const { t } = useLanguage();
-  const { projects = [], services = [] } = useData();
+  const { projects = [], services = [], team = [] } = useData();
 
   const projectImages = useMemo(() => projects.map(project => project.image).filter(Boolean), [projects]);
   const serviceCount = Math.max(services.length, 6);
+  const teamCount = Math.max(team.length, 1);
 
   const gateways = [
     {
@@ -53,7 +55,18 @@ const HomeVisualGateway: React.FC = () => {
       titleKm: 'ស្នាដៃ',
       caption: 'See visual proof',
       captionKm: 'មើលភស្តុតាងជារូប',
-      className: 'min-h-[250px]',
+      className: 'min-h-[230px]',
+    },
+    {
+      href: '/team',
+      image: team[0]?.coverImage || team[0]?.image || fallbackImages[3],
+      icon: UsersRound,
+      eyebrow: `${teamCount}+ minds`,
+      title: 'Team',
+      titleKm: 'ក្រុម',
+      caption: 'Meet the makers',
+      captionKm: 'ស្គាល់អ្នកបង្កើត',
+      className: 'min-h-[230px]',
     },
     {
       href: '/contact',
@@ -64,7 +77,7 @@ const HomeVisualGateway: React.FC = () => {
       titleKm: 'ទំនាក់ទំនង',
       caption: 'Start with one click',
       captionKm: 'ចាប់ផ្តើមដោយចុចមួយ',
-      className: 'min-h-[250px]',
+      className: 'min-h-[230px]',
     },
   ];
 
