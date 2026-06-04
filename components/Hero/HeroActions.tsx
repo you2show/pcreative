@@ -96,12 +96,12 @@ const HeroActions: React.FC<HeroActionsProps> = ({ t }) => {
         {/* Stats */}
         <div className="pt-8 flex flex-wrap items-center justify-center lg:justify-start gap-8 border-t border-gray-100 dark:border-white/5">
             <div className="text-center lg:text-left">
-                <h4 className="text-3xl font-black text-gray-900 dark:text-white"><CountUp end={50} duration={2000} suffix="+" /></h4>
-                <p className="text-xs text-gray-500 uppercase tracking-wider font-bold font-khmer">{t('Projects', 'គម្រោង')}</p>
+                <h4 className="text-3xl font-black text-gray-900 dark:text-white"><CountUp end={127} duration={2000} suffix="+" /></h4>
+                <p className="text-xs text-gray-500 uppercase tracking-wider font-bold font-khmer">{t('Brands Launched', 'ម៉ាកបានដំណើរការ')}</p>
             </div>
             <div className="text-center lg:text-left">
-                <h4 className="text-3xl font-black text-gray-900 dark:text-white"><CountUp end={99} duration={2000} suffix="%" /></h4>
-                <p className="text-xs text-gray-500 uppercase tracking-wider font-bold font-khmer">{t('Satisfaction', 'ការពេញចិត្ត')}</p>
+                <h4 className="text-3xl font-black text-gray-900 dark:text-white"><CountUp end={48} duration={1800} suffix="h" /></h4>
+                <p className="text-xs text-gray-500 uppercase tracking-wider font-bold font-khmer">{t('First Draft', 'ដ្រាហ្វដំបូង')}</p>
             </div>
             <div className="flex items-center gap-1 w-full justify-center lg:w-auto pl-4 border-l border-gray-100 dark:border-white/5">
                 <div className="flex -space-x-2">
@@ -109,7 +109,7 @@ const HeroActions: React.FC<HeroActionsProps> = ({ t }) => {
                 </div>
                 <div className="ml-3">
                     <div className="flex text-yellow-400"><Star size={12} fill="currentColor" /><Star size={12} fill="currentColor" /><Star size={12} fill="currentColor" /><Star size={12} fill="currentColor" /><Star size={12} fill="currentColor" /></div>
-                    <span className="text-[10px] text-gray-600 dark:text-gray-400 font-bold font-khmer">{t('Trusted by partners', 'ដៃគូទុកចិត្ត')}</span>
+                    <span className="text-[10px] text-gray-600 dark:text-gray-400 font-bold font-khmer">{t('Trusted by clients', 'អតិថិជនទុកចិត្ត')}</span>
                 </div>
             </div>
         </div>

@@ -187,7 +187,7 @@ const Hero: React.FC = () => {
                     </span>
                     <span className="hero-subline block text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-500 dark:text-gray-300 tracking-[-0.01em]">
                         <ScrambleText
-                          text={t('With Digital Perfection', 'ដោយភាពល្អឥតខ្ចោះ')}
+                          text={t('Seen & trusted — in days, not months.', 'ឃើញ & ទុកចិត្ត — ក្នុងថ្ងៃ មិនមែនខែ។')}
                           delay={450}
                           duration={900}
                         />
@@ -204,9 +204,9 @@ const Hero: React.FC = () => {
 
             <div className="hero-proof-strip grid max-w-2xl grid-cols-3 gap-3 mx-auto lg:mx-0">
               {[
-                { icon: Image, label: t('Big visuals', 'រូបធំ') },
-                { icon: Sparkles, label: t('Premium mood', 'Mood ស្អាត') },
-                { icon: MousePointer2, label: t('Clear CTA', 'CTA ច្បាស់') },
+                { icon: Sparkles, label: t('Custom pixels', 'Pixel ផ្ទាល់ខ្លួន') },
+                { icon: MousePointer2, label: t('48h first draft', 'ដ្រាហ្វក្នុង 48h') },
+                { icon: Image, label: t('3× languages', 'ភាសា ៣') },
               ].map(({ icon: Icon, label }) => (
                 <div key={label} className="group relative min-h-24 overflow-hidden rounded-3xl border border-gray-200 bg-white/75 p-3 shadow-md backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-indigo-500/20 hover:border-indigo-200/50 dark:border-white/10 dark:bg-white/[0.05] dark:shadow-black/30 dark:hover:border-indigo-400/20 creative-card">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(99,102,241,0.32),transparent_42%)] opacity-0 transition-opacity group-hover:opacity-100" />

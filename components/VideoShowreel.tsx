@@ -63,18 +63,18 @@ const VideoShowreel: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <RevealOnScroll className="text-center mb-12">
           <span className="text-indigo-400 font-bold tracking-wider uppercase text-xs md:text-sm font-khmer">
-            {t('Our Work', 'ស្នាដៃយើង')}
+            {t('Our Showreel', 'ការបង្ហាញស្នាដៃ')}
           </span>
           <h2 className="mt-3 text-3xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer">
-            {t('Watch Our', 'មើល')}{' '}
+            {t('60 Seconds.', '60 វិនាទី។')}{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">
-              {t('Showreel', 'ការបង្ហាញ')}
+              {t('See What We Build.', 'មើលអ្វីដែលយើងបង្កើត។')}
             </span>
           </h2>
           <p className="mt-4 text-gray-600 dark:text-gray-400 font-khmer text-sm md:text-base max-w-xl mx-auto">
             {t(
-              'See our creative process and the results we deliver for clients across Cambodia and beyond.',
-              'សូមមើលដំណើរការច្នៃប្រឌិត និងលទ្ធផលដែលយើងផ្ដល់ជូនអតិថិជននៅទូទាំងកម្ពុជា។'
+              'Brands. Websites. Architecture. Media. One minute shows it all.',
+              'Brand។ វេបសាយ។ ស្ថាបត្យ។ Media។ មួយនាទីបង្ហាញទាំងអស់។'
             )}
           </p>
         </RevealOnScroll>
@@ -97,6 +97,12 @@ const VideoShowreel: React.FC = () => {
                 (e.currentTarget as HTMLImageElement).src =
                   'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200';
               }}
+            />
+
+            {/* Grain texture overlay */}
+            <div
+              className="absolute inset-0 opacity-[0.06] pointer-events-none mix-blend-overlay"
+              style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }}
             />
 
             {/* Dark overlay */}
@@ -135,6 +141,38 @@ const VideoShowreel: React.FC = () => {
                 YouTube
               </div>
             </div>
+          </div>
+        </RevealOnScroll>
+
+        {/* Project type badges */}
+        <RevealOnScroll delay={280}>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            {[
+              { label: 'Branding', labelKm: 'Brand', href: '/projects' },
+              { label: 'Web & App', labelKm: 'Web & App', href: '/projects' },
+              { label: 'Architecture', labelKm: 'ស្ថាបត្យ', href: '/projects' },
+            ].map((badge) => {
+              const handleBadgeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+                e.preventDefault();
+                const prefix = window.location.pathname.split('/').filter(Boolean)[0];
+                const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
+                const langPrefix = prefix && supportedLangs.includes(prefix) ? `/${prefix}` : '';
+                window.history.pushState(null, '', `${langPrefix}${badge.href}`);
+                window.dispatchEvent(new PopStateEvent('popstate'));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              };
+              return (
+                <a
+                  key={badge.label}
+                  href={badge.href}
+                  onClick={handleBadgeClick}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-5 py-2 text-xs font-black text-gray-600 dark:text-gray-400 hover:border-indigo-300 dark:hover:border-indigo-500/40 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all font-khmer"
+                >
+                  {t(badge.label, badge.labelKm)}
+                  <span className="text-gray-300 dark:text-white/20">→</span>
+                </a>
+              );
+            })}
           </div>
         </RevealOnScroll>
       </div>

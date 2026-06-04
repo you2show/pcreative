@@ -7,117 +7,72 @@ interface StatItem {
   suffix: string;
   label: string;
   labelKm: string;
-  missionLabel: string;
-  missionLabelKm: string;
+  emotionalLabel: string;
+  emotionalLabelKm: string;
+  quote: string;
+  quoteKm: string;
+  quoteAuthor: string;
   color: string;
   glowColor: string;
-  unit: string;
 }
 
 const STATS: StatItem[] = [
   {
-    value: 150,
+    value: 127,
     suffix: '+',
-    label: 'Projects Completed',
-    labelKm: 'គម្រោងបានបញ្ចប់',
-    missionLabel: 'MISSIONS COMPLETED',
-    missionLabelKm: 'បេសកកម្មបានបញ្ចប់',
+    label: 'Brands Launched',
+    labelKm: 'ម៉ាកបានដំណើរការ',
+    emotionalLabel: 'Brands that now stand out',
+    emotionalLabelKm: 'ម៉ាកដែលលេចធ្លោ',
+    quote: 'Our brand finally feels like us.',
+    quoteKm: 'ម៉ាករបស់យើងដូចខ្លួនរបស់យើងពិតៗ។',
+    quoteAuthor: 'Sophea K., Bloom Studio',
     color: 'from-indigo-400 to-indigo-600',
     glowColor: '#6366f1',
-    unit: 'OPS',
   },
   {
-    value: 80,
-    suffix: '+',
-    label: 'Happy Clients',
-    labelKm: 'អតិថិជនពេញចិត្ត',
-    missionLabel: 'ALLIES ACQUIRED',
-    missionLabelKm: 'ដៃគូបានទទួល',
+    value: 9,
+    suffix: '/10',
+    label: 'Clients return',
+    labelKm: 'អតិថិជនត្រឡប់មកវិញ',
+    emotionalLabel: '9 out of 10 come back',
+    emotionalLabelKm: '9 ក្នុង 10 ត្រឡប់មកវិញ',
+    quote: 'Fastest agency, always delivers.',
+    quoteKm: 'Agency លឿនបំផុត — ផ្ញើជានិច្ច។',
+    quoteAuthor: 'David C., NovaCo',
     color: 'from-purple-400 to-purple-600',
     glowColor: '#a855f7',
-    unit: 'HUM',
+  },
+  {
+    value: 48,
+    suffix: 'h',
+    label: 'First draft guarantee',
+    labelKm: 'ធានាដ្រាហ្វដំបូង',
+    emotionalLabel: 'Your first idea, in hours',
+    emotionalLabelKm: 'គំនិតដំបូងអ្នក ក្នុងម៉ោង',
+    quote: 'Draft in 48h — I couldn\'t believe it.',
+    quoteKm: 'ដ្រាហ្វក្នុង 48h — ជឿមិនដល់។',
+    quoteAuthor: 'Ahmad R., TechStart KH',
+    color: 'from-pink-400 to-pink-600',
+    glowColor: '#ec4899',
   },
   {
     value: 5,
-    suffix: '+',
-    label: 'Years Experience',
-    labelKm: 'ឆ្នាំបទពិសោធ',
-    missionLabel: 'CYCLES IN ORBIT',
-    missionLabelKm: 'ឆ្នាំក្នុងការគ្រប់គ្រង',
-    color: 'from-pink-400 to-pink-600',
-    glowColor: '#ec4899',
-    unit: 'YRS',
-  },
-  {
-    value: 98,
-    suffix: '%',
-    label: 'Client Satisfaction',
-    labelKm: 'ការពេញចិត្ត',
-    missionLabel: 'MISSION SUCCESS',
-    missionLabelKm: 'ភាពជោគជ័យ',
-    color: 'from-cyan-400 to-cyan-600',
-    glowColor: '#06b6d4',
-    unit: 'STS',
+    suffix: '★',
+    label: 'Average rating',
+    labelKm: 'ការវាយតម្លៃជាមធ្យម',
+    emotionalLabel: 'Perfect score, every time',
+    emotionalLabelKm: 'ពិន្ទុល្អឥតខ្ចោះ — គ្រប់ពេល',
+    quote: 'Perfection is their standard.',
+    quoteKm: 'ភាពល្អឥតខ្ចោះ — គំរូរបស់ពួកគេ។',
+    quoteAuthor: 'Fatima H., Al-Noor',
+    color: 'from-amber-400 to-orange-500',
+    glowColor: '#f59e0b',
   },
 ];
 
-// SVG oscilloscope waveform for each stat card
-const OscilloscopeWave: React.FC<{ color: string; active: boolean }> = ({ color, active }) => {
-  const points = Array.from({ length: 40 }, (_, i) => {
-    const x = (i / 39) * 100;
-    const base = 50;
-    const wave =
-      Math.sin((i / 39) * Math.PI * 6) * 18 +
-      Math.sin((i / 39) * Math.PI * 11 + 1) * 8 +
-      Math.sin((i / 39) * Math.PI * 3 + 0.5) * 6;
-    return `${x},${base + wave}`;
-  }).join(' ');
-
-  return (
-    <svg
-      viewBox="0 0 100 100"
-      className="absolute inset-0 w-full h-full opacity-[0.07] group-hover:opacity-30 transition-opacity duration-500"
-      preserveAspectRatio="none"
-    >
-      <polyline
-        points={points}
-        fill="none"
-        stroke={color}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        style={{
-          strokeDasharray: active ? '0' : '500',
-          strokeDashoffset: active ? '0' : '500',
-          transition: active ? 'stroke-dashoffset 2s ease-out' : 'none',
-        }}
-      />
-    </svg>
-  );
-};
-
-// Animated telemetry ticker dots
-const TelemetryDots: React.FC<{ color: string }> = ({ color }) => (
-  <div className="flex items-center gap-1 mt-2">
-    {Array.from({ length: 8 }).map((_, i) => (
-      <div
-        key={i}
-        className="rounded-full"
-        style={{
-          width: '3px',
-          height: `${4 + Math.abs(Math.sin(i * 0.9)) * 12}px`,
-          backgroundColor: color,
-          opacity: 0.4 + Math.abs(Math.sin(i * 0.9)) * 0.6,
-          animation: `telemetry-bar 1.2s ease-in-out infinite`,
-          animationDelay: `${i * 0.12}s`,
-        }}
-      />
-    ))}
-  </div>
-);
-
 function useCountUp(target: number, duration: number = 1800, start: boolean = false) {
   const [count, setCount] = useState(0);
-
   useEffect(() => {
     if (!start) return;
     let startTime: number | null = null;
@@ -131,80 +86,45 @@ function useCountUp(target: number, duration: number = 1800, start: boolean = fa
     };
     requestAnimationFrame(step);
   }, [start, target, duration]);
-
   return count;
 }
 
-interface StatCardProps {
-  stat: StatItem;
-  index: number;
-  started: boolean;
-}
-
-const StatCard: React.FC<StatCardProps> = ({ stat, index, started }) => {
+const StatCard: React.FC<{ stat: StatItem; index: number; started: boolean }> = ({ stat, index, started }) => {
   const { t } = useLanguage();
-  const count = useCountUp(stat.value, 1800 + index * 200, started);
+  const count = useCountUp(stat.value, 1600 + index * 150, started);
 
   return (
-    <RevealOnScroll variant="fade-up" delay={index * 120}>
-      <div className="relative group text-center p-6 md:p-8 rounded-3xl bg-gray-100 dark:bg-gray-950/80 border border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/20 transition-all duration-500 overflow-hidden cursor-default hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/10 dark:hover:shadow-black/40 creative-card gradient-outline-hover">
-        {/* Oscilloscope background wave */}
-        <OscilloscopeWave color={stat.glowColor} active={started} />
+    <RevealOnScroll variant="fade-up" delay={index * 110}>
+      <div className="group relative flex flex-col text-center px-6 py-8 md:px-8 overflow-hidden">
+        {/* Vertical divider (except last) */}
+        {index < STATS.length - 1 && (
+          <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 h-20 w-px bg-white/10" />
+        )}
 
-        {/* Ambient glow */}
+        {/* Number */}
         <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500"
-          style={{ background: `radial-gradient(circle at center, ${stat.glowColor}22, transparent 70%)` }}
-        />
-
-        {/* Mission unit badge */}
-        <div className="flex items-center justify-center gap-1 mb-3">
-          <div
-            className="w-1.5 h-1.5 rounded-full animate-pulse"
-            style={{ backgroundColor: stat.glowColor }}
-          />
-          <span
-            className="text-[9px] font-black tracking-[0.25em] uppercase opacity-60"
-            style={{ color: stat.glowColor }}
-          >
-            {stat.unit}
-          </span>
-          <div
-            className="w-1.5 h-1.5 rounded-full animate-pulse"
-            style={{ backgroundColor: stat.glowColor, animationDelay: '0.5s' }}
-          />
-        </div>
-
-        {/* Number - odometer style */}
-        <div
-          className={`text-6xl md:text-7xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent tabular-nums mb-1 relative z-10 tracking-tight`}
-          style={{ filter: `drop-shadow(0 0 16px ${stat.glowColor}60)` }}
+          className={`text-5xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent tabular-nums mb-2 tracking-tight`}
+          style={{ filter: `drop-shadow(0 0 20px ${stat.glowColor}50)` }}
         >
           {count}{stat.suffix}
         </div>
 
-        {/* Mission label */}
-        <p
-          className="text-[10px] font-black tracking-[0.2em] uppercase mb-1 opacity-70 relative z-10"
-          style={{ color: stat.glowColor }}
-        >
-          {t(stat.missionLabel, stat.missionLabelKm)}
+        {/* Emotional label */}
+        <p className="text-sm font-black text-white mb-1 font-khmer">
+          {t(stat.emotionalLabel, stat.emotionalLabelKm)}
         </p>
-
-        {/* Human-readable label */}
-        <p className="text-gray-500 dark:text-gray-500 font-khmer text-xs font-medium relative z-10">
+        <p className="text-xs text-white/40 font-khmer mb-4">
           {t(stat.label, stat.labelKm)}
         </p>
 
-        {/* Telemetry bar visualizer */}
-        <div className="flex justify-center relative z-10">
-          <TelemetryDots color={stat.glowColor} />
-        </div>
-
-        {/* Status indicator bottom */}
-        <div className="absolute bottom-3 right-4 flex items-center gap-1 opacity-40">
-          <div className="w-1 h-1 rounded-full bg-green-400 animate-ping" />
-          <span className="text-[8px] text-green-400 font-mono uppercase tracking-widest">LIVE</span>
+        {/* Mini quote */}
+        <div className="mt-auto pt-4 border-t border-white/10">
+          <p className="text-xs italic text-white/50 font-khmer leading-relaxed">
+            "{t(stat.quote, stat.quoteKm)}"
+          </p>
+          <p className="mt-1 text-[10px] font-black text-white/30 uppercase tracking-wider">
+            — {stat.quoteAuthor}
+          </p>
         </div>
       </div>
     </RevealOnScroll>
@@ -231,49 +151,37 @@ const Stats: React.FC = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-16 md:py-24 bg-white dark:bg-gray-950 relative overflow-hidden">
-      {/* Mission control scan line overlay */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.015] dark:opacity-[0.03]"
-        style={{
-          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)',
-          backgroundSize: '100% 4px',
-        }}
-      />
+    <section ref={sectionRef} className="relative overflow-hidden bg-gray-950" aria-labelledby="stats-title">
+      {/* Top border glow */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
+      <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
 
-      {/* Glow blob */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none" />
+      {/* Ambient blobs */}
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-600/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[350px] h-[350px] bg-purple-600/6 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <RevealOnScroll className="text-center mb-12">
-          {/* Mission control header */}
-          <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-[10px] font-black tracking-[0.3em] uppercase text-indigo-400 font-mono">
-              {t('MISSION CONTROL · LIVE', 'ការត្រួតពិនិត្យបេសកកម្ម · ផ្ទាល់')}
-            </span>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+        <RevealOnScroll>
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-black tracking-[0.26em] uppercase text-white/50 mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              {t('Impact by numbers', 'ផលប៉ះពាល់ជាតួលេខ')}
+            </div>
+            <h2 id="stats-title" className="text-3xl md:text-5xl font-black text-white font-khmer">
+              {t('Numbers that', 'តួលេខដែល')}{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+                {t('speak.', 'និយាយ។')}
+              </span>
+            </h2>
           </div>
-
-          <h2 className="mt-2 text-3xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer">
-            {t('Numbers That', 'ចំនួនដែល')}{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-              {t('Speak', 'និយាយ')}
-            </span>
-          </h2>
         </RevealOnScroll>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x-0 divide-y lg:divide-y-0 lg:divide-x divide-white/5 rounded-3xl border border-white/8 bg-white/[0.02] overflow-hidden">
           {STATS.map((stat, index) => (
             <StatCard key={index} stat={stat} index={index} started={started} />
           ))}
         </div>
       </div>
-
-      <style>{`
-        @keyframes telemetry-bar {
-          0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
-          50% { opacity: 1; transform: scaleY(1); }
-        }
-      `}</style>
     </section>
   );
 };

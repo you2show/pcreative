@@ -1,73 +1,75 @@
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
-const ROTATING_UPDATES = [
-  { en: '3 Projects in Production', km: 'គម្រោង ៣ កំពុងដំណើរការ' },
-  { en: 'Last delivery: 2 days ago', km: 'ចុងក្រោយបញ្ជូន: ២ ថ្ងៃមុន' },
-  { en: 'Team available for new briefs', km: 'ក្រុមការងារទទួលគម្រោងថ្មី' },
-  { en: 'Based in Phnom Penh', km: 'ស្ថិតនៅភ្នំពេញ' },
+const ACTIVITY_FEED = [
+  { icon: '🎨', en: "Sokha's brand identity — delivered 2h ago", km: "Brand Identity របស់ Sokha — ប្រគល់ ២ម៉ោងមុន", type: 'deliver' },
+  { icon: '🚀', en: "New project started: HVAC system layout — today", km: "គម្រោងថ្មី: ប្លង់ HVAC — ថ្ងៃនេះ", type: 'start' },
+  { icon: '✏️', en: "Website redesign for NovaCo — in review", km: "Website ថ្មីរបស់ NovaCo — កំពុងពិនិត្យ", type: 'review' },
+  { icon: '📸', en: "Photo reels for Al-Noor Restaurant — shooting Friday", km: "Reel ថតសម្រាប់ Al-Noor — ថតថ្ងៃសុក្រ", type: 'upcoming' },
+  { icon: '✅', en: "3 projects delivered this week", km: "គម្រោង ៣ ត្រូវបានប្រគល់សប្ដាហ៍នេះ", type: 'milestone' },
+  { icon: '🌍', en: "Working with clients across 4 countries", km: "ធ្វើការជាមួយអតិថិជននៅ ៤ ប្រទេស", type: 'global' },
 ];
 
 const LiveStudioBar: React.FC = () => {
   const { t } = useLanguage();
-  const [updateIndex, setUpdateIndex] = useState(0);
+  const [feedIndex, setFeedIndex] = useState(0);
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setVisible(false);
       setTimeout(() => {
-        setUpdateIndex(prev => (prev + 1) % ROTATING_UPDATES.length);
+        setFeedIndex(prev => (prev + 1) % ACTIVITY_FEED.length);
         setVisible(true);
-      }, 350);
-    }, 3500);
+      }, 400);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
-  const current = ROTATING_UPDATES[updateIndex];
+  const current = ACTIVITY_FEED[feedIndex];
 
   return (
     <div
-      className="w-full bg-gradient-to-r from-gray-950 via-indigo-950/80 to-gray-950 border-y border-indigo-500/20 py-2.5 overflow-hidden relative"
+      className="w-full bg-gradient-to-r from-gray-950 via-indigo-950/70 to-gray-950 border-y border-indigo-500/20 py-2.5 overflow-hidden relative"
       role="status"
       aria-live="polite"
-      aria-label="Studio live status"
+      aria-label="Studio activity feed"
     >
       {/* Ambient glow */}
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.12),transparent_70%)]" />
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.10),transparent_70%)]" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex items-center justify-center gap-4 flex-wrap sm:flex-nowrap">
-          {/* Live dot + label */}
+        <div className="flex items-center justify-between gap-4 flex-wrap sm:flex-nowrap">
+
+          {/* Left: Live badge */}
           <div className="flex items-center gap-2 shrink-0">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
             </span>
-            <span className="text-[11px] font-black uppercase tracking-[0.24em] text-red-400">
-              {t('LIVE', 'LIVE')}
+            <span className="text-[10px] font-black uppercase tracking-[0.26em] text-green-400">
+              {t('ACTIVITY', 'សកម្មភាព')}
             </span>
             <span className="h-3 w-px bg-white/10" />
           </div>
 
-          {/* Studio status */}
-          <span className="text-[11px] font-black uppercase tracking-[0.18em] text-white/50">
-            {t('Ponloe Creative Studio', 'ស្ទូឌីយោ Ponloe Creative')}
-          </span>
-          <span className="hidden sm:block h-3 w-px bg-white/10" />
-
-          {/* Rotating update */}
+          {/* Center: rotating activity */}
           <span
-            className={`text-[11px] font-bold text-indigo-300 tracking-wide transition-all duration-350 font-khmer ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}
-            style={{ transitionProperty: 'opacity, transform', transitionDuration: '350ms' }}
+            className={`flex items-center gap-2 text-[11px] font-bold text-white/80 tracking-wide transition-all duration-400 font-khmer flex-1 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}
+            style={{ transitionProperty: 'opacity, transform', transitionDuration: '400ms' }}
           >
-            ✦ {t(current.en, current.km)}
+            <span className="text-sm" aria-hidden="true">{current.icon}</span>
+            {t(current.en, current.km)}
           </span>
 
-          {/* Right side: work hours */}
-          <div className="hidden md:flex items-center gap-2 ml-auto shrink-0">
+          {/* Right: studio name + hours */}
+          <div className="hidden md:flex items-center gap-3 shrink-0">
             <span className="h-3 w-px bg-white/10" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">
+            <span className="text-[10px] font-black uppercase tracking-widest text-indigo-400 font-khmer">
+              Ponloe Creative
+            </span>
+            <span className="h-3 w-px bg-white/10" />
+            <span className="text-[10px] font-bold text-white/30">
               {t('Mon–Sat · 8am–6pm', 'ច័ន្ទ–សៅ · ៨ព្រឹក–៦ល្ងាច')}
             </span>
           </div>

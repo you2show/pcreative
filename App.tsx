@@ -27,7 +27,6 @@ import StickyCTA, { ConsultationModal } from './components/StickyCTA';
 import ExitIntentPopup from './components/ExitIntentPopup';
 import VideoShowreel from './components/VideoShowreel';
 import HomeConversion from './components/HomeConversion';
-import OutcomePaths from './components/OutcomePaths';
 import Preloader from './components/Preloader';
 import ChatbotAI from './components/ChatbotAI';
 import SkipToContent from './components/SkipToContent';
@@ -46,8 +45,8 @@ import LiveStudioBar from './components/LiveStudioBar';
 import BeforeAfterSlider from './components/BeforeAfterSlider';
 import CursorGallery from './components/CursorGallery';
 import ClientWins from './components/ClientWins';
-import SkillBars from './components/SkillBars';
 import StudioLocation from './components/StudioLocation';
+import ClosingCTA from './components/ClosingCTA';
 
 // Pages
 import Careers from './components/Careers';
@@ -194,26 +193,26 @@ function AppContent() {
 
   const renderHome = () => (
     <>
+      {/* 1. Hero */}
       <Hero />
-      {/* Live studio status bar — just below hero */}
+      {/* 2. Real-Time Activity Bar */}
       <LiveStudioBar />
-      {/* Full-bleed work marquee strip */}
+      {/* 3. Work Marquee — dual-row proof in motion */}
       <WorkMarquee />
+      {/* 4. Why We're Different */}
       <SectionTransition variant="fadeScale"><HomeConversion /></SectionTransition>
-      <SectionTransition delay={0.1} variant="slideRight"><OutcomePaths /></SectionTransition>
-      {/* Before / After creative slider */}
-      <SectionTransition delay={0.12} variant="fadeBlur"><BeforeAfterSlider /></SectionTransition>
-      <SectionTransition delay={0.15} variant="fadeUp"><Stats /></SectionTransition>
-      {/* Animated skill bars */}
-      <SectionTransition delay={0.17} variant="fadeScale"><SkillBars /></SectionTransition>
-      <SectionTransition delay={0.2} variant="fadeBlur"><VideoShowreel /></SectionTransition>
-      {/* Cursor-driven gallery */}
-      <SectionTransition delay={0.22} variant="fadeUp"><CursorGallery /></SectionTransition>
-      {/* Client wins floating cards */}
-      <SectionTransition delay={0.23} variant="fadeScale"><ClientWins /></SectionTransition>
-      <SectionTransition delay={0.25} variant="fadeScale"><Testimonials /></SectionTransition>
-      {/* Studio location card */}
-      <SectionTransition delay={0.27} variant="fadeUp"><StudioLocation /></SectionTransition>
+      {/* 5. Transformation Gallery — Before/After with category filters */}
+      <SectionTransition delay={0.1} variant="fadeBlur"><BeforeAfterSlider /></SectionTransition>
+      {/* 6. Stats — emotional dark band */}
+      <SectionTransition delay={0.12} variant="fadeUp"><Stats /></SectionTransition>
+      {/* 7. Video Showreel */}
+      <SectionTransition delay={0.15} variant="fadeBlur"><VideoShowreel /></SectionTransition>
+      {/* 8. Unified Client Wins + Testimonials masonry */}
+      <SectionTransition delay={0.18} variant="fadeScale"><ClientWins /></SectionTransition>
+      {/* 9. Studio Location — reframed */}
+      <SectionTransition delay={0.22} variant="fadeUp"><StudioLocation /></SectionTransition>
+      {/* 10. Bold Closing CTA */}
+      <SectionTransition delay={0.25} variant="fadeScale"><ClosingCTA /></SectionTransition>
     </>
   );
 
