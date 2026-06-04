@@ -50,6 +50,7 @@ import ClosingCTA from './components/ClosingCTA';
 
 // Pages
 import Careers from './components/Careers';
+import About from './components/About';
 import PrivacyPolicy from './components/PrivacyPolicy';
 
 // Lazy Load Heavy Components
@@ -130,8 +131,10 @@ function AppContent() {
             setActivePage('services');
         } else if (pathWithoutLang === '/projects' || pathWithoutLang.startsWith('/projects/') || pathWithoutLang === '/portfolio' || pathWithoutLang.startsWith('/portfolio/')) {
             setActivePage('projects');
-        } else if (pathWithoutLang === '/company' || pathWithoutLang.startsWith('/company/') || pathWithoutLang === '/about' || pathWithoutLang.startsWith('/about/') || hash === '#about') {
+        } else if (pathWithoutLang === '/company' || pathWithoutLang.startsWith('/company/') || hash === '#about') {
             setActivePage('company');
+        } else if (pathWithoutLang === '/about' || pathWithoutLang.startsWith('/about/')) {
+            setActivePage('about');
         } else if (pathWithoutLang === '/blog' || pathWithoutLang.startsWith('/blog/') || pathWithoutLang === '/insights' || pathWithoutLang.startsWith('/insights/')) {
             setActivePage('blog');
         } else if (pathWithoutLang === '/contact' || pathWithoutLang.startsWith('/contact/') || pathWithoutLang === '/estimator' || pathWithoutLang.startsWith('/estimator/')) {
@@ -280,6 +283,20 @@ function AppContent() {
     </>
   );
 
+  const renderAboutPage = () => (
+    <>
+      <PageHero
+        eyebrow={t('The vision', 'ចក្ខុវិស័យ')}
+        title={t('We don\'t just design.', 'យើងមិនគ្រាន់តែរចនា')}
+        accent={t('We define.', 'យើងកំណត់')}
+        description={t('Ponloe Creative is a digital alchemy lab where code meets art, and imagination becomes infrastructure.', 'Ponloe Creative គឺជាមន្ទីរពិសោធន៍គីមីសាស្ត្រឌីជីថល ដែលកូដជួបជាមួយសិល្បៈ ហើយការស្រមើលស្រមៃក្លាយជាហេដ្ឋារចនាសម្ព័ន្ធពិតប្រាកដ។')}
+      />
+      <SectionTransition variant="fadeScale">
+        <About />
+      </SectionTransition>
+    </>
+  );
+
   const renderCareersPage = () => (
     <>
       <PageHero
@@ -300,6 +317,7 @@ function AppContent() {
     if (activePage === 'services') return renderServicesPage();
     if (activePage === 'projects') return renderProjectsPage();
     if (activePage === 'company') return renderCompanyPage();
+    if (activePage === 'about') return renderAboutPage();
     if (activePage === 'blog') return renderBlogPage();
     if (activePage === 'contact') return renderContactPage();
     if (activePage === 'careers') return renderCareersPage();

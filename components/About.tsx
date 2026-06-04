@@ -1,15 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import PageOverlay from './PageOverlay';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useData } from '../contexts/DataContext';
 import { Users, Lightbulb, Heart, Target, Sparkles, Award, Zap, Fingerprint, ArrowRight, ChevronRight } from 'lucide-react';
 import RevealOnScroll from './RevealOnScroll';
 import { MemberDetailModal, AuthorArticlesModal, ArticleDetailModal } from './TeamModals';
 import { TeamMember, Post } from '../types';
-
-interface AboutProps {
-  onClose: () => void;
-}
 
 // Internal CountUp Component
 const CountUp: React.FC<{ end: number, duration: number, suffix?: string }> = ({ end, duration, suffix = '' }) => {
@@ -129,7 +124,7 @@ const TeamStack: React.FC<TeamStackProps> = ({ onMemberSelect }) => {
 };
 
 
-const About: React.FC<AboutProps> = ({ onClose }) => {
+const About: React.FC = () => {
   const { t, language } = useLanguage();
   const { team = [], insights = [] } = useData();
 
@@ -145,7 +140,7 @@ const About: React.FC<AboutProps> = ({ onClose }) => {
   };
 
   return (
-    <PageOverlay title={t("The Vision", "ចក្ខុវិស័យ")} bgText="ABOUT" onClose={onClose}>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         {/* Main Content Wrapper with Blur Effect */}
         <div className={`transition-all duration-500 ease-in-out ${selectedMember || selectedPost ? 'blur-md brightness-50 pointer-events-none select-none' : ''}`}>
             <div className="max-w-7xl mx-auto pb-20">
@@ -304,7 +299,7 @@ const About: React.FC<AboutProps> = ({ onClose }) => {
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 font-khmer">{t("Ready to make history?", "ត្រៀមខ្លួនបង្កើតប្រវត្តិសាស្ត្រហើយឬនៅ?")}</h2>
                     <button 
-                        onClick={() => { onClose(); window.history.pushState(null, '', `/${language}/contact`); window.dispatchEvent(new Event('popstate')); }}
+                        onClick={() => { window.history.pushState(null, '', `/${language}/contact`); window.dispatchEvent(new PopStateEvent('popstate')); }}
                         className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white text-black rounded-full font-bold text-lg hover:bg-gray-200 transition-all overflow-hidden"
                     >
                         <span className="relative z-10 font-khmer">{t("Start Your Project", "ចាប់ផ្តើមគម្រោងរបស់អ្នក")}</span>
@@ -339,7 +334,7 @@ const About: React.FC<AboutProps> = ({ onClose }) => {
             onClose={() => setSelectedPost(null)}
           />
         )}
-    </PageOverlay>
+    </div>
   );
 };
 
