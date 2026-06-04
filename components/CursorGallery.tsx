@@ -116,10 +116,10 @@ const CursorGallery: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
             <div>
               <span className="text-[11px] font-black uppercase tracking-[0.26em] text-indigo-500 dark:text-indigo-400 font-khmer">
-                {t('Featured Projects', 'គម្រោងពិសេស')}
+                {t('Interactive hover gallery', 'Gallery hover អន្តរកម្ម')}
               </span>
               <h2 id="cursor-gallery-title" className="mt-2 text-4xl md:text-5xl font-black leading-tight tracking-[-0.04em] text-gray-950 dark:text-white font-khmer">
-                {t('Hover to preview.', 'Hover ដើម្បីមើល។')}
+                {t('Let the cursor reveal the work.', 'ឲ្យ cursor បង្ហាញស្នាដៃ។')}
                 <span className="block text-gray-400 dark:text-gray-500 font-medium text-2xl md:text-3xl mt-1">
                   {t('Click to explore.', 'ចុចដើម្បីស្វែងយល់។')}
                 </span>
@@ -143,7 +143,7 @@ const CursorGallery: React.FC = () => {
               <a
                 href={project.href}
                 onClick={handleNavigate}
-                className="group relative flex items-center justify-between py-5 md:py-6 gap-6 transition-all duration-300 hover:px-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-white/[0.03]"
+                className="group relative flex items-center justify-between gap-6 rounded-2xl py-5 transition-all duration-300 hover:px-4 hover:bg-gray-50 hover:shadow-xl hover:shadow-indigo-500/10 dark:hover:bg-white/[0.03] md:py-6 magnetic-row"
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >

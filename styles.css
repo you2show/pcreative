@@ -452,6 +452,34 @@ html.light .animated-blob {
     animation: shimmerSweep 0.65s ease forwards;
   }
 
+
+  /* Premium homepage interaction helpers for reused sections */
+  .tilt-hover {
+    transform-style: preserve-3d;
+    will-change: transform, box-shadow, filter;
+    transition: transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.55s cubic-bezier(0.16,1,0.3,1), filter 0.55s cubic-bezier(0.16,1,0.3,1);
+  }
+  .tilt-hover:hover {
+    transform: perspective(1100px) rotateX(2.2deg) rotateY(-2.8deg) translateY(-9px) scale(1.012);
+    filter: saturate(1.08) contrast(1.03);
+  }
+
+  .magnetic-row::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgba(99,102,241,0.10), rgba(236,72,153,0.08), transparent);
+    opacity: 0;
+    transform: scaleX(0.96);
+    transition: opacity 0.42s cubic-bezier(0.16,1,0.3,1), transform 0.42s cubic-bezier(0.16,1,0.3,1);
+    pointer-events: none;
+  }
+  .magnetic-row:hover::before {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
   /* Gradient outline flash on hover (overlay technique) */
   .gradient-outline-hover {
     position: relative;
@@ -478,6 +506,42 @@ html.light .animated-blob {
   }
   .gradient-outline-hover:hover::before {
     opacity: 1;
+  }
+}
+
+/* Cinematic scroll + hover layer */
+@layer utilities {
+  .scroll-cinematic-section {
+    position: relative;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform, opacity, filter, clip-path;
+  }
+
+  .scroll-cinematic-section::after {
+    content: '';
+    position: absolute;
+    inset: 8% 3%;
+    border-radius: 3rem;
+    background: radial-gradient(circle at 50% 0%, rgba(99,102,241,0.12), transparent 58%);
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+    transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .scroll-cinematic-section:hover::after {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .reveal-mask-hidden {
+    clip-path: inset(12% 8% 12% 8% round 2rem);
+  }
+
+  .reveal-mask-visible {
+    clip-path: inset(0% 0% 0% 0% round 0rem);
   }
 }
 

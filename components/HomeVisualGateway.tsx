@@ -78,14 +78,14 @@ const HomeVisualGateway: React.FC = () => {
           <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="max-w-3xl">
               <span className="text-xs font-black uppercase tracking-[0.28em] text-indigo-200 font-khmer">
-                {t('Homepage structure', 'រចនាសម្ព័ន្ធ Homepage')}
+                {t('Visual page gateway', 'ផ្លូវចូល page ជារូបភាព')}
               </span>
               <h2 id="home-gateway-title" className="mt-3 text-4xl font-black leading-tight tracking-[-0.04em] md:text-6xl font-khmer">
-                {t('Keep the homepage short. Let pages do the detail.', 'រក្សា Homepage ឲ្យខ្លី។ ឲ្យ Page ផ្សេងរៀបរាប់លម្អិត។')}
+                {t('Choose your path.', 'ជ្រើសផ្លូវរបស់អ្នក។')}
               </h2>
             </div>
             <p className="max-w-sm text-sm font-bold leading-6 text-gray-300 font-khmer">
-              {t('Scroll should feel like a visual menu, not a full website repeated on one page.', 'ពេល scroll គួរមានអារម្មណ៍ដូច menu រូបភាព មិនមែនយក website ទាំងមូលមកស្ទួន។')}
+              {t('Tap. View. Start.', 'ចុច។ មើល។ ចាប់ផ្តើម។')}
             </p>
           </div>
         </RevealOnScroll>
@@ -98,7 +98,7 @@ const HomeVisualGateway: React.FC = () => {
                 <a
                   href={gateway.href}
                   onClick={(event) => navigateToPage(event, gateway.href)}
-                  className={`group relative block overflow-hidden rounded-[2.4rem] border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/30 outline-none transition-all duration-500 hover:-translate-y-1 hover:border-indigo-300/50 hover:shadow-2xl hover:shadow-indigo-500/25 focus-visible:ring-2 focus-visible:ring-indigo-300 ${gateway.className}`}
+                  className={`group relative block overflow-hidden rounded-[2.4rem] border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/30 outline-none transition-all duration-500 hover:-translate-y-1 hover:border-indigo-300/50 hover:shadow-2xl hover:shadow-indigo-500/25 focus-visible:ring-2 focus-visible:ring-indigo-300 tilt-hover spotlight-hover ${gateway.className}`}
                 >
                   <img
                     src={gateway.image}

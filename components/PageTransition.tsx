@@ -52,29 +52,49 @@ interface SectionTransitionProps {
   children: React.ReactNode;
   className?: string;
   delay?: number;
-  variant?: 'fadeUp' | 'fadeScale' | 'fadeBlur' | 'slideLeft' | 'slideRight';
+  variant?: 'fadeUp' | 'fadeScale' | 'fadeBlur' | 'slideLeft' | 'slideRight' | 'cinematicRise' | 'revealMask' | 'depthPop' | 'parallaxLeft' | 'parallaxRight';
 }
 
 const sectionVariants = {
   fadeUp: {
-    initial: { opacity: 0, y: 40 },
-    animate: { opacity: 1, y: 0 },
+    initial: { opacity: 0, y: 64, scale: 0.975, filter: 'blur(10px)' },
+    animate: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' },
   },
   fadeScale: {
-    initial: { opacity: 0, scale: 0.95, y: 20 },
-    animate: { opacity: 1, scale: 1, y: 0 },
+    initial: { opacity: 0, scale: 0.92, y: 34, rotateZ: -0.8, filter: 'blur(12px)' },
+    animate: { opacity: 1, scale: 1, y: 0, rotateZ: 0, filter: 'blur(0px)' },
   },
   fadeBlur: {
-    initial: { opacity: 0, y: 30, filter: 'blur(8px)' },
-    animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+    initial: { opacity: 0, y: 48, scale: 0.985, filter: 'blur(16px)' },
+    animate: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' },
   },
   slideLeft: {
-    initial: { opacity: 0, x: -60 },
-    animate: { opacity: 1, x: 0 },
+    initial: { opacity: 0, x: -82, y: 18, scale: 0.98, filter: 'blur(10px)' },
+    animate: { opacity: 1, x: 0, y: 0, scale: 1, filter: 'blur(0px)' },
   },
   slideRight: {
-    initial: { opacity: 0, x: 60 },
-    animate: { opacity: 1, x: 0 },
+    initial: { opacity: 0, x: 82, y: 18, scale: 0.98, filter: 'blur(10px)' },
+    animate: { opacity: 1, x: 0, y: 0, scale: 1, filter: 'blur(0px)' },
+  },
+  cinematicRise: {
+    initial: { opacity: 0, y: 86, scale: 0.965, rotateX: -10, filter: 'blur(18px)' },
+    animate: { opacity: 1, y: 0, scale: 1, rotateX: 0, filter: 'blur(0px)' },
+  },
+  revealMask: {
+    initial: { opacity: 0, y: 46, scale: 0.985, clipPath: 'inset(18% 8% 18% 8% round 2.5rem)', filter: 'blur(12px)' },
+    animate: { opacity: 1, y: 0, scale: 1, clipPath: 'inset(0% 0% 0% 0% round 0rem)', filter: 'blur(0px)' },
+  },
+  depthPop: {
+    initial: { opacity: 0, y: 54, scale: 0.9, rotateZ: -1.2, filter: 'blur(14px)' },
+    animate: { opacity: 1, y: 0, scale: 1, rotateZ: 0, filter: 'blur(0px)' },
+  },
+  parallaxLeft: {
+    initial: { opacity: 0, x: -96, y: 34, scale: 0.97, filter: 'blur(10px)' },
+    animate: { opacity: 1, x: 0, y: 0, scale: 1, filter: 'blur(0px)' },
+  },
+  parallaxRight: {
+    initial: { opacity: 0, x: 96, y: 34, scale: 0.97, filter: 'blur(10px)' },
+    animate: { opacity: 1, x: 0, y: 0, scale: 1, filter: 'blur(0px)' },
   },
 };
 
@@ -84,9 +104,10 @@ export const SectionTransition: React.FC<SectionTransitionProps> = ({ children, 
     <motion.div
       initial={v.initial}
       whileInView={v.animate}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
+      viewport={{ once: true, margin: '-120px 0px -80px 0px', amount: 0.18 }}
+      transition={{ duration: variant === 'revealMask' ? 1.05 : 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
+      style={{ transformPerspective: 1200, transformOrigin: '50% 72%' }}
+      className={`scroll-cinematic-section ${className}`}
     >
       {children}
     </motion.div>
