@@ -160,7 +160,7 @@ const RatingCard: React.FC<{ card: UnifiedCard; t: (en: string, km?: string) => 
   </div>
 );
 
-const ClientWins: React.FC = () => {
+const ClientWins: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
   const { t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState<Category>('All');
   const [dbCards, setDbCards] = useState<UnifiedCard[]>([]);
@@ -209,9 +209,11 @@ const ClientWins: React.FC = () => {
 
   const allCards = [...STATIC_CARDS, ...dbCards, ...staticFromConst];
 
-  const filtered = activeCategory === 'All'
-    ? allCards
-    : allCards.filter(c => c.category === activeCategory || c.category === 'All' as Category);
+  const filtered = compact
+    ? STATIC_CARDS.slice(0, 3)
+    : (activeCategory === 'All'
+        ? allCards
+        : allCards.filter(c => c.category === activeCategory || c.category === 'All' as Category));
 
   return (
     <section
@@ -237,28 +239,30 @@ const ClientWins: React.FC = () => {
           </div>
         </RevealOnScroll>
 
-        {/* Category filter */}
-        <RevealOnScroll delay={80}>
-          <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
-            <Filter size={14} className="text-gray-400 shrink-0" />
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-1.5 rounded-full text-xs font-black transition-all font-khmer ${
-                  activeCategory === cat
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30'
-                    : 'bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
-                }`}
-              >
-                {t(cat, cat)}
-              </button>
-            ))}
-          </div>
-        </RevealOnScroll>
+        {/* Category filter — full mode only */}
+        {!compact && (
+          <RevealOnScroll delay={80}>
+            <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
+              <Filter size={14} className="text-gray-400 shrink-0" />
+              {CATEGORIES.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-black transition-all font-khmer ${
+                    activeCategory === cat
+                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30'
+                      : 'bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
+                  }`}
+                >
+                  {t(cat, cat)}
+                </button>
+              ))}
+            </div>
+          </RevealOnScroll>
+        )}
 
-        {/* Masonry grid */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
+        {/* Card grid */}
+        <div className={`gap-5 space-y-5 ${compact ? 'columns-1 sm:columns-3' : 'columns-1 sm:columns-2 lg:columns-3'}`}>
           {filtered.map((card, i) => (
             <RevealOnScroll key={card.id} delay={i * 60} className="break-inside-avoid mb-5">
               {card.type === 'win' ? (
@@ -272,19 +276,44 @@ const ClientWins: React.FC = () => {
           ))}
         </div>
 
-        {/* Aggregate rating */}
-        <RevealOnScroll delay={320}>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
-            <div className="flex gap-1">
-              {[1,2,3,4,5].map(s => <Star key={s} size={18} className="text-yellow-400 fill-yellow-400" />)}
+        {/* Compact mode: "See all" link */}
+        {compact && (
+          <RevealOnScroll delay={200}>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="flex gap-1">
+                {[1,2,3,4,5].map(s => <Star key={s} size={16} className="text-yellow-400 fill-yellow-400" />)}
+              </div>
+              <p className="text-sm font-black text-gray-700 dark:text-gray-300 font-khmer">
+                <span className="text-gray-950 dark:text-white">5.0</span>
+                {' · '}
+                {t('80+ verified clients', 'អតិថិជនជាង 80+ បានផ្ទៀងផ្ទាត់')}
+              </p>
+              <a
+                onClick={e => { e.preventDefault(); window.history.pushState({}, '', '/company'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                href="/company"
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black transition-colors font-khmer"
+              >
+                {t('Meet our clients →', 'ស្គាល់អតិថិជន →')}
+              </a>
             </div>
-            <p className="text-sm font-black text-gray-700 dark:text-gray-300 font-khmer">
-              <span className="text-gray-950 dark:text-white">5.0</span>
-              {' · '}
-              {t('80+ verified clients', 'អតិថិជនជាង 80+ បានផ្ទៀងផ្ទាត់')}
-            </p>
-          </div>
-        </RevealOnScroll>
+          </RevealOnScroll>
+        )}
+
+        {/* Aggregate rating — full mode only */}
+        {!compact && (
+          <RevealOnScroll delay={320}>
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
+              <div className="flex gap-1">
+                {[1,2,3,4,5].map(s => <Star key={s} size={18} className="text-yellow-400 fill-yellow-400" />)}
+              </div>
+              <p className="text-sm font-black text-gray-700 dark:text-gray-300 font-khmer">
+                <span className="text-gray-950 dark:text-white">5.0</span>
+                {' · '}
+                {t('80+ verified clients', 'អតិថិជនជាង 80+ បានផ្ទៀងផ្ទាត់')}
+              </p>
+            </div>
+          </RevealOnScroll>
+        )}
       </div>
     </section>
   );

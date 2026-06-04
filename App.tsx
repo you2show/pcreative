@@ -203,16 +203,10 @@ function AppContent() {
       <SectionTransition variant="fadeScale"><HomeConversion /></SectionTransition>
       {/* 5. Transformation Gallery — Before/After with category filters */}
       <SectionTransition delay={0.1} variant="fadeBlur"><BeforeAfterSlider /></SectionTransition>
-      {/* 6. Stats — emotional dark band */}
-      <SectionTransition delay={0.12} variant="fadeUp"><Stats /></SectionTransition>
-      {/* 7. Video Showreel */}
-      <SectionTransition delay={0.15} variant="fadeBlur"><VideoShowreel /></SectionTransition>
-      {/* 8. Unified Client Wins + Testimonials masonry */}
-      <SectionTransition delay={0.18} variant="fadeScale"><ClientWins /></SectionTransition>
-      {/* 9. Studio Location — reframed */}
-      <SectionTransition delay={0.22} variant="fadeUp"><StudioLocation /></SectionTransition>
-      {/* 10. Bold Closing CTA */}
-      <SectionTransition delay={0.25} variant="fadeScale"><ClosingCTA /></SectionTransition>
+      {/* 6. Client Wins — compact teaser (3 quotes) */}
+      <SectionTransition delay={0.15} variant="fadeScale"><ClientWins compact /></SectionTransition>
+      {/* 7. Bold Closing CTA */}
+      <SectionTransition delay={0.2} variant="fadeScale"><ClosingCTA /></SectionTransition>
     </>
   );
 
@@ -255,6 +249,7 @@ function AppContent() {
       <SectionTransition variant="fadeScale"><Stats /></SectionTransition>
       <SectionTransition variant="fadeBlur"><Partners /></SectionTransition>
       <SectionTransition variant="fadeBlur"><Team showPopupOnMount={shouldShowTeamPopup} usePathRouting={true} /></SectionTransition>
+      <SectionTransition variant="fadeUp"><StudioLocation /></SectionTransition>
     </>
   );
 
@@ -291,6 +286,12 @@ function AppContent() {
     if (activePage === 'company') return renderCompanyPage();
     if (activePage === 'blog') return renderBlogPage();
     if (activePage === 'contact') return renderContactPage();
+    if (activePage === 'careers') return (
+      <Careers onClose={() => {
+        window.history.pushState({}, '', '/');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }} />
+    );
     return renderHome();
   };
 
@@ -334,7 +335,6 @@ function AppContent() {
         <ClientPortal isOpen={isClientPortalOpen} onClose={() => setIsClientPortalOpen(false)} />
       </Suspense>
 
-      {activePage === 'careers' && <Careers onClose={() => { if (window.location.pathname.includes('/careers')) { window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); } else { window.location.hash = ''; } }} />}
       {activePage === 'privacy' && <PrivacyPolicy onClose={() => window.location.hash = ''} />}
 
       {isAdminOpen && (
