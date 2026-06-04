@@ -5,7 +5,7 @@ import { useData } from '../../contexts/DataContext';
 import { MemberDetailModal, AuthorArticlesModal, ArticleDetailModal } from '../TeamModals';
 import { TeamMember, Post } from '../../types';
 import ScrambleText from '../ScrambleText';
-import { Image, MousePointer2, Sparkles, Palette, Globe, Building2, PenTool, Camera, Wind, Languages, Layout, Video } from 'lucide-react';
+import { Palette, Globe, Building2, PenTool, Camera, Wind, Languages, Layout, Video } from 'lucide-react';
 
 import HeroActions from './HeroActions';
 import Hero3DScene from '../Hero3DScene';
@@ -202,21 +202,6 @@ const Hero: React.FC = () => {
               )}
             </p>
 
-            <div className="hero-proof-strip grid max-w-2xl grid-cols-3 gap-3 mx-auto lg:mx-0">
-              {[
-                { icon: Sparkles, label: t('Custom pixels', 'Pixel ផ្ទាល់ខ្លួន') },
-                { icon: MousePointer2, label: t('48h first draft', 'ដ្រាហ្វក្នុង 48h') },
-                { icon: Image, label: t('3× languages', 'ភាសា ៣') },
-              ].map(({ icon: Icon, label }) => (
-                <div key={label} className="group relative min-h-24 overflow-hidden rounded-3xl border border-gray-200 bg-white/75 p-3 shadow-md backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-indigo-500/20 hover:border-indigo-200/50 dark:border-white/10 dark:bg-white/[0.05] dark:shadow-black/30 dark:hover:border-indigo-400/20 creative-card">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(99,102,241,0.32),transparent_42%)] opacity-0 transition-opacity group-hover:opacity-100" />
-                  <div className="relative flex h-full flex-col justify-between">
-                    <Icon size={22} className="text-indigo-500 dark:text-indigo-300 transition-transform duration-300 group-hover:scale-110" />
-                    <span className="text-sm font-black text-gray-800 dark:text-white font-khmer">{label}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
 
             {/* Actions Component (Buttons & Stats) */}
             <HeroActions t={t} />

@@ -81,15 +81,15 @@ const HeroActions: React.FC<HeroActionsProps> = ({ t }) => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
             <MagneticButton 
             href="/contact"
-            className="group px-8 py-4 rounded-full bg-gray-900 text-white dark:bg-white dark:text-gray-950 font-bold text-lg shadow-xl shadow-black/25 dark:shadow-white/15 hover:shadow-2xl hover:shadow-indigo-500/30 dark:hover:shadow-indigo-300/20 flex items-center justify-center gap-2 font-khmer w-full sm:w-auto transition-shadow"
+            className="group px-6 py-2.5 rounded-full bg-gray-900 text-white dark:bg-white dark:text-gray-950 font-bold text-sm shadow-xl shadow-black/25 dark:shadow-white/15 hover:shadow-2xl hover:shadow-indigo-500/30 dark:hover:shadow-indigo-300/20 flex items-center justify-center gap-2 font-khmer w-full sm:w-auto transition-shadow"
             >
-            {t('Start a Project', 'ចាប់ផ្តើមគម្រោង')} <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            {t('Start a Project', 'ចាប់ផ្តើមគម្រោង')} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </MagneticButton>
             <MagneticButton 
             href="/projects"
-            className="px-8 py-4 rounded-full bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white font-bold text-lg border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 hover:border-gray-300 dark:hover:border-white/20 flex items-center justify-center gap-2 backdrop-blur-sm font-khmer w-full sm:w-auto shadow-sm hover:shadow-md transition-shadow"
+            className="px-6 py-2.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 hover:border-gray-300 dark:hover:border-white/20 flex items-center justify-center gap-2 backdrop-blur-sm font-khmer w-full sm:w-auto shadow-sm hover:shadow-md transition-shadow"
             >
-            {t('View Portfolio', 'មើល Portfolio')} <ChevronRight size={20} className="opacity-50" />
+            {t('View Portfolio', 'មើល Portfolio')} <ChevronRight size={16} className="opacity-50" />
             </MagneticButton>
         </div>
 

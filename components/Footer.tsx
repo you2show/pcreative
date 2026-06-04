@@ -54,7 +54,7 @@ const NewsletterForm: React.FC = () => {
   );
 };
 
-const Footer: React.FC = () => {
+const Footer: React.FC<{ hideCTA?: boolean }> = ({ hideCTA = false }) => {
   const { t, language } = useLanguage();
   const { isInstallable, installPWA } = usePWA();
   const currentYear = new Date().getFullYear();
@@ -71,6 +71,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Top Section: Big CTA */}
+        {!hideCTA && (
         <div className="flex flex-col items-center text-center mb-16 relative border-b border-gray-100 dark:border-white/5 pb-16">
             <RevealOnScroll>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-sm font-bold tracking-wider mb-8 backdrop-blur-md">
@@ -103,6 +104,7 @@ const Footer: React.FC = () => {
                 </a>
             </RevealOnScroll>
         </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-24 pt-4">
             {/* Brand Column */}

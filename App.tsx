@@ -352,7 +352,7 @@ function AppContent() {
         {renderMainContent()}
       </main>
 
-      <Footer />
+      <Footer hideCTA={activePage === 'home' || activePage === 'contact'} />
       <FloatingChat />
       <ChatbotAI />
       <ScrollButton />
