@@ -264,6 +264,41 @@ html.light .animated-blob {
     font-family: 'Kantumruy Pro', sans-serif;
   }
 
+  /* Khmer body text — extra leading for complex descenders/stacked consonants */
+  .khmer-body {
+    font-family: 'Kantumruy Pro', sans-serif;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+    font-size: calc(1em * 0.92); /* Kantumruy Pro renders ~10% larger optically */
+  }
+
+  /* ── 3-variant button system ─────────────────────────────────
+     btn-primary  = solid indigo-600 white text (main CTA)
+     btn-secondary = outline border-gray-300 (supporting action)
+     btn-ghost    = text + arrow (tertiary / inline links)      */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-card
+           bg-indigo-600 text-white font-bold text-sm
+           hover:bg-indigo-700 active:bg-indigo-800
+           shadow-lg shadow-indigo-600/25
+           transition-all duration-200;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-card
+           border border-gray-300 dark:border-gray-600
+           text-gray-900 dark:text-white font-bold text-sm
+           bg-transparent hover:bg-gray-50 dark:hover:bg-white/5
+           transition-all duration-200;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2
+           text-indigo-600 dark:text-indigo-400 font-bold text-sm
+           hover:text-indigo-700 dark:hover:text-indigo-300
+           transition-colors duration-200;
+  }
+
   .bg-grain::before {
     content: '';
     position: fixed;

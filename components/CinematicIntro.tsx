@@ -7,8 +7,8 @@ interface CinematicIntroProps {
 
 const PHASES = [
   { en: 'We Build', km: 'យើងសង់', delay: 0 },
-  { en: 'We Create', km: 'យើងបង្កើត', delay: 1100 },
-  { en: 'We Are Ponloe', km: 'យើងគឺ Ponloe', delay: 2200 },
+  { en: 'We Create', km: 'យើងបង្កើត', delay: 500 },
+  { en: 'We Are Ponloe', km: 'យើងគឺ Ponloe', delay: 1000 },
 ];
 
 const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) => {
@@ -23,8 +23,8 @@ const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) => {
   }, [onComplete]);
 
   useEffect(() => {
-    // Show skip button after 2s
-    const skipTimer = setTimeout(() => setShowSkip(true), 2000);
+    // Show skip button after 800ms
+    const skipTimer = setTimeout(() => setShowSkip(true), 800);
 
     // Phase sequencing
     const timers: ReturnType<typeof setTimeout>[] = [];
@@ -32,8 +32,8 @@ const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) => {
       timers.push(setTimeout(() => setActivePhase(i), phase.delay));
     });
 
-    // Exit after all phases shown
-    timers.push(setTimeout(triggerExit, 3600));
+    // Exit after all phases shown (1.5s total)
+    timers.push(setTimeout(triggerExit, 1500));
 
     return () => {
       clearTimeout(skipTimer);
@@ -61,17 +61,17 @@ const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) => {
         {PHASES.map((phase, i) => (
           <div
             key={i}
-            className={`overflow-hidden transition-all duration-700 ${
+            className={`overflow-hidden transition-all duration-400 ${
               activePhase === i ? 'max-h-40 opacity-100 mb-4' : activePhase > i ? 'max-h-0 opacity-0 mb-0' : 'max-h-0 opacity-0 mb-0'
             }`}
           >
             <p
-              className={`font-black tracking-tight font-khmer transition-all duration-700 ${
+              className={`font-black tracking-tight font-khmer transition-all duration-400 ${
                 i === 2
                   ? 'text-5xl md:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400'
                   : 'text-4xl md:text-6xl text-white/80'
               } ${activePhase === i ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
-              style={{ transition: 'transform 0.7s cubic-bezier(0.22,1,0.36,1), opacity 0.7s ease' }}
+              style={{ transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease' }}
             >
               {t(phase.en, phase.km)}
             </p>

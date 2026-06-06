@@ -20,6 +20,21 @@ export default {
         khmer: ['Kantumruy Pro', 'sans-serif'],
         display: ['Outfit', 'sans-serif'],
       },
+      // 6-step type scale: 12 / 14 / 16 / 20 / 28 / 40 / 56px
+      fontSize: {
+        'scale-xs':   ['0.75rem',  { lineHeight: '1rem' }],       // 12px
+        'scale-sm':   ['0.875rem', { lineHeight: '1.25rem' }],    // 14px
+        'scale-base': ['1rem',     { lineHeight: '1.5rem' }],     // 16px
+        'scale-lg':   ['1.25rem',  { lineHeight: '1.75rem' }],    // 20px
+        'scale-xl':   ['1.75rem',  { lineHeight: '2.25rem' }],    // 28px
+        'scale-2xl':  ['2.5rem',   { lineHeight: '1.1' }],        // 40px
+        'scale-3xl':  ['3.5rem',   { lineHeight: '1.05' }],       // 56px
+      },
+      // 2-value border-radius system
+      borderRadius: {
+        'card':  '1rem',    // 16px — all cards, inputs, buttons
+        'panel': '1.5rem',  // 24px — hero blocks, large panels, modals
+      },
       colors: {
         brand: {
           50: '#eef2ff',

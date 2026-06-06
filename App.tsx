@@ -113,7 +113,7 @@ function AppContent() {
         setShowPreloader(false);
         setShowCinematicIntro(true);
         sessionStorage.setItem('ponloe_visited', '1');
-      }, 2800);
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, []);

@@ -5,7 +5,6 @@ import ScrambleText from '../ScrambleText';
 import { Palette, Globe, Building2, PenTool, Camera, Wind, Languages, Layout, Video } from 'lucide-react';
 
 import HeroActions from './HeroActions';
-import Hero3DScene from '../Hero3DScene';
 import HeroLaunchPanel from './HeroLaunchPanel';
 
 // Rotating words that cycle in the hero headline
@@ -118,9 +117,6 @@ const Hero: React.FC = () => {
   return (
     <>
     <section ref={containerRef} id="home" aria-label="Hero section" className="relative min-h-screen flex items-center pt-24 pb-12 md:pt-32 md:pb-20 overflow-hidden perspective-1000">
-
-      {/* 3D Background Scene */}
-      <Hero3DScene />
 
       {/* Background Ambience */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
