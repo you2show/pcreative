@@ -9,9 +9,11 @@ html {
 
 body {
   font-family: 'Outfit', 'Kantumruy Pro', sans-serif;
-  background-color: #030712;
-  color: #f9fafb;
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M2 2l7 19.5 3-8.5 8.5-3L2 2z' fill='%236366f1' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 2 2, auto;
+  background-color: #05070d;
+  color: #e8ecf4;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.011em;
   top: 0 !important;
   position: static !important;
   /* Prevent scroll chaining / pull-to-refresh jank on mobile */
@@ -21,39 +23,29 @@ body {
 /* Light mode body styles */
 html.light body {
   background-color: #ffffff;
-  color: #111827;
-}
-
-a,
-button,
-input,
-select,
-textarea,
-[role='button'],
-.cursor-pointer {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M2 2l7 19.5 3-8.5 8.5-3L2 2z' fill='%23ec4899' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 2 2, pointer;
+  color: #0b1220;
 }
 
 ::selection {
-  background: #6366f1;
+  background: rgba(59, 130, 246, 0.85);
   color: #fff;
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #111827;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #374151;
+  background: #1e293b;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #6366f1;
+  background: #3b82f6;
 }
 
 /* Light mode scrollbar */
@@ -64,7 +56,7 @@ html.light ::-webkit-scrollbar-thumb {
   background: #d1d5db;
 }
 html.light ::-webkit-scrollbar-thumb:hover {
-  background: #6366f1;
+  background: #3b82f6;
 }
 
 .goog-te-banner-frame.skiptranslate,
@@ -84,7 +76,7 @@ font {
 
 /* Accessibility: Focus styles */
 *:focus-visible {
-  outline: 2px solid #6366f1;
+  outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
 
@@ -275,7 +267,7 @@ html.light .animated-blob {
   }
 
   .text-gradient {
-    background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
+    background: linear-gradient(135deg, #7cb2ff 0%, #3b82f6 55%, #2563eb 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -596,7 +588,7 @@ html.light .animated-blob {
 
 .hero-headline {
   text-wrap: balance;
-  text-shadow: 0 20px 80px rgba(99, 102, 241, 0.16);
+  text-shadow: 0 20px 80px rgba(59, 130, 246, 0.14);
 }
 
 .hero-line-reveal,
@@ -624,7 +616,7 @@ html.light .animated-blob {
   bottom: 0.08em;
   height: 0.12em;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(129, 140, 248, 0), rgba(168, 85, 247, 0.72), rgba(236, 72, 153, 0));
+  background: linear-gradient(90deg, rgba(96, 165, 250, 0), rgba(59, 130, 246, 0.8), rgba(96, 165, 250, 0));
   filter: blur(1px);
   opacity: 0.72;
 }

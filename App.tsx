@@ -34,8 +34,6 @@ import AnimatedBlurBackground from './components/AnimatedBlurBackground';
 import { Lock, ArrowRight, X } from 'lucide-react';
 import { useAdminRouter } from './hooks/useRouter';
 import CinematicIntro from './components/CinematicIntro';
-import CustomCursor from './components/CustomCursor';
-import CelebrationSystem from './components/CelebrationSystem';
 import { useEmotionalColors } from './hooks/useEmotionalColors';
 
 // New homepage creative components
@@ -181,17 +179,21 @@ function AppContent() {
   };
 
   const PageHero = ({ eyebrow, title, accent, description }: { eyebrow: string; title: string; accent: string; description: string }) => (
-    <section className="relative min-h-[72vh] flex items-end overflow-hidden pt-36 pb-16 md:pb-24">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.26),transparent_36%),radial-gradient(circle_at_80%_10%,rgba(236,72,153,0.16),transparent_32%),linear-gradient(135deg,rgba(15,23,42,0.96),rgba(15,23,42,0.58))] dark:opacity-100 opacity-90" />
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=1800')] bg-cover bg-center opacity-18 mix-blend-overlay" />
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white dark:from-gray-950 to-transparent" />
+    <section className="relative flex items-end overflow-hidden pt-40 pb-16 md:pb-24">
+      {/* Faint grid + single top glow — quiet, technical */}
+      <div className="absolute inset-0 bg-grid-faint bg-[length:64px_64px] opacity-50 [mask-image:radial-gradient(ellipse_at_top,black_5%,transparent_65%)]" />
+      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-blue-600/15 blur-[140px] pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
         <div className="max-w-4xl">
-          <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-indigo-100 backdrop-blur-md font-khmer">{eyebrow}</span>
-          <h1 className="mt-8 text-5xl md:text-7xl lg:text-8xl font-black leading-[0.92] text-white font-khmer">
-            {title} <span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-cyan-200">{accent}</span>
+          <span className="inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/[0.08] px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-300 backdrop-blur-md font-khmer">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+            {eyebrow}
+          </span>
+          <h1 className="mt-7 text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.02] tracking-[-0.03em] text-gray-900 dark:text-white font-khmer">
+            {title} <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600 dark:from-blue-300 dark:to-blue-500">{accent}</span>
           </h1>
-          <p className="mt-6 max-w-2xl text-lg md:text-xl leading-relaxed text-gray-200 font-khmer">{description}</p>
+          <p className="mt-6 max-w-2xl text-lg md:text-xl leading-relaxed text-gray-600 dark:text-gray-400 font-khmer">{description}</p>
         </div>
       </div>
     </section>
@@ -346,18 +348,15 @@ function AppContent() {
   }
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'} overflow-x-hidden selection:bg-indigo-500 selection:text-white relative`}>
+    <div className={`min-h-screen ${isDark ? 'bg-[#05070d] text-white' : 'bg-white text-gray-900'} overflow-x-hidden selection:bg-blue-500 selection:text-white relative`}>
       <SkipToContent />
       {showPreloader && <Preloader />}
       {showCinematicIntro && <CinematicIntro onComplete={() => setShowCinematicIntro(false)} />}
-      <CustomCursor />
-      <CelebrationSystem />
       <OfflinePage />
       <InstallPrompt />
       <ScrollProgress />
 
       <AnimatedBlurBackground />
-      <div className="pointer-events-none fixed inset-0 z-0 opacity-40 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.16),transparent_45%)]" />
 
       <Header onGetQuote={() => setIsConsultationOpen(true)} />
 
@@ -384,12 +383,12 @@ function AppContent() {
               <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 p-8 rounded-3xl shadow-2xl w-full max-w-sm relative z-[12001]">
                   <button onClick={closeAdmin} className="absolute top-4 right-4 text-gray-500 hover:text-gray-900 dark:hover:text-white"><X size={20} /></button>
                   <div className="flex flex-col items-center mb-6">
-                      <div className="w-16 h-16 bg-indigo-500/10 rounded-full flex items-center justify-center mb-4 text-indigo-400"><Lock size={32} /></div>
+                      <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mb-4 text-blue-400"><Lock size={32} /></div>
                       <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-khmer">Access Control</h3>
                   </div>
                   <form onSubmit={handleLoginSubmit} className="space-y-4">
-                      <input type="password" value={pin} onChange={(e) => setPin(e.target.value)} autoFocus className={`w-full bg-gray-100 dark:bg-gray-800 border ${loginError ? 'border-red-500 animate-shake' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-center text-xl tracking-[0.5em] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500`} placeholder="••••" maxLength={6} />
-                      <button type="submit" className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl flex items-center justify-center gap-2">Verify Identity <ArrowRight size={18} /></button>
+                      <input type="password" value={pin} onChange={(e) => setPin(e.target.value)} autoFocus className={`w-full bg-gray-100 dark:bg-gray-800 border ${loginError ? 'border-red-500 animate-shake' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-center text-xl tracking-[0.5em] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500`} placeholder="••••" maxLength={6} />
+                      <button type="submit" className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl flex items-center justify-center gap-2">Verify Identity <ArrowRight size={18} /></button>
                   </form>
               </div>
           </div>

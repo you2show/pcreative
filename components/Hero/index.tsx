@@ -125,10 +125,10 @@ const Hero: React.FC = () => {
       {/* Background Ambience */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
         <div
-            className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] opacity-60"
+            className="absolute top-[8%] left-[12%] w-[520px] h-[520px] bg-blue-600/18 rounded-full blur-[130px] opacity-70"
         />
         <div
-            className="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[100px] opacity-60"
+            className="absolute bottom-[12%] right-[10%] w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[110px] opacity-60"
         />
       </div>
 
