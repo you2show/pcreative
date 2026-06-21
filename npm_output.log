@@ -32,3 +32,26 @@
 11:24:32 AM [vite] hmr update /components/Hero/index.tsx, /styles.css
 11:24:32 AM [vite] hmr update /components/Hero/HeroActions.tsx, /styles.css
 11:24:32 AM [vite] hmr update /App.tsx, /styles.css
+11:51:44 AM [vite] page reload tailwind.config.js
+11:52:42 AM [vite] hmr update /styles.css
+11:53:41 AM [vite] hmr update /App.tsx, /styles.css
+11:54:26 AM [vite] hmr update /App.tsx, /styles.css
+11:55:55 AM [vite] hmr update /components/Hero/index.tsx, /styles.css
+11:56:56 AM [vite] hmr update /components/Hero/HeroActions.tsx, /styles.css
+11:57:40 AM [vite] hmr update /components/Hero/index.tsx, /styles.css
+11:59:06 AM [vite] hmr update /components/Services.tsx, /styles.css
+11:59:06 AM [vite] hmr update /components/portfolio/PortfolioCard.tsx, /styles.css
+11:59:57 AM [vite] hmr update /components/Services.tsx, /styles.css
+11:59:57 AM [vite] hmr update /components/Portfolio.tsx, /styles.css
+11:59:57 AM [vite] hmr update /components/Testimonials.tsx, /styles.css
+11:59:57 AM [vite] hmr update /components/Contact.tsx, /styles.css
+12:01:24 PM [vite] hmr update /components/Header.tsx, /styles.css
+12:02:53 PM [vite] hmr update /components/Footer.tsx, /styles.css
+12:02:53 PM [vite] hmr update /components/Contact.tsx, /styles.css
+12:02:53 PM [vite] hmr update /components/Testimonials.tsx, /styles.css
+12:02:53 PM [vite] hmr update /components/Insights.tsx, /styles.css
+12:02:53 PM [vite] hmr update /components/FAQ.tsx, /styles.css
+12:02:53 PM [vite] hmr update /components/Process.tsx, /styles.css
+12:02:53 PM [vite] hmr update /components/About.tsx, /styles.css
+12:02:53 PM [vite] hmr update /components/Team.tsx, /styles.css
+12:04:07 PM [vite] hmr update /components/Footer.tsx, /styles.css

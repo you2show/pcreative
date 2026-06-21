@@ -81,13 +81,13 @@ const HeroActions: React.FC<HeroActionsProps> = ({ t }) => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
             <MagneticButton 
             href="/contact"
-            className="premium-button-primary px-8 py-3 flex items-center justify-center gap-2 font-khmer w-full sm:w-auto"
+            className="btn-primary flex items-center justify-center gap-2 font-khmer w-full sm:w-auto"
             >
             {t('Start a Project', 'ចាប់ផ្តើមគម្រោង')} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </MagneticButton>
             <MagneticButton 
             href="/projects"
-            className="premium-button-secondary px-8 py-3 flex items-center justify-center gap-2 font-khmer w-full sm:w-auto shadow-premium hover:shadow-premium-hover"
+            className="btn-secondary flex items-center justify-center gap-2 font-khmer w-full sm:w-auto shadow-premium hover:shadow-premium-hover"
             >
             {t('View Portfolio', 'មើល Portfolio')} <ChevronRight size={16} className="opacity-50" />
             </MagneticButton>

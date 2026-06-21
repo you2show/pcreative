@@ -105,7 +105,7 @@ const SortableServiceItem: React.FC<SortableServiceItemProps> = ({ service, inde
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{ transition: 'transform 0.15s ease-out', transformStyle: 'preserve-3d' }}
-        className={`relative h-full glass-card rounded-[23px] p-8 transition-colors duration-300 overflow-hidden ${isDragging ? 'bg-gray-100 dark:bg-gray-800 shadow-2xl' : ''}`}
+        className={`relative h-full premium-card glass-border rounded-[23px] p-8 transition-colors duration-300 overflow-hidden ${isDragging ? 'bg-gray-100 dark:bg-gray-800 shadow-2xl' : ''}`}
       >
           
           {/* Background Image Always Visible with Hover Darkening */}
@@ -145,7 +145,7 @@ const SortableServiceItem: React.FC<SortableServiceItemProps> = ({ service, inde
             </div>
             
             <div className="mt-6 select-none">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 font-khmer drop-shadow-md">{t(service.title, service.titleKm)}</h3>
+                <h3 className="text-xl font-black uppercase tracking-widest text-gray-900 dark:text-white mb-2 font-khmer drop-shadow-md">{t(service.title, service.titleKm)}</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm font-khmer line-clamp-2 drop-shadow-sm">{t(service.subtitle, service.subtitleKm || service.subtitle)}</p>
             </div>
           </div>
@@ -254,7 +254,7 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
               <div className="max-w-3xl">
                   <span className="text-indigo-400 font-bold tracking-wider uppercase text-sm mb-4 block font-khmer">{t('Our Expertise', 'ជំនាញរបស់យើង')}</span>
-                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer leading-tight">
+                  <h2 className="h2-premium font-bold text-gray-900 dark:text-white font-khmer leading-tight">
                       {t('Comprehensive solutions for', 'ដំណោះស្រាយពេញលេញសម្រាប់')}{' '}
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">{t('Digital Dominance.', 'ភាពលេចធ្លោលើឌីជីថល')}</span>
                   </h2>
@@ -344,7 +344,7 @@ const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRo
                 <div className={`p-4 rounded-2xl bg-gray-200 dark:bg-white/10 backdrop-blur-sm ${selectedService.color.replace('bg-', 'text-')} border border-gray-200 dark:border-white/10 w-fit mb-4`}>
                   {selectedService.icon}
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 font-khmer leading-tight drop-shadow-lg">
+                <h3 className="text-xl font-black uppercase tracking-widest text-gray-900 dark:text-white mb-2 font-khmer leading-tight drop-shadow-lg">
                   {t(selectedService.title, selectedService.titleKm)}
                 </h3>
                 <p className="text-indigo-300 font-medium text-sm font-khmer drop-shadow">

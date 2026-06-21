@@ -15,7 +15,7 @@ const PortfolioCard: React.FC<PortfolioCardProps> = ({ project, index, onClick }
     <RevealOnScroll delay={index * 100} variant="zoom-in" duration={600}>
       <div 
         onClick={onClick}
-        className="group relative rounded-2xl overflow-hidden break-inside-avoid glass-card hover:-translate-y-2 hover:rotate-1 hover:shadow-premium-hover cursor-pointer"
+        className="group relative rounded-2xl overflow-hidden break-inside-avoid premium-card glass-border hover:-translate-y-2 hover:rotate-1 hover:shadow-premium-hover cursor-pointer"
       >
         <img 
           src={project.image} 
@@ -40,7 +40,7 @@ const PortfolioCard: React.FC<PortfolioCardProps> = ({ project, index, onClick }
            </div>
            <div className="translate-y-[10px] group-hover:translate-y-0 transition-transform duration-300">
               <span className="text-indigo-400 text-xs font-bold uppercase tracking-wider mb-2 block">{project.category}</span>
-              <h3 className="text-white text-2xl font-bold">{project.title}</h3>
+              <h3 className="text-white text-lg font-black uppercase tracking-widest">{project.title}</h3>
            </div>
         </div>
       </div>

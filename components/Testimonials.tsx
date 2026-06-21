@@ -129,7 +129,7 @@ const Testimonials: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center relative z-10">
         <RevealOnScroll>
-          <h2 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white font-khmer mb-6 leading-tight">
+          <h2 className="h2-premium font-black text-gray-900 dark:text-white font-khmer mb-6 leading-tight">
              {t('Client', 'សក្ខីកម្ម')}{' '}
              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400">{t('Stories', 'អតិថិជន')}</span>
           </h2>

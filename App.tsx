@@ -185,11 +185,11 @@ function AppContent() {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
         <RevealOnScroll variant="fadeUp">
           <span className="text-brand-400 font-black tracking-[0.3em] uppercase text-xs mb-6 block font-khmer opacity-80">{eyebrow}</span>
-          <h1 className="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tightest mb-10 font-khmer">
-            {title} <br/>
-            <span className="premium-text-gradient">{accent}</span>
+          <h1 className="h1-premium font-black text-white leading-[0.9] tracking-tightest mb-10 font-khmer">
+            <span>{title}</span> <br/>
+            <span className="premium-text-gradient"><span>{accent}</span></span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-400 max-w-2xl font-khmer leading-relaxed font-light">
+          <p className="text-lg md:text-xl text-gray-400 font-light tracking-wide max-w-2xl font-khmer leading-relaxed font-light">
             {description}
           </p>
         </RevealOnScroll>

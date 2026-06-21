@@ -3,77 +3,107 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --brand-primary: #6366f1;
+    --brand-secondary: #a855f7;
+    --bg-main: #000000;
+  }
+
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 100px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #000000;
+    background-color: var(--bg-main);
   }
 
   body {
     font-family: 'Outfit', 'Kantumruy Pro', sans-serif;
-    background-color: #000000;
-    color: #f9fafb;
+    background-color: var(--bg-main);
+    color: #ffffff;
     overflow-x: hidden;
   }
 
-  html.light body {
-    background-color: #ffffff;
-    color: #111827;
+  ::selection {
+    @apply bg-brand-500/30 text-white;
   }
 }
 
 @layer components {
-  .glass-card {
-    @apply bg-white/[0.03] backdrop-blur-2xl border border-white/[0.05] shadow-premium transition-all duration-700 hover:bg-white/[0.06] hover:border-white/[0.1] shadow-inner-glow;
+  /* Detailed Minimal Card */
+  .premium-card {
+    @apply bg-white/[0.02] border border-white/[0.06] rounded-3xl backdrop-blur-3xl transition-all duration-700 hover:bg-white/[0.04] hover:border-white/[0.12] hover:shadow-premium;
   }
 
-  .premium-text-gradient {
-    @apply text-transparent bg-clip-text bg-gradient-brand tracking-tightest;
+  /* Ultra-Premium Text Gradient */
+  .text-gradient {
+    @apply text-transparent bg-clip-text bg-gradient-brand;
   }
 
-  .premium-button-primary {
-    @apply relative px-10 py-5 rounded-full font-black text-sm uppercase tracking-widest bg-white text-black transition-all duration-500 hover:scale-105 active:scale-95 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)];
+  /* Refined Primary Button */
+  .btn-primary {
+    @apply relative px-12 py-5 rounded-full font-black text-xs uppercase tracking-widest bg-white text-black transition-all duration-500 hover:scale-[1.03] active:scale-95 shadow-premium;
   }
 
-  .premium-button-secondary {
-    @apply relative px-10 py-5 rounded-full font-black text-sm uppercase tracking-widest bg-white/[0.03] text-white border border-white/[0.1] backdrop-blur-xl transition-all duration-500 hover:bg-white/[0.08] hover:border-white/[0.2];
+  /* Refined Secondary Button */
+  .btn-secondary {
+    @apply relative px-12 py-5 rounded-full font-black text-xs uppercase tracking-widest bg-white/[0.03] text-white border border-white/[0.08] backdrop-blur-2xl transition-all duration-500 hover:bg-white/[0.07] hover:border-white/[0.15];
   }
 
-  .section-container {
-    @apply max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-32;
+  /* Meticulous Typography */
+  .h1-premium {
+    @apply text-6xl md:text-9xl font-black leading-extra-tight tracking-ultra-tight font-khmer;
+  }
+
+  .h2-premium {
+    @apply text-4xl md:text-6xl font-black leading-tight tracking-tightest font-khmer;
   }
 }
 
-/* Scrollbar */
+/* Detailed Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #000000;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #111111;
-  border: 3px solid #000000;
-  border-radius: 20px;
+  background: #222;
+  border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #222222;
+  background: #333;
 }
 
-/* Typography Stack for Hero */
-.hero-line-reveal {
-  display: block;
-  overflow: hidden;
+/* Refined Reveal Animations */
+.reveal-text {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
 }
 
-.hero-line-reveal span {
-  display: block;
+.reveal-text span {
+  display: inline-block;
   animation: reveal-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes reveal-up {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  0% { transform: translateY(100%); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Glassmorphism Refinement */
+.glass-border {
+  position: relative;
+}
+.glass-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(to bottom right, rgba(255,255,255,0.1), transparent, rgba(255,255,255,0.05));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }

@@ -111,7 +111,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                   <div className="flex gap-4 px-6 pt-2 pb-3 flex-1">
                     {/* Profile Image */}
                     <div className="shrink-0 -mt-10 relative z-20">
-                      <div className="w-24 h-24 rounded-full border-4 border-gray-200 dark:border-gray-900 overflow-hidden glass-card group-hover:border-indigo-500 transition-colors">
+                      <div className="w-24 h-24 rounded-full border-4 border-gray-200 dark:border-gray-900 overflow-hidden premium-card glass-border group-hover:border-indigo-500 transition-colors">
                         <img 
                           src={member.image} 
                           alt={member.name}
