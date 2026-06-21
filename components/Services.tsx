@@ -97,7 +97,7 @@ const SortableServiceItem: React.FC<SortableServiceItemProps> = ({ service, inde
       className={`group relative p-[1px] rounded-3xl overflow-hidden ${gridClass} cursor-grab active:cursor-grabbing`}
     >
       {/* Rotating Gradient Border Background */}
-      <div className={`absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-opacity duration-500 animate-spin-slow blur-lg ${isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
+      <div className={`absolute inset-0 bg-gradient-to-r from-brand-400 via-purple-500 to-accent-400 transition-opacity duration-500 animate-spin-slow blur-lg ${isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
       
       {/* Inner Card Content - 3D tilt wrapper */}
       <div
@@ -105,7 +105,7 @@ const SortableServiceItem: React.FC<SortableServiceItemProps> = ({ service, inde
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{ transition: 'transform 0.15s ease-out', transformStyle: 'preserve-3d' }}
-        className={`relative h-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-[23px] p-8 border border-gray-200 dark:border-white/10 transition-colors duration-300 overflow-hidden ${isDragging ? 'bg-gray-100 dark:bg-gray-800 shadow-2xl' : ''}`}
+        className={`relative h-full glass-card rounded-[23px] p-8 transition-colors duration-300 overflow-hidden ${isDragging ? 'bg-gray-100 dark:bg-gray-800 shadow-2xl' : ''}`}
       >
           
           {/* Background Image Always Visible with Hover Darkening */}

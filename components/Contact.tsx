@@ -55,7 +55,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-16 md:py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
+    <section id="contact" className="py-16 md:py-24 bg-dark-bg relative overflow-hidden">
       <ScrollBackgroundText text="CONTACT" className="top-10" />
 
       {/* Confetti & Toast celebrations */}
@@ -77,7 +77,7 @@ export default function Contact() {
                         <span className="text-indigo-400 font-bold tracking-wider uppercase text-xs md:text-sm font-khmer">{t('Get in Touch', 'ទំនាក់ទំនងយើង')}</span>
                         <h2 className="mt-2 md:mt-4 text-4xl md:text-6xl font-black text-gray-900 dark:text-white font-khmer leading-tight">
                             {t("Let's Build Something", "បង្កើតអ្វីមួយ")} <br/>
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500">{t("Extraordinary.", "ដែលអស្ចារ្យ")}</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-purple-400 to-accent-400">{t("Extraordinary.", "ដែលអស្ចារ្យ")}</span>
                         </h2>
                         <p className="mt-4 md:mt-6 text-gray-600 dark:text-gray-400 text-base md:text-lg leading-relaxed font-khmer">
                             {t("Ready to start your project? Contact us today.", "តើអ្នកត្រៀមខ្លួនចាប់ផ្តើមគម្រោងរបស់អ្នកហើយឬនៅ? ទាក់ទងមកយើងថ្ងៃនេះ។")}
@@ -85,15 +85,15 @@ export default function Contact() {
                     </div>
 
                     <div className="grid sm:grid-cols-1 md:grid-cols-1 gap-4 md:gap-6">
-                        <a href="tel:+85515627458" className="flex items-center gap-4 md:gap-6 p-4 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors group">
+                        <a href="tel:+85515627458" className="flex items-center gap-4 md:gap-6 p-4 rounded-2xl glass-card hover:bg-gray-200 dark:hover:bg-white/10 transition-colors group">
                             <div className="p-3 bg-indigo-500/20 text-indigo-400 rounded-xl group-hover:bg-indigo-500 group-hover:text-white transition-all"><Phone size={20} /></div>
                             <div><p className="text-gray-500 text-[10px] md:text-xs font-khmer uppercase font-bold">{t('Call Us', 'ទូរស័ព្ទ')}</p><p className="text-gray-900 dark:text-white font-bold text-base md:text-lg font-mono">+855 15 627 458</p></div>
                         </a>
-                        <a href="mailto:creative.ponloe.org@gmail.com" className="flex items-center gap-4 md:gap-6 p-4 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors group">
+                        <a href="mailto:creative.ponloe.org@gmail.com" className="flex items-center gap-4 md:gap-6 p-4 rounded-2xl glass-card hover:bg-gray-200 dark:hover:bg-white/10 transition-colors group">
                             <div className="p-3 bg-purple-500/20 text-purple-400 rounded-xl group-hover:bg-purple-500 group-hover:text-white transition-all"><Mail size={20} /></div>
                             <div className="min-w-0"><p className="text-gray-500 text-[10px] md:text-xs font-khmer uppercase font-bold">{t('Email Us', 'អ៊ីមែល')}</p><p className="text-gray-900 dark:text-white font-bold text-base md:text-lg truncate">creative.ponloe.org@gmail.com</p></div>
                         </a>
-                        <div className="flex items-center gap-4 md:gap-6 p-4 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5 group">
+                        <div className="flex items-center gap-4 md:gap-6 p-4 rounded-2xl glass-card group">
                             <div className="p-3 bg-pink-500/20 text-pink-400 rounded-xl"><MapPin size={20} /></div>
                             <div><p className="text-gray-500 text-[10px] md:text-xs font-khmer uppercase font-bold">{t('Visit Us', 'អាសយដ្ឋាន')}</p><p className="text-gray-900 dark:text-white font-bold font-khmer text-sm md:text-base">ឫស្សីកែវ​, រាជធានីភ្នំពេញ</p></div>
                         </div>
@@ -133,7 +133,7 @@ export default function Contact() {
                             </div>
                             {successMessage && <div className="p-3 rounded-xl bg-green-500/20 border border-green-500/30 flex items-center gap-3 text-green-400 text-xs md:text-sm font-khmer"><Check size={14} />{successMessage}</div>}
                             {errorMessage && <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/30 flex items-center gap-3 text-red-400 text-xs md:text-sm font-khmer"><AlertCircle size={14} />{errorMessage}</div>}
-                            <button type="submit" disabled={isSubmitting} className="w-full py-3 md:py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-base md:text-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 font-khmer disabled:opacity-70">
+                            <button type="submit" disabled={isSubmitting} className="w-full premium-button-primary py-3 md:py-4 flex items-center justify-center gap-2 font-khmer disabled:opacity-70">
                                 {isSubmitting ? <><Loader2 size={20} className="animate-spin" /> {t('Sending...', 'កំពុងផ្ញើ...')}</> : <>{t('Send Request', 'ផ្ញើសំណើ')} <Send size={20} /></>}
                             </button>
                         </form>

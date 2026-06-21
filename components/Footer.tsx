@@ -65,8 +65,8 @@ const Footer: React.FC<{ hideCTA?: boolean }> = ({ hideCTA = false }) => {
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       
       {/* Background Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-600/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-brand-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-accent-500/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -85,7 +85,7 @@ const Footer: React.FC<{ hideCTA?: boolean }> = ({ hideCTA = false }) => {
                     {t("Let's create something", "តោះបង្កើតអ្វីមួយ")} <br />
                     <span className="relative inline-block">
                         <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 blur-2xl opacity-30 pointer-events-none"></span>
-                        <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
+                        <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-purple-400 to-accent-400">
                             {t("extraordinary together.", "ដែលអស្ចារ្យទាំងអស់គ្នា។")}
                         </span>
                     </span>
@@ -95,7 +95,7 @@ const Footer: React.FC<{ hideCTA?: boolean }> = ({ hideCTA = false }) => {
             <RevealOnScroll delay={200} className="flex flex-col items-center">
                 <a 
                     href={`/${language}/contact`} 
-                    className="group relative inline-flex items-center gap-4 px-10 py-5 bg-gray-900 dark:bg-white text-white dark:text-gray-950 rounded-full font-bold text-xl hover:bg-indigo-600 dark:hover:bg-indigo-600 dark:hover:text-white transition-all duration-300 shadow-lg hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] hover:-translate-y-1"
+                    className="premium-button-primary px-12 py-6 text-xl items-center gap-4"
                 >
                     <span className="font-khmer">{t("Start a Project", "ចាប់ផ្តើមគម្រោង")}</span>
                     <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:rotate-45 duration-500 transition-transform">

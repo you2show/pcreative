@@ -71,7 +71,7 @@ const HeroLaunchPanel: React.FC = () => {
       aria-label={t('Creative launch system preview', 'ការបង្ហាញប្រព័ន្ធចាប់ផ្តើមច្នៃប្រឌិត')}
     >
       <div
-        className="absolute inset-6 rounded-[3rem] border border-indigo-200/40 bg-white/70 shadow-2xl shadow-indigo-500/10 backdrop-blur-2xl transition-transform duration-300 dark:border-white/10 dark:bg-white/[0.04] dark:shadow-black/30"
+        className="absolute inset-6 rounded-[3rem] border border-white/10 bg-white/5 shadow-premium backdrop-blur-2xl transition-transform duration-300 dark:border-white/10 dark:bg-white/[0.04] dark:shadow-black/30"
         style={{ transform: 'rotateX(var(--hero-rotate-x)) rotateY(var(--hero-rotate-y)) translate3d(var(--hero-x), var(--hero-y), 0)' }}
       >
         <div className="absolute inset-0 overflow-hidden rounded-[3rem]">
@@ -116,7 +116,7 @@ const HeroLaunchPanel: React.FC = () => {
                   type="button"
                   onMouseEnter={() => setHovered(index)}
                   onMouseLeave={() => setHovered(null)}
-                  className={`absolute left-1/2 top-1/2 z-20 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-3xl border bg-white/85 text-gray-950 shadow-2xl backdrop-blur-xl transition-all duration-500 hover:scale-110 hover:rounded-full dark:border-white/10 dark:bg-gray-950/85 dark:text-white ${active ? 'border-indigo-300 shadow-indigo-500/30' : 'border-gray-200 shadow-black/10'}`}
+                  className={`absolute left-1/2 top-1/2 z-20 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-3xl border bg-white/5 text-white shadow-premium backdrop-blur-xl transition-all duration-500 hover:scale-110 hover:rounded-full border border-white/10 ${active ? 'border-indigo-300 shadow-indigo-500/30' : 'border-gray-200 shadow-black/10'}`}
                   style={{ transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${active ? 1.12 : 1})` }}
                 >
                   <span className={`mb-1 flex h-8 w-8 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-white shadow-lg`}>
