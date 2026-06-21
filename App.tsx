@@ -71,7 +71,7 @@ const getPathWithoutLanguage = () => {
 
 
 const ComponentFallback: React.FC = () => (
-  <div className="w-full h-screen flex items-center justify-center bg-white dark:bg-gray-950">
+  <div className="w-full h-screen flex items-center justify-center bg-white dark:bg-black">
     <div className="flex flex-col items-center gap-4">
       <div className="w-12 h-12 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
       <p className="text-gray-600 dark:text-gray-400 text-sm font-khmer">Loading...</p>
@@ -181,18 +181,23 @@ function AppContent() {
   };
 
   const PageHero = ({ eyebrow, title, accent, description }: { eyebrow: string; title: string; accent: string; description: string }) => (
-    <section className="relative min-h-[72vh] flex items-end overflow-hidden pt-36 pb-16 md:pb-24">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.26),transparent_36%),radial-gradient(circle_at_80%_10%,rgba(236,72,153,0.16),transparent_32%),linear-gradient(135deg,rgba(15,23,42,0.96),rgba(15,23,42,0.58))] dark:opacity-100 opacity-90" />
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=1800')] bg-cover bg-center opacity-18 mix-blend-overlay" />
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white dark:from-gray-950 to-transparent" />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-        <div className="max-w-4xl">
-          <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-indigo-100 backdrop-blur-md font-khmer">{eyebrow}</span>
-          <h1 className="mt-8 text-5xl md:text-7xl lg:text-8xl font-black leading-[0.92] text-white font-khmer">
-            {title} <span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-cyan-200">{accent}</span>
+    <section className="relative pt-32 pb-24 md:pt-56 md:pb-40 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 relative z-10">
+        <RevealOnScroll variant="fadeUp">
+          <span className="text-brand-400 font-black tracking-[0.3em] uppercase text-xs mb-6 block font-khmer opacity-80">{eyebrow}</span>
+          <h1 className="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tightest mb-10 font-khmer">
+            {title} <br/>
+            <span className="premium-text-gradient">{accent}</span>
           </h1>
-          <p className="mt-6 max-w-2xl text-lg md:text-xl leading-relaxed text-gray-200 font-khmer">{description}</p>
-        </div>
+          <p className="text-xl md:text-2xl text-gray-400 max-w-2xl font-khmer leading-relaxed font-light">
+            {description}
+          </p>
+        </RevealOnScroll>
+      </div>
+
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] bg-brand-500/10 rounded-full blur-[140px] animate-pulse-slow" />
+        <div className="absolute top-[20%] -left-[5%] w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[120px]" />
       </div>
     </section>
   );
@@ -346,7 +351,7 @@ function AppContent() {
   }
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'} overflow-x-hidden selection:bg-indigo-500 selection:text-white relative`}>
+    <div className={`min-h-screen ${isDark ? 'bg-black text-white' : 'bg-white text-gray-900'} overflow-x-hidden selection:bg-brand-500 selection:text-white relative`}>
       <SkipToContent />
       {showPreloader && <Preloader />}
       {showCinematicIntro && <CinematicIntro onComplete={() => setShowCinematicIntro(false)} />}
@@ -380,7 +385,7 @@ function AppContent() {
       {activePage === 'privacy' && <PrivacyPolicy onClose={() => window.location.hash = ''} />}
 
       {isAdminOpen && (
-          <div className="fixed inset-0 z-[12000] flex items-center justify-center p-4 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md overflow-hidden">
+          <div className="fixed inset-0 z-[12000] flex items-center justify-center p-4 bg-white/80 dark:bg-black/80 backdrop-blur-md overflow-hidden">
               <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 p-8 rounded-3xl shadow-2xl w-full max-w-sm relative z-[12001]">
                   <button onClick={closeAdmin} className="absolute top-4 right-4 text-gray-500 hover:text-gray-900 dark:hover:text-white"><X size={20} /></button>
                   <div className="flex flex-col items-center mb-6">

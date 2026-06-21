@@ -11,7 +11,7 @@ interface TrailDot {
 }
 
 const MODE_CONFIG: Record<CursorMode, { dotColor: string; ringSize: number; ringColor: string; label?: string }> = {
-  default: { dotColor: '#6366f1', ringSize: 32, ringColor: 'rgba(255,255,255,0.4)' },
+  default: { dotColor: '#fff', ringSize: 32, ringColor: 'rgba(255,255,255,0.1)' },
   link:    { dotColor: '#a855f7', ringSize: 44, ringColor: 'rgba(168,85,247,0.5)', label: '→' },
   button:  { dotColor: '#ec4899', ringSize: 52, ringColor: 'rgba(236,72,153,0.4)', label: '✦' },
   image:   { dotColor: '#06b6d4', ringSize: 56, ringColor: 'rgba(6,182,212,0.4)', label: '⊕' },
