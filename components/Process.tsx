@@ -99,7 +99,7 @@ const Process: React.FC = () => {
     <section
       id="process"
       ref={sectionRef}
-      className="py-24 bg-white dark:bg-gray-950 relative overflow-hidden"
+      className="py-24 bg-black relative overflow-hidden"
     >
       {/* Ambient background glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">

@@ -261,7 +261,7 @@ const FAQ: React.FC = () => {
   const hasMore = FAQS.length > INITIAL_VISIBLE;
 
   return (
-    <section id="faq" className="py-16 md:py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
+    <section id="faq" className="py-16 md:py-24 bg-black relative overflow-hidden">
       <ScrollBackgroundText text="FAQ" className="top-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

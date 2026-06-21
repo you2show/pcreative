@@ -109,7 +109,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
   };
 
   return (
-    <section id="insights" className="py-24 bg-white dark:bg-gray-950 relative overflow-hidden">
+    <section id="insights" className="py-24 bg-black relative overflow-hidden">
         {/* Background Decorative Blob */}
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
 
@@ -142,7 +142,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
             {(insights || []).slice(0, 3).map((post) => (
               <article 
                 key={post.id} 
-                className="group flex flex-col h-full bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-2xl overflow-hidden hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+                className="group flex flex-col h-full glass-card border border-gray-100 dark:border-white/5 rounded-2xl overflow-hidden hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300 hover:-translate-y-2 cursor-pointer"
                 onClick={() => openItem(post.slug || post.id)}
               >
                 {/* Image Container */}
@@ -156,7 +156,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
                   
                   {/* Category Badge */}
                   <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 rounded-full bg-indigo-600/80 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1 border border-white/10">
+                    <span className="px-3 py-1 rounded-full bg-white backdrop-blur-sm text-black text-xs font-black uppercase tracking-widest flex items-center gap-1 border border-white/10">
                       <Tag size={12} /> {post.category}
                     </span>
                   </div>
@@ -207,16 +207,16 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
 
       {/* "View All Posts" Full Screen Overlay */}
       {isViewAllOpen && createPortal(
-         <div className="fixed inset-0 z-[10001] flex flex-col overflow-hidden bg-gray-50 dark:bg-gray-900">
+         <div className="fixed inset-0 z-[10001] flex flex-col overflow-hidden bg-black">
               {/* Header */}
-                <div className="flex justify-between items-center p-6 md:p-8 border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-gray-900 shrink-0">
+                <div className="flex justify-between items-center p-6 md:p-8 border-b border-gray-200 dark:border-white/10 bg-black shrink-0">
                      <div>
                          <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-khmer">{t('All Articles', 'អត្ថបទទាំងអស់')}</h3>
                          <p className="text-gray-600 dark:text-gray-400 text-sm font-khmer">{t('Explore our latest thoughts and updates', 'ស្វែងរកគំនិត និងព័ត៌មានថ្មីៗរបស់យើង')}</p>
                      </div>
                      <button 
                          onClick={handleViewAllClose}
-                         className="p-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-full transition-all border border-gray-100 dark:border-white/5"
+                         className="p-3 glass-card hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-full transition-all border border-gray-100 dark:border-white/5"
                      >
                          <X size={24} />
                      </button>
@@ -228,7 +228,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
                          {(insights || []).map((post) => (
                               <article 
                                  key={post.id} 
-                                 className="group flex flex-col bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl overflow-hidden hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                                 className="group flex flex-col glass-card border border-gray-100 dark:border-white/5 rounded-xl overflow-hidden hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                                  onClick={() => openItem(post.slug || post.id)}
                              >
                                  <div className="relative h-48 overflow-hidden">

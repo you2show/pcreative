@@ -7,3 +7,28 @@
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
+11:04:42 AM [vite] page reload tailwind.config.js
+11:05:10 AM [vite] hmr update /styles.css
+11:06:44 AM [vite] hmr update /App.tsx, /styles.css
+11:06:44 AM [vite] hmr update /App.tsx, /styles.css
+11:06:44 AM [vite] hmr update /App.tsx, /styles.css
+11:08:30 AM [vite] hmr update /components/Stats.tsx, /styles.css
+11:08:30 AM [vite] hmr update /components/Partners.tsx, /styles.css
+11:08:30 AM [vite] hmr update /components/Testimonials.tsx, /styles.css
+11:08:30 AM [vite] hmr update /components/FAQ.tsx, /styles.css
+11:08:30 AM [vite] hmr update /components/Process.tsx, /styles.css
+11:09:08 AM [vite] hmr update /components/About.tsx, /styles.css
+11:10:21 AM [vite] hmr update /components/Insights.tsx, /styles.css
+11:13:55 AM [vite] hmr update /components/Insights.tsx, /styles.css
+11:15:11 AM [vite] hmr update /components/FAQ.tsx, /styles.css
+11:15:11 AM [vite] hmr update /components/Process.tsx, /styles.css
+11:15:11 AM [vite] hmr update /components/Insights.tsx, /styles.css
+11:16:49 AM [vite] hmr update /components/Team.tsx, /styles.css
+11:18:49 AM [vite] hmr update /components/CustomCursor.tsx, /styles.css
+11:18:49 AM [vite] hmr update /components/ScrollProgress.tsx, /styles.css
+11:18:49 AM [vite] hmr update /components/ScrollButton.tsx, /styles.css
+11:20:37 AM [vite] hmr update /components/ScrollButton.tsx, /styles.css
+11:24:32 AM [vite] hmr update /components/Header.tsx, /styles.css
+11:24:32 AM [vite] hmr update /components/Hero/index.tsx, /styles.css
+11:24:32 AM [vite] hmr update /components/Hero/HeroActions.tsx, /styles.css
+11:24:32 AM [vite] hmr update /App.tsx, /styles.css

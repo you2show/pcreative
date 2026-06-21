@@ -50,7 +50,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
   };
 
   return (
-    <section id="team" className="py-24 bg-white dark:bg-gray-950 overflow-hidden relative">
+    <section id="team" className="py-24 bg-black dark:bg-gray-950 overflow-hidden relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none z-0" />
       
       {/* Background Text */}
@@ -71,7 +71,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
               return (
                 <div 
                   key={member.id} 
-                  className="group relative bg-gray-50 dark:bg-gray-900 rounded-3xl overflow-hidden border border-gray-200 dark:border-white/10 hover:border-indigo-500/50 transition-all duration-500 hover:-translate-y-1 cursor-pointer flex flex-col"
+                  className="group relative bg-black rounded-3xl overflow-hidden border border-gray-200 dark:border-white/10 hover:border-indigo-500/50 transition-all duration-500 hover:-translate-y-1 cursor-pointer flex flex-col"
                   onClick={() => openItem(member.slug || member.id)}
                 >
                   {/* Cover Image Section */}
@@ -111,7 +111,7 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                   <div className="flex gap-4 px-6 pt-2 pb-3 flex-1">
                     {/* Profile Image */}
                     <div className="shrink-0 -mt-10 relative z-20">
-                      <div className="w-24 h-24 rounded-full border-4 border-gray-200 dark:border-gray-900 overflow-hidden bg-gray-100 dark:bg-gray-800 group-hover:border-indigo-500 transition-colors">
+                      <div className="w-24 h-24 rounded-full border-4 border-gray-200 dark:border-gray-900 overflow-hidden glass-card group-hover:border-indigo-500 transition-colors">
                         <img 
                           src={member.image} 
                           alt={member.name}
@@ -137,12 +137,12 @@ const Team: React.FC<TeamProps> = ({ showPopupOnMount = false, usePathRouting = 
                   {/* Social Links */}
                   <div className="px-6 py-4 border-t border-gray-200 dark:border-white/10 flex gap-3" onClick={(e) => e.stopPropagation()}>
                     {member.socials.facebook && (
-                      <a href={member.socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-[#1877F2] hover:text-white transition-all">
+                      <a href={member.socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-100 dark:bg-black/5 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-[#1877F2] hover:text-white transition-all">
                         <Facebook size={18} />
                       </a>
                     )}
                     {member.socials.telegram && (
-                      <a href={member.socials.telegram} target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-[#229ED9] hover:text-white transition-all">
+                      <a href={member.socials.telegram} target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-100 dark:bg-black/5 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-[#229ED9] hover:text-white transition-all">
                         <Send size={18} />
                       </a>
                     )}

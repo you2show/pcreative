@@ -94,7 +94,7 @@ const HeroActions: React.FC<HeroActionsProps> = ({ t }) => {
         </div>
 
         {/* Stats */}
-        <div className="pt-8 flex flex-wrap items-center justify-center lg:justify-start gap-8 border-t border-gray-100 dark:border-white/5">
+        <div className="pt-8 flex flex-wrap items-center justify-center lg:justify-start gap-8 border-t border-white/[0.05]">
             <div className="text-center lg:text-left">
                 <h4 className="text-3xl font-black text-gray-900 dark:text-white"><CountUp end={127} duration={2000} suffix="+" /></h4>
                 <p className="text-xs text-gray-500 uppercase tracking-wider font-bold font-khmer">{t('Brands Launched', 'ម៉ាកបានដំណើរការ')}</p>
@@ -103,7 +103,7 @@ const HeroActions: React.FC<HeroActionsProps> = ({ t }) => {
                 <h4 className="text-3xl font-black text-gray-900 dark:text-white"><CountUp end={48} duration={1800} suffix="h" /></h4>
                 <p className="text-xs text-gray-500 uppercase tracking-wider font-bold font-khmer">{t('First Draft', 'ដ្រាហ្វដំបូង')}</p>
             </div>
-            <div className="flex items-center gap-1 w-full justify-center lg:w-auto pl-4 border-l border-gray-100 dark:border-white/5">
+            <div className="flex items-center gap-1 w-full justify-center lg:w-auto pl-4 border-l border-white/[0.05]">
                 <div className="flex -space-x-2">
                     {[1,2,3].map(i => <div key={i} className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-900" />)}
                 </div>

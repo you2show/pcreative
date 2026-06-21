@@ -89,7 +89,7 @@ const TeamStack: React.FC<TeamStackProps> = ({ onMemberSelect }) => {
 
             {/* Dropdown Menu - High Z-Index to float above everything */}
             {isOpen && (
-                <div className="absolute top-full left-0 mt-3 w-64 bg-white rounded-2xl shadow-2xl overflow-hidden z-[9999] animate-fade-in border border-gray-200">
+                <div className="absolute top-full left-0 mt-3 w-64 bg-black rounded-2xl shadow-2xl overflow-hidden z-[9999] animate-fade-in border border-gray-200">
                     <div className="p-3 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
                         <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">More Members</span>
                         <span className="text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full font-bold">{hiddenMembers.length}</span>
@@ -147,10 +147,10 @@ const About: React.FC = () => {
                 
                 {/* 1. Hero Section: Big Typography & Gradient */}
                 <div className="relative py-20 mb-20 text-center">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
                     
                     <RevealOnScroll variant="zoom-in" duration={800}>
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-indigo-300 text-sm font-bold tracking-wider mb-6 backdrop-blur-md">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-gray-200 dark:border-white/10 text-indigo-300 text-sm font-bold tracking-wider mb-6 backdrop-blur-md">
                             <Sparkles size={14} /> 
                             <span className="font-khmer">{t("Since 2020", "បង្កើតឡើងតាំងពីឆ្នាំ ២០២០")}</span>
                         </div>
@@ -179,7 +179,7 @@ const About: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
                     {/* Card 1: Main Story (Large) */}
                     <RevealOnScroll variant="fade-up" delay={100} className="md:col-span-2 row-span-2">
-                        <div className="h-full bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-[32px] p-8 md:p-12 relative overflow-hidden group hover:border-indigo-500/30 transition-all duration-500">
+                        <div className="h-full glass-card backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-[32px] p-8 md:p-12 relative overflow-hidden group hover:border-indigo-500/30 transition-all duration-500">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] group-hover:bg-purple-500/20 transition-all"></div>
                             <Fingerprint size={48} className="text-gray-900 dark:text-white mb-6 relative z-10" />
                             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 font-khmer">{t("Our Identity", "អត្តសញ្ញាណរបស់យើង")}</h2>
@@ -214,13 +214,13 @@ const About: React.FC = () => {
 
                     {/* Card 3: Creative Experts (Updated with TeamStack) */}
                     <RevealOnScroll variant="slide-left" delay={300} className="md:col-span-1">
-                        <div className="h-full bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-[32px] p-8 flex flex-col justify-between group hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
+                        <div className="h-full glass-card backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-[32px] p-8 flex flex-col justify-between group hover:bg-gray-100 dark:hover:bg-black/5 transition-all">
                             <div className="flex justify-between items-start">
                                 <div>
                                     <h3 className="text-4xl font-black text-gray-900 dark:text-white mb-1"><CountUp end={team.length} duration={2000} suffix="+" /></h3>
                                     <p className="text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider text-xs font-khmer">{t("Experts", "អ្នកជំនាញ")}</p>
                                 </div>
-                                <div className="p-3 bg-gray-100 dark:bg-white/5 rounded-full text-pink-400">
+                                <div className="p-3 glass-card rounded-full text-pink-400">
                                     <Users size={20} />
                                 </div>
                             </div>
@@ -262,7 +262,7 @@ const About: React.FC = () => {
                                     <div className={`absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-150 duration-500 ${val.color}`}>
                                         {React.cloneElement(val.icon as React.ReactElement<any>, { size: 120 })}
                                     </div>
-                                    <div className={`p-3 bg-gray-100 dark:bg-white/5 w-fit rounded-xl ${val.color}`}>
+                                    <div className={`p-3 glass-card w-fit rounded-xl ${val.color}`}>
                                         {val.icon}
                                     </div>
                                     <div>
@@ -300,7 +300,7 @@ const About: React.FC = () => {
                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 font-khmer">{t("Ready to make history?", "ត្រៀមខ្លួនបង្កើតប្រវត្តិសាស្ត្រហើយឬនៅ?")}</h2>
                     <button 
                         onClick={() => { window.history.pushState(null, '', `/${language}/contact`); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                        className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white text-black rounded-full font-bold text-lg hover:bg-gray-200 transition-all overflow-hidden"
+                        className="group relative inline-flex items-center gap-3 px-8 py-4 bg-black text-black rounded-full font-bold text-lg hover:bg-gray-200 transition-all overflow-hidden"
                     >
                         <span className="relative z-10 font-khmer">{t("Start Your Project", "ចាប់ផ្តើមគម្រោងរបស់អ្នក")}</span>
                         <ArrowRight size={20} className="relative z-10 group-hover:translate-x-1 transition-transform" />

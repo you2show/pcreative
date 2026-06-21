@@ -63,7 +63,7 @@ const HeroTicker: React.FC = () => {
   const duplicated = [...BRAND_REEL_SERVICES, ...BRAND_REEL_SERVICES];
 
   return (
-    <div className="relative w-full overflow-hidden border-y border-gray-100 dark:border-white/5 py-3 bg-gray-50/60 dark:bg-white/[0.02] backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(0,0,0,0.04)]">
+    <div className="relative w-full overflow-hidden border-y border-white/[0.05] py-3 bg-gray-50/60 dark:bg-white/[0.02] backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(0,0,0,0.04)]">
       <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-gray-50 dark:from-gray-950 to-transparent z-10 pointer-events-none" />
       <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-gray-50 dark:from-gray-950 to-transparent z-10 pointer-events-none" />
       <div
@@ -84,7 +84,7 @@ const HeroTicker: React.FC = () => {
                 className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border transition-all duration-300 cursor-default select-none
                   ${isHovered
                     ? 'border-indigo-300/50 bg-indigo-500/10 dark:bg-indigo-500/15 shadow-md shadow-indigo-500/20'
-                    : 'border-gray-200 dark:border-white/8 bg-white/70 dark:bg-white/[0.04]'
+                    : 'border-gray-200 dark:border-white/8 bg-white/[0.04]'
                   }`}
               >
                 <Icon size={13} className={`transition-colors ${isHovered ? svc.color : 'text-gray-400 dark:text-gray-500'}`} />
@@ -138,7 +138,7 @@ const Hero: React.FC = () => {
           {/* Left Content - Typography & CTA */}
           <div className="space-y-6 text-center lg:text-left relative z-20">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-md animate-fade-in group hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-default shadow-sm dark:shadow-indigo-500/10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-gray-200 dark:border-white/10 backdrop-blur-md animate-fade-in group hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-default shadow-sm dark:shadow-indigo-500/10">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>

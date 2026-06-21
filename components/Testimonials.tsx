@@ -123,7 +123,7 @@ const Testimonials: React.FC = () => {
   };
 
   return (
-    <section className="py-24 bg-gray-50 dark:bg-gray-900 overflow-hidden relative border-y border-gray-100 dark:border-white/5">
+    <section className="py-24 bg-black overflow-hidden relative border-y border-gray-100 dark:border-white/5">
       {/* Background Text */}
       <ScrollBackgroundText text="STORIES" className="top-10" />
 
@@ -196,7 +196,7 @@ const Testimonials: React.FC = () => {
                 onClick={resetForm}
             />
 
-            <div className="relative w-full max-w-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-scale-up">
+            <div className="relative w-full max-w-lg bg-black border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-scale-up">
                 {/* Header */}
                 <div className="flex justify-between items-center p-6 border-b border-gray-100 dark:border-white/5 bg-gray-100 dark:bg-white/5">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white font-khmer">

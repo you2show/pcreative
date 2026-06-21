@@ -13,7 +13,7 @@ const Partners: React.FC = () => {
   if (displayPartners.length === 0) return null;
 
   return (
-    <section className="py-12 bg-white dark:bg-gray-950 border-y border-gray-100 dark:border-white/5 relative overflow-hidden">
+    <section className="py-12 bg-black border-y border-gray-100 dark:border-white/5 relative overflow-hidden">
         {/* Gradient Fades */}
         <div className="absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
         <div className="absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
