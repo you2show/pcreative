@@ -142,7 +142,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
             {(insights || []).slice(0, 3).map((post) => (
               <article 
                 key={post.id} 
-                className="group flex flex-col h-full glass-card border border-gray-100 dark:border-white/5 rounded-2xl overflow-hidden hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+                className="group flex flex-col h-full premium-card glass-border border border-gray-100 dark:border-white/5 rounded-2xl overflow-hidden hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300 hover:-translate-y-2 cursor-pointer"
                 onClick={() => openItem(post.slug || post.id)}
               >
                 {/* Image Container */}
@@ -216,7 +216,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
                      </div>
                      <button 
                          onClick={handleViewAllClose}
-                         className="p-3 glass-card hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-full transition-all border border-gray-100 dark:border-white/5"
+                         className="p-3 premium-card glass-border hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white rounded-full transition-all border border-gray-100 dark:border-white/5"
                      >
                          <X size={24} />
                      </button>
@@ -228,7 +228,7 @@ const Insights: React.FC<InsightsProps> = ({ showPopupOnMount = false, usePathRo
                          {(insights || []).map((post) => (
                               <article 
                                  key={post.id} 
-                                 className="group flex flex-col glass-card border border-gray-100 dark:border-white/5 rounded-xl overflow-hidden hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                                 className="group flex flex-col premium-card glass-border border border-gray-100 dark:border-white/5 rounded-xl overflow-hidden hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                                  onClick={() => openItem(post.slug || post.id)}
                              >
                                  <div className="relative h-48 overflow-hidden">

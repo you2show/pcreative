@@ -75,7 +75,7 @@ export default function Contact() {
                 <div className="space-y-6 md:space-y-8">
                     <div>
                         <span className="text-indigo-400 font-bold tracking-wider uppercase text-xs md:text-sm font-khmer">{t('Get in Touch', 'ទំនាក់ទំនងយើង')}</span>
-                        <h2 className="mt-2 md:mt-4 text-4xl md:text-6xl font-black text-gray-900 dark:text-white font-khmer leading-tight">
+                        <h2 className="mt-2 md:mt-4 h2-premium font-black text-gray-900 dark:text-white font-khmer leading-tight">
                             {t("Let's Build Something", "បង្កើតអ្វីមួយ")} <br/>
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-purple-400 to-accent-400">{t("Extraordinary.", "ដែលអស្ចារ្យ")}</span>
                         </h2>
@@ -133,7 +133,7 @@ export default function Contact() {
                             </div>
                             {successMessage && <div className="p-3 rounded-xl bg-green-500/20 border border-green-500/30 flex items-center gap-3 text-green-400 text-xs md:text-sm font-khmer"><Check size={14} />{successMessage}</div>}
                             {errorMessage && <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/30 flex items-center gap-3 text-red-400 text-xs md:text-sm font-khmer"><AlertCircle size={14} />{errorMessage}</div>}
-                            <button type="submit" disabled={isSubmitting} className="w-full premium-button-primary py-3 md:py-4 flex items-center justify-center gap-2 font-khmer disabled:opacity-70">
+                            <button type="submit" disabled={isSubmitting} className="w-full btn-primary py-3 md:py-4 flex items-center justify-center gap-2 font-khmer disabled:opacity-70">
                                 {isSubmitting ? <><Loader2 size={20} className="animate-spin" /> {t('Sending...', 'កំពុងផ្ញើ...')}</> : <>{t('Send Request', 'ផ្ញើសំណើ')} <Send size={20} /></>}
                             </button>
                         </form>

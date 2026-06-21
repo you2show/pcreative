@@ -150,7 +150,7 @@ const About: React.FC = () => {
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
                     
                     <RevealOnScroll variant="zoom-in" duration={800}>
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-gray-200 dark:border-white/10 text-indigo-300 text-sm font-bold tracking-wider mb-6 backdrop-blur-md">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full premium-card glass-border border border-gray-200 dark:border-white/10 text-indigo-300 text-sm font-bold tracking-wider mb-6 backdrop-blur-md">
                             <Sparkles size={14} /> 
                             <span className="font-khmer">{t("Since 2020", "បង្កើតឡើងតាំងពីឆ្នាំ ២០២០")}</span>
                         </div>
@@ -179,7 +179,7 @@ const About: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
                     {/* Card 1: Main Story (Large) */}
                     <RevealOnScroll variant="fade-up" delay={100} className="md:col-span-2 row-span-2">
-                        <div className="h-full glass-card backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-[32px] p-8 md:p-12 relative overflow-hidden group hover:border-indigo-500/30 transition-all duration-500">
+                        <div className="h-full premium-card glass-border backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-[32px] p-8 md:p-12 relative overflow-hidden group hover:border-indigo-500/30 transition-all duration-500">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] group-hover:bg-purple-500/20 transition-all"></div>
                             <Fingerprint size={48} className="text-gray-900 dark:text-white mb-6 relative z-10" />
                             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 font-khmer">{t("Our Identity", "អត្តសញ្ញាណរបស់យើង")}</h2>
@@ -214,13 +214,13 @@ const About: React.FC = () => {
 
                     {/* Card 3: Creative Experts (Updated with TeamStack) */}
                     <RevealOnScroll variant="slide-left" delay={300} className="md:col-span-1">
-                        <div className="h-full glass-card backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-[32px] p-8 flex flex-col justify-between group hover:bg-gray-100 dark:hover:bg-black/5 transition-all">
+                        <div className="h-full premium-card glass-border backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-[32px] p-8 flex flex-col justify-between group hover:bg-gray-100 dark:hover:bg-black/5 transition-all">
                             <div className="flex justify-between items-start">
                                 <div>
                                     <h3 className="text-4xl font-black text-gray-900 dark:text-white mb-1"><CountUp end={team.length} duration={2000} suffix="+" /></h3>
                                     <p className="text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider text-xs font-khmer">{t("Experts", "អ្នកជំនាញ")}</p>
                                 </div>
-                                <div className="p-3 glass-card rounded-full text-pink-400">
+                                <div className="p-3 premium-card glass-border rounded-full text-pink-400">
                                     <Users size={20} />
                                 </div>
                             </div>
@@ -262,7 +262,7 @@ const About: React.FC = () => {
                                     <div className={`absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-150 duration-500 ${val.color}`}>
                                         {React.cloneElement(val.icon as React.ReactElement<any>, { size: 120 })}
                                     </div>
-                                    <div className={`p-3 glass-card w-fit rounded-xl ${val.color}`}>
+                                    <div className={`p-3 premium-card glass-border w-fit rounded-xl ${val.color}`}>
                                         {val.icon}
                                     </div>
                                     <div>

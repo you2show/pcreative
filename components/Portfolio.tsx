@@ -106,7 +106,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ showPopupOnMount = false, onPopup
              <RevealOnScroll variant="slide-right">
                <div className="max-w-2xl">
                   <span className="text-indigo-400 font-bold tracking-wider uppercase text-sm mb-4 block font-khmer">{t('Selected Works', 'ស្នាដៃជ្រើសរើស')}</span>
-                  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white font-khmer">
+                  <h2 className="h2-premium font-bold text-gray-900 dark:text-white font-khmer">
                       {t('A Showcase of', 'បង្ហាញ')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{t('Excellence', 'ឧត្តមភាព')}</span>
                   </h2>
               </div>

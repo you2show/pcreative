@@ -81,7 +81,7 @@ const Footer: React.FC<{ hideCTA?: boolean }> = ({ hideCTA = false }) => {
             </RevealOnScroll>
 
             <RevealOnScroll delay={100}>
-                <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 dark:text-white font-khmer leading-[1.1] tracking-tight max-w-5xl mx-auto mb-10">
+                <h2 className="h2-premium font-black text-gray-900 dark:text-white font-khmer leading-[1.1] tracking-tight max-w-5xl mx-auto mb-10">
                     {t("Let's create something", "តោះបង្កើតអ្វីមួយ")} <br />
                     <span className="relative inline-block">
                         <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 blur-2xl opacity-30 pointer-events-none"></span>
@@ -95,7 +95,7 @@ const Footer: React.FC<{ hideCTA?: boolean }> = ({ hideCTA = false }) => {
             <RevealOnScroll delay={200} className="flex flex-col items-center">
                 <a 
                     href={`/${language}/contact`} 
-                    className="premium-button-primary px-12 py-6 text-xl items-center gap-4"
+                    className="btn-primary btn-primary px-16 py-6 text-base items-center gap-4"
                 >
                     <span className="font-khmer">{t("Start a Project", "ចាប់ផ្តើមគម្រោង")}</span>
                     <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:rotate-45 duration-500 transition-transform">
