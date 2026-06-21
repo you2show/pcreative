@@ -125,10 +125,10 @@ const Hero: React.FC = () => {
       {/* Background Ambience */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
         <div
-            className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] opacity-60"
+            className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-[120px] opacity-60"
         />
         <div
-            className="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[100px] opacity-60"
+            className="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] bg-accent-500/5 rounded-full blur-[100px] opacity-60"
         />
       </div>
 
@@ -151,11 +151,11 @@ const Hero: React.FC = () => {
             {/* Main Headline */}
             <div className="relative space-y-3">
                 <div className="absolute -left-6 top-4 hidden h-28 w-28 rounded-full bg-indigo-500/15 blur-3xl dark:block" aria-hidden="true" />
-                <h1 className="hero-headline relative text-5xl sm:text-6xl md:text-7xl font-black leading-[1.02] tracking-[-0.045em] text-gray-950 dark:text-white font-khmer">
+                <h1 className="hero-headline relative text-6xl sm:text-7xl md:text-8xl font-black leading-[1.02] tracking-[-0.045em] text-gray-950 dark:text-white font-khmer">
                     <span className="hero-line-reveal block">
                       {t('We Craft', 'យើងបង្កើត')}
                     </span>
-                    <span className="hero-gradient-text relative inline-block pb-3 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 drop-shadow-lg">
+                    <span className="hero-gradient-text relative inline-block pb-3 text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-purple-400 to-accent-400 drop-shadow-lg">
                         <RotatingWord t={t} />
                     </span>
                     <span className="hero-subline block text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-500 dark:text-gray-300 tracking-[-0.01em]">

@@ -15,7 +15,7 @@ const PortfolioCard: React.FC<PortfolioCardProps> = ({ project, index, onClick }
     <RevealOnScroll delay={index * 100} variant="zoom-in" duration={600}>
       <div 
         onClick={onClick}
-        className="group relative rounded-2xl overflow-hidden break-inside-avoid bg-gray-100 dark:bg-gray-800 transition-transform duration-500 hover:-translate-y-2 hover:rotate-1 hover:shadow-2xl hover:shadow-indigo-500/20 cursor-pointer"
+        className="group relative rounded-2xl overflow-hidden break-inside-avoid glass-card hover:-translate-y-2 hover:rotate-1 hover:shadow-premium-hover cursor-pointer"
       >
         <img 
           src={project.image} 
@@ -32,7 +32,7 @@ const PortfolioCard: React.FC<PortfolioCardProps> = ({ project, index, onClick }
             </div>
         )}
 
-        <div className="absolute inset-0 bg-white/60 dark:bg-gray-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-6 backdrop-blur-[2px]">
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-between p-6 backdrop-blur-[2px]">
            <div className="flex justify-end translate-y-[-10px] group-hover:translate-y-0 transition-transform duration-300">
               <div className="h-10 w-10 rounded-full bg-white text-gray-950 flex items-center justify-center">
                    <span className="text-xl">↗</span>
@@ -40,7 +40,7 @@ const PortfolioCard: React.FC<PortfolioCardProps> = ({ project, index, onClick }
            </div>
            <div className="translate-y-[10px] group-hover:translate-y-0 transition-transform duration-300">
               <span className="text-indigo-400 text-xs font-bold uppercase tracking-wider mb-2 block">{project.category}</span>
-              <h3 className="text-gray-900 dark:text-white text-2xl font-bold">{project.title}</h3>
+              <h3 className="text-white text-2xl font-bold">{project.title}</h3>
            </div>
         </div>
       </div>

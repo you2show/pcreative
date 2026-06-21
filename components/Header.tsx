@@ -210,7 +210,7 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
   return (
     <>
       <header className="fixed top-6 left-0 right-0 z-50 transition-all duration-300 flex justify-center px-4">
-        <div className={`flex items-center justify-between px-4 sm:px-6 lg:px-8 py-1.5 md:py-2 rounded-full border transition-all duration-300 w-full max-w-7xl ${isScrolled ? 'bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-gray-200 dark:border-white/10 shadow-2xl shadow-indigo-500/10' : 'bg-gray-100 dark:bg-white/5 backdrop-blur-md border-gray-100 dark:border-white/5'}`}>
+        <div className={`flex items-center justify-between px-4 sm:px-6 lg:px-8 py-1.5 md:py-2 rounded-full border transition-all duration-300 w-full max-w-7xl ${isScrolled ? 'bg-white/10 dark:bg-white/5 backdrop-blur-2xl border-white/10 shadow-premium' : 'bg-transparent border-transparent'}`}>
           <a href="/" onClick={(e) => navigateTo(e, '/')} className="flex items-center gap-2 group relative z-50">
             <PonloeLogo size={40} />
             <span className="flex items-center">
@@ -269,7 +269,7 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
                  )}
              </div>
 
-             <button onClick={() => { hapticTap(); onGetQuote?.(); }} className="hidden sm:flex group px-5 py-2.5 rounded-full bg-gray-900 text-white dark:bg-white dark:text-gray-950 font-bold text-sm hover:scale-105 transition-all duration-300 items-center gap-2 font-khmer">
+             <button onClick={() => { hapticTap(); onGetQuote?.(); }} className="hidden sm:flex premium-button-primary px-6 py-2.5 text-sm items-center gap-2 font-khmer">
               {t("Get a Quote", "ស្នើសុំតម្លៃ")} <ArrowUpRight size={16} className="group-hover:rotate-45 transition-transform" />
             </button>
 
