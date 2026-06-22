@@ -211,7 +211,7 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
     <>
       <header className="fixed top-6 left-0 right-0 z-50 transition-all duration-300 flex justify-center px-4">
         <div className={`flex items-center justify-between px-4 sm:px-6 lg:px-8 py-1.5 md:py-2 rounded-full border transition-all duration-300 w-full max-w-7xl ${isScrolled ? 'bg-black/40 backdrop-blur-3xl border-white/5 shadow-premium' : 'bg-transparent border-transparent'}`}>
-          <a href="/" onClick={(e) => navigateTo(e, '/')} className="flex items-center gap-2 group relative z-50">
+          <a href="/" onClick={(e) => navigateTo(e, '/')} className="flex items-center gap-2 group relative z-50" aria-label="Ponloe Creative Home">
             <PonloeLogo size={40} />
             <span className="flex items-center">
               <span className="text-lg md:text-xl font-bold font-khmer tracking-tight text-gray-900 dark:text-white group-hover:text-indigo-400 transition-colors">p</span>
@@ -241,9 +241,12 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
                      hapticTap();
                      setIsLangMenuOpen(!isLangMenuOpen);
                    }}
+                   aria-label="Select language"
+                   aria-expanded={isLangMenuOpen}
+                   aria-haspopup="true"
                    className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-2.5 rounded-full bg-white/[0.03] hover:bg-gray-200 dark:hover:bg-white/10 border border-white/[0.05] transition-all text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                  >
-                    <img src={currentFlag} alt={language} className="w-4 h-4 md:w-5 md:h-5 rounded-full object-cover" />
+                    <img src={currentFlag} alt="" aria-hidden="true" className="w-4 h-4 md:w-5 md:h-5 rounded-full object-cover" />
                     <span className="uppercase hidden md:inline">{languageName}</span>
                     <ChevronDown size={14} className={`transition-transform ${isLangMenuOpen ? 'rotate-180' : ''}`} />
                  </button>
@@ -278,7 +281,12 @@ const Header: React.FC<HeaderProps> = ({ onGetQuote }) => {
               <SoundToggle />
             </div>
 
-            <button onClick={toggleMenu} className="lg:hidden text-gray-900 dark:text-white p-2">
+            <button
+              onClick={toggleMenu}
+              className="lg:hidden text-gray-900 dark:text-white p-2"
+              aria-label="Toggle mobile menu"
+              aria-expanded={isMenuOpen}
+            >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
