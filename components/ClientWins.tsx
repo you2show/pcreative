@@ -95,13 +95,13 @@ const STATIC_CARDS: UnifiedCard[] = [
 const CATEGORIES: Category[] = ['All', 'Branding', 'Web', 'Media', 'Architecture'];
 
 const QuoteCard: React.FC<{ card: UnifiedCard; t: (en: string, km?: string) => string }> = ({ card, t }) => (
-  <div className="group relative flex flex-col gap-3 rounded-3xl border border-gray-100 dark:border-white/8 bg-white/90 dark:bg-gray-900/90 p-5 shadow-xl shadow-black/5 dark:shadow-black/40 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-200/50 dark:hover:border-indigo-400/20">
+  <div className="group relative flex flex-col gap-3 rounded-3xl border border-white/[0.05] dark:border-white/8 bg-white/90 dark:bg-gray-900/90 p-5 shadow-xl shadow-black/5 dark:shadow-black/40 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-200/50 dark:hover:border-indigo-400/20">
     <div className="absolute inset-0 rounded-3xl bg-[radial-gradient(circle_at_80%_10%,rgba(99,102,241,0.08),transparent_50%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
     <Quote size={18} className="text-indigo-300/60" />
     <p className="text-sm font-bold leading-relaxed text-gray-700 dark:text-gray-300 font-khmer italic">
       "{t(card.msg, card.msgKm)}"
     </p>
-    <div className="flex items-center gap-3 pt-1 border-t border-gray-100 dark:border-white/5">
+    <div className="flex items-center gap-3 pt-1 border-t border-white/[0.05] dark:border-white/5">
       <img src={card.avatar} alt={card.name} className="w-9 h-9 rounded-full object-cover ring-2 ring-indigo-500/20" loading="lazy" />
       <div>
         <p className="text-xs font-black text-gray-900 dark:text-white">{card.name}</p>
@@ -141,7 +141,7 @@ const WinCard: React.FC<{ card: UnifiedCard; t: (en: string, km?: string) => str
 );
 
 const RatingCard: React.FC<{ card: UnifiedCard; t: (en: string, km?: string) => string }> = ({ card, t }) => (
-  <div className="group relative flex flex-col gap-3 rounded-3xl border border-gray-100 dark:border-white/8 bg-white/90 dark:bg-gray-900/80 p-5 shadow-xl shadow-black/5 dark:shadow-black/40 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-purple-500/10">
+  <div className="group relative flex flex-col gap-3 rounded-3xl border border-white/[0.05] dark:border-white/8 bg-white/90 dark:bg-gray-900/80 p-5 shadow-xl shadow-black/5 dark:shadow-black/40 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-purple-500/10">
     <div className="flex gap-0.5 mb-1">
       {Array.from({ length: card.rating }).map((_, i) => (
         <Star key={i} size={15} className="text-yellow-400 fill-yellow-400" />
@@ -150,7 +150,7 @@ const RatingCard: React.FC<{ card: UnifiedCard; t: (en: string, km?: string) => 
     <p className="text-sm font-bold leading-relaxed text-gray-700 dark:text-gray-300 font-khmer">
       "{t(card.msg, card.msgKm)}"
     </p>
-    <div className="flex items-center gap-3 pt-1 border-t border-gray-100 dark:border-white/5">
+    <div className="flex items-center gap-3 pt-1 border-t border-white/[0.05] dark:border-white/5">
       <img src={card.avatar} alt={card.name} className="w-9 h-9 rounded-full object-cover ring-2 ring-purple-500/20" loading="lazy" />
       <div>
         <p className="text-xs font-black text-gray-900 dark:text-white">{card.name}</p>
@@ -251,7 +251,7 @@ const ClientWins: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
                   className={`px-4 py-1.5 rounded-full text-xs font-black transition-all font-khmer ${
                     activeCategory === cat
                       ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30'
-                      : 'bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
+                      : 'bg-white/[0.03] dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                   }`}
                 >
                   {t(cat, cat)}

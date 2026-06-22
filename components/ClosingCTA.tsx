@@ -72,7 +72,7 @@ const ClosingCTA: React.FC = () => {
 
   return (
     <section
-      className="relative overflow-hidden bg-gray-950 py-24 md:py-36"
+      className="relative overflow-hidden bg-black py-24 md:py-36"
       aria-labelledby="closing-cta-title"
     >
       {/* Animated mesh background */}

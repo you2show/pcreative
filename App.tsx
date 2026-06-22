@@ -82,8 +82,8 @@ const ComponentFallback: React.FC = () => (
 function AppContent() {
   const [isViewingSite, setIsViewingSite] = useState(false);
   const [activePage, setActivePage] = useState<string | null>(null);
-  const [showPreloader, setShowPreloader] = useState(true);
-  const [showCinematicIntro, setShowCinematicIntro] = useState(false);
+  const [showPreloader, setShowPreloader] = useState(false);
+  const [showCinematicIntro, setShowCinematicIntro] = useState(true);
   const [isClientPortalOpen, setIsClientPortalOpen] = useState(false);
 
   // Popups state for legacy deep links only.
