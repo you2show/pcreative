@@ -108,17 +108,17 @@ export default function Contact() {
                         <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
                             <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                                 <div className="space-y-1.5 md:space-y-2">
-                                    <label className="text-[10px] md:text-xs font-bold text-gray-500 ml-1 font-khmer uppercase tracking-wider">{t('Name', 'ឈ្មោះ')}</label>
-                                    <input name="name" value={formData.name} onChange={handleChange} type="text" required className="w-full px-4 py-3 md:py-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer" placeholder="John Doe" />
+                                    <label htmlFor="contact-name" className="text-[10px] md:text-xs font-bold text-gray-500 ml-1 font-khmer uppercase tracking-wider">{t('Name', 'ឈ្មោះ')}</label>
+                                    <input id="contact-name" name="name" value={formData.name} onChange={handleChange} type="text" required className="w-full px-4 py-3 md:py-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer" placeholder="John Doe" />
                                 </div>
                                 <div className="space-y-1.5 md:space-y-2">
-                                    <label className="text-[10px] md:text-xs font-bold text-gray-500 ml-1 font-khmer uppercase tracking-wider">{t('Email', 'អ៊ីមែល')}</label>
-                                    <input name="email" value={formData.email} onChange={handleChange} type="email" required className="w-full px-4 py-3 md:py-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer" placeholder="john@example.com" />
+                                    <label htmlFor="contact-email" className="text-[10px] md:text-xs font-bold text-gray-500 ml-1 font-khmer uppercase tracking-wider">{t('Email', 'អ៊ីមែល')}</label>
+                                    <input id="contact-email" name="email" value={formData.email} onChange={handleChange} type="email" required className="w-full px-4 py-3 md:py-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer" placeholder="john@example.com" />
                                 </div>
                             </div>
                             <div className="space-y-1.5 md:space-y-2">
-                                <label className="text-[10px] md:text-xs font-bold text-gray-500 ml-1 font-khmer uppercase tracking-wider">{t('Service', 'សេវាកម្ម')}</label>
-                                <select name="service" value={formData.service} onChange={handleChange} className="w-full px-4 py-3 md:py-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer">
+                                <label htmlFor="contact-service" className="text-[10px] md:text-xs font-bold text-gray-500 ml-1 font-khmer uppercase tracking-wider">{t('Service', 'សេវាកម្ម')}</label>
+                                <select id="contact-service" name="service" value={formData.service} onChange={handleChange} className="w-full px-4 py-3 md:py-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer">
                                     <option value="Graphic Design">{t('Graphic Design', 'ការរចនាក្រាហ្វិក')}</option>
                                     <option value="Web Development">{t('Web Development', 'ការអភិវឌ្ឍវេបសាយ')}</option>
                                     <option value="Architecture">{t('Architecture', 'ស្ថាបត្យកម្ម')}</option>
@@ -128,8 +128,8 @@ export default function Contact() {
                                 </select>
                             </div>
                             <div className="space-y-1.5 md:space-y-2">
-                                <label className="text-[10px] md:text-xs font-bold text-gray-500 ml-1 font-khmer uppercase tracking-wider">{t('Message', 'សារ')}</label>
-                                <textarea name="message" value={formData.message} onChange={handleChange} rows={4} required className="w-full px-4 py-3 md:py-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer resize-none" placeholder={t('Tell us about your project...', 'ប្រាប់យើងអំពីគម្រោងរបស់អ្នក...')}></textarea>
+                                <label htmlFor="contact-message" className="text-[10px] md:text-xs font-bold text-gray-500 ml-1 font-khmer uppercase tracking-wider">{t('Message', 'សារ')}</label>
+                                <textarea id="contact-message" name="message" value={formData.message} onChange={handleChange} rows={4} required className="w-full px-4 py-3 md:py-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-khmer resize-none" placeholder={t('Tell us about your project...', 'ប្រាប់យើងអំពីគម្រោងរបស់អ្នក...')}></textarea>
                             </div>
                             {successMessage && <div className="p-3 rounded-xl bg-green-500/20 border border-green-500/30 flex items-center gap-3 text-green-400 text-xs md:text-sm font-khmer"><Check size={14} />{successMessage}</div>}
                             {errorMessage && <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/30 flex items-center gap-3 text-red-400 text-xs md:text-sm font-khmer"><AlertCircle size={14} />{errorMessage}</div>}

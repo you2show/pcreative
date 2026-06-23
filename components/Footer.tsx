@@ -33,7 +33,9 @@ const NewsletterForm: React.FC = () => {
         </div>
       ) : (
         <>
+          <label htmlFor="newsletter-email" className="sr-only">{t('Email address', 'អាសយដ្ឋានអ៊ីមែល')}</label>
           <input
+            id="newsletter-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -45,6 +47,7 @@ const NewsletterForm: React.FC = () => {
             type="submit"
             disabled={status === 'loading'}
             className="shrink-0 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl transition-colors flex items-center gap-1.5 disabled:opacity-60"
+            aria-label={status === 'loading' ? t('Sending...', 'កំពុងផ្ញើ...') : t('Subscribe', 'ចុះឈ្មោះ')}
           >
             {status === 'loading' ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
           </button>
