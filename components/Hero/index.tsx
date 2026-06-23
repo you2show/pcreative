@@ -1,196 +1,398 @@
-
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import ScrambleText from '../ScrambleText';
-import { Palette, Globe, Building2, PenTool, Camera, Wind, Languages, Layout, Video } from 'lucide-react';
+import { ArrowRight, Sparkles, Zap, Globe, Code2, Palette } from 'lucide-react';
 
-import HeroActions from './HeroActions';
-import Hero3DScene from '../Hero3DScene';
-import HeroLaunchPanel from './HeroLaunchPanel';
+/* ─── Rotating words ──────────────────────────────── */
+const WORDS_EN = ['Websites', 'Brands',   'Apps',      'Campaigns', 'Experiences'];
+const WORDS_KM = ['វេបសាយ',   'ម៉ាក',    'Apps',      'យុទ្ធនាការ','បទពិសោធន៍' ];
 
-// Rotating words that cycle in the hero headline
-const ROTATING_WORDS_EN = ['Websites', 'Brands', 'Apps', 'Campaigns', 'Experiences'];
-const ROTATING_WORDS_KM = ['វេបសាយ', 'ម៉ាក', 'Apps', 'យុទ្ធនាការ', 'បទពិសោធន៍'];
-
-const RotatingWord: React.FC<{ t: (en: string, km?: string) => string }> = ({ t }) => {
-  const [index, setIndex] = useState(0);
-  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+const RotatingWord: React.FC<{ t: (en:string,km?:string)=>string }> = ({ t }) => {
+  const [idx, setIdx]  = useState(0);
+  const [prev, setPrev] = useState<number|null>(null);
 
   useEffect(() => {
-    const cycle = window.setInterval(() => {
-      setIndex(current => {
-        setPreviousIndex(current);
-        return (current + 1) % ROTATING_WORDS_EN.length;
-      });
-    }, 2600);
-
-    return () => window.clearInterval(cycle);
+    const id = setInterval(() => {
+      setIdx(c => { setPrev(c); return (c + 1) % WORDS_EN.length; });
+    }, 2800);
+    return () => clearInterval(id);
   }, []);
 
-  const currentWord = t(ROTATING_WORDS_EN[index], ROTATING_WORDS_KM[index]);
-  const previousWord = previousIndex === null ? null : t(ROTATING_WORDS_EN[previousIndex], ROTATING_WORDS_KM[previousIndex]);
-
   return (
-    <span className="hero-word-stack" aria-live="polite" aria-label={currentWord}>
-      {previousWord && (
-        <span key={`prev-${previousIndex}-${index}`} className="hero-word-prev" aria-hidden="true">
-          {previousWord}
+    <span className="relative inline-block align-bottom" style={{ minWidth: '5ch' }}>
+      {prev !== null && (
+        <span key={`p${prev}`} className="hero-word-prev absolute inset-0" aria-hidden>
+          {t(WORDS_EN[prev], WORDS_KM[prev])}
         </span>
       )}
-      <span key={`current-${index}`} className="hero-word-current">
-        {currentWord}
+      <span key={`c${idx}`} className="hero-word-current">
+        {t(WORDS_EN[idx], WORDS_KM[idx])}
       </span>
     </span>
   );
 };
 
-
-// Brand Reel Ticker: interactive pill-shaped service cards with icons and tooltips
-const BRAND_REEL_SERVICES = [
-  { icon: Palette, label: 'Graphic Design', labelKm: 'ក្រាហ្វិក', desc: 'Logos, posters & brand systems', descKm: 'ឡូហ្គោ Poster និង Brand', color: 'text-purple-400' },
-  { icon: Globe, label: 'Web Development', labelKm: 'វេបសាយ', desc: 'Fast, modern websites & apps', descKm: 'វេបសាយ ទំនើប & App', color: 'text-indigo-400' },
-  { icon: Building2, label: 'Architecture', labelKm: 'ស្ថាបត្យ', desc: 'Blueprints, 3D & interiors', descKm: 'ប្លង់ 3D & Interior', color: 'text-cyan-400' },
-  { icon: PenTool, label: 'Calligraphy', labelKm: 'អក្សរផ្ចង់', desc: 'Arabic & decorative lettering', descKm: 'អក្សរអារ៉ាប់ & សិល្បៈ', color: 'text-pink-400' },
-  { icon: Camera, label: 'Photo & Video', labelKm: 'រូបភាព & វីដេអូ', desc: 'Events, products & reels', descKm: 'ថតរូប វីដេអូ & Reel', color: 'text-blue-400' },
-  { icon: Languages, label: 'Translation', labelKm: 'បកប្រែ', desc: 'Khmer, English & Arabic', descKm: 'ខ្មែរ អង់គ្លេស & អារ៉ាប់', color: 'text-orange-400' },
-  { icon: Wind, label: 'HVAC Systems', labelKm: 'HVAC', desc: 'MEP engineering & ventilation', descKm: 'MEP & ប្រព័ន្ធខ្យល់', color: 'text-teal-400' },
-  { icon: Layout, label: 'UI / UX', labelKm: 'ការរចនា UI/UX', desc: 'Product design & prototypes', descKm: 'ការរចនា & Prototype', color: 'text-fuchsia-400' },
-  { icon: Video, label: 'Digital Marketing', labelKm: 'ទីផ្សារឌីជីថល', desc: 'Social, SEO & paid campaigns', descKm: 'Social SEO & Ads', color: 'text-yellow-400' },
+/* ─── Floating service pills ──────────────────────── */
+const PILLS = [
+  { icon: Globe,   label: 'Web Dev',     color: '#6366f1', delay: 0    },
+  { icon: Code2,   label: 'App Dev',     color: '#06b6d4', delay: 0.5  },
+  { icon: Palette, label: 'Graphic',     color: '#a855f7', delay: 1    },
+  { icon: Zap,     label: 'Marketing',   color: '#ec4899', delay: 1.5  },
 ];
 
-const HeroTicker: React.FC = () => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const duplicated = [...BRAND_REEL_SERVICES, ...BRAND_REEL_SERVICES];
+/* ─── Particle canvas ─────────────────────────────── */
+const ParticleCanvas: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d')!;
+    let W = canvas.width  = canvas.offsetWidth;
+    let H = canvas.height = canvas.offsetHeight;
+    let raf: number;
+
+    const particles = Array.from({ length: 80 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.5 + 0.3,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      opacity: Math.random() * 0.5 + 0.1,
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
+        ctx.fill();
+      });
+
+      // Connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const d  = Math.sqrt(dx*dx + dy*dy);
+          if (d < 100) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(99,102,241,${0.08 * (1 - d/100)})`;
+            ctx.lineWidth   = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      raf = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    const resize = () => {
+      W = canvas.width  = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+    };
+    window.addEventListener('resize', resize);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+  }, []);
 
   return (
-    <div className="relative w-full overflow-hidden border-y border-white/[0.05] py-3 bg-gray-50/60 dark:bg-white/[0.02] backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(0,0,0,0.04)]">
-      <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-gray-50 dark:from-gray-950 to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-gray-50 dark:from-gray-950 to-transparent z-10 pointer-events-none" />
-      <div
-        className="flex w-max gap-3 animate-hero-ticker px-3"
-        style={{ animationPlayState: hoveredIndex !== null ? 'paused' : 'running' }}
-      >
-        {duplicated.map((svc, i) => {
-          const Icon = svc.icon;
-          const isHovered = hoveredIndex === i;
-          return (
-            <div
-              key={i}
-              className="relative shrink-0 group"
-              onMouseEnter={() => setHoveredIndex(i)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              <div
-                className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border transition-all duration-300 cursor-default select-none
-                  ${isHovered
-                    ? 'border-indigo-300/50 bg-indigo-500/10 dark:bg-indigo-500/15 shadow-md shadow-indigo-500/20'
-                    : 'border-gray-200 dark:border-white/8 bg-white/[0.04]'
-                  }`}
-              >
-                <Icon size={13} className={`transition-colors ${isHovered ? svc.color : 'text-gray-400 dark:text-gray-500'}`} />
-                <span className={`text-[11px] font-black uppercase tracking-[0.16em] transition-colors font-khmer ${isHovered ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500'}`}>
-                  {svc.label}
-                </span>
-              </div>
-              {/* Tooltip */}
-              {isHovered && (
-                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-50 pointer-events-none">
-                  <div className="whitespace-nowrap rounded-xl border border-indigo-300/30 bg-gray-950/95 px-3 py-2 shadow-xl shadow-black/30 backdrop-blur-xl">
-                    <p className="text-[11px] font-bold text-white/90 font-khmer">{svc.desc}</p>
-                    <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 border-l border-t border-indigo-300/30 bg-gray-950/95" />
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none opacity-60"
+    />
+  );
+};
+
+/* ─── 3D Orb Visual ───────────────────────────────── */
+const HeroOrb: React.FC = () => {
+  const orbRef = useRef<HTMLDivElement>(null);
+
+  const onMouseMove = useCallback((e: MouseEvent) => {
+    if (!orbRef.current) return;
+    const rect = orbRef.current.getBoundingClientRect();
+    const cx   = rect.left + rect.width  / 2;
+    const cy   = rect.top  + rect.height / 2;
+    const rx   = ((e.clientY - cy) / rect.height) * 18;
+    const ry   = ((e.clientX - cx) / rect.width)  * -18;
+    orbRef.current.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+  }, []);
+
+  const onMouseLeave = useCallback(() => {
+    if (orbRef.current)
+      orbRef.current.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg)';
+  }, []);
+
+  useEffect(() => {
+    const el = orbRef.current;
+    if (!el) return;
+    el.addEventListener('mousemove', onMouseMove as EventListener);
+    el.addEventListener('mouseleave', onMouseLeave);
+    return () => {
+      el.removeEventListener('mousemove', onMouseMove as EventListener);
+      el.removeEventListener('mouseleave', onMouseLeave);
+    };
+  }, [onMouseMove, onMouseLeave]);
+
+  return (
+    <div
+      ref={orbRef}
+      className="relative w-full aspect-square max-w-[480px] mx-auto
+                 transition-transform duration-300 will-change-transform"
+      style={{ transformStyle: 'preserve-3d' }}
+    >
+      {/* Outer glow ring */}
+      <div className="absolute inset-0 rounded-full animate-spin-slow opacity-30"
+           style={{ background: 'conic-gradient(from 0deg, transparent 30%, #6366f1, #a855f7, #ec4899, transparent 70%)' }} />
+
+      {/* Orbit rings */}
+      <div className="absolute inset-[8%] rounded-full border border-brand-500/15 animate-spin-slow" />
+      <div className="absolute inset-[16%] rounded-full border border-accent-500/10 animate-spin-reverse" />
+
+      {/* Core sphere */}
+      <div className="absolute inset-[22%] rounded-full overflow-hidden animate-float"
+           style={{
+             background: 'radial-gradient(circle at 35% 35%, #818cf8, #6366f1 40%, #1e1b4b 70%, #000 100%)',
+             boxShadow: '0 0 60px rgba(99,102,241,0.5), 0 0 120px rgba(99,102,241,0.2), inset 0 0 40px rgba(0,0,0,0.5)',
+           }}>
+        {/* Surface scan line */}
+        <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent"
+             style={{ animation: 'scanLine 3s ease-in-out infinite' }} />
+        {/* Specular highlight */}
+        <div className="absolute top-[15%] left-[20%] w-[30%] h-[20%] rounded-full
+                        bg-white/20 blur-sm transform rotate-[-20deg]" />
       </div>
+
+      {/* Orbiting dots */}
+      {[0, 90, 180, 270].map((deg, i) => (
+        <div key={i}
+             className="absolute inset-0 animate-spin-slow"
+             style={{ animationDelay: `${-i * 1.5}s` }}>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full"
+               style={{ background: ['#6366f1','#a855f7','#ec4899','#06b6d4'][i],
+                        boxShadow: `0 0 8px ${['#6366f1','#a855f7','#ec4899','#06b6d4'][i]}` }} />
+        </div>
+      ))}
+
+      {/* Floating pill cards */}
+      {PILLS.map((p, i) => {
+        const positions = [
+          'top-[5%]  right-[-8%]',
+          'bottom-[20%] right-[-12%]',
+          'bottom-[5%]  left-[2%]',
+          'top-[25%]   left-[-12%]',
+        ];
+        const Icon = p.icon;
+        return (
+          <div key={i}
+               className={`absolute ${positions[i]} flex items-center gap-2
+                          px-3 py-1.5 rounded-full backdrop-blur-md
+                          border border-white/10 bg-black/50
+                          animate-float text-xs font-semibold whitespace-nowrap`}
+               style={{ animationDelay: `${p.delay}s`,
+                        boxShadow: `0 0 12px ${p.color}40` }}>
+            <Icon size={12} style={{ color: p.color }} />
+            <span className="text-white/80">{p.label}</span>
+          </div>
+        );
+      })}
     </div>
   );
 };
 
+/* ─── Stats strip ─────────────────────────────────── */
+const STATS = [
+  { value: '300+', label: 'Projects' },
+  { value: '50+',  label: 'Clients'  },
+  { value: '5★',   label: 'Rating'   },
+  { value: '24h',  label: 'Delivery' },
+];
+
+/* ─── Hero Ticker ─────────────────────────────────── */
+const TICKER_ITEMS = [
+  'Web Development', 'Brand Identity', 'Mobile Apps',
+  'UI/UX Design', 'Motion Graphics', 'Video Editing',
+  'Digital Marketing', 'Architecture 3D', 'Translation',
+];
+
+const HeroTicker: React.FC = () => (
+  <div className="relative w-full overflow-hidden border-y border-white/[0.04] py-3.5 bg-black/50 backdrop-blur-sm">
+    <div className="flex animate-marquee gap-0 whitespace-nowrap">
+      {[...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+        <span key={i} className="inline-flex items-center gap-3 px-6">
+          <Sparkles size={10} className="text-brand-500 shrink-0" />
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/30
+                           hover:text-white/70 transition-colors duration-300 cursor-default">
+            {item}
+          </span>
+        </span>
+      ))}
+    </div>
+  </div>
+);
+
+/* ─── Main Hero ───────────────────────────────────── */
 const Hero: React.FC = () => {
   const { t } = useLanguage();
+  const sectionRef = useRef<HTMLElement>(null);
 
-  // Parallax Refs for Background
-  const containerRef = useRef<HTMLDivElement>(null);
+  // Parallax on scroll
+  useEffect(() => {
+    const onScroll = () => {
+      if (!sectionRef.current) return;
+      const y = window.scrollY;
+      sectionRef.current.style.setProperty('--scroll-y', `${y}px`);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
-    <>
-    <section ref={containerRef} id="home" aria-label="Hero section" className="relative min-h-screen flex items-center pt-24 pb-12 md:pt-32 md:pb-20 overflow-hidden perspective-1000">
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-black"
+    >
+      {/* Particle field */}
+      <ParticleCanvas />
 
-      {/* 3D Background Scene */}
-      <Hero3DScene />
+      {/* Grid background */}
+      <div className="grid-bg" />
 
-      {/* Background Ambience */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-        <div
-            className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[120px] opacity-60"
-        />
-        <div
-            className="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] bg-accent-500/3 rounded-full blur-[100px] opacity-60"
-        />
-      </div>
+      {/* Ambient glow blobs */}
+      <div className="absolute top-[-20%] left-[-10%] w-[700px] h-[700px] rounded-full
+                      opacity-20 animate-blob"
+           style={{ background: 'radial-gradient(circle, #6366f1, transparent 70%)',
+                    filter: 'blur(80px)' }} />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full
+                      opacity-15 animate-blob"
+           style={{ background: 'radial-gradient(circle, #a855f7, transparent 70%)',
+                    filter: 'blur(80px)', animationDelay: '3s' }} />
+      <div className="absolute top-[40%] right-[20%] w-[400px] h-[400px] rounded-full
+                      opacity-10 animate-blob"
+           style={{ background: 'radial-gradient(circle, #06b6d4, transparent 70%)',
+                    filter: 'blur(60px)', animationDelay: '6s' }} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      {/* Header spacer */}
+      <div className="h-24" />
 
-          {/* Left Content - Typography & CTA */}
-          <div className="space-y-6 text-center lg:text-left relative z-20">
+      {/* Main grid */}
+      <div className="container-xl relative z-10 flex-1 flex items-center py-16">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center w-full">
+
+          {/* ── Left: Copy ── */}
+          <div className="space-y-8 text-center lg:text-left">
+
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-gray-200 dark:border-white/10 backdrop-blur-md animate-fade-in group hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-default shadow-sm dark:shadow-indigo-500/10">
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full
+                            bg-brand-500/8 border border-brand-500/20 backdrop-blur-sm
+                            animate-fade-up" style={{ animationDelay: '0.1s' }}>
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                <span className="animate-ping absolute inset-0 rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
               </span>
-              <span className="text-xs font-bold text-indigo-300 tracking-widest uppercase font-khmer">
-                  {t('Open for new projects', 'ទទួលគម្រោងថ្មីៗ')}
+              <span className="text-xs font-bold text-green-400 tracking-widest uppercase">
+                {t('Open for new projects', 'ទទួលគម្រោងថ្មីៗ')}
               </span>
             </div>
 
-            {/* Main Headline */}
-            <div className="relative space-y-3">
-                <div className="absolute -left-6 top-4 hidden h-28 w-28 rounded-full bg-indigo-500/15 blur-3xl dark:block" aria-hidden="true" />
-                <h1 className="hero-headline relative h1-premium font-black leading-[1.02] tracking-[-0.045em] text-gray-950 dark:text-white font-khmer">
-                    <span className="reveal-text">
-                      <span>{t('We Craft', 'យើងបង្កើត')}</span>
-                    </span>
-                    <span className="hero-gradient-text relative inline-block pb-3 text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-purple-400 to-accent-400 drop-shadow-lg">
-                        <RotatingWord t={t} />
-                    </span>
-                    <span className="hero-subline block text-xl md:text-2xl font-light tracking-widest uppercase opacity-60 mt-4 font-semibold text-gray-500 dark:text-gray-300 tracking-[-0.01em]">
-                        <ScrambleText
-                          text={t('Seen & trusted — in days, not months.', 'ឃើញ & ទុកចិត្ត — ក្នុងថ្ងៃ មិនមែនខែ')}
-                          delay={450}
-                          duration={900}
-                        />
-                    </span>
-                </h1>
+            {/* Headline */}
+            <div className="space-y-2" style={{ animationDelay: '0.2s' }}>
+              <h1 className="heading-hero text-white font-black">
+                <span className="block overflow-hidden">
+                  <span className="block animate-slide-up" style={{ animationDelay: '0.25s' }}>
+                    {t('We Craft', 'យើងបង្កើត')}
+                  </span>
+                </span>
+
+                {/* Gradient animated word */}
+                <span className="block overflow-hidden">
+                  <span className="block animate-slide-up text-gradient"
+                        style={{
+                          animationDelay: '0.35s',
+                          backgroundImage: 'linear-gradient(90deg,#6366f1,#a855f7,#ec4899,#818cf8)',
+                          backgroundSize: '200% auto',
+                          animation: 'gradientText 4s ease infinite, slideUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.35s both',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                        }}>
+                    <RotatingWord t={t} />
+                  </span>
+                </span>
+
+                {/* Subline */}
+                <span className="block text-xl md:text-2xl font-light tracking-wide
+                                 text-white/40 mt-2 animate-fade-up"
+                      style={{ animationDelay: '0.5s', letterSpacing: '0.08em' }}>
+                  {t('Seen & trusted — in days.', 'ឃើញ & ទុកចិត្ត — ក្នុងថ្ងៃ')}
+                </span>
+              </h1>
             </div>
 
-            <p className="hero-copy text-lg text-gray-600 dark:text-gray-400 leading-relaxed font-khmer max-w-md mx-auto lg:mx-0">
+            {/* Description */}
+            <p className="text-lg text-white/50 leading-relaxed max-w-md mx-auto lg:mx-0
+                          font-khmer animate-fade-up"
+               style={{ animationDelay: '0.5s' }}>
               {t(
-                  'Bold digital visuals that make people stop, trust, and contact you.',
-                  'រូបភាពឌីជីថលខ្លាំងៗ ឲ្យមនុស្សឈប់មើល ទុកចិត្ត និងទាក់ទងអ្នក។'
+                'Bold digital visuals that make people stop, trust, and contact you.',
+                'រូបភាពឌីជីថលខ្លាំងៗ ឲ្យមនុស្សឈប់មើល ទុកចិត្ត និងទាក់ទងអ្នក។'
               )}
             </p>
 
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-4 justify-center lg:justify-start
+                            animate-fade-up" style={{ animationDelay: '0.65s' }}>
+              <a href="#contact" className="btn-glow group">
+                <span>{t('Start a Project', 'ចាប់ផ្ដើមគម្រោង')}</span>
+                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
+              <a href="#portfolio" className="btn-ghost group">
+                <span>{t('View Work', 'មើលស្នាដៃ')}</span>
+                <ArrowRight size={16} className="opacity-50 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1" />
+              </a>
+            </div>
 
-            {/* Actions Component (Buttons & Stats) */}
-            <HeroActions t={t} />
+            {/* Stats strip */}
+            <div className="grid grid-cols-4 gap-4 pt-2 animate-fade-up"
+                 style={{ animationDelay: '0.8s' }}>
+              {STATS.map((s, i) => (
+                <div key={i} className="text-center lg:text-left">
+                  <div className="text-xl md:text-2xl font-black text-white stat-number">
+                    {s.value}
+                  </div>
+                  <div className="text-[11px] text-white/35 uppercase tracking-widest mt-0.5 font-khmer">
+                    {s.label}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Right Content - Interactive launch system. Team constellation moved to the dedicated Team page. */}
-          <HeroLaunchPanel />
+          {/* ── Right: 3D Orb ── */}
+          <div className="flex justify-center lg:justify-end animate-fade-in"
+               style={{ animationDelay: '0.4s' }}>
+            <HeroOrb />
+          </div>
         </div>
       </div>
 
-
-    </section>
-
-      {/* Keyword ticker below hero */}
+      {/* Service ticker */}
       <HeroTicker />
-    </>
+
+      {/* Scroll cue */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2
+                      animate-fade-in" style={{ animationDelay: '1.2s' }}>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+          {t('Scroll', 'រំកិលចុះ')}
+        </span>
+        <div className="w-px h-12 bg-gradient-to-b from-white/20 to-transparent" />
+      </div>
+    </section>
   );
 };
 
