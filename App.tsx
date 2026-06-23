@@ -43,6 +43,7 @@ import WorkMarquee from './components/WorkMarquee';
 import LiveStudioBar from './components/LiveStudioBar';
 import BeforeAfterSlider from './components/BeforeAfterSlider';
 import CursorGallery from './components/CursorGallery';
+import GlowCursor from './components/GlowCursor';
 import ClientWins from './components/ClientWins';
 import StudioLocation from './components/StudioLocation';
 import ClosingCTA from './components/ClosingCTA';
@@ -351,11 +352,12 @@ function AppContent() {
   }
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-black text-white' : 'bg-white text-gray-900'} overflow-x-hidden selection:bg-brand-500 selection:text-white relative`}>
+    <div className={`min-h-screen bg-black text-white overflow-x-hidden selection:bg-brand-500/30 selection:text-white relative`}>
       <SkipToContent />
+      <div className="noise-overlay" />
       {showPreloader && <Preloader />}
       {showCinematicIntro && <CinematicIntro onComplete={() => setShowCinematicIntro(false)} />}
-      <CustomCursor />
+      <GlowCursor />
       <CelebrationSystem />
       <OfflinePage />
       <InstallPrompt />

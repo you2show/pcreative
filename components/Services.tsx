@@ -1,393 +1,176 @@
-import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { ArrowUpRight, X, CheckCircle2, RotateCcw, ArrowRight } from 'lucide-react';
-import { Service } from '../types';
+import React, { useRef, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useData } from '../contexts/DataContext';
-import ScrollBackgroundText from './ScrollBackgroundText';
-import RevealOnScroll from './RevealOnScroll';
-import { useRouter } from '../hooks/useRouter';
-
-// DnD Kit Imports
 import {
-  DndContext, 
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  rectSortingStrategy
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+  Globe, Smartphone, Palette, Video, Languages,
+  Wind, Building2, PenTool, Megaphone,
+  ArrowUpRight,
+} from 'lucide-react';
 
-// Map service IDs to Unsplash Images (Fallback if no dynamic image is provided)
-const SERVICE_IMAGES_FALLBACK: Record<string, string> = {
-  graphic: 'https://raw.githubusercontent.com/icenterofficial/creative/refs/heads/main/public/images/projects/graphic/iStock-1191609321%20(1 ).jpg',
-  architecture: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&q=80&w=600',
-  calligraphy: 'https://raw.githubusercontent.com/icenterofficial/creative/refs/heads/main/public/images/projects/calligraphy/1.jpg',
-  translation: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=600',
-  media: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=600',
-  courses: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=600',
-  webdev: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=600',
-  mvac: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=600',
-};
+const SERVICES = [
+  {
+    icon: Globe,       color: '#6366f1', bg: 'rgba(99,102,241,0.08)',
+    en: 'Web Development',   km: 'អភិវឌ្ឍន៍វេបសាយ',
+    desc: 'Lightning-fast websites & PWAs built with cutting-edge tech.',
+    tags: ['React', 'Next.js', 'TypeScript'],
+    featured: true,
+  },
+  {
+    icon: Smartphone,  color: '#06b6d4', bg: 'rgba(6,182,212,0.08)',
+    en: 'App Development',   km: 'ការអភិវឌ្ឍ App',
+    desc: 'Cross-platform mobile apps that users love.',
+    tags: ['Flutter', 'React Native'],
+    featured: true,
+  },
+  {
+    icon: Palette,     color: '#a855f7', bg: 'rgba(168,85,247,0.08)',
+    en: 'Graphic Design',    km: 'ក្រាហ្វិកឌីហ្សាញ',
+    desc: 'Logos, brand systems & print-ready artwork.',
+    tags: ['Figma', 'Illustrator'],
+    featured: true,
+  },
+  {
+    icon: Video,       color: '#ec4899', bg: 'rgba(236,72,153,0.08)',
+    en: 'Video Editing',     km: 'កែសម្រួលវីដេអូ',
+    desc: 'Cinematic edits, reels & motion graphics.',
+    tags: ['After Effects', 'Premiere'],
+  },
+  {
+    icon: Megaphone,   color: '#f59e0b', bg: 'rgba(245,158,11,0.08)',
+    en: 'Digital Marketing', km: 'ទីផ្សារឌីជីថល',
+    desc: 'Paid ads, SEO & social campaigns that convert.',
+    tags: ['Meta Ads', 'Google', 'TikTok'],
+  },
+  {
+    icon: Building2,   color: '#10b981', bg: 'rgba(16,185,129,0.08)',
+    en: 'Architecture',      km: 'ស្ថាបត្យកម្ម',
+    desc: 'CAD blueprints, 3D renders & interior design.',
+    tags: ['AutoCAD', 'SketchUp', '3ds Max'],
+  },
+  {
+    icon: PenTool,     color: '#f97316', bg: 'rgba(249,115,22,0.08)',
+    en: 'Calligraphy',       km: '習字',
+    desc: 'Arabic & decorative lettering for premium brands.',
+    tags: ['Arabic', 'Khmer', 'Latin'],
+  },
+  {
+    icon: Languages,   color: '#3b82f6', bg: 'rgba(59,130,246,0.08)',
+    en: 'Translation',       km: 'ការបកប្រែ',
+    desc: 'Accurate translation: Khmer, English & Arabic.',
+    tags: ['KM', 'EN', 'AR'],
+  },
+  {
+    icon: Wind,        color: '#14b8a6', bg: 'rgba(20,184,166,0.08)',
+    en: 'HVAC & MEP',        km: 'HVAC & MEP',
+    desc: 'Engineering drawings & ventilation system design.',
+    tags: ['MEP', 'AutoCAD'],
+  },
+];
 
-// --- Sortable Item Component ---
-interface SortableServiceItemProps {
-  service: Service;
-  index: number;
-  onSelect: (service: Service ) => void;
-  t: (en: string, km?: string) => string;
-}
+/* ─── Tilt Card ─────────────────────────────────────── */
+const ServiceCard: React.FC<{ svc: typeof SERVICES[0]; index: number }> = ({ svc, index }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [hovered, setHovered] = useState(false);
+  const { t } = useLanguage();
+  const Icon = svc.icon;
 
-const SortableServiceItem: React.FC<SortableServiceItemProps> = ({ service, index, onSelect, t }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: service.id });
-
-  const cardRef = React.useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -20;
-    card.style.transform = `perspective(800px) rotateX(${y}deg) rotateY(${x}deg) scale(1.02)`;
+  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = ((e.clientY - rect.top)  / rect.height - 0.5) * 10;
+    const y = ((e.clientX - rect.left) / rect.width  - 0.5) * -10;
+    setTilt({ x, y });
   };
-
-  const handleMouseLeave = () => {
-    const card = cardRef.current;
-    if (card) card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
-  };
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    zIndex: isDragging ? 50 : 'auto',
-  };
-
-  // Layout Logic: Specific services span 2 columns
-  const isLarge = index === 0 || index === 6 || service.id === 'courses';
-  const gridClass = isLarge ? 'lg:col-span-2' : 'lg:col-span-1';
-
-  // Determine Background Image: Use Dynamic first, then Fallback
-  const bgImage = service.image || SERVICE_IMAGES_FALLBACK[service.id];
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      onClick={() => onSelect(service)}
-      className={`group relative p-[1px] rounded-3xl overflow-hidden ${gridClass} cursor-grab active:cursor-grabbing`}
+      ref={cardRef}
+      onMouseMove={onMove}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => { setHovered(false); setTilt({ x:0, y:0 }); }}
+      className={`group card-dark glass-border relative p-6 cursor-pointer
+                  ${svc.featured ? 'ring-1 ring-brand-500/20' : ''}`}
+      style={{
+        transform: hovered
+          ? `perspective(600px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateZ(8px)`
+          : 'perspective(600px) rotateX(0) rotateY(0) translateZ(0)',
+        transition: 'transform 0.25s cubic-bezier(0.16,1,0.3,1)',
+        transitionDelay: `${index * 40}ms`,
+      }}
     >
-      {/* Rotating Gradient Border Background */}
-      <div className={`absolute inset-0 bg-gradient-to-r from-brand-400 via-purple-500 to-accent-400 transition-opacity duration-500 animate-spin-slow blur-lg ${isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
-      
-      {/* Inner Card Content - 3D tilt wrapper */}
-      <div
-        ref={cardRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{ transition: 'transform 0.15s ease-out', transformStyle: 'preserve-3d' }}
-        className={`relative h-full premium-card glass-border rounded-[23px] p-8 transition-colors duration-300 overflow-hidden ${isDragging ? 'bg-gray-100 dark:bg-gray-800 shadow-2xl' : ''}`}
-      >
-          
-          {/* Background Image Always Visible with Hover Darkening */}
-          {bgImage && (
-            <div 
-                className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:opacity-60 transition-opacity duration-500 ease-out grayscale-[0.3] group-hover:grayscale-0 pointer-events-none"
-                style={{ backgroundImage: `url('${bgImage}')` }}
-            />
-          )}
-          
-          {/* Dark Overlay for Better Text Readability - Always Visible */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/40 to-gray-950/80 group-hover:from-transparent group-hover:via-gray-900/50 group-hover:to-gray-950/90 transition-all duration-500 pointer-events-none" />
+      {/* Animated bg glow on hover */}
+      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+           style={{ background: `radial-gradient(circle at 50% 0%, ${svc.bg}, transparent 70%)` }} />
 
-          {/* Hover Internal Glow (Existing) - Placed AFTER image to overlay color tint */}
-          <div className={`absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-500 bg-gradient-to-br ${service.color.replace('bg-', 'from-')} to-transparent rounded-[23px] pointer-events-none`} />
-          
-          <div className="relative z-10 h-full flex flex-col justify-between">
-            <div className="flex justify-between items-start">
-                <div className={`p-3 rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 group-hover:scale-110 transition-transform duration-500 ${service.color.replace('bg-', 'text-')}`}>
-                    {service.icon}
-                </div>
-                
-                <div className="flex gap-2 relative z-20">
-                    <button 
-                      onClick={(e) => {
-                        // Prevent drag start when clicking the details button
-                        e.stopPropagation(); 
-                        onSelect(service);
-                      }}
-                      onPointerDown={(e) => e.stopPropagation()} // Stop pointer down from starting drag
-                      className="p-2 rounded-full border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-white hover:bg-gray-200 dark:hover:bg-white/10 transition-all cursor-pointer"
-                      aria-label={`View details for ${service.title}`}
-                    >
-                        <ArrowUpRight size={18} />
-                    </button>
-                </div>
-            </div>
-            
-            <div className="mt-6 select-none">
-                <h3 className="text-xl font-black uppercase tracking-widest text-gray-900 dark:text-white mb-2 font-khmer drop-shadow-md">{t(service.title, service.titleKm)}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm font-khmer line-clamp-2 drop-shadow-sm">{t(service.subtitle, service.subtitleKm || service.subtitle)}</p>
-            </div>
-          </div>
+      {/* Icon */}
+      <div className="relative z-10 w-11 h-11 rounded-xl flex items-center justify-center mb-5
+                      transition-transform duration-300 group-hover:scale-110"
+           style={{ background: svc.bg, boxShadow: `0 0 20px ${svc.color}30` }}>
+        <Icon size={20} style={{ color: svc.color }} />
+      </div>
+
+      {/* Text */}
+      <div className="relative z-10 space-y-2">
+        <h3 className="font-black text-base text-white tracking-tight font-khmer">
+          {t(svc.en, svc.km)}
+        </h3>
+        <p className="text-sm text-white/45 leading-relaxed">{svc.desc}</p>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-1.5 pt-2">
+          {svc.tags.map(tag => (
+            <span key={tag} className="chip text-[10px]">{tag}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* Arrow */}
+      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100
+                      transition-all duration-300 translate-x-1 group-hover:translate-x-0">
+        <ArrowUpRight size={16} style={{ color: svc.color }} />
       </div>
     </div>
   );
 };
 
-interface ServicesProps {
-  showPopupOnMount?: boolean;
-  usePathRouting?: boolean;
-}
-
-const Services: React.FC<ServicesProps> = ({ showPopupOnMount = false, usePathRouting = false }) => {
-  const { services = [] } = useData();
+/* ─── Section ─────────────────────────────────────── */
+const Services: React.FC = () => {
   const { t } = useLanguage();
-  
-  // Use Router Hook: Section 'services'
-  const { activeId, openItem, closeItem } = useRouter('services', '', usePathRouting);
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
-
-  const [items, setItems] = useState<Service[]>(services || []);
-  const [hasReordered, setHasReordered] = useState(false);
-
-  // Sync with context if services change externally
-  useEffect(() => {
-    if (services) {
-        setItems(services);
-    }
-  }, [services]);
-
-  // Sync Router Active ID with Data
-  useEffect(() => {
-      if (activeId && services) {
-          const found = services.find(s => s.slug === activeId || s.id === activeId);
-          setSelectedService(found || null);
-      } else {
-          setSelectedService(null);
-      }
-  }, [activeId, services]);
-
-  // Sensors for Drag and Drop
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8, // Require slight movement before drag starts (prevents accidental clicks)
-      },
-    }),
-    useSensor(TouchSensor, {
-      // For mobile: Press and hold for 250ms to start dragging, so scrolling still works
-      activationConstraint: {
-        delay: 250,
-        tolerance: 5,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (selectedService) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [selectedService]);
-
-  const navigateToContact = () => {
-    const currentLang = window.location.pathname.split('/')[1];
-    const supportedLangs = ['en', 'km', 'fr', 'ja', 'ko', 'de', 'zh-CN', 'es', 'ar'];
-    const langPrefix = currentLang && supportedLangs.includes(currentLang) ? `/${currentLang}` : '';
-    window.history.pushState(null, '', `${langPrefix}/contact`);
-    window.dispatchEvent(new Event('popstate'));
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      setItems((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
-      });
-      setHasReordered(true);
-    }
-  };
-
-  const handleReset = () => {
-    setItems(services || []);
-    setHasReordered(false);
-  };
 
   return (
-    <section id="services" className="py-24 bg-white dark:bg-gray-950 relative overflow-hidden">
-      {/* Background Text */}
-      <ScrollBackgroundText text="EXPERTISE" className="top-10" />
+    <section id="services" className="section-pad relative overflow-hidden bg-black">
+      {/* Background */}
+      <div className="dot-grid opacity-40" />
+      <div className="glow-spot glow-spot-brand w-[500px] h-[500px] -top-32 -left-32 opacity-15" />
+      <div className="glow-spot glow-spot-pink  w-[400px] h-[400px] -bottom-32 -right-32 opacity-10" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <RevealOnScroll variant="fade-up">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-              <div className="max-w-3xl">
-                  <span className="text-indigo-400 font-bold tracking-wider uppercase text-sm mb-4 block font-khmer">{t('Our Expertise', 'ជំនាញរបស់យើង')}</span>
-                  <h2 className="h2-premium font-bold text-gray-900 dark:text-white font-khmer leading-tight">
-                      {t('Comprehensive solutions for', 'ដំណោះស្រាយពេញលេញសម្រាប់')}{' '}
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">{t('Digital Dominance.', 'ភាពលេចធ្លោលើឌីជីថល')}</span>
-                  </h2>
-              </div>
+      <div className="container-xl relative z-10">
 
-              {hasReordered && (
-                  <button 
-                      onClick={handleReset}
-                      className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 transition-all font-khmer text-sm animate-fade-in"
-                  >
-                      <RotateCcw size={16} />
-                      {t('Reset Layout', 'កំណត់ឡើងវិញ')}
-                  </button>
-              )}
+        {/* Header */}
+        <div className="text-center space-y-4 mb-16">
+          <div className="label-tag mx-auto w-fit">
+            {t('What We Do', 'សេវាកម្មរបស់យើង')}
           </div>
-        </RevealOnScroll>
+          <h2 className="heading-display text-white">
+            {t('Services', 'សេវាកម្ម')}{' '}
+            <span className="text-gradient">&</span>{' '}
+            {t('Expertise', 'ជំនាញ')}
+          </h2>
+          <p className="text-white/45 text-lg max-w-lg mx-auto font-khmer">
+            {t(
+              'Full-spectrum creative & technical studio — everything under one roof.',
+              'ស្ទូឌីយ៉ូច្នៃប្រឌិត & បច្ចេកទេស — ការប្រមូលផ្ដុំគ្រប់ការងារ'
+            )}
+          </p>
+        </div>
 
-        {/* DnD Context Wrapper */}
-        <DndContext 
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-        >
-            <SortableContext 
-                items={(items || []).map(item => item.id)}
-                strategy={rectSortingStrategy}
-            >
-                <RevealOnScroll variant="fade-up" delay={200} duration={800}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 auto-rows-[250px] gap-6">
-                    {(items || []).map((service, index) => (
-                        <SortableServiceItem 
-                            key={service.id} 
-                            service={service} 
-                            index={index} 
-                            onSelect={(s) => openItem(s.slug || s.id)}
-                            t={t}
-                        />
-                    ))}
-                    </div>
-                </RevealOnScroll>
-            </SortableContext>
-        </DndContext>
-        
-        {/* Helper text for mobile */}
-        <div className="mt-6 text-center md:hidden">
-            <p className="text-gray-600 text-xs font-khmer italic">{t('Press and hold to reorder services', 'ចុចឱ្យជាប់ដើម្បីរៀបចំសេវាកម្មឡើងវិញ')}</p>
+        {/* Grid */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {SERVICES.map((svc, i) => (
+            <ServiceCard key={svc.en} svc={svc} index={i} />
+          ))}
         </div>
       </div>
-
-      {/* Service Detail Modal */}
-{selectedService && createPortal(
-        <div className="fixed inset-0 z-[10002] flex items-center justify-center p-4 overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md animate-fade-in"
-            onClick={closeItem}
-          />
-          <div className="relative w-full max-w-4xl z-[10003] animate-scale-up">
-            {/* Close button outside the card */}
-            <button
-              onClick={closeItem}
-              className="absolute -top-4 -right-4 p-2 bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/20 text-gray-900 dark:text-white rounded-full transition-colors border border-gray-300 dark:border-white/20 z-10"
-              aria-label="Close"
-            >
-              <X size={24} />
-            </button>
-          <div className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
-
-            {/* Left Column: Image with overlay */}
-            <div className="relative w-full md:w-2/5 min-h-[260px] md:min-h-0 flex-shrink-0 overflow-hidden rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none">
-              {/* Background image */}
-              {(() => {
-                const imgSrc = selectedService.image || SERVICE_IMAGES_FALLBACK[selectedService.id];
-                return imgSrc ? (
-                  <div
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url('${encodeURI(imgSrc)}')` }}
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800" />
-                );
-              })()}
-              {/* Dark gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-900/60 to-transparent" />
-
-              {/* Overlay content: icon, title, subtitle */}
-              <div className="relative z-10 flex flex-col justify-end h-full p-8">
-                <div className={`p-4 rounded-2xl bg-gray-200 dark:bg-white/10 backdrop-blur-sm ${selectedService.color.replace('bg-', 'text-')} border border-gray-200 dark:border-white/10 w-fit mb-4`}>
-                  {selectedService.icon}
-                </div>
-                <h3 className="text-xl font-black uppercase tracking-widest text-gray-900 dark:text-white mb-2 font-khmer leading-tight drop-shadow-lg">
-                  {t(selectedService.title, selectedService.titleKm)}
-                </h3>
-                <p className="text-indigo-300 font-medium text-sm font-khmer drop-shadow">
-                  {t(selectedService.subtitle, selectedService.subtitleKm || selectedService.subtitle)}
-                </p>
-              </div>
-            </div>
-
-            {/* Right Column: Content */}
-            <div className="flex-1 flex flex-col overflow-y-auto">
-              <div className="p-8">
-                <div className="prose prose-invert max-w-none mb-8">
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed font-khmer">
-                    {t(selectedService.description, selectedService.descriptionKm || selectedService.description)}
-                  </p>
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {(selectedService.features || []).map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-3 p-4 bg-gray-100 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5">
-                      <CheckCircle2 size={18} className="text-green-400 shrink-0" />
-                      <span className="text-gray-700 dark:text-gray-300 text-sm font-khmer">{t(feature, feature)}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* CTA */}
-                <div className="mt-8 pt-6 border-t border-gray-200 dark:border-white/10">
-                  <button
-                    onClick={navigateToContact}
-                    className="group w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-base transition-all duration-300 hover:scale-[1.02] font-khmer"
-                  >
-                    <span>{t('Get in Touch', 'ទំនាក់ទំនងយើង')}</span>
-                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          </div>
-        </div>,
-        document.body
-      )}
     </section>
   );
 };
