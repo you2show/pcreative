@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useSound } from '../contexts/SoundContext';
+import { hapticTap } from '../utils/haptic';
 
 const ThemeToggle: React.FC<{ className?: string }> = ({ className = '' }) => {
   const { theme, toggleTheme, isDark } = useTheme();
@@ -12,7 +13,7 @@ const ThemeToggle: React.FC<{ className?: string }> = ({ className = '' }) => {
     <motion.button
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      onClick={() => { toggleTheme(); playClick(); }}
+      onClick={() => { toggleTheme(); playClick(); hapticTap(); }}
       className={`relative p-2 rounded-full transition-colors ${
         isDark ? 'bg-white/10 hover:bg-white/20 text-yellow-300' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
       } ${className}`}
