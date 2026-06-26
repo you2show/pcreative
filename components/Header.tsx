@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Menu, X, Zap } from 'lucide-react';
+import LanguageToggle from './LanguageToggle';
 
 const NAV_LINKS = [
   { href: '#services',  labelEn: 'Services', labelKm: 'សេវាកម្ម' },
@@ -72,6 +73,7 @@ const Header: React.FC = () => {
 
         {/* CTA + mobile toggle */}
         <div className="flex items-center gap-3">
+          <LanguageToggle className="hidden md:flex" />
           <a href="#contact"
              className="hidden md:inline-flex btn-glow text-sm px-5 py-2.5">
             <span>{t('Get Quote', 'ទទួលតម្លៃ')}</span>
@@ -91,6 +93,12 @@ const Header: React.FC = () => {
       <div className={`lg:hidden overflow-hidden transition-all duration-500
                        ${menuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
         <div className="container-xl py-4 flex flex-col gap-1 border-t border-white/[0.04] mt-3">
+          <div className="flex items-center justify-between px-4 py-3 mb-2 bg-white/5 rounded-xl border border-white/5">
+            <span className="text-xs font-bold text-white/40 uppercase tracking-widest font-khmer">
+              {t('Switch Language', 'ប្តូរភាសា')}
+            </span>
+            <LanguageToggle />
+          </div>
           {NAV_LINKS.map(link => (
             <a key={link.href} href={link.href}
                onClick={() => setMenuOpen(false)}
