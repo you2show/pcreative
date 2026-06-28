@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Menu, X, Zap } from 'lucide-react';
+import LanguageToggle from './LanguageToggle';
 
 const NAV_LINKS = [
   { href: '#services',  labelEn: 'Services', labelKm: 'សេវាកម្ម' },
@@ -58,6 +59,7 @@ const Header: React.FC = () => {
                onClick={() => setActiveLink(link.href)}
                className={`relative px-4 py-2 rounded-full text-sm font-medium
                           transition-all duration-300 font-khmer
+                          focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none
                           ${activeLink === link.href
                             ? 'text-white'
                             : 'text-white/50 hover:text-white/90'
@@ -72,6 +74,8 @@ const Header: React.FC = () => {
 
         {/* CTA + mobile toggle */}
         <div className="flex items-center gap-3">
+          <LanguageToggle className="hidden lg:flex mr-1" />
+
           <a href="#contact"
              className="hidden md:inline-flex btn-glow text-sm px-5 py-2.5">
             <span>{t('Get Quote', 'ទទួលតម្លៃ')}</span>
@@ -79,9 +83,11 @@ const Header: React.FC = () => {
 
           <button
             onClick={() => setMenuOpen(v => !v)}
+            aria-label={menuOpen ? t('Close menu', 'បិទម៉ឺនុយ') : t('Open menu', 'បើកម៉ឺនុយ')}
             className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full
                        border border-white/10 text-white/70 hover:text-white
-                       hover:border-white/20 hover:bg-white/5 transition-all duration-300">
+                       hover:border-white/20 hover:bg-white/5 transition-all duration-300
+                       focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
             {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
@@ -91,6 +97,10 @@ const Header: React.FC = () => {
       <div className={`lg:hidden overflow-hidden transition-all duration-500
                        ${menuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
         <div className="container-xl py-4 flex flex-col gap-1 border-t border-white/[0.04] mt-3">
+          <div className="flex items-center justify-between px-4 py-2 mb-2">
+            <span className="text-xs font-bold text-white/30 uppercase tracking-widest">{t('Language', 'ភាសា')}</span>
+            <LanguageToggle />
+          </div>
           {NAV_LINKS.map(link => (
             <a key={link.href} href={link.href}
                onClick={() => setMenuOpen(false)}
