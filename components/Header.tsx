@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Menu, X, Zap } from 'lucide-react';
+import LanguageToggle from './LanguageToggle';
 
 const NAV_LINKS = [
   { href: '#services',  labelEn: 'Services', labelKm: 'សេវាកម្ម' },
@@ -72,6 +73,8 @@ const Header: React.FC = () => {
 
         {/* CTA + mobile toggle */}
         <div className="flex items-center gap-3">
+          <LanguageToggle className="hidden lg:flex" />
+
           <a href="#contact"
              className="hidden md:inline-flex btn-glow text-sm px-5 py-2.5">
             <span>{t('Get Quote', 'ទទួលតម្លៃ')}</span>
@@ -79,6 +82,11 @@ const Header: React.FC = () => {
 
           <button
             onClick={() => setMenuOpen(v => !v)}
+            aria-label={menuOpen
+              ? t('Close main menu', 'បិទម៉ឺនុយ')
+              : t('Open main menu', 'បើកម៉ឺនុយ')
+            }
+            aria-expanded={menuOpen}
             className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full
                        border border-white/10 text-white/70 hover:text-white
                        hover:border-white/20 hover:bg-white/5 transition-all duration-300">
@@ -99,9 +107,19 @@ const Header: React.FC = () => {
               {t(link.labelEn, link.labelKm)}
             </a>
           ))}
-          <a href="#contact" className="btn-glow mt-3 justify-center">
-            <span>{t('Get Quote', 'ទទួលតម្លៃ')}</span>
-          </a>
+
+          <div className="flex flex-col gap-3 mt-3 pt-3 border-t border-white/[0.04]">
+            <div className="flex items-center justify-between px-4">
+              <span className="text-xs font-bold uppercase tracking-widest text-white/30 font-khmer">
+                {t('Language', 'ភាសា')}
+              </span>
+              <LanguageToggle />
+            </div>
+
+            <a href="#contact" className="btn-glow justify-center">
+              <span>{t('Get Quote', 'ទទួលតម្លៃ')}</span>
+            </a>
+          </div>
         </div>
       </div>
     </header>

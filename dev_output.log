@@ -1,5 +1,5 @@
 
-> ponloe-creative-redesign@1.0.0 dev
+> ponloe-creative-redesign@1.0.0 dev /app
 > vite
 
 
@@ -7,3 +7,4 @@
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
+6:57:01 PM [vite] hmr update /components/LanguageToggle.tsx, /styles.css
